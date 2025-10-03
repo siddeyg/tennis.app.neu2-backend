@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const coachSchema = new mongoose.Schema({
+  clerkUserId: { type: String, unique: true, sparse: true }, // Links coach to Clerk user
   firstName: String,
   lastName: String,
   email: String,

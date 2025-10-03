@@ -8,7 +8,8 @@ const studentSchema = new mongoose.Schema({
   phone: String,
   member: Boolean, // Mitglied ja/nein
   adult: Boolean, //Erwachsenen-Training
-  team: String, // Mannschaft
+  sex: String, // Geschlecht: "männlich" oder "weiblich" (nur für Erwachsene relevant)
+  team: Boolean, // Mannschaftsspieler ja/nein (nur für Kinder relevant)
   groupSize: String, // Gruppengröße (1er, 2er, 3er, 4er)
   trainigGroup: String, // Trainingsgruppe Kinder: ["Kinderland", "Grün", "Orange", "Gelb Team", "Gelb Hobby"]
   birthDate: String,
