@@ -4,17 +4,23 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "@clerk/express": "^1.7.35",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
     "multer": "^2.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-scripts": "5.0.1",
@@ -26,13 +32,14 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "migrate:coaches": "node src/scripts/migrateCoachData.js",
+    "create-admin": "node src/scripts/createAdmin.js",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
-    "supertest": "^7.0.0",
     "mongodb-memory-server": "^10.1.2",
-    "@types/jest": "^29.5.14"
+    "supertest": "^7.0.0"
   },
   "eslintConfig": {
     "extends": [

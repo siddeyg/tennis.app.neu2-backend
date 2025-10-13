@@ -3,7 +3,6 @@ import SavedSchedule from "../models/SavedSchedule.js";
 import Student from "../models/Student.js";
 import Coach from "../models/Coach.js";
 import Schedule from "../models/Schedule.js";
-import { getAuth } from "@clerk/express";
 
 const router = express.Router();
 
@@ -36,10 +35,10 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { name, description } = req.body;
-    const { userId } = getAuth(req);
 
-    // Get user email from Clerk (available in req.auth)
-    const userEmail = req.auth.sessionClaims?.email || "unknown@example.com";
+    // User info (will be replaced by new auth system)
+    const userId = "system-user";
+    const userEmail = "system@example.com";
 
     // Fetch current state from database
     const students = await Student.find();
@@ -119,8 +118,9 @@ router.delete("/:id", async (req, res) => {
 // POST - Load saved schedule (replace current DB state)
 router.post("/:id/load", async (req, res) => {
   try {
-    const { userId } = getAuth(req);
-    const userEmail = req.auth.sessionClaims?.email || "unknown@example.com";
+    // User info (will be replaced by new auth system)
+    const userId = "system-user";
+    const userEmail = "system@example.com";
 
     // Get the saved schedule
     const savedSchedule = await SavedSchedule.findById(req.params.id);

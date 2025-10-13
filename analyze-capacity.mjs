@@ -1,0 +1,18 @@
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config({path:'./.env.development'});
+await mongoose.connect(process.env.MONGO_URI||'mongodb://localhost:27017/tennis-coach');
+const S=mongoose.model('S',new mongoose.Schema({},{strict:false}),'students');
+const ss=await S.find({});
+const co={};
+ss.filter(s=>s.day&&s.hour).forEach(s=>{const k=s.day+' '+s.hour;co[k]=co[k]||[];co[k].push(s);});
+const sizes={1:0,2:0,3:0,4:0};
+Object.entries(co).forEach(([t,l])=>{const sz=l.length;if(sz<=4)sizes[sz]++;else sizes[4]++;});
+console.log('Course sizes:');
+console.log('  1 student:',sizes[1],'courses');
+console.log('  2 students:',sizes[2],'courses');
+console.log('  3 students:',sizes[3],'courses');
+console.log('  4+ students:',sizes[4],'courses');
+console.log('Total:',Object.keys(co).length,'courses');
+console.log('Inefficient (<4):',sizes[1]+sizes[2]+sizes[3],'courses ('+(((sizes[1]+sizes[2]+sizes[3])/Object.keys(co).length)*100).toFixed(1)+'%)');
+mongoose.connection.close();

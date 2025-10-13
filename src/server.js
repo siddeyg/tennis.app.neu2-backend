@@ -2,30 +2,43 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import { clerkMiddleware } from "@clerk/express";
-import { requireAuth } from "./middleware/requireAuth.js";
-import studentRoutes from "./routes/students.js";
-import scheduleRoutes from "./routes/schedule.js"; // Importiere die Routen für den Zeitplan
-import coachRoutes from "./routes/coaches.js"; // Importiere die Routen für Coaches
-import savedScheduleRoutes from "./routes/savedSchedules.js"; // Importiere die Routen für gespeicherte Zeitpläne
-import settingsRoutes from "./routes/settings.js"; // Importiere die Routen für Einstellungen
+import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 import fs from "fs";
 
-// load env based on NODE_ENV
-// load env based on NODE_ENV
+// Get directory name in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// load env based on NODE_ENV - MUST BE BEFORE OTHER IMPORTS THAT USE process.env
 const activeEnvFile =
   process.env.NODE_ENV === "production"
     ? ".env.production"
     : ".env.development";
 
-dotenv.config({ path: activeEnvFile });
+// Load .env from project root (one level up from src/)
+const envPath = path.resolve(__dirname, "..", activeEnvFile);
+dotenv.config({ path: envPath });
 
 console.log(`🌱 NODE_ENV=${process.env.NODE_ENV}`);
 console.log(`📄 Geladene .env-Datei: ${activeEnvFile}`);
-console.log(`${activeEnvFile} existiert:`, fs.existsSync(`./${activeEnvFile}`));
-console.log(`🔑 Clerk Publishable Key: ${process.env.CLERK_PUBLISHABLE_KEY}`);
-console.log(`🔐 Clerk Secret Key: ${process.env.CLERK_SECRET_KEY}`);
+console.log(`📍 .env path: ${envPath}`);
+console.log(`${activeEnvFile} existiert:`, fs.existsSync(envPath));
+console.log(`🔑 JWT_SECRET exists: ${!!process.env.JWT_SECRET}`);
 console.log(`🛢️ MongoDB URI: ${process.env.MONGO_URI}`);
+
+// Now import modules that depend on env variables
+import passport, { configurePassport } from "./config/passport.js";
+import { requireAuth } from "./middleware/requireAuth.js";
+import { requireRole } from "./middleware/requireRole.js";
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
+import studentRoutes from "./routes/students.js";
+import scheduleRoutes from "./routes/schedule.js";
+import coachRoutes from "./routes/coaches.js";
+import savedScheduleRoutes from "./routes/savedSchedules.js";
+import settingsRoutes from "./routes/settings.js";
 
 const app = express();
 
@@ -38,9 +51,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json()); // Middleware für JSON-Daten
+app.use(cookieParser()); // Middleware für Cookies
 
-// Clerk middleware - must come before routes
-app.use(clerkMiddleware());
+// Configure and initialize Passport AFTER env is loaded
+configurePassport();
+app.use(passport.initialize());
 
 // MongoDB-Verbindung
 mongoose
@@ -48,28 +63,22 @@ mongoose
   .then(() => console.log("MongoDB verbunden"))
   .catch((err) => console.error("Fehler bei der MongoDB-Verbindung:", err));
 
-// Public route
+// Public routes
 app.get("/", (req, res) => {
   res.send("Willkommen zur Tennis App API");
 });
 
-// Development-only: Get your current auth info
-if (process.env.NODE_ENV !== "production") {
-  app.get("/api/dev/auth-info", requireAuth, (req, res) => {
-    res.json({
-      message: "You are authenticated!",
-      userId: req.auth.userId,
-      sessionId: req.auth.sessionId,
-      tip: "Copy your token from browser console: await window.Clerk.session.getToken()",
-    });
-  });
-}
+// Auth routes (public - no authentication required)
+app.use("/api/auth", authRoutes);
 
 // Protected routes - require authentication
-app.use("/api/students", requireAuth, studentRoutes); // Routen für die Studenten
-app.use("/api/schedule", requireAuth, scheduleRoutes); // Routen für den Zeitplan
-app.use("/api/coaches", requireAuth, coachRoutes); // Routen für Coaches
-app.use("/api/saved-schedules", requireAuth, savedScheduleRoutes); // Routen für gespeicherte Zeitpläne
-app.use("/api/settings", requireAuth, settingsRoutes); // Routen für Einstellungen
+app.use("/api/students", requireAuth, studentRoutes);
+app.use("/api/schedule", requireAuth, scheduleRoutes);
+app.use("/api/coaches", requireAuth, coachRoutes);
+app.use("/api/saved-schedules", requireAuth, savedScheduleRoutes);
+app.use("/api/settings", requireAuth, settingsRoutes);
+
+// User management routes - admin only
+app.use("/api/users", requireAuth, requireRole(["admin"]), userRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server läuft auf Port ${PORT}`));

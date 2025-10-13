@@ -1,0 +1,14 @@
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config({path:'./.env.development'});
+await mongoose.connect(process.env.MONGO_URI||'mongodb://localhost:27017/tennis-coach');
+const S=mongoose.model('S',new mongoose.Schema({},{strict:false}),'students');
+const ss=await S.find({});
+const a=ss.filter(s=>s.adult);
+const c=ss.filter(s=>!s.adult);
+const co={};
+ss.filter(s=>s.day&&s.hour).forEach(s=>{const k=s.day+' '+s.hour;co[k]=co[k]||[];co[k].push(s);});
+let m=0;
+Object.entries(co).forEach(([t,l])=>{const sk=[...new Set(l.filter(s=>s.adult).map(s=>s.skillLevel))];const gr=[...new Set(l.filter(s=>!s.adult).map(s=>s.trainigGroup))];if(sk.length>1||gr.length>1){m++;console.log(t,':',sk.join(','),gr.join(','));}});
+console.log('\nTotal:',ss.length,'Adults:',a.length,'Children:',c.length,'Courses:',Object.keys(co).length,'Mixed:',m);
+mongoose.connection.close();

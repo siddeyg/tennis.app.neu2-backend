@@ -1,21 +1,22 @@
-import { requireAuth as clerkRequireAuth } from "@clerk/express";
+import passport from "passport";
 
 /**
  * Middleware to protect routes - requires user to be authenticated
- * In DEV_MODE=true, auth is bypassed for API testing
+ * Uses Passport JWT strategy to verify token from cookies
  * Usage: app.use('/api/protected-route', requireAuth, yourRouteHandler)
  */
 export const requireAuth = (req, res, next) => {
-  // Bypass auth in development mode
-  if (process.env.DEV_MODE === "true") {
-    console.log("⚠️  DEV_MODE: Bypassing authentication");
-    req.auth = {
-      userId: "dev-user",
-      sessionId: "dev-session"
-    };
-    return next();
-  }
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (err) {
+      return res.status(500).json({ error: "Authentifizierungsfehler" });
+    }
 
-  // Use Clerk auth in production
-  return clerkRequireAuth()(req, res, next);
+    if (!user) {
+      return res.status(401).json({ error: "Nicht authentifiziert" });
+    }
+
+    // Attach user to request object
+    req.user = user;
+    next();
+  })(req, res, next);
 };
