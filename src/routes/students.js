@@ -13,9 +13,30 @@ router.get("/", async (req, res) => {
 
 // Schüler hinzufügen
 router.post("/", async (req, res) => {
-  const student = new Student(req.body);
-  await student.save();
-  res.json(student);
+  try {
+    // Validate required fields
+    if (!req.body.firstName || !req.body.lastName) {
+      return res.status(400).json({ error: "Vorname und Nachname sind erforderlich" });
+    }
+
+    // Check for duplicate email if provided
+    if (req.body.email) {
+      const existingStudent = await Student.findOne({ email: req.body.email });
+      if (existingStudent) {
+        return res.status(409).json({ error: "E-Mail-Adresse bereits vorhanden" });
+      }
+    }
+
+    const student = new Student(req.body);
+    await student.save();
+    res.status(201).json(student);
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen des Schülers:", error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: "Ungültige Eingabedaten", details: error.message });
+    }
+    res.status(500).json({ error: "Fehler beim Hinzufügen des Schülers" });
+  }
 });
 
 // Alle Schüler löschen (muss vor /:id Route sein!)
@@ -34,59 +55,85 @@ router.delete("/all", async (req, res) => {
 
 // Schüler löschen
 router.delete("/:id", async (req, res) => {
-  await Student.findByIdAndDelete(req.params.id);
-  res.json({ message: "Schüler gelöscht" });
+  const student = await Student.findByIdAndDelete(req.params.id);
+  if (!student) {
+    return res.status(404).json({ error: "Student not found" });
+  }
+  res.json({ message: "Student deleted" });
 });
 
 // Schüler-Daten aktualisieren
 router.put("/:id", async (req, res) => {
-  const {
-    day,
-    hour,
-    firstName,
-    lastName,
-    birthDate,
-    adress,
-    email,
-    member,
-    adult,
-    sex,
-    team,
-    trainigGroup,
-    groupSize,
-    phone,
-    skillLevel,
-    availableTimes,
-    comment,
-    coach,
-    frequence,
-  } = req.body;
-  const student = await Student.findByIdAndUpdate(
-    req.params.id,
-    {
+  try {
+    const {
       day,
       hour,
+      firstName,
+      lastName,
+      birthDate,
       adress,
       email,
-      phone,
       member,
       adult,
       sex,
       team,
       trainigGroup,
       groupSize,
-      firstName,
-      lastName,
-      birthDate,
+      phone,
       skillLevel,
       availableTimes,
       comment,
       coach,
       frequence,
-    },
-    { new: true }
-  );
-  res.json(student);
+    } = req.body;
+
+    // Check for duplicate email if changed
+    if (email) {
+      const existingStudent = await Student.findOne({ email, _id: { $ne: req.params.id } });
+      if (existingStudent) {
+        return res.status(409).json({ error: "E-Mail-Adresse bereits vorhanden" });
+      }
+    }
+
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      {
+        day,
+        hour,
+        adress,
+        email,
+        phone,
+        member,
+        adult,
+        sex,
+        team,
+        trainigGroup,
+        groupSize,
+        firstName,
+        lastName,
+        birthDate,
+        skillLevel,
+        availableTimes,
+        comment,
+        coach,
+        frequence,
+      },
+      { new: true, runValidators: true }
+    );
+    if (!student) {
+      return res.status(404).json({ error: "Schüler nicht gefunden" });
+    }
+    res.json(student);
+  } catch (error) {
+    console.error("Fehler beim Aktualisieren des Schülers:", error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: "Ungültige Eingabedaten", details: error.message });
+    }
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: "Ungültige Schüler-ID" });
+    }
+    res.status(500).json({ error: "Fehler beim Aktualisieren des Schülers" });
+  }
 });
 
 // CSV Import

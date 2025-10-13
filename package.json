@@ -23,8 +23,16 @@
   "scripts": {
     "start": "node src/server.js",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "migrate:coaches": "node src/scripts/migrateCoachData.js",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "mongodb-memory-server": "^10.1.2",
+    "@types/jest": "^29.5.14"
   },
   "eslintConfig": {
     "extends": [

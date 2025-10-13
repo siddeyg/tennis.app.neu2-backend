@@ -1,64 +1,73 @@
 import mongoose from "mongoose";
 
+/**
+ * SavedSchedule (Gespeicherter Trainingsplan) Model
+ *
+ * Speichert einen vollständigen Snapshot des Trainingsplans zu einem bestimmten Zeitpunkt.
+ * Enthält alle Schüler, Trainer und Kurszuweisungen als Backup/Archiv.
+ * Ermöglicht das Wiederherstellen früherer Planungszustände.
+ */
 const savedScheduleSchema = new mongoose.Schema({
+  // ===== Identifikation =====
   name: {
     type: String,
     required: true,
-    trim: true,
+    trim: true,                         // Name des gespeicherten Plans (z.B. "Plan vom 15.01.2025 14:30")
   },
   description: {
     type: String,
-    default: "",
+    default: "",                        // Optional: Beschreibung/Notiz zum Plan
   },
+
+  // ===== Zeitstempel & Autor =====
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now,                  // Zeitpunkt der Speicherung
   },
   createdBy: {
-    type: String, // Clerk user ID
+    type: String,                       // Clerk User ID des Erstellers
     required: true,
   },
   createdByEmail: {
-    type: String,
+    type: String,                       // E-Mail des Erstellers
     required: true,
   },
-  // Snapshot of all students at time of save
+
+  // ===== Snapshot-Daten =====
   students: {
-    type: Array,
+    type: Array,                        // Vollständiger Snapshot aller Schüler zum Speicherzeitpunkt
     default: [],
   },
-  // Snapshot of all coaches at time of save
   coaches: {
-    type: Array,
+    type: Array,                        // Vollständiger Snapshot aller Trainer zum Speicherzeitpunkt
     default: [],
   },
-  // Snapshot of schedule at time of save
   schedule: {
-    type: Array,
+    type: Array,                        // Vollständiger Snapshot des Kursplans zum Speicherzeitpunkt
     default: [],
   },
-  // List of students that were not assigned
   studentsNotSet: {
-    type: Array,
+    type: Array,                        // Liste der Schüler die nicht zugeordnet werden konnten
     default: [],
   },
-  // Metadata for quick display
+
+  // ===== Metadaten (für schnelle Anzeige ohne Array-Durchlauf) =====
   metadata: {
     studentCount: {
       type: Number,
-      default: 0,
+      default: 0,                       // Anzahl gespeicherter Schüler
     },
     coachCount: {
       type: Number,
-      default: 0,
+      default: 0,                       // Anzahl gespeicherter Trainer
     },
     courseCount: {
       type: Number,
-      default: 0,
+      default: 0,                       // Anzahl Kurse im Plan
     },
     unassignedCount: {
       type: Number,
-      default: 0,
+      default: 0,                       // Anzahl nicht zugewiesener Schüler
     },
   },
 });
