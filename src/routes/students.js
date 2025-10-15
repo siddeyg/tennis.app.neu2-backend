@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import { parse } from "csv-parse/sync";
 import Student from "../models/Student.js";
 
 const router = express.Router();
@@ -19,13 +20,8 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Vorname und Nachname sind erforderlich" });
     }
 
-    // Check for duplicate email if provided
-    if (req.body.email) {
-      const existingStudent = await Student.findOne({ email: req.body.email });
-      if (existingStudent) {
-        return res.status(409).json({ error: "E-Mail-Adresse bereits vorhanden" });
-      }
-    }
+    // Note: Duplicate email check removed - families can share emails (parent email for multiple children)
+    // Duplicate detection is handled on frontend with firstName + lastName + birthDate matching
 
     const student = new Student(req.body);
     await student.save();
@@ -87,13 +83,8 @@ router.put("/:id", async (req, res) => {
       frequence,
     } = req.body;
 
-    // Check for duplicate email if changed
-    if (email) {
-      const existingStudent = await Student.findOne({ email, _id: { $ne: req.params.id } });
-      if (existingStudent) {
-        return res.status(409).json({ error: "E-Mail-Adresse bereits vorhanden" });
-      }
-    }
+    // Note: Duplicate email check removed - families can share emails
+    // Duplicate detection is handled on frontend
 
     const student = await Student.findByIdAndUpdate(
       req.params.id,
@@ -143,7 +134,7 @@ router.post("/import", upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: "Keine Datei hochgeladen" });
     }
 
-    // Parse CSV
+    // Parse CSV with proper library
     let csvText = req.file.buffer.toString('utf-8');
 
     // Remove BOM if present
@@ -151,108 +142,65 @@ router.post("/import", upload.single('file'), async (req, res) => {
       csvText = csvText.substring(1);
     }
 
-    const lines = csvText.split('\n').filter(line => line.trim());
+    console.log("CSV Import - Parsing with csv-parse library...");
 
-    if (lines.length < 2) {
+    // Parse CSV using csv-parse library (properly handles quoted fields with commas)
+    const records = parse(csvText, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+      bom: true
+    });
+
+    console.log(`CSV Import - Parsed ${records.length} records`);
+
+    if (records.length === 0) {
       return res.status(400).json({ error: "CSV-Datei ist leer" });
     }
 
-    // Parse header
-    const headers = lines[0].match(/("(?:[^"]|"")*"|[^,]+)/g).map(h =>
-      h.replace(/^"|"$/g, '').replace(/""/g, '"').trim()
-    );
-
-    console.log("CSV Import - Headers found:", headers);
-    console.log("CSV Import - Total lines:", lines.length);
-
-    // Helper function to parse CSV row
-    const parseRow = (line) => {
-      const matches = line.match(/("(?:[^"]|"")*"|[^,]+)/g);
-      return matches ? matches.map(m => m.replace(/^"|"$/g, '').replace(/""/g, '"').trim()) : [];
-    };
-
-    // Parse all rows
-    const students = [];
-    for (let i = 1; i < lines.length; i++) {
-      const values = parseRow(lines[i]);
-      if (values.length < headers.length) continue;
-
+    // Convert CSV records to student objects
+    const students = records.map(row => {
       const studentData = {};
-      headers.forEach((header, index) => {
-        const value = values[index];
 
-        // Map CSV headers to model fields
-        switch(header) {
-          case 'Vorname':
-            studentData.firstName = value;
-            break;
-          case 'Nachname':
-            studentData.lastName = value;
-            break;
-          case 'Geburtsdatum':
-            studentData.birthDate = value;
-            break;
-          case 'Email':
-            studentData.email = value;
-            break;
-          case 'Telefon':
-            studentData.phone = value;
-            break;
-          case 'Adresse':
-            studentData.adress = value;
-            break;
-          case 'Erwachsen':
-            studentData.adult = value === 'Ja';
-            break;
-          case 'Mitglied':
-            studentData.member = value === 'Ja';
-            break;
-          case 'Teamspieler':
-            studentData.team = value === 'Ja';
-            break;
-          case 'Spielstärke':
-            studentData.skillLevel = value;
-            break;
-          case 'Trainingsgruppe':
-            studentData.trainigGroup = value;
-            break;
-          case 'Geschlecht':
-            studentData.sex = value;
-            break;
-          case 'Montag':
-          case 'Dienstag':
-          case 'Mittwoch':
-          case 'Donnerstag':
-          case 'Freitag':
-          case 'Samstag':
-            if (!studentData.availableTimes) studentData.availableTimes = [];
-            if (value) {
-              const hours = value.split(',').map(h => h.trim());
-              hours.forEach(hour => {
-                if (hour) studentData.availableTimes.push(`${header} ${hour}`);
-              });
-            }
-            break;
-          case 'Häufigkeit':
-            studentData.frequence = value;
-            break;
-          case 'Zugewiesener Tag':
-            studentData.day = value;
-            break;
-          case 'Zugewiesene Stunde':
-            studentData.hour = value ? parseInt(value) : null;
-            break;
-          case 'Trainer':
-            studentData.coach = value;
-            break;
-          case 'Kommentar':
-            studentData.comment = value;
-            break;
+      // Map CSV columns to student model fields
+      studentData.firstName = row['Vorname'] || '';
+      studentData.lastName = row['Nachname'] || '';
+      studentData.birthDate = row['Geburtsdatum'] || '';
+      studentData.email = row['Email'] || '';
+      studentData.phone = row['Telefon'] || '';
+      studentData.adress = row['Adresse'] || '';
+      studentData.adult = row['Erwachsen'] === 'Ja';
+      studentData.member = row['Mitglied'] === 'Ja';
+      studentData.team = row['Teamspieler'] === 'Ja';
+      studentData.skillLevel = row['Spielstärke'] || '';
+      studentData.trainigGroup = row['Trainingsgruppe'] || '';
+      studentData.sex = row['Geschlecht'] || '';
+      studentData.frequence = row['Häufigkeit'] || '';
+      studentData.day = row['Zugewiesener Tag'] || '';
+      studentData.hour = row['Zugewiesene Stunde'] ? parseInt(row['Zugewiesene Stunde']) : null;
+      // Coach field requires ObjectId, but CSV has names - set to null for now
+      // TODO: Look up coach by name and store their ObjectId
+      studentData.coach = null;
+      studentData.comment = row['Kommentar'] || '';
+
+      // Parse available times from day columns
+      studentData.availableTimes = [];
+      const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+      days.forEach(day => {
+        const hoursString = row[day];
+        if (hoursString && hoursString.trim()) {
+          const hours = hoursString.split(',').map(h => h.trim()).filter(h => h);
+          hours.forEach(hour => {
+            studentData.availableTimes.push(`${day} ${hour}`);
+          });
         }
       });
 
-      students.push(studentData);
-    }
+      return studentData;
+    });
+
+    console.log(`CSV Import - Converted to ${students.length} student objects`);
+    console.log("Sample student:", students[0]);
 
     // Delete all existing students
     await Student.deleteMany({});

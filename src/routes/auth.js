@@ -57,18 +57,28 @@ router.post("/login", loginLimiter, (req, res, next) => {
     // Set tokens in httpOnly cookies
     const isProduction = process.env.NODE_ENV === "production";
 
-    res.cookie("authToken", token, {
+    // Cookie options
+    const cookieOptions = {
       httpOnly: true,
       secure: isProduction, // HTTPS only in production
       sameSite: isProduction ? "strict" : "lax",
-      maxAge: 15 * 60 * 1000, // 15 minutes
+    };
+
+    // In development, don't set domain to allow cookies to work across localhost ports
+    // Browsers will default to the current domain (localhost)
+    if (!isProduction) {
+      // Setting path to '/' ensures cookies are sent with all requests
+      cookieOptions.path = '/';
+    }
+
+    res.cookie("authToken", token, {
+      ...cookieOptions,
+      maxAge: 8 * 60 * 60 * 1000, // 8 hours
     });
 
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "strict" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      ...cookieOptions,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 
     // Return user data (password already excluded by toJSON method)
@@ -142,12 +152,20 @@ router.post("/refresh", async (req, res) => {
     // Set new token in cookie
     const isProduction = process.env.NODE_ENV === "production";
 
-    res.cookie("authToken", newToken, {
+    // Cookie options
+    const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "strict" : "lax",
-      maxAge: 15 * 60 * 1000,
-    });
+      maxAge: 8 * 60 * 60 * 1000, // 8 hours
+    };
+
+    // In development, set path to '/' ensures cookies are sent with all requests
+    if (!isProduction) {
+      cookieOptions.path = '/';
+    }
+
+    res.cookie("authToken", newToken, cookieOptions);
 
     res.json({ message: "Token erneuert" });
   } catch (error) {

@@ -42,9 +42,39 @@ import settingsRoutes from "./routes/settings.js";
 
 const app = express();
 
+// Trust proxy - required when behind reverse proxy (Caddy/nginx)
+// This allows rate limiters and IP detection to work correctly
+app.set('trust proxy', true);
+
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    // In production, only allow the configured origin
+    if (process.env.NODE_ENV === 'production') {
+      const allowedOrigin = process.env.CORS_ORIGIN || "https://mondo.suwar.de";
+      if (origin === allowedOrigin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    } else {
+      // In development, allow both localhost and 127.0.0.1
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3001'
+      ];
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
 };

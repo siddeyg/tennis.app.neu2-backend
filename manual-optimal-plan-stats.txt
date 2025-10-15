@@ -1,0 +1,35 @@
+MANUAL OPTIMAL PLAN - STATISTICS
+=================================
+
+Created: 15.10.2025, 16:16:04
+Method: Manual Planning
+
+STUDENTS
+--------
+Total: 113
+Assigned: 113 (100%)
+Unassigned: 0
+
+COURSES
+-------
+Total: 43
+  4 students: 18 (41.9%)
+  3 students: 4 (9.3%)
+  2 students: 8 (18.6%)
+  1 student: 13 (30.2%)
+
+Efficiency (3-4 students): 51.2%
+
+BREAKDOWN
+---------
+Adult Courses: 16
+Child Courses: 27
+
+GENDER MATCHING
+---------------
+Gender Violations: 0 ✅
+All adult courses respect gender separation.
+
+QUALITY SCORE
+-------------
+Full Courses (4 students): 18/23 = 78.3% of theoretical maximum

@@ -34,22 +34,48 @@ const studentSchema = new mongoose.Schema({
 
   // ===== Zeitplanung =====
   availableTimes: [String],             // Liste verfügbarer Trainingszeiten im Format "Tag Stunde" (z.B. ["Montag 14", "Mittwoch 16"])
-  day: String,                          // Aktuell zugewiesener Wochentag im Schedule (z.B. "Montag")
-  hour: Number,                         // Aktuell zugewiesene Stunde im Schedule (10-21)
 
-  // ===== Trainer-Zuweisung =====
-  coach: {
-    type: mongoose.Schema.Types.ObjectId,  // Referenz zum zugewiesenen Trainer (Coach-Modell)
+  // ===== DEPRECATED (Legacy fields for backward compatibility) =====
+  day: String,                          // DEPRECATED: Use assignments array instead
+  hour: Number,                         // DEPRECATED: Use assignments array instead
+  coach: {                              // DEPRECATED: Use assignments array instead
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Coach',
-    default: null,                         // null = kein Trainer zugewiesen
+    default: null,
     validate: {
       validator: function(value) {
-        if (!value) return true;            // null/undefined ist erlaubt
-        return mongoose.Types.ObjectId.isValid(value);  // Ansonsten muss gültige ObjectId sein
+        if (!value) return true;
+        return mongoose.Types.ObjectId.isValid(value);
       },
       message: 'Coach must be a valid ObjectId or null'
     }
-  }
+  },
+
+  // ===== NEUE Mehrfach-Zuweisung (Multiple Course Assignments) =====
+  assignments: [{
+    day: {
+      type: String,
+      required: true
+    },
+    hour: {
+      type: Number,
+      required: true,
+      min: 10,
+      max: 21
+    },
+    coach: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Coach',
+      default: null,
+      validate: {
+        validator: function(value) {
+          if (!value) return true;
+          return mongoose.Types.ObjectId.isValid(value);
+        },
+        message: 'Coach must be a valid ObjectId or null'
+      }
+    }
+  }]
 });
 
 export default mongoose.model("Student", studentSchema);

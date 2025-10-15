@@ -1,0 +1,33 @@
+OPTIMAL COURSE PLAN STATISTICS
+===============================
+
+Plan Name: erste komplette realdaten-Plan vom 15.10.2025, 15:06
+Generated: 15.10.2025, 15:07:38
+
+STUDENTS
+--------
+Total: 113
+Assigned: 104
+Unassigned: 9
+
+COURSES
+-------
+Total: 72
+  4 students: 0 (0.0%)
+  3 students: 3 (4.2%)
+  2 students: 15 (20.8%)
+  1 student: 14 (19.4%)
+
+Efficiency (3-4 students): 4.2%
+
+UNASSIGNED STUDENTS
+-------------------
+- Ilonka Döge (Anfänger mit Grundkenntnissen)
+- Claudia Frank (Anfänger mit Grundkenntnissen)
+- Josef Wong (Rot)
+- Andrea Muck (Fortgeschrittene)
+- Andrea Frankenberg (Fortgeschrittene)
+- Juno Glaser (Gelb Hobby)
+- Barbara Bursch-Brustkern (Fortgeschrittene)
+- Maike Just (Fortgeschrittene)
+- Helga Heydweiller (Anfänger mit Grundkenntnissen)

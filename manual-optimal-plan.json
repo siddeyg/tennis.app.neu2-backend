@@ -1,0 +1,1086 @@
+{
+  "metadata": {
+    "title": "Manual Optimal Plan (Gender-Aware)",
+    "created": "2025-10-15T14:16:04.311Z",
+    "createdBy": "Manual Planning",
+    "description": "Hand-crafted optimal schedule with strict gender matching for adults"
+  },
+  "statistics": {
+    "totalCourses": 43,
+    "course4": 18,
+    "course3": 4,
+    "course2": 8,
+    "course1": 13,
+    "assigned": 113,
+    "unassigned": 0,
+    "adultCourses": 16,
+    "childCourses": 27
+  },
+  "courses": [
+    {
+      "id": 1,
+      "day": "Montag",
+      "hour": 18,
+      "groupLabel": "adult_männlich_Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fb",
+          "name": "Jan Volkhardt",
+          "gender": "männlich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef9b89c8b2bc8c5f35f93c",
+          "name": "Jonas Plath",
+          "gender": "männlich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "day": "Donnerstag",
+      "hour": 19,
+      "groupLabel": "adult_männlich_Anfänger",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6306",
+          "name": "Antonio Schmandke",
+          "gender": "männlich",
+          "level": "Anfänger"
+        },
+        {
+          "id": "68ef85667031d46332aa630b",
+          "name": "Áron Horváth",
+          "gender": "männlich",
+          "level": "Anfänger"
+        },
+        {
+          "id": "68ef9b66c8b2bc8c5f35f928",
+          "name": "Stefan Löwe",
+          "gender": "männlich",
+          "level": "Anfänger"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "day": "Montag",
+      "hour": 11,
+      "groupLabel": "adult_männlich_Anfänger",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6308",
+          "name": "Marius Grosch",
+          "gender": "männlich",
+          "level": "Anfänger"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "day": "Freitag",
+      "hour": 18,
+      "groupLabel": "adult_männlich_Fortgeschritten",
+      "coach": "Falko ",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fd",
+          "name": "Tom Jansen",
+          "gender": "männlich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9b0bc8b2bc8c5f35f903",
+          "name": "Thiemo Meyfarth",
+          "gender": "männlich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9b1dc8b2bc8c5f35f90a",
+          "name": "Roby Patani",
+          "gender": "männlich",
+          "level": "Fortgeschritten"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "day": "Freitag",
+      "hour": 15,
+      "groupLabel": "adult_männlich_Leistungsspieler:innen / Turnierspieler:innen",
+      "coach": "Falko ",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6300",
+          "name": "Lennart Maak",
+          "gender": "männlich",
+          "level": "Leistungsspieler:innen / Turnierspieler:innen"
+        },
+        {
+          "id": "68ef85667031d46332aa6340",
+          "name": "Lukas Lederer",
+          "gender": "männlich",
+          "level": "Leistungsspieler:innen / Turnierspieler:innen"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "day": "Samstag",
+      "hour": 11,
+      "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f8",
+          "name": "Sandra Bourbeck",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa62ff",
+          "name": "Ilonka Döge",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa6302",
+          "name": "Claudia Frank",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "day": "Freitag",
+      "hour": 18,
+      "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
+      "coach": "Falko ",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa62fe",
+          "name": "Sabrina Schenk",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "name": "Lara Jansen",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "day": "Donnerstag",
+      "hour": 16,
+      "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "name": "Friederike Förster",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa6304",
+          "name": "Damla Darilmaz",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "day": "Donnerstag",
+      "hour": 10,
+      "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef9b6ec8b2bc8c5f35f92d",
+          "name": "Helga Heydweiller",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "day": "Montag",
+      "hour": 18,
+      "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b75c8b2bc8c5f35f932",
+          "name": "Julia Leininger",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "day": "Donnerstag",
+      "hour": 19,
+      "groupLabel": "adult_weiblich_Anfänger",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6307",
+          "name": "Eva Plath",
+          "gender": "weiblich",
+          "level": "Anfänger"
+        },
+        {
+          "id": "68ef85667031d46332aa630a",
+          "name": "Kinga Fülöp",
+          "gender": "weiblich",
+          "level": "Anfänger"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "day": "Montag",
+      "hour": 16,
+      "groupLabel": "adult_weiblich_Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6301",
+          "name": "Elsa Schreiber",
+          "gender": "weiblich",
+          "level": "Erfahrene Spieler:innen / Mannschaftsspieler:innen"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "day": "Montag",
+      "hour": 19,
+      "groupLabel": "adult_weiblich_Fortgeschritten",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "day": "Samstag",
+      "hour": 10,
+      "groupLabel": "adult_weiblich_Fortgeschritten",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef8dafc8b2bc8c5f35f6b9",
+          "name": "Andrea Muck",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef8dd3c8b2bc8c5f35f6c7",
+          "name": "Andrea Frankenberg",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9b32c8b2bc8c5f35f914",
+          "name": "Maike Just",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "day": "Donnerstag",
+      "hour": 10,
+      "groupLabel": "adult_weiblich_Fortgeschritten",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef9b26c8b2bc8c5f35f90f",
+          "name": "Barbara Bursch-Brustkern",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9b5ec8b2bc8c5f35f923",
+          "name": "Ulrike Patani",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "day": "Montag",
+      "hour": 18,
+      "groupLabel": "adult_weiblich_Fortgeschritten",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b92c8b2bc8c5f35f941",
+          "name": "Claudia Gregor-Lawrenz",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "day": "Dienstag",
+      "hour": 11,
+      "groupLabel": "adult_weiblich_Fortgeschrittene",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f7",
+          "name": "Sabine Löhrl",
+          "gender": "weiblich",
+          "level": "Fortgeschrittene"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "day": "Donnerstag",
+      "hour": 18,
+      "groupLabel": "child_Gelb Hobby",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child_Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "day": "Dienstag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef9971c8b2bc8c5f35f888",
+          "name": "Juno Glaser",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "day": "Montag",
+      "hour": 16,
+      "groupLabel": "child_Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "day": "Donnerstag",
+      "hour": 18,
+      "groupLabel": "child_Gelb Team",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "day": "Donnerstag",
+      "hour": 18,
+      "groupLabel": "child_Gelb Team",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "day": "Donnerstag",
+      "hour": 18,
+      "groupLabel": "child_Gelb Team",
+      "coach": "NO COACH AVAILABLE",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "day": "Freitag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "day": "Freitag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6342",
+          "name": "Ben Frankenberg",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6343",
+          "name": "Joris Muck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "day": "Dienstag",
+      "hour": 17,
+      "groupLabel": "child_Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8cb2c8b2bc8c5f35f69e",
+          "name": "Paulina Muck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "day": "Montag",
+      "hour": 16,
+      "groupLabel": "child_Grün",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6320",
+          "name": "Emilia Burchart",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6322",
+          "name": "Malou Brieger",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff",
+          "gender": "unknown",
+          "level": "Grün"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "day": "Dienstag",
+      "hour": 16,
+      "groupLabel": "child_Grün",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6325",
+          "name": "Jolin Kunsch",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef997bc8b2bc8c5f35f88d",
+          "name": "Vincent Schrade",
+          "gender": "unknown",
+          "level": "Grün"
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "day": "Mittwoch",
+      "hour": 16,
+      "groupLabel": "child_Grün",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen",
+          "gender": "unknown",
+          "level": "Grün"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child_Kinderland",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef85667031d46332aa630e",
+          "name": "Nic K",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev",
+          "gender": "unknown",
+          "level": "Kinderland"
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "day": "Mittwoch",
+      "hour": 15,
+      "groupLabel": "child_Kinderland",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630f",
+          "name": "Marlene Zock",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen",
+          "gender": "unknown",
+          "level": "Kinderland"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "day": "Mittwoch",
+      "hour": 16,
+      "groupLabel": "child_Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "day": "Freitag",
+      "hour": 16,
+      "groupLabel": "child_Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "day": "Donnerstag",
+      "hour": 16,
+      "groupLabel": "child_Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "day": "Donnerstag",
+      "hour": 15,
+      "groupLabel": "child_Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child_Rot",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6316",
+          "name": "Josef Wong",
+          "gender": "unknown",
+          "level": "Rot"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "day": "Mittwoch",
+      "hour": 16,
+      "groupLabel": "child_Rot",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6310",
+          "name": "Maja Dietzler",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6311",
+          "name": "Victoria Schmitt",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6315",
+          "name": "Laura Heidemann",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange",
+          "gender": "unknown",
+          "level": "Rot"
+        }
+      ]
+    }
+  ]
+}
