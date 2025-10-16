@@ -30,8 +30,20 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "trainer", "viewer"],
-    default: "viewer",
+    enum: ["admin", "coach", "student"],
+    default: "student",
+  },
+  // Link to Student record (for role: "student")
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    default: null,
+  },
+  // Link to Coach record (for role: "coach")
+  coachId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Coach",
+    default: null,
   },
   isActive: {
     type: Boolean,

@@ -180,7 +180,7 @@ router.post("/refresh", async (req, res) => {
  */
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role } = req.body;
+    const { email, password, firstName, lastName, role, studentId, coachId } = req.body;
 
     // Validation
     if (!email || !password || !firstName || !lastName) {
@@ -197,13 +197,23 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "E-Mail bereits registriert" });
     }
 
+    // Validate role-specific requirements
+    if (role === "coach" && !coachId) {
+      return res.status(400).json({ error: "Coach-Rolle benötigt eine Coach-ID" });
+    }
+    if (role === "student" && !studentId) {
+      return res.status(400).json({ error: "Student-Rolle benötigt eine Student-ID" });
+    }
+
     // Create new user
     const user = new User({
       email: email.toLowerCase(),
       password,
       firstName,
       lastName,
-      role: role || "viewer",
+      role: role || "student",
+      studentId: studentId || null,
+      coachId: coachId || null,
     });
 
     await user.save();

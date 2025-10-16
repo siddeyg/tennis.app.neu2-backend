@@ -127,6 +127,127 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// Add assignment to student (for multiple course assignments)
+router.post("/:id/assignments", async (req, res) => {
+  try {
+    const { day, hour, coach } = req.body;
+
+    if (!day || !hour) {
+      return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ error: "Schüler nicht gefunden" });
+    }
+
+    // Initialize assignments array if it doesn't exist
+    if (!student.assignments) {
+      student.assignments = [];
+    }
+
+    // Check if assignment already exists
+    const exists = student.assignments.some(
+      a => a.day === day && a.hour === hour
+    );
+
+    if (exists) {
+      return res.status(400).json({ error: "Schüler ist bereits zu dieser Zeit zugewiesen" });
+    }
+
+    // Add new assignment
+    student.assignments.push({ day, hour, coach: coach || null });
+
+    // Also update legacy fields (for backward compatibility)
+    // Keep the first assignment in the legacy fields
+    if (student.assignments.length === 1) {
+      student.day = day;
+      student.hour = hour;
+      student.coach = coach || null;
+    }
+
+    await student.save();
+    res.json(student);
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen der Zuweisung:", error);
+    res.status(500).json({ error: "Fehler beim Hinzufügen der Zuweisung" });
+  }
+});
+
+// Remove specific assignment from student
+router.delete("/:id/assignments", async (req, res) => {
+  try {
+    const { day, hour } = req.body;
+
+    if (!day || !hour) {
+      return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ error: "Schüler nicht gefunden" });
+    }
+
+    if (!student.assignments || student.assignments.length === 0) {
+      return res.status(400).json({ error: "Schüler hat keine Zuweisungen" });
+    }
+
+    // Remove the assignment
+    student.assignments = student.assignments.filter(
+      a => !(a.day === day && a.hour === hour)
+    );
+
+    // Update legacy fields
+    if (student.assignments.length > 0) {
+      // Keep first assignment in legacy fields
+      student.day = student.assignments[0].day;
+      student.hour = student.assignments[0].hour;
+      student.coach = student.assignments[0].coach;
+    } else {
+      // No assignments left, clear legacy fields
+      student.day = null;
+      student.hour = null;
+      student.coach = null;
+    }
+
+    await student.save();
+    res.json(student);
+  } catch (error) {
+    console.error("Fehler beim Entfernen der Zuweisung:", error);
+    res.status(500).json({ error: "Fehler beim Entfernen der Zuweisung" });
+  }
+});
+
+// Replace all assignments (move student - remove old, add new)
+router.put("/:id/assignments/replace", async (req, res) => {
+  try {
+    const { day, hour, coach } = req.body;
+
+    if (!day || !hour) {
+      return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ error: "Schüler nicht gefunden" });
+    }
+
+    // Replace all assignments with single new assignment
+    student.assignments = [{ day, hour, coach: coach || null }];
+
+    // Update legacy fields
+    student.day = day;
+    student.hour = hour;
+    student.coach = coach || null;
+
+    await student.save();
+    res.json(student);
+  } catch (error) {
+    console.error("Fehler beim Ersetzen der Zuweisungen:", error);
+    res.status(500).json({ error: "Fehler beim Ersetzen der Zuweisungen" });
+  }
+});
+
 // CSV Import
 router.post("/import", upload.single('file'), async (req, res) => {
   try {
