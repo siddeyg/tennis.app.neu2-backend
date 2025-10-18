@@ -88,16 +88,102 @@ const getOrCreateCourse = (day, hour, coach) => {
 };
 
 const assignedStudents = new Set();
-let stats = { phase1: 0, phase2: 0, phase3: 0, phase4: 0, phase5: 0 };
+let stats = { phase0: 0, phase1: 0, phase2: 0, phase3: 0, phase4: 0, phase5: 0 };
 
 // ========================================
-// PHASE 1: CREATE FULL COURSES (4 students)
+// PHASE 0: RESERVE SLOTS FOR CRITICALLY CONSTRAINED STUDENTS
+// ========================================
+console.log('🎯 PHASE 0: Reserving slots for critically constrained students (≤2 time slots)...');
+
+// Find students with very limited availability (≤2 time slots)
+const criticalStudents = students.filter(s =>
+  s.availableTimes && s.availableTimes.length > 0 && s.availableTimes.length <= 2
+);
+
+// Sort by flexibility (least flexible first)
+criticalStudents.sort((a, b) =>
+  (a.availableTimes?.length || 0) - (b.availableTimes?.length || 0)
+);
+
+console.log(`   Found ${criticalStudents.length} critically constrained students (≤2 slots)`);
+
+// Helper: Check if two students can be in same course (gender check for adults)
+const canBeInSameCourse = (student1, student2) => {
+  // Must be same type (both adult or both children)
+  if (student1.adult !== student2.adult) return false;
+
+  if (student1.adult) {
+    // For adults: Must match gender AND skill level
+    if (student1.sex !== student2.sex) return false;
+    return student1.skillLevel === student2.skillLevel;
+  } else {
+    // For children: Only match training group (no gender check)
+    return student1.trainigGroup === student2.trainigGroup;
+  }
+};
+
+// Assign each critical student to their BEST available slot
+for (const student of criticalStudents) {
+  let assigned = false;
+
+  for (const timeToken of student.availableTimes) {
+    if (assigned) break;
+
+    const [day, hourStr] = timeToken.split(" ");
+    const hour = parseInt(hourStr);
+    const coachList = getSuitableCoaches(student, timeToken);
+
+    if (coachList.length === 0) continue;
+
+    // Try to join an existing course with same level/group/gender
+    for (const coach of coachList) {
+      const course = getOrCreateCourse(day, hour, coach);
+
+      // Check if course has space
+      const maxCap = getMaxCapacity(student, settings);
+      if (course.students.length >= maxCap) continue;
+
+      // If course has students, check compatibility (including gender for adults)
+      if (course.students.length > 0) {
+        const courseStudents = students.filter(s => course.students.includes(s._id));
+        const allCompatible = courseStudents.every(s => canBeInSameCourse(student, s));
+        if (!allCompatible) continue;
+      }
+
+      // Assign student
+      course.students.push(student._id);
+      assignedStudents.add(String(student._id));
+      stats.phase0++;
+      assigned = true;
+      break;
+    }
+  }
+
+  if (assigned) {
+    const level = student.adult ? student.skillLevel : student.trainigGroup;
+    console.log(`   ✅ ${student.firstName} ${student.lastName} (${level}, ${student.availableTimes.length} slots) assigned`);
+  }
+}
+
+console.log(`   ✅ Phase 0: ${stats.phase0}/${criticalStudents.length} critical students assigned`);
+
+// ========================================
+// PHASE 1: CREATE FULL COURSES (4 students) - WITH GENDER MATCHING
 // ========================================
 console.log('🎯 PHASE 1: Creating full courses (4 students each)...');
 
+// Group students by exact level/group AND gender for adults
 const studentGroups = new Map();
 students.forEach(s => {
-  const key = s.adult ? `adult-${s.skillLevel}` : `child-${s.trainigGroup}`;
+  let key;
+  if (s.adult) {
+    // For adults: Include gender in grouping (strict gender matching)
+    const gender = s.sex || 'unknown';
+    key = `adult-${gender}-${s.skillLevel}`;
+  } else {
+    // For children: No gender separation
+    key = `child-${s.trainigGroup}`;
+  }
   if (!studentGroups.has(key)) studentGroups.set(key, []);
   studentGroups.get(key).push(s);
 });
@@ -123,23 +209,72 @@ studentGroups.forEach((groupStudents, groupKey) => {
   });
 });
 
+// Sort by count (largest groups first for efficiency)
 fullCourseOpportunities.sort((a, b) => b.count - a.count);
 
+console.log(`   Found ${fullCourseOpportunities.length} opportunities for full courses`);
+
+// Log top 5 opportunities
+if (fullCourseOpportunities.length > 0) {
+  console.log(`   Top opportunities:`);
+  fullCourseOpportunities.slice(0, 5).forEach((opp, i) => {
+    const numCourses = Math.floor(opp.count / 4);
+    console.log(`      ${i+1}. ${opp.groupKey} @ ${opp.timeToken}: ${opp.count} students → ${numCourses} full courses possible`);
+  });
+}
+
+// BATCH PROCESSING: Create ALL possible full courses at each opportunity
 for (const opp of fullCourseOpportunities) {
-  const unassigned = opp.students.filter(s => !assignedStudents.has(String(s._id)));
+  let unassigned = opp.students.filter(s => !assignedStudents.has(String(s._id)));
   if (unassigned.length < 4) continue;
 
   const coachList = getSuitableCoaches(unassigned[0], opp.timeToken);
-  if (coachList.length === 0) continue;
+  if (coachList.length === 0) {
+    console.log(`   ⚠️  ${opp.groupKey} @ ${opp.timeToken}: ${unassigned.length} students but NO COACHES`);
+    continue;
+  }
 
-  const course = getOrCreateCourse(opp.day, opp.hour, coachList[0]);
+  // Calculate how many full courses we can create at this timeslot
   const maxCap = getMaxCapacity(unassigned[0], settings);
-  const numToAssign = Math.min(4, maxCap, unassigned.length);
+  const numFullCourses = Math.floor(unassigned.length / 4);
 
-  for (let i = 0; i < numToAssign; i++) {
-    course.students.push(unassigned[i]._id);
-    assignedStudents.add(String(unassigned[i]._id));
-    stats.phase1++;
+  console.log(`   📍 ${opp.groupKey} @ ${opp.timeToken}: ${unassigned.length} students → ${numFullCourses} full courses (${coachList.length} coaches)`);
+
+  // Create ALL possible full courses at once (batch processing)
+  let coursesCreated = 0;
+  for (let courseNum = 0; courseNum < numFullCourses; courseNum++) {
+    // Refresh unassigned list
+    unassigned = opp.students.filter(s => !assignedStudents.has(String(s._id)));
+    if (unassigned.length < 4) {
+      console.log(`      ⚠️  Only ${unassigned.length} students left, stopping`);
+      break;
+    }
+
+    // Use different coach if available to avoid overcrowding
+    const coachIndex = courseNum % coachList.length;
+    const coach = coachList[coachIndex];
+
+    const course = getOrCreateCourse(opp.day, opp.hour, coach);
+
+    // Skip if this coach's course already has students
+    if (course.students.length > 0) {
+      console.log(`      ⚠️  Coach ${coach.firstName} already has course, trying next`);
+      continue;
+    }
+
+    // Add exactly 4 students to this course
+    const numToAssign = Math.min(4, maxCap);
+    for (let i = 0; i < numToAssign; i++) {
+      const student = unassigned[i];
+      course.students.push(student._id);
+      assignedStudents.add(String(student._id));
+      stats.phase1++;
+    }
+    coursesCreated++;
+  }
+
+  if (coursesCreated > 0) {
+    console.log(`      ✅ Created ${coursesCreated} full courses`);
   }
 }
 
@@ -162,18 +297,17 @@ for (const student of unassigned2) {
     const coachList = getSuitableCoaches(student, timeToken);
 
     for (const coach of coachList) {
-      const course = getOrCreateCourse(day, hour, coach);
-      if (course.students.length === 0 || course.students.length >= 4) continue;
+      // STRICT FILL-FIRST: Only fill EXISTING non-empty courses
+      const courseKey = `${day}-${hour}-${coach._id}`;
+      const course = courseMap.get(courseKey);
 
+      // Skip if course doesn't exist or is empty or full
+      if (!course || course.students.length === 0 || course.students.length >= 4) continue;
+
+      // Check compatibility using canBeInSameCourse (includes gender for adults)
       const courseStudents = students.filter(s => course.students.includes(s._id));
-      const allSameAdult = courseStudents.every(s => s.adult === student.adult);
-      if (!allSameAdult) continue;
-
-      const allSameLevel = student.adult
-        ? courseStudents.every(s => s.skillLevel === student.skillLevel)
-        : courseStudents.every(s => s.trainigGroup === student.trainigGroup);
-
-      if (!allSameLevel) continue;
+      const allCompatible = courseStudents.every(s => canBeInSameCourse(student, s));
+      if (!allCompatible) continue;
 
       const maxCap = getMaxCapacity(student, settings);
       if (course.students.length >= maxCap) continue;
@@ -212,16 +346,11 @@ for (const student of unassigned3) {
       const course = getOrCreateCourse(day, hour, coach);
       if (course.students.length >= 4) continue;
 
+      // Check compatibility using canBeInSameCourse (includes gender for adults)
       if (course.students.length > 0) {
         const courseStudents = students.filter(s => course.students.includes(s._id));
-        const allSameAdult = courseStudents.every(s => s.adult === student.adult);
-        if (!allSameAdult) continue;
-
-        const allSameLevel = student.adult
-          ? courseStudents.every(s => s.skillLevel === student.skillLevel)
-          : courseStudents.every(s => s.trainigGroup === student.trainigGroup);
-
-        if (!allSameLevel) continue;
+        const allCompatible = courseStudents.every(s => canBeInSameCourse(student, s));
+        if (!allCompatible) continue;
       }
 
       const maxCap = getMaxCapacity(student, settings);
@@ -261,17 +390,24 @@ for (const student of unassigned4) {
       const course = getOrCreateCourse(day, hour, coach);
       if (course.students.length >= 4) continue;
 
+      // Check adult/child mixing (never allowed) and gender (never mix for adults)
       if (course.students.length > 0) {
         const courseStudents = students.filter(s => course.students.includes(s._id));
         const allSameAdult = courseStudents.every(s => s.adult === student.adult);
         if (!allSameAdult) continue;
 
+        // STRICT: Gender must match for adults (even in relaxed mode)
         if (student.adult) {
+          const allSameGender = courseStudents.every(s => s.sex === student.sex);
+          if (!allSameGender) continue;
+
+          // Check adjacent level compatibility (this is what's "relaxed")
           const levels = [...new Set(courseStudents.map(s => s.skillLevel))];
           const allCompat = levels.every(l => areAdultSkillLevelsCompatible(student.skillLevel, l));
           const wouldCreateThird = !levels.includes(student.skillLevel) && levels.length >= 2;
           if (!allCompat || wouldCreateThird) continue;
         } else {
+          // For children: Check adjacent group compatibility (no gender check)
           const groups = [...new Set(courseStudents.map(s => s.trainigGroup))];
           const allCompat = groups.every(g => areChildrenGroupsCompatible(student.trainigGroup, g));
           const wouldCreateThird = !groups.includes(student.trainigGroup) && groups.length >= 2;
@@ -327,12 +463,24 @@ console.log(`   ✅ +${stats.phase5} single students`);
 // ========================================
 const schedule = Array.from(courseMap.values());
 const studentsNotSet = students.filter(s => !assignedStudents.has(String(s._id)));
-const totalAssigned = stats.phase1 + stats.phase2 + stats.phase3 + stats.phase4 + stats.phase5;
+const totalAssigned = stats.phase0 + stats.phase1 + stats.phase2 + stats.phase3 + stats.phase4 + stats.phase5;
+
+// Course size analysis
+const courseSizes = { 1: 0, 2: 0, 3: 0, 4: 0 };
+schedule.forEach(c => {
+  const size = Math.min(c.students.length, 4);
+  courseSizes[size]++;
+});
 
 console.log(`\n📊 RESULTS:`);
 console.log(`   Total Assigned: ${totalAssigned}/${students.length} (${(totalAssigned/students.length*100).toFixed(1)}%)`);
 console.log(`   Total Courses: ${schedule.length}`);
-console.log(`   Unassigned: ${studentsNotSet.length}\n`);
+console.log(`   Unassigned: ${studentsNotSet.length}`);
+console.log(`\n📊 Course Size Distribution:`);
+console.log(`   4 students: ${courseSizes[4]} courses (${((courseSizes[4]/schedule.length)*100).toFixed(1)}%)`);
+console.log(`   3 students: ${courseSizes[3]} courses (${((courseSizes[3]/schedule.length)*100).toFixed(1)}%)`);
+console.log(`   2 students: ${courseSizes[2]} courses (${((courseSizes[2]/schedule.length)*100).toFixed(1)}%)`);
+console.log(`   1 student:  ${courseSizes[1]} courses (${((courseSizes[1]/schedule.length)*100).toFixed(1)}%)\n`);
 
 // Save to SavedSchedule
 const savedSchedule = new SavedSchedule({
@@ -395,11 +543,19 @@ let html = `<!DOCTYPE html>
     <p><strong>Assignment Rate:</strong> ${(totalAssigned/students.length*100).toFixed(1)}%</p>
     <p><strong>Phase Distribution:</strong></p>
     <ul>
+      <li>Phase 0 (Critical reserve): ${stats.phase0} students</li>
       <li>Phase 1 (Full courses): ${stats.phase1} students</li>
       <li>Phase 2 (Fill existing): ${stats.phase2} students</li>
       <li>Phase 3 (Smaller courses): ${stats.phase3} students</li>
       <li>Phase 4 (Adjacent mixing): ${stats.phase4} students</li>
       <li>Phase 5 (Singles): ${stats.phase5} students</li>
+    </ul>
+    <p><strong>Course Efficiency:</strong></p>
+    <ul>
+      <li>4-student courses: ${courseSizes[4]} (${((courseSizes[4]/schedule.length)*100).toFixed(1)}%)</li>
+      <li>3-student courses: ${courseSizes[3]} (${((courseSizes[3]/schedule.length)*100).toFixed(1)}%)</li>
+      <li>2-student courses: ${courseSizes[2]} (${((courseSizes[2]/schedule.length)*100).toFixed(1)}%)</li>
+      <li>1-student courses: ${courseSizes[1]} (${((courseSizes[1]/schedule.length)*100).toFixed(1)}%)</li>
     </ul>
   </div>
 

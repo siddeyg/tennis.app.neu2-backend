@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimaler Trainingsplan - Alle Schüler</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    .metadata { background: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    .metadata p { margin: 5px 0; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #4CAF50; color: white; position: sticky; top: 0; }
+    .time-cell { font-weight: bold; background-color: #f9f9f9; }
+    .course { background-color: #e8f5e9; padding: 10px; margin: 5px 0; border-radius: 4px; }
+    .course-header { font-weight: bold; margin-bottom: 5px; color: #2e7d32; }
+    .student { margin: 3px 0; padding-left: 10px; }
+    .empty { color: #999; font-style: italic; }
+    .warning { background-color: #fff3cd; }
+    .full-course { background-color: #d4edda; border-left: 4px solid #28a745; }
+    .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+    .stat-box { background: #e3f2fd; padding: 15px; border-radius: 5px; flex: 1; }
+    .stat-box h3 { margin: 0 0 10px 0; color: #1976d2; }
+  </style>
+</head>
+<body>
+  <h1>Optimaler Trainingsplan - Alle Schüler</h1>
+
+  <div class="metadata">
+    <p><strong>Generiert:</strong> 17.10.2025, 10:25:02</p>
+    <p><strong>Algorithmus:</strong> Fill-First (resetScheduleOptimized.js)</p>
+    <p><strong>Parallel Courses:</strong> ✅ NONE</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">
+      <h3>Kurse</h3>
+      <p>Gesamt: 60</p>
+      <p>Voll (4): 16</p>
+      <p>Drei: 6</p>
+      <p>Zwei: 7</p>
+      <p>Einzel: 17</p>
+    </div>
+    <div class="stat-box">
+      <h3>Schüler</h3>
+      <p>Gesamt: 113</p>
+      <p>Zugewiesen: 113</p>
+      <p>Nicht zugewiesen: 0</p>
+    </div>
+    <div class="stat-box">
+      <h3>Effizienz</h3>
+      <p>36.7%</p>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Zeit</th>
+        <th>Montag</th><th>Dienstag</th><th>Mittwoch</th><th>Donnerstag</th><th>Freitag</th><th>Samstag</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="time-cell">10:00</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Ulrike Patani (Fortgeschritten W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Helga Heydweiller (Anfänger mit Grundkenntnissen W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (3/4)</div>
+            <div class="student">Andrea Muck (Fortgeschritten W)</div>
+            <div class="student">Andrea Frankenberg (Fortgeschritten W)</div>
+            <div class="student">Maike Just (Fortgeschritten W)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">11:00</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Marius Grosch (Anfänger M)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Barbara Bursch-Brustkern (Fortgeschritten W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Sandra Bourbeck (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Marie Köhler (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Ilonka Döge (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Silke Hoesch (Anfänger mit Grundkenntnissen W)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">12:00</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Sabine Löhrl (Fortgeschrittene W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Josef Wong (Rot)</div>
+            <div class="student">Fender Meijboom (Rot)</div>
+            <div class="student">Mats Vogel (Rot)</div>
+            <div class="student">Mert Bakir (Rot)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">13:00</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (2/4)</div>
+            <div class="student">Claudia Frank (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Friederike Förster (Anfänger mit Grundkenntnissen W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (2/4)</div>
+            <div class="student">Joris Muck (Gelb Team)</div>
+            <div class="student">Ben Frankenberg (Gelb Team)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">14:00</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Nic K (Kinderland)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Marlene Zock (Kinderland)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Alexander Ganiev Chang (Kinderland)</div>
+            <div class="student">Lysander Pruys (Kinderland)</div>
+            <div class="student">Alexander Ganiev (Kinderland)</div>
+            <div class="student">Charlotte Jansen (Kinderland)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">15:00</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Malou Brieger (Grün)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Joris muck (3/4)</div>
+            <div class="student">Paula Nettekoven (Orange)</div>
+            <div class="student">Ben Lange (Orange)</div>
+            <div class="student">Julius Hof (Orange)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Elsa Schreiber (Erfahrene Spieler:innen / Mannschaftsspieler:innen W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (3/4)</div>
+            <div class="student">Sabrina Schenk (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Damla Darilmaz (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Lara Jansen (Anfänger mit Grundkenntnissen W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Nadia El Gharabawy (Gelb Team)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Ben Frankenberg (1/4)</div>
+            <div class="student">Vincent Schrade (Grün)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Falko  (2/4)</div>
+            <div class="student">Lukas Lederer (Leistungsspieler:innen / Turnierspieler:innen M)</div>
+            <div class="student">Lennart Maak (Leistungsspieler:innen / Turnierspieler:innen M)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Nadim El Gharabawy (Gelb Team)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Florian Elias Andrä (Orange)</div>
+            <div class="student">Henrik Hoesch (Orange)</div>
+            <div class="student">Laura Wiedbrauck (Orange)</div>
+            <div class="student">Florian Elias (Orange)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">16:00</td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Leni Doutch (Gelb Hobby)</div>
+            <div class="student">Frida Schulmann (Gelb Hobby)</div>
+            <div class="student">Madita Böckenförde Leininger (Gelb Hobby)</div>
+            <div class="student">Jaron Lockmann (Gelb Hobby)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Joris muck (1/4)</div>
+            <div class="student">Levi Schüler (Gelb Hobby)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Emilia Burchart (Grün)</div>
+            <div class="student">Clara Schmitz-Hübsch (Grün)</div>
+            <div class="student">Jolin Kunsch (Grün)</div>
+            <div class="student">Gruber Ella (Grün)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Maja Dietzler (Rot)</div>
+            <div class="student">Laura Heidemann (Rot)</div>
+            <div class="student">Victoria Schmitt (Rot)</div>
+            <div class="student">Mia Lange (Rot)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Paul Koch-Gombert (Orange)</div>
+            <div class="student">Moritz Burchart (Orange)</div>
+            <div class="student">Maja Schrempp (Orange)</div>
+            <div class="student">Leila Maria (Orange)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Ben Frankenberg (2/4)</div>
+            <div class="student">Finn Gruber (Gelb Hobby)</div>
+            <div class="student">Clara Schrempp (Gelb Hobby)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Lara-Marie Wiedbrauck (Gelb Team)</div>
+            <div class="student">Valentin Agsten (Gelb Team)</div>
+            <div class="student">Justus Jahn (Gelb Team)</div>
+            <div class="student">Arthur Schelz (Gelb Team)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Falko  (0/4)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (2/4)</div>
+            <div class="student">Stella Hilgers (Gelb Hobby)</div>
+            <div class="student">Vogel Julius (Gelb Hobby)</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="time-cell">17:00</td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Matthis Hundrup (Gelb Team)</div>
+            <div class="student">Moritz Hoesch (Gelb Team)</div>
+            <div class="student">Luke Fuss (Gelb Team)</div>
+            <div class="student">Benno Koch-Gombert (Gelb Team)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Paulina Muck (Gelb Team)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Christopher Jahn (Gelb Team)</div>
+            <div class="student">Helene Muck (Gelb Team)</div>
+            <div class="student">Jana Frankenberg (Gelb Team)</div>
+            <div class="student">Marie Wolff (Gelb Team)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Marlene Tripp (Gelb Team)</div>
+            <div class="student">Benjamin Coers (Gelb Team)</div>
+            <div class="student">Laura Metzer (Gelb Team)</div>
+            <div class="student">Claire Loheider (Gelb Team)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Dana Stoffels (Gelb Team)</div>
+            <div class="student">Linus Hoesch (Gelb Team)</div>
+            <div class="student">Veerle Meijboom (Gelb Team)</div>
+            <div class="student">Leonard Welle (Gelb Team)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Falko  (0/4)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+      </tr>
+      <tr>
+        <td class="time-cell">18:00</td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Julia Leininger (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Kristina Müller (Anfänger mit Grundkenntnissen W)</div>
+            <div class="student">Eva Plath (Anfänger W)</div>
+            <div class="student">Annika Jahn (Gelb Team)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (2/4)</div>
+            <div class="student">Juno Glaser (Gelb Hobby)</div>
+            <div class="student">Philipp Kluth (Gelb Hobby)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Liam Döring (Orange)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Helge Padberg (4/4)</div>
+            <div class="student">Rebecca Mau (Fortgeschritten W)</div>
+            <div class="student">Anneke Malinowski (Fortgeschritten W)</div>
+            <div class="student">Nicole Berg (Fortgeschritten W)</div>
+            <div class="student">Svenja Gloger (Fortgeschritten W)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course">
+            <div class="course-header">Falko  (3/4)</div>
+            <div class="student">Roby Patani (Fortgeschritten M)</div>
+            <div class="student">Thiemo Meyfarth (Fortgeschritten M)</div>
+            <div class="student">Tom Jansen (Fortgeschritten M)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (3/4)</div>
+            <div class="student">Schieferdecker Colleen (Grün)</div>
+            <div class="student">Lenna Wolff (Grün)</div>
+            <div class="student">Clara Malinowski (Grün)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+      </tr>
+      <tr>
+        <td class="time-cell">19:00</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Nicole Kreienborg (1/4)</div>
+            <div class="student">Claudia Gregor-Lawrenz (Fortgeschritten W)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Helge Padberg (3/4)</div>
+            <div class="student">Stefan Löwe (Anfänger M)</div>
+            <div class="student">Antonio Schmandke (Anfänger M)</div>
+            <div class="student">Áron Horváth (Anfänger M)</div>
+          </div>
+        </td>
+        <td>
+          <div class="course full-course">
+            <div class="course-header">Nicole Kreienborg (4/4)</div>
+            <div class="student">Henry King (Gelb Hobby)</div>
+            <div class="student">Jasper Trump (Gelb Hobby)</div>
+            <div class="student">Johannes Küster (Gelb Hobby)</div>
+            <div class="student">Elin Küster (Gelb Hobby)</div>
+          </div>
+          <div class="course">
+            <div class="course-header">Falko  (1/4)</div>
+            <div class="student">Kinga Fülöp (Anfänger W)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+      </tr>
+      <tr>
+        <td class="time-cell">20:00</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td>
+          <div class="course">
+            <div class="course-header">Helge Padberg (2/4)</div>
+            <div class="student">Jonas Plath (Anfänger mit Grundkenntnissen M)</div>
+            <div class="student">Jan Volkhardt (Anfänger mit Grundkenntnissen M)</div>
+          </div>
+        </td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+      </tr>
+      <tr>
+        <td class="time-cell">21:00</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+        <td class="empty">-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  
+
+</body>
+</html>

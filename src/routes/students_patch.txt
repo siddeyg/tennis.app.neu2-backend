@@ -1,0 +1,24 @@
+    // Use raw MongoDB collection method to query string _id directly
+    // (Database has string _ids from CSV import, not ObjectIds)
+    const result = await Student.collection.findOneAndUpdate(
+      { _id: req.params.id }, // Query with string _id directly
+      {
+        $set: {
+          assignments: [{ day, hour, coach: coach || null }],
+          day,
+          hour,
+          coach: coach || null
+        }
+      },
+      { returnDocument: 'after' }
+    );
+
+    const student = result?.value || result;
+
+    if (!student) {
+      console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND in database`);
+      const samples = await Student.find({}, { _id: 1, firstName: 1, lastName: 1 }).limit(3);
+      console.log(`[assignments/replace] First 3 IDs in database for comparison:`);
+      samples.forEach(s => console.log(`  ${s._id} - ${s.firstName} ${s.lastName}`));
+      return res.status(404).json({ error: "Schüler nicht gefunden", searchedId: req.params.id });
+    }

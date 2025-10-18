@@ -1,0 +1,5787 @@
+{
+  "metadata": {
+    "analyzedAt": "2025-10-17T08:31:16.118Z",
+    "totalStudents": 113,
+    "totalCoaches": 6
+  },
+  "coaches": [
+    {
+      "id": "68eba899b18bd6e9d75da5ec",
+      "name": "Falko ",
+      "availableSlots": 5,
+      "coachesAdult": true,
+      "coachesChildren": false,
+      "times": [
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ]
+    },
+    {
+      "id": "68eba899b18bd6e9d75da5f0",
+      "name": "Nicole Kreienborg",
+      "availableSlots": 51,
+      "coachesAdult": true,
+      "coachesChildren": true,
+      "times": [
+        "Samstag 13",
+        "Montag 14",
+        "Dienstag 14",
+        "Mittwoch 14",
+        "Donnerstag 14",
+        "Samstag 14",
+        "Samstag 12",
+        "Samstag 15",
+        "Samstag 16",
+        "Freitag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Freitag 16",
+        "Freitag 17",
+        "Donnerstag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Mittwoch 17",
+        "Mittwoch 16",
+        "Mittwoch 15",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Montag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Montag 11",
+        "Montag 12",
+        "Montag 13",
+        "Dienstag 12",
+        "Dienstag 13",
+        "Dienstag 11",
+        "Mittwoch 10",
+        "Mittwoch 11",
+        "Mittwoch 12",
+        "Mittwoch 13",
+        "Donnerstag 10",
+        "Donnerstag 11",
+        "Donnerstag 12",
+        "Donnerstag 13",
+        "Freitag 10",
+        "Freitag 11",
+        "Freitag 12",
+        "Freitag 13",
+        "Freitag 14",
+        "Dienstag 18",
+        "Mittwoch 18"
+      ]
+    },
+    {
+      "id": "68ef8e9cc8b2bc8c5f35f6fa",
+      "name": "Helge Padberg",
+      "availableSlots": 3,
+      "coachesAdult": true,
+      "coachesChildren": false,
+      "times": [
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20"
+      ]
+    },
+    {
+      "id": "68ef9051c8b2bc8c5f35f701",
+      "name": "Joris muck",
+      "availableSlots": 2,
+      "coachesAdult": false,
+      "coachesChildren": true,
+      "times": [
+        "Montag 15",
+        "Montag 16"
+      ]
+    },
+    {
+      "id": "68ef9095c8b2bc8c5f35f704",
+      "name": "Ben Frankenberg",
+      "availableSlots": 2,
+      "coachesAdult": false,
+      "coachesChildren": true,
+      "times": [
+        "Donnerstag 15",
+        "Donnerstag 16"
+      ]
+    },
+    {
+      "id": "68efd088ebe50c3937a1d099",
+      "name": "Christopher Jahn",
+      "availableSlots": 0,
+      "coachesAdult": false,
+      "coachesChildren": true,
+      "times": []
+    }
+  ],
+  "studentGroups": [
+    {
+      "groupKey": "child-Gelb Team",
+      "count": 26,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Samstag 12",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 14
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom",
+          "availableTimes": [
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 16
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss",
+          "availableTimes": [
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck",
+          "availableTimes": [
+            "Donnerstag 15",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 15",
+            "Freitag 16",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18"
+          ],
+          "flexibility": 12
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 16",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Samstag 12"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers",
+          "availableTimes": [
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 17
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz",
+          "availableTimes": [
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 17
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 12
+        },
+        {
+          "id": "68ef85667031d46332aa6342",
+          "name": "Ben Frankenberg",
+          "availableTimes": [
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef85667031d46332aa6343",
+          "name": "Joris Muck",
+          "availableTimes": [
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 2
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Mittwoch 18",
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 16
+        },
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn",
+          "availableTimes": [
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 18",
+            "Donnerstag 18"
+          ],
+          "flexibility": 4
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck",
+          "availableTimes": [
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef8cb2c8b2bc8c5f35f69e",
+          "name": "Paulina Muck",
+          "availableTimes": [
+            "Dienstag 17",
+            "Dienstag 18"
+          ],
+          "flexibility": 2
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff",
+          "availableTimes": [
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy",
+          "availableTimes": [
+            "Donnerstag 15",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 4
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "count": 15,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King",
+          "availableTimes": [
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump",
+          "availableTimes": [
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster",
+          "availableTimes": [
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 12
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 14
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Freitag 17",
+            "Samstag 12"
+          ],
+          "flexibility": 12
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber",
+          "availableTimes": [
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 4
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers",
+          "availableTimes": [
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 19",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 14
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth",
+          "availableTimes": [
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann",
+          "availableTimes": [
+            "Montag 14",
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 14",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 14",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 14",
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Freitag 19",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 25
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef9971c8b2bc8c5f35f888",
+          "name": "Juno Glaser",
+          "availableTimes": [
+            "Dienstag 17",
+            "Dienstag 18"
+          ],
+          "flexibility": 2
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "count": 12,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f8",
+          "name": "Sandra Bourbeck",
+          "availableTimes": [
+            "Samstag 10",
+            "Samstag 11",
+            "Samstag 12",
+            "Samstag 14",
+            "Samstag 15"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "name": "Friederike Förster",
+          "availableTimes": [
+            "Mittwoch 17",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 13",
+            "Donnerstag 20"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler",
+          "availableTimes": [
+            "Montag 19",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 11",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Donnerstag 20"
+          ],
+          "flexibility": 11
+        },
+        {
+          "id": "68ef85667031d46332aa62fe",
+          "name": "Sabrina Schenk",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa62ff",
+          "name": "Ilonka Döge",
+          "availableTimes": [
+            "Freitag 12",
+            "Freitag 13",
+            "Samstag 11"
+          ],
+          "flexibility": 3
+        },
+        {
+          "id": "68ef85667031d46332aa6302",
+          "name": "Claudia Frank",
+          "availableTimes": [
+            "Freitag 13",
+            "Samstag 11"
+          ],
+          "flexibility": 2
+        },
+        {
+          "id": "68ef85667031d46332aa6304",
+          "name": "Damla Darilmaz",
+          "availableTimes": [
+            "Montag 16",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 16",
+            "Freitag 15",
+            "Freitag 16"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch",
+          "availableTimes": [
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 10",
+            "Samstag 11",
+            "Samstag 12",
+            "Donnerstag 20"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "name": "Lara Jansen",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 10",
+            "Samstag 11",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 15
+        },
+        {
+          "id": "68ef9b6ec8b2bc8c5f35f92d",
+          "name": "Helga Heydweiller",
+          "availableTimes": [
+            "Donnerstag 10",
+            "Donnerstag 11"
+          ],
+          "flexibility": 2
+        },
+        {
+          "id": "68ef9b75c8b2bc8c5f35f932",
+          "name": "Julia Leininger",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19"
+          ],
+          "flexibility": 2
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "count": 12,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 13
+        },
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 11
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Samstag 12",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck",
+          "availableTimes": [
+            "Donnerstag 15",
+            "Donnerstag 18",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart",
+          "availableTimes": [
+            "Dienstag 14",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Donnerstag 14",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 15",
+            "Freitag 16"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp",
+          "availableTimes": [
+            "Dienstag 14",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Mittwoch 14",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16"
+          ],
+          "flexibility": 12
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Donnerstag 16",
+            "Donnerstag 17"
+          ],
+          "flexibility": 4
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 13
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 13
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 17",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 7
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschritten",
+      "count": 10,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Dienstag 17",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef8dafc8b2bc8c5f35f6b9",
+          "name": "Andrea Muck",
+          "availableTimes": [
+            "Samstag 10"
+          ],
+          "flexibility": 1
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski",
+          "availableTimes": [
+            "Montag 19",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef8dd3c8b2bc8c5f35f6c7",
+          "name": "Andrea Frankenberg",
+          "availableTimes": [
+            "Samstag 10"
+          ],
+          "flexibility": 1
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef9b26c8b2bc8c5f35f90f",
+          "name": "Barbara Bursch-Brustkern",
+          "availableTimes": [
+            "Dienstag 11",
+            "Donnerstag 10",
+            "Donnerstag 11"
+          ],
+          "flexibility": 3
+        },
+        {
+          "id": "68ef9b32c8b2bc8c5f35f914",
+          "name": "Maike Just",
+          "availableTimes": [
+            "Samstag 10"
+          ],
+          "flexibility": 1
+        },
+        {
+          "id": "68ef9b5ec8b2bc8c5f35f923",
+          "name": "Ulrike Patani",
+          "availableTimes": [
+            "Dienstag 15",
+            "Dienstag 16",
+            "Mittwoch 10",
+            "Mittwoch 11",
+            "Mittwoch 12",
+            "Donnerstag 10",
+            "Donnerstag 11"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger",
+          "availableTimes": [
+            "Montag 12",
+            "Montag 13",
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Montag 19",
+            "Dienstag 13",
+            "Dienstag 14",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Donnerstag 16",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 22
+        },
+        {
+          "id": "68ef9b92c8b2bc8c5f35f941",
+          "name": "Claudia Gregor-Lawrenz",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19"
+          ],
+          "flexibility": 2
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "count": 9,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 17",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Donnerstag 15",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 15
+        },
+        {
+          "id": "68ef85667031d46332aa6320",
+          "name": "Emilia Burchart",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 14",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef85667031d46332aa6322",
+          "name": "Malou Brieger",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch",
+          "availableTimes": [
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19"
+          ],
+          "flexibility": 13
+        },
+        {
+          "id": "68ef85667031d46332aa6325",
+          "name": "Jolin Kunsch",
+          "availableTimes": [
+            "Dienstag 15",
+            "Dienstag 16",
+            "Donnerstag 16",
+            "Donnerstag 17"
+          ],
+          "flexibility": 4
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef997bc8b2bc8c5f35f88d",
+          "name": "Vincent Schrade",
+          "availableTimes": [
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Freitag 15",
+            "Freitag 17"
+          ],
+          "flexibility": 8
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "count": 8,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6310",
+          "name": "Maja Dietzler",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17"
+          ],
+          "flexibility": 2
+        },
+        {
+          "id": "68ef85667031d46332aa6311",
+          "name": "Victoria Schmitt",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom",
+          "availableTimes": [
+            "Dienstag 16",
+            "Dienstag 17",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Freitag 16",
+            "Freitag 17",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel",
+          "availableTimes": [
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Donnerstag 15",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 18",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 14
+        },
+        {
+          "id": "68ef85667031d46332aa6315",
+          "name": "Laura Heidemann",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17"
+          ],
+          "flexibility": 3
+        },
+        {
+          "id": "68ef85667031d46332aa6316",
+          "name": "Josef Wong",
+          "availableTimes": [
+            "Samstag 12"
+          ],
+          "flexibility": 1
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange",
+          "availableTimes": [
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Samstag 12",
+            "Samstag 13"
+          ],
+          "flexibility": 9
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Kinderland",
+      "count": 6,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang",
+          "availableTimes": [
+            "Montag 18",
+            "Dienstag 18",
+            "Donnerstag 18",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys",
+          "availableTimes": [
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 5
+        },
+        {
+          "id": "68ef85667031d46332aa630e",
+          "name": "Nic K",
+          "availableTimes": [
+            "Montag 14",
+            "Mittwoch 14",
+            "Donnerstag 14",
+            "Samstag 12"
+          ],
+          "flexibility": 4
+        },
+        {
+          "id": "68ef85667031d46332aa630f",
+          "name": "Marlene Zock",
+          "availableTimes": [
+            "Mittwoch 14",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17"
+          ],
+          "flexibility": 4
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev",
+          "availableTimes": [
+            "Montag 18",
+            "Dienstag 18",
+            "Donnerstag 18",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen",
+          "availableTimes": [
+            "Montag 16",
+            "Dienstag 16",
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Donnerstag 16",
+            "Freitag 15",
+            "Freitag 16",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 12
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-männlich-Anfänger",
+      "count": 4,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6306",
+          "name": "Antonio Schmandke",
+          "availableTimes": [
+            "Montag 19",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 6
+        },
+        {
+          "id": "68ef85667031d46332aa6308",
+          "name": "Marius Grosch",
+          "availableTimes": [
+            "Montag 11",
+            "Montag 12",
+            "Montag 13",
+            "Montag 14",
+            "Montag 15",
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Montag 19",
+            "Donnerstag 14",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Freitag 10",
+            "Freitag 11",
+            "Freitag 12",
+            "Freitag 13",
+            "Freitag 14",
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17"
+          ],
+          "flexibility": 21
+        },
+        {
+          "id": "68ef85667031d46332aa630b",
+          "name": "Áron Horváth",
+          "availableTimes": [
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 10",
+            "Samstag 11",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Donnerstag 20"
+          ],
+          "flexibility": 10
+        },
+        {
+          "id": "68ef9b66c8b2bc8c5f35f928",
+          "name": "Stefan Löwe",
+          "availableTimes": [
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 4
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-männlich-Fortgeschritten",
+      "count": 3,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fd",
+          "name": "Tom Jansen",
+          "availableTimes": [
+            "Mittwoch 15",
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Mittwoch 18",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 10",
+            "Samstag 11",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Samstag 16"
+          ],
+          "flexibility": 15
+        },
+        {
+          "id": "68ef9b0bc8b2bc8c5f35f903",
+          "name": "Thiemo Meyfarth",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 17",
+            "Freitag 18",
+            "Donnerstag 20"
+          ],
+          "flexibility": 7
+        },
+        {
+          "id": "68ef9b1dc8b2bc8c5f35f90a",
+          "name": "Roby Patani",
+          "availableTimes": [
+            "Montag 19",
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 5
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-männlich-Anfänger mit Grundkenntnissen",
+      "count": 2,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fb",
+          "name": "Jan Volkhardt",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Freitag 17",
+            "Freitag 18",
+            "Freitag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 9
+        },
+        {
+          "id": "68ef9b89c8b2bc8c5f35f93c",
+          "name": "Jonas Plath",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Dienstag 17",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 7
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-männlich-Leistungsspieler:innen / Turnierspieler:innen",
+      "count": 2,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6300",
+          "name": "Lennart Maak",
+          "availableTimes": [
+            "Mittwoch 16",
+            "Mittwoch 17",
+            "Donnerstag 15",
+            "Donnerstag 16",
+            "Donnerstag 16",
+            "Donnerstag 17",
+            "Donnerstag 18",
+            "Freitag 14",
+            "Freitag 15",
+            "Freitag 16",
+            "Donnerstag 20"
+          ],
+          "flexibility": 11
+        },
+        {
+          "id": "68ef85667031d46332aa6340",
+          "name": "Lukas Lederer",
+          "availableTimes": [
+            "Freitag 15",
+            "Freitag 16",
+            "Freitag 17",
+            "Freitag 18"
+          ],
+          "flexibility": 4
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger",
+      "count": 2,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6307",
+          "name": "Eva Plath",
+          "availableTimes": [
+            "Montag 18",
+            "Montag 19",
+            "Dienstag 17",
+            "Dienstag 18",
+            "Mittwoch 18",
+            "Donnerstag 18",
+            "Donnerstag 19",
+            "Donnerstag 20"
+          ],
+          "flexibility": 8
+        },
+        {
+          "id": "68ef85667031d46332aa630a",
+          "name": "Kinga Fülöp",
+          "availableTimes": [
+            "Donnerstag 19",
+            "Freitag 18",
+            "Freitag 19",
+            "Samstag 10",
+            "Samstag 11",
+            "Samstag 12",
+            "Samstag 13",
+            "Samstag 14",
+            "Samstag 15",
+            "Donnerstag 20"
+          ],
+          "flexibility": 10
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschrittene",
+      "count": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f7",
+          "name": "Sabine Löhrl",
+          "availableTimes": [
+            "Dienstag 11",
+            "Dienstag 12",
+            "Dienstag 13",
+            "Dienstag 15",
+            "Donnerstag 10",
+            "Donnerstag 11",
+            "Donnerstag 12"
+          ],
+          "flexibility": 7
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+      "count": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6301",
+          "name": "Elsa Schreiber",
+          "availableTimes": [
+            "Montag 16",
+            "Montag 17",
+            "Montag 18",
+            "Dienstag 15",
+            "Dienstag 16",
+            "Dienstag 17"
+          ],
+          "flexibility": 6
+        }
+      ]
+    }
+  ],
+  "opportunities": [
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Montag 16",
+      "numStudents": 12,
+      "numFullCourses": 3,
+      "numCoaches": 2,
+      "realizedCourses": 2,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9051c8b2bc8c5f35f701",
+          "name": "Joris muck"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Donnerstag 16",
+      "numStudents": 11,
+      "numFullCourses": 2,
+      "numCoaches": 2,
+      "realizedCourses": 2,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Donnerstag 15",
+      "numStudents": 10,
+      "numFullCourses": 2,
+      "numCoaches": 2,
+      "realizedCourses": 2,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Montag 17",
+      "numStudents": 15,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Montag 18",
+      "numStudents": 12,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Donnerstag 17",
+      "numStudents": 12,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Freitag 16",
+      "numStudents": 14,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy"
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Freitag 17",
+      "numStudents": 15,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy"
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Freitag 18",
+      "numStudents": 12,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Mittwoch 17",
+      "numStudents": 13,
+      "numFullCourses": 3,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Freitag 18",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa62fe",
+          "name": "Sabrina Schenk"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "name": "Lara Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5ec",
+          "name": "Falko "
+        },
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Freitag 19",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa62fe",
+          "name": "Sabrina Schenk"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "name": "Lara Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5ec",
+          "name": "Falko "
+        },
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "timeToken": "Donnerstag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel"
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Montag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9051c8b2bc8c5f35f701",
+          "name": "Joris muck"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Montag 16",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9051c8b2bc8c5f35f701",
+          "name": "Joris muck"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Donnerstag 15",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Donnerstag 16",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Montag 16",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6320",
+          "name": "Emilia Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa6322",
+          "name": "Malou Brieger"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9051c8b2bc8c5f35f701",
+          "name": "Joris muck"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Montag 16",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9051c8b2bc8c5f35f701",
+          "name": "Joris muck"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Donnerstag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Donnerstag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9095c8b2bc8c5f35f704",
+          "name": "Ben Frankenberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Mittwoch 16",
+      "numStudents": 11,
+      "numFullCourses": 2,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Mittwoch 18",
+      "numStudents": 11,
+      "numFullCourses": 2,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Montag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 2,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        },
+        {
+          "id": "68ef9051c8b2bc8c5f35f701",
+          "name": "Joris muck"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Freitag 19",
+      "numStudents": 8,
+      "numFullCourses": 2,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Dienstag 17",
+      "numStudents": 8,
+      "numFullCourses": 2,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef8cb2c8b2bc8c5f35f69e",
+          "name": "Paulina Muck"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Dienstag 18",
+      "numStudents": 9,
+      "numFullCourses": 2,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn"
+        },
+        {
+          "id": "68ef8cb2c8b2bc8c5f35f69e",
+          "name": "Paulina Muck"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Samstag 11",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f8",
+          "name": "Sandra Bourbeck"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa62ff",
+          "name": "Ilonka Döge"
+        },
+        {
+          "id": "68ef85667031d46332aa6302",
+          "name": "Claudia Frank"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "name": "Lara Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Samstag 12",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f8",
+          "name": "Sandra Bourbeck"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "name": "Lara Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Donnerstag 18",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "name": "Friederike Förster"
+        },
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68ef8e9cc8b2bc8c5f35f6fa",
+          "name": "Helge Padberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Donnerstag 19",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "name": "Friederike Förster"
+        },
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68ef8e9cc8b2bc8c5f35f6fa",
+          "name": "Helge Padberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "timeToken": "Donnerstag 20",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "name": "Friederike Förster"
+        },
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68ef8e9cc8b2bc8c5f35f6fa",
+          "name": "Helge Padberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschritten",
+      "timeToken": "Montag 18",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger"
+        },
+        {
+          "id": "68ef9b92c8b2bc8c5f35f941",
+          "name": "Claudia Gregor-Lawrenz"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschritten",
+      "timeToken": "Montag 19",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger"
+        },
+        {
+          "id": "68ef9b92c8b2bc8c5f35f941",
+          "name": "Claudia Gregor-Lawrenz"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschritten",
+      "timeToken": "Donnerstag 18",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68ef8e9cc8b2bc8c5f35f6fa",
+          "name": "Helge Padberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschritten",
+      "timeToken": "Donnerstag 19",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68ef8e9cc8b2bc8c5f35f6fa",
+          "name": "Helge Padberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "adult-weiblich-Fortgeschritten",
+      "timeToken": "Donnerstag 20",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68ef8e9cc8b2bc8c5f35f6fa",
+          "name": "Helge Padberg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Kinderland",
+      "timeToken": "Samstag 12",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys"
+        },
+        {
+          "id": "68ef85667031d46332aa630e",
+          "name": "Nic K"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Kinderland",
+      "timeToken": "Samstag 13",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Kinderland",
+      "timeToken": "Samstag 14",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Kinderland",
+      "timeToken": "Samstag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Kinderland",
+      "timeToken": "Samstag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "timeToken": "Mittwoch 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6310",
+          "name": "Maja Dietzler"
+        },
+        {
+          "id": "68ef85667031d46332aa6311",
+          "name": "Victoria Schmitt"
+        },
+        {
+          "id": "68ef85667031d46332aa6315",
+          "name": "Laura Heidemann"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "timeToken": "Mittwoch 17",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6310",
+          "name": "Maja Dietzler"
+        },
+        {
+          "id": "68ef85667031d46332aa6311",
+          "name": "Victoria Schmitt"
+        },
+        {
+          "id": "68ef85667031d46332aa6315",
+          "name": "Laura Heidemann"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "timeToken": "Donnerstag 17",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel"
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "timeToken": "Samstag 12",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel"
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir"
+        },
+        {
+          "id": "68ef85667031d46332aa6316",
+          "name": "Josef Wong"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Rot",
+      "timeToken": "Samstag 13",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel"
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Mittwoch 16",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Mittwoch 17",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Mittwoch 18",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Freitag 16",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Freitag 17",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Samstag 12",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Samstag 13",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Samstag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Samstag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Montag 17",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Dienstag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Dienstag 17",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Donnerstag 17",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Orange",
+      "timeToken": "Freitag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Montag 17",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6320",
+          "name": "Emilia Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa6322",
+          "name": "Malou Brieger"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Dienstag 17",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella"
+        },
+        {
+          "id": "68ef997bc8b2bc8c5f35f88d",
+          "name": "Vincent Schrade"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Mittwoch 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen"
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Mittwoch 17",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen"
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Mittwoch 18",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen"
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Freitag 17",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski"
+        },
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff"
+        },
+        {
+          "id": "68ef997bc8b2bc8c5f35f88d",
+          "name": "Vincent Schrade"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Grün",
+      "timeToken": "Dienstag 16",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6320",
+          "name": "Emilia Burchart"
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch"
+        },
+        {
+          "id": "68ef85667031d46332aa6325",
+          "name": "Jolin Kunsch"
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella"
+        },
+        {
+          "id": "68ef997bc8b2bc8c5f35f88d",
+          "name": "Vincent Schrade"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Montag 17",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Montag 18",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Dienstag 17",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger"
+        },
+        {
+          "id": "68ef9971c8b2bc8c5f35f888",
+          "name": "Juno Glaser"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Dienstag 18",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger"
+        },
+        {
+          "id": "68ef9971c8b2bc8c5f35f888",
+          "name": "Juno Glaser"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Donnerstag 17",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Mittwoch 17",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Mittwoch 18",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Freitag 17",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Freitag 18",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Freitag 19",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Freitag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Samstag 12",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Samstag 13",
+      "numStudents": 5,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Samstag 14",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Samstag 15",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Samstag 16",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Freitag 15",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg"
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy"
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Samstag 12",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch"
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa6342",
+          "name": "Ben Frankenberg"
+        },
+        {
+          "id": "68ef85667031d46332aa6343",
+          "name": "Joris Muck"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Dienstag 16",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Samstag 13",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 1,
+      "realizedCourses": 1,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa6342",
+          "name": "Ben Frankenberg"
+        },
+        {
+          "id": "68ef85667031d46332aa6343",
+          "name": "Joris Muck"
+        }
+      ],
+      "coaches": [
+        {
+          "id": "68eba899b18bd6e9d75da5f0",
+          "name": "Nicole Kreienborg"
+        }
+      ]
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Donnerstag 18",
+      "numStudents": 11,
+      "numFullCourses": 2,
+      "numCoaches": 0,
+      "realizedCourses": 0,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch"
+        },
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": []
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Donnerstag 19",
+      "numStudents": 7,
+      "numFullCourses": 1,
+      "numCoaches": 0,
+      "realizedCourses": 0,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster"
+        },
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": []
+    },
+    {
+      "groupKey": "child-Gelb Hobby",
+      "timeToken": "Donnerstag 20",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 0,
+      "realizedCourses": 0,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632d",
+          "name": "Stella Hilgers"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler"
+        }
+      ],
+      "coaches": []
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Donnerstag 18",
+      "numStudents": 20,
+      "numFullCourses": 5,
+      "numCoaches": 0,
+      "realizedCourses": 0,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp"
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        },
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn"
+        }
+      ],
+      "coaches": []
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Donnerstag 19",
+      "numStudents": 6,
+      "numFullCourses": 1,
+      "numCoaches": 0,
+      "realizedCourses": 0,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom"
+        },
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        }
+      ],
+      "coaches": []
+    },
+    {
+      "groupKey": "child-Gelb Team",
+      "timeToken": "Donnerstag 20",
+      "numStudents": 4,
+      "numFullCourses": 1,
+      "numCoaches": 0,
+      "realizedCourses": 0,
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider"
+        }
+      ],
+      "coaches": []
+    }
+  ],
+  "theoreticalMaximum": 33
+}

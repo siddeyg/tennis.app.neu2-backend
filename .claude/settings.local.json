@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/projects/tennis app neu2/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

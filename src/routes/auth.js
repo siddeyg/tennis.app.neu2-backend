@@ -9,10 +9,13 @@ const router = express.Router();
 // Rate limiter for login attempts
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 5 : 100, // Limit: 5 in prod, 100 in dev
   message: { error: "Zu viele Login-Versuche. Bitte versuchen Sie es in 15 Minuten erneut." },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: {
+    trustProxy: false, // Disable trust proxy validation since we're behind Caddy
+  }
 });
 
 /**

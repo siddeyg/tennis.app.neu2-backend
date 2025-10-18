@@ -1,0 +1,1633 @@
+{
+  "metadata": {
+    "createdAt": "2025-10-17T08:35:51.741Z",
+    "method": "Manual V2 - Strategic Planning with Deep Analysis",
+    "totalCourses": 37,
+    "fullCourses": 13,
+    "threeCourses": 6,
+    "twoCourses": 5,
+    "singleCourses": 13,
+    "assignedStudents": 93,
+    "totalStudents": 113,
+    "unassignedStudents": 20,
+    "efficiency": "51.4%",
+    "parallelConflicts": 0
+  },
+  "courses": [
+    {
+      "id": 1,
+      "day": "Samstag",
+      "hour": 10,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8dafc8b2bc8c5f35f6b9",
+          "firstName": "Andrea",
+          "lastName": "Muck",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef8dd3c8b2bc8c5f35f6c7",
+          "firstName": "Andrea",
+          "lastName": "Frankenberg",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef9b32c8b2bc8c5f35f914",
+          "firstName": "Maike",
+          "lastName": "Just",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 3,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 2,
+      "day": "Samstag",
+      "hour": 11,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6302",
+          "firstName": "Claudia",
+          "lastName": "Frank",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef85667031d46332aa62ff",
+          "firstName": "Ilonka",
+          "lastName": "Döge",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef85667031d46332aa62f8",
+          "firstName": "Sandra",
+          "lastName": "Bourbeck",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 3,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 3,
+      "day": "Donnerstag",
+      "hour": 10,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b6ec8b2bc8c5f35f92d",
+          "firstName": "Helga",
+          "lastName": "Heydweiller",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 4,
+      "day": "Montag",
+      "hour": 18,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b75c8b2bc8c5f35f932",
+          "firstName": "Julia",
+          "lastName": "Leininger",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 5,
+      "day": "Montag",
+      "hour": 19,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b92c8b2bc8c5f35f941",
+          "firstName": "Claudia",
+          "lastName": "Gregor-Lawrenz",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 6,
+      "day": "Samstag",
+      "hour": 12,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6316",
+          "firstName": "Josef",
+          "lastName": "Wong",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6312",
+          "firstName": "Fender",
+          "lastName": "Meijboom",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "firstName": "Mats",
+          "lastName": "Vogel",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "firstName": "Mert",
+          "lastName": "Bakir",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 7,
+      "day": "Mittwoch",
+      "hour": 16,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6310",
+          "firstName": "Maja",
+          "lastName": "Dietzler",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6315",
+          "firstName": "Laura",
+          "lastName": "Heidemann",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6311",
+          "firstName": "Victoria",
+          "lastName": "Schmitt",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "firstName": "Mia",
+          "lastName": "Lange",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Rot",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 8,
+      "day": "Samstag",
+      "hour": 13,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6343",
+          "firstName": "Joris",
+          "lastName": "Muck",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6342",
+          "firstName": "Ben",
+          "lastName": "Frankenberg",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 2,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 9,
+      "day": "Dienstag",
+      "hour": 17,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8cb2c8b2bc8c5f35f69e",
+          "firstName": "Paulina",
+          "lastName": "Muck",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 10,
+      "day": "Dienstag",
+      "hour": 18,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9971c8b2bc8c5f35f888",
+          "firstName": "Juno",
+          "lastName": "Glaser",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "firstName": "Philipp",
+          "lastName": "Kluth",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "firstName": "Johannes",
+          "lastName": "Küster",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        }
+      ],
+      "numStudents": 3,
+      "reasoning": "Critical students (≤2 slots) - Reserved FIRST to prevent blocking"
+    },
+    {
+      "id": 11,
+      "day": "Montag",
+      "hour": 16,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "firstName": "Dana",
+          "lastName": "Stoffels",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "firstName": "Matthis",
+          "lastName": "Hundrup",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "firstName": "Moritz",
+          "lastName": "Hoesch",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "firstName": "Linus",
+          "lastName": "Hoesch",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 12 child-Gelb Team available → FULL COURSE"
+    },
+    {
+      "id": 12,
+      "day": "Montag",
+      "hour": 16,
+      "coachId": "68ef9095c8b2bc8c5f35f704",
+      "coachName": "Ben Frankenberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "firstName": "Leni",
+          "lastName": "Doutch",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "firstName": "Elin",
+          "lastName": "Küster",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "firstName": "Frida",
+          "lastName": "Schulmann",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "firstName": "Madita",
+          "lastName": "Böckenförde Leininger",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 6 child-Gelb Hobby available → FULL COURSE"
+    },
+    {
+      "id": 13,
+      "day": "Donnerstag",
+      "hour": 16,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6337",
+          "firstName": "Leonard",
+          "lastName": "Welle",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "firstName": "Benno",
+          "lastName": "Koch-Gombert",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "firstName": "Valentin",
+          "lastName": "Agsten",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa633d",
+          "firstName": "Benjamin",
+          "lastName": "Coers",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 7 child-Gelb Team available → FULL COURSE"
+    },
+    {
+      "id": 14,
+      "day": "Donnerstag",
+      "hour": 16,
+      "coachId": "68ef9095c8b2bc8c5f35f704",
+      "coachName": "Ben Frankenberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "firstName": "Paul",
+          "lastName": "Koch-Gombert",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa631b",
+          "firstName": "Moritz",
+          "lastName": "Burchart",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "firstName": "Maja",
+          "lastName": "Schrempp",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "firstName": "Leila",
+          "lastName": "Maria",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 5 child-Orange available → FULL COURSE"
+    },
+    {
+      "id": 15,
+      "day": "Donnerstag",
+      "hour": 15,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6339",
+          "firstName": "Lara-Marie",
+          "lastName": "Wiedbrauck",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "firstName": "Claire",
+          "lastName": "Loheider",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "firstName": "Nadia",
+          "lastName": "El Gharabawy",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 3,
+      "reasoning": "Good opportunity: 3 child-Gelb Team available"
+    },
+    {
+      "id": 16,
+      "day": "Freitag",
+      "hour": 17,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6336",
+          "firstName": "Veerle",
+          "lastName": "Meijboom",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "firstName": "Luke",
+          "lastName": "Fuss",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "firstName": "Justus",
+          "lastName": "Jahn",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "firstName": "Arthur",
+          "lastName": "Schelz",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 9 child-Gelb Team available → FULL COURSE"
+    },
+    {
+      "id": 17,
+      "day": "Freitag",
+      "hour": 17,
+      "coachId": "68eba899b18bd6e9d75da5ec",
+      "coachName": "Falko ",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "firstName": "Kristina",
+          "lastName": "Müller",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef85667031d46332aa62fe",
+          "firstName": "Sabrina",
+          "lastName": "Schenk",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "firstName": "Lara",
+          "lastName": "Jansen",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 3,
+      "reasoning": "Good opportunity: 3 adult-weiblich-Anfänger mit Grundkenntnissen available"
+    },
+    {
+      "id": 18,
+      "day": "Freitag",
+      "hour": 16,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "firstName": "Helene",
+          "lastName": "Muck",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "firstName": "Jana",
+          "lastName": "Frankenberg",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "firstName": "Marie",
+          "lastName": "Wolff",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "firstName": "Nadim",
+          "lastName": "El Gharabawy",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 4 child-Gelb Team available → FULL COURSE"
+    },
+    {
+      "id": 19,
+      "day": "Freitag",
+      "hour": 18,
+      "coachId": "68eba899b18bd6e9d75da5ec",
+      "coachName": "Falko ",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "firstName": "Marie",
+          "lastName": "Köhler",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "firstName": "Silke",
+          "lastName": "Hoesch",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 2,
+      "reasoning": "Good opportunity: 2 adult-weiblich-Anfänger mit Grundkenntnissen available"
+    },
+    {
+      "id": 20,
+      "day": "Montag",
+      "hour": 17,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa633c",
+          "firstName": "Marlene",
+          "lastName": "Tripp",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "firstName": "Christopher",
+          "lastName": "Jahn",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "firstName": "Laura",
+          "lastName": "Metzer",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        },
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "firstName": "Annika",
+          "lastName": "Jahn",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Team",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 4 child-Gelb Team available → FULL COURSE"
+    },
+    {
+      "id": 21,
+      "day": "Donnerstag",
+      "hour": 18,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "firstName": "Rebecca",
+          "lastName": "Mau",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "firstName": "Anneke",
+          "lastName": "Malinowski",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "firstName": "Nicole",
+          "lastName": "Berg",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "firstName": "Svenja",
+          "lastName": "Gloger",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 4 adult-weiblich-Fortgeschritten available → FULL COURSE"
+    },
+    {
+      "id": 22,
+      "day": "Samstag",
+      "hour": 14,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "firstName": "Alexander Ganiev",
+          "lastName": "Chang",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Kinderland",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "firstName": "Lysander",
+          "lastName": "Pruys",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Kinderland",
+          "sex": ""
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "firstName": "Alexander",
+          "lastName": "Ganiev",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Kinderland",
+          "sex": ""
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "firstName": "Charlotte",
+          "lastName": "Jansen",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Kinderland",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 4 child-Kinderland available → FULL COURSE"
+    },
+    {
+      "id": 23,
+      "day": "Samstag",
+      "hour": 15,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "firstName": "Florian Elias",
+          "lastName": "Andrä",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "firstName": "Henrik",
+          "lastName": "Hoesch",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa631a",
+          "firstName": "Laura",
+          "lastName": "Wiedbrauck",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "firstName": "Florian",
+          "lastName": "Elias",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 4 child-Orange available → FULL COURSE"
+    },
+    {
+      "id": 24,
+      "day": "Dienstag",
+      "hour": 16,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6320",
+          "firstName": "Emilia",
+          "lastName": "Burchart",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Grün",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6323",
+          "firstName": "Clara",
+          "lastName": "Schmitz-Hübsch",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Grün",
+          "sex": ""
+        },
+        {
+          "id": "68ef85667031d46332aa6325",
+          "firstName": "Jolin",
+          "lastName": "Kunsch",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Grün",
+          "sex": ""
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "firstName": "Gruber",
+          "lastName": "Ella",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Grün",
+          "sex": ""
+        }
+      ],
+      "numStudents": 4,
+      "reasoning": "High-overlap opportunity: 5 child-Grün available → FULL COURSE"
+    },
+    {
+      "id": 25,
+      "day": "Dienstag",
+      "hour": 11,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b26c8b2bc8c5f35f90f",
+          "firstName": "Barbara",
+          "lastName": "Bursch-Brustkern",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 26,
+      "day": "Montag",
+      "hour": 14,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630e",
+          "firstName": "Nic",
+          "lastName": "K",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Kinderland",
+          "sex": ""
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 27,
+      "day": "Mittwoch",
+      "hour": 14,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630f",
+          "firstName": "Marlene",
+          "lastName": "Zock",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Kinderland",
+          "sex": ""
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 28,
+      "day": "Freitag",
+      "hour": 15,
+      "coachId": "68eba899b18bd6e9d75da5ec",
+      "coachName": "Falko ",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6340",
+          "firstName": "Lukas",
+          "lastName": "Lederer",
+          "adult": true,
+          "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+          "trainigGroup": "Gelb Team",
+          "sex": "männlich"
+        },
+        {
+          "id": "68ef85667031d46332aa6300",
+          "firstName": "Lennart",
+          "lastName": "Maak",
+          "adult": true,
+          "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+          "trainigGroup": "",
+          "sex": "männlich"
+        }
+      ],
+      "numStudents": 2,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 29,
+      "day": "Donnerstag",
+      "hour": 18,
+      "coachId": "68ef8e9cc8b2bc8c5f35f6fa",
+      "coachName": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef9b66c8b2bc8c5f35f928",
+          "firstName": "Stefan",
+          "lastName": "Löwe",
+          "adult": true,
+          "skillLevel": "Anfänger",
+          "trainigGroup": "",
+          "sex": "männlich"
+        },
+        {
+          "id": "68ef85667031d46332aa6306",
+          "firstName": "Antonio",
+          "lastName": "Schmandke",
+          "adult": true,
+          "skillLevel": "Anfänger",
+          "trainigGroup": "",
+          "sex": "männlich"
+        }
+      ],
+      "numStudents": 2,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 30,
+      "day": "Montag",
+      "hour": 15,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6322",
+          "firstName": "Malou",
+          "lastName": "Brieger",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Grün",
+          "sex": ""
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 31,
+      "day": "Mittwoch",
+      "hour": 17,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "firstName": "Friederike",
+          "lastName": "Förster",
+          "adult": true,
+          "skillLevel": "Anfänger mit Grundkenntnissen",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 32,
+      "day": "Montag",
+      "hour": 15,
+      "coachId": "68ef9051c8b2bc8c5f35f701",
+      "coachName": "Joris muck",
+      "students": [
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "firstName": "Paula",
+          "lastName": "Nettekoven",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "firstName": "Ben",
+          "lastName": "Lange",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "firstName": "Julius",
+          "lastName": "Hof",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Orange",
+          "sex": ""
+        }
+      ],
+      "numStudents": 3,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 33,
+      "day": "Dienstag",
+      "hour": 15,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b5ec8b2bc8c5f35f923",
+          "firstName": "Ulrike",
+          "lastName": "Patani",
+          "adult": true,
+          "skillLevel": "Fortgeschritten",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 34,
+      "day": "Montag",
+      "hour": 16,
+      "coachId": "68ef9051c8b2bc8c5f35f701",
+      "coachName": "Joris muck",
+      "students": [
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "firstName": "Jaron",
+          "lastName": "Lockmann",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "firstName": "Levi",
+          "lastName": "Schüler",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        }
+      ],
+      "numStudents": 2,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 35,
+      "day": "Donnerstag",
+      "hour": 19,
+      "coachId": "68ef8e9cc8b2bc8c5f35f6fa",
+      "coachName": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630a",
+          "firstName": "Kinga",
+          "lastName": "Fülöp",
+          "adult": true,
+          "skillLevel": "Anfänger",
+          "trainigGroup": "",
+          "sex": "weiblich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 36,
+      "day": "Mittwoch",
+      "hour": 15,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632b",
+          "firstName": "Clara",
+          "lastName": "Schrempp",
+          "adult": false,
+          "skillLevel": "",
+          "trainigGroup": "Gelb Hobby",
+          "sex": ""
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    },
+    {
+      "id": 37,
+      "day": "Montag",
+      "hour": 11,
+      "coachId": "68eba899b18bd6e9d75da5f0",
+      "coachName": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6308",
+          "firstName": "Marius",
+          "lastName": "Grosch",
+          "adult": true,
+          "skillLevel": "Anfänger",
+          "trainigGroup": "",
+          "sex": "männlich"
+        }
+      ],
+      "numStudents": 1,
+      "reasoning": "Single placement for remaining student"
+    }
+  ],
+  "unassigned": [
+    {
+      "id": "68ef85667031d46332aa62f7",
+      "firstName": "Sabine",
+      "lastName": "Löhrl",
+      "adult": true,
+      "skillLevel": "Fortgeschrittene",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Dienstag 11",
+        "Dienstag 12",
+        "Dienstag 13",
+        "Dienstag 15",
+        "Donnerstag 10",
+        "Donnerstag 11",
+        "Donnerstag 12"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa62fb",
+      "firstName": "Jan",
+      "lastName": "Volkhardt",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Donnerstag 20"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa62fd",
+      "firstName": "Tom",
+      "lastName": "Jansen",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6301",
+      "firstName": "Elsa",
+      "lastName": "Schreiber",
+      "adult": true,
+      "skillLevel": "Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6304",
+      "firstName": "Damla",
+      "lastName": "Darilmaz",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 16",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 16",
+        "Freitag 15",
+        "Freitag 16"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6307",
+      "firstName": "Eva",
+      "lastName": "Plath",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa630b",
+      "firstName": "Áron",
+      "lastName": "Horváth",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Donnerstag 20"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa631c",
+      "firstName": "Liam",
+      "lastName": "Döring",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa631f",
+      "firstName": "Clara",
+      "lastName": "Malinowski",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 17",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 15",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6321",
+      "firstName": "Schieferdecker",
+      "lastName": "Colleen",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6324",
+      "firstName": "Lenna",
+      "lastName": "Wolff",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6327",
+      "firstName": "Henry",
+      "lastName": "King",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa6328",
+      "firstName": "Jasper",
+      "lastName": "Trump",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa632c",
+      "firstName": "Finn",
+      "lastName": "Gruber",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "availableTimes": [
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Samstag 12",
+        "Samstag 13"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa632d",
+      "firstName": "Stella",
+      "lastName": "Hilgers",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "availableTimes": [
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 19",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ]
+    },
+    {
+      "id": "68ef85667031d46332aa632e",
+      "firstName": "Vogel",
+      "lastName": "Julius",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ]
+    },
+    {
+      "id": "68ef997bc8b2bc8c5f35f88d",
+      "firstName": "Vincent",
+      "lastName": "Schrade",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "availableTimes": [
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 15",
+        "Freitag 17"
+      ]
+    },
+    {
+      "id": "68ef9b0bc8b2bc8c5f35f903",
+      "firstName": "Thiemo",
+      "lastName": "Meyfarth",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Donnerstag 20"
+      ]
+    },
+    {
+      "id": "68ef9b1dc8b2bc8c5f35f90a",
+      "firstName": "Roby",
+      "lastName": "Patani",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 19",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19",
+        "Donnerstag 20"
+      ]
+    },
+    {
+      "id": "68ef9b89c8b2bc8c5f35f93c",
+      "firstName": "Jonas",
+      "lastName": "Plath",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Dienstag 17",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20"
+      ]
+    }
+  ]
+}

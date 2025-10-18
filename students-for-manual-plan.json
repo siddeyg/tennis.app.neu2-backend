@@ -1,0 +1,4495 @@
+[
+  {
+    "_id": "68ef85667031d46332aa62f7",
+    "firstName": "Sabine",
+    "lastName": "Löhrl",
+    "adress": "Lotharstrasse 152 53115 Bonn",
+    "email": "sabine.loehrl@web.de",
+    "phone": "1735353633",
+    "birthDate": "",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Fortgeschrittene",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Dienstag 11",
+      "Dienstag 12",
+      "Dienstag 13",
+      "Dienstag 15",
+      "Donnerstag 10",
+      "Donnerstag 11",
+      "Donnerstag 12"
+    ],
+    "day": "Dienstag",
+    "hour": 13,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 5,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 13,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d30484"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62f8",
+    "firstName": "Sandra",
+    "lastName": "Bourbeck",
+    "adress": "Thomas-Mann-Str. 49",
+    "email": "s.bourbeck@gmx.de",
+    "phone": "15170179189",
+    "birthDate": "",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Samstag 10",
+      "Samstag 11",
+      "Samstag 12",
+      "Samstag 14",
+      "Samstag 15"
+    ],
+    "day": "Samstag",
+    "hour": 11,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 5,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d3047b"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62f9",
+    "firstName": "Friederike",
+    "lastName": "Förster",
+    "adress": "Wiesenweg 3,53121 Bonn",
+    "email": "friederike-foerster@t-online.de",
+    "phone": "15165266420",
+    "birthDate": "",
+    "comment": "Gerne gemeinsam mit Jonas Plath Jan Volkhardt Kristina Müller",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 17",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 13",
+      "Donnerstag 20"
+    ],
+    "day": "Freitag",
+    "hour": 13,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 13,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d3047e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62fa",
+    "firstName": "Kristina",
+    "lastName": "Müller",
+    "adress": "Lengsdorfer Hauptstraße 21",
+    "email": "kristina-marie-mueller@gmx.net",
+    "phone": "15253453168",
+    "birthDate": "",
+    "comment": "Gerne zusammen mit: Jan Volkhardt Friederike Förster Jonas Plath",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "day": "Montag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d30487"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62fb",
+    "firstName": "Jan",
+    "lastName": "Volkhardt",
+    "adress": "Lengsdorfer Hauptstraße 21",
+    "email": "vojan98@gmail.com",
+    "phone": "15786839775",
+    "birthDate": "",
+    "comment": "Gerne mit: Kristina Müller Friederike Förster Jonas Plath",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "day": "Freitag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5ec",
+    "__v": 6,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5ec",
+        "_id": "68f0dbd828c99546b1d3048b"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62fc",
+    "firstName": "Marie",
+    "lastName": "Köhler",
+    "adress": "Sebastianstraße 152, 53115 Bonn",
+    "email": "mariekoehler@gmx.net",
+    "phone": "1719951791",
+    "birthDate": "",
+    "comment": "Am liebsten hätten Lara, Eva, Sabrina und ich wieder zusammen bei Helge Training. Unser Wunschtermin wäre Mittwoch um 18 Uhr :)",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 19",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 11",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Donnerstag 20"
+    ],
+    "day": "Samstag",
+    "hour": 11,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 7,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d30481"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62fd",
+    "firstName": "Tom",
+    "lastName": "Jansen",
+    "adress": "Dohmstraße 17, 53121 Bonn",
+    "email": "tomrjansen@gmail.com",
+    "phone": "15144048433",
+    "birthDate": "",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Fortgeschritten",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 10",
+      "Samstag 11",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Freitag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5ec",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5ec",
+        "_id": "68f0dbd828c99546b1d30499"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62fe",
+    "firstName": "Sabrina",
+    "lastName": "Schenk",
+    "adress": "Enggasse 23, 53127 Bonn",
+    "email": "sabrinaschenk1@gmx.de",
+    "phone": "15254267760",
+    "birthDate": "16.09.1997",
+    "comment": "Gerne wieder bei Helge, als Vierergruppe mit Eva, Marie und Lara. Unser Wunschtermin wäre mittwochs am späten Nachmittag. Außerdem möchte ich mich, wie besprochen, nur für die halbe Trainingszeit bis zu den Weihnachtsferien anmelden. Ich bin (leider) im Januar, Februar und März arbeitsbedingt im Ausland unterwegs.",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Mittwoch",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d3049c"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa62ff",
+    "firstName": "Ilonka",
+    "lastName": "Döge",
+    "adress": "Rheinweg 142, 53129 Bonn",
+    "email": "doege-duo@t-online.de",
+    "phone": "1715444770",
+    "birthDate": "31.10.1969",
+    "comment": "Liebe Nicole, eigentlich hattest du gesagt, dass es auch am Fr um 13 Uhr im BTHV möglich wäre. Hier steht nun BB. Wenn dem so ist, dann geht 13 Uhr nicht.",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Freitag 12",
+      "Freitag 13",
+      "Samstag 11"
+    ],
+    "day": "Samstag",
+    "hour": 11,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304a3"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6300",
+    "firstName": "Lennart",
+    "lastName": "Maak",
+    "adress": "Ippendorfer Weg 9, 53127 Bonn",
+    "email": "maaklennart@gmail.com",
+    "phone": "0177 7927474",
+    "birthDate": "13.11.2010",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Freitag 14",
+      "Freitag 15",
+      "Freitag 16",
+      "Donnerstag 20"
+    ],
+    "day": "Freitag",
+    "hour": 14,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304a0"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6301",
+    "firstName": "Elsa",
+    "lastName": "Schreiber",
+    "adress": "Clemens-august-str 87",
+    "email": "elsa.schreiber02@gmail.com",
+    "phone": "15752225710",
+    "birthDate": "02.02.2010",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "4",
+    "skillLevel": "Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17"
+    ],
+    "day": "Dienstag",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304a9"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6302",
+    "firstName": "Claudia",
+    "lastName": "Frank",
+    "adress": "Am Ledenhof 8",
+    "email": "fam.frankbonn@arcor.de",
+    "phone": "0228/476404",
+    "birthDate": "13.05.1966",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Freitag 13",
+      "Samstag 11"
+    ],
+    "day": "Freitag",
+    "hour": 13,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 13,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304b8"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6303",
+    "firstName": "Rebecca",
+    "lastName": "Mau",
+    "adress": "Kollegienweg 44",
+    "email": "rebecca.mau@gmx.de",
+    "phone": "1633716286",
+    "birthDate": "14.07.1997",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "4",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Dienstag 17",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20"
+    ],
+    "day": "Donnerstag",
+    "hour": 18,
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbd828c99546b1d304a6"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6304",
+    "firstName": "Damla",
+    "lastName": "Darilmaz",
+    "adress": "Alfred-Bucherer-Str. 101",
+    "email": "damla_darilmaz@hotmail.de",
+    "phone": "1747146814",
+    "birthDate": "08.01.1996",
+    "comment": "An erster Stelle ist jedoch ein Einzeltraining gewünscht.",
+    "member": false,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 16",
+      "Freitag 15",
+      "Freitag 16"
+    ],
+    "day": "Mittwoch",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304bb"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6305",
+    "firstName": "Silke",
+    "lastName": "Hoesch",
+    "adress": "Dohmstraße 30, 53121 Bonn",
+    "email": "silke.hoesch@yahoo.de",
+    "phone": "1703332836",
+    "birthDate": "27.10.1978",
+    "comment": "Zur Not bekomme ich auch Donnerstag Vormittag/Mittag hin, allerdings habe ich noch nie auf Teppich gespielt und bin dafür auch nichts ausgerüstet. Wenn aber alle Stricke reißen, kannst Du mich auch dahin schieben! LG, Silke",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 10",
+      "Samstag 11",
+      "Samstag 12",
+      "Donnerstag 20"
+    ],
+    "day": "Samstag",
+    "hour": 11,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304be"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6306",
+    "firstName": "Antonio",
+    "lastName": "Schmandke",
+    "adress": "Höhenweg 82a, 53127 Bonn",
+    "email": "antonio.schmandke@gmail.com",
+    "phone": "0177 8675191",
+    "birthDate": "",
+    "comment": "Mannschaft perspektivisch gerne. Da ich blutiger Anfänger bin aber wahrscheinlich eher nicht sofort",
+    "member": false,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 19",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "day": "Donnerstag",
+    "hour": 19,
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbd828c99546b1d304c1"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6307",
+    "firstName": "Eva",
+    "lastName": "Plath",
+    "adress": "Dohmstr. 19, 53121 Bonn",
+    "email": "e.weffer@gmx.de",
+    "phone": "1757300106",
+    "birthDate": "",
+    "comment": "Liebe Nicole, wenn möglich wäre ich gerne wieder mit den Mädels aus der Sommersaison zusammen in einer Gruppe (Marie, Lara & Sabrina). Mit den Mädels habe ich gesprochen und als Gruppe wäre für uns der Mittwochabend weiterhin großartig. Beachtet werden müsste beim Stricken der Pläne bitte, dass Jonas (Plath) und ich NICHT direkt hintereinander Training haben können, da immer einer von uns bei den Kids zuhause sein muss :). Danke <3",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20"
+    ],
+    "day": "Montag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304c4"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6308",
+    "firstName": "Marius",
+    "lastName": "Grosch",
+    "adress": "Am Burggraben 51, 53121 Bonn",
+    "email": "mail@mariusgrosch.de",
+    "phone": "17630364483",
+    "birthDate": "",
+    "comment": "",
+    "member": false,
+    "adult": true,
+    "frequence": "3",
+    "skillLevel": "Anfänger",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Montag 11",
+      "Montag 12",
+      "Montag 13",
+      "Montag 14",
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Montag 19",
+      "Donnerstag 14",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Freitag 10",
+      "Freitag 11",
+      "Freitag 12",
+      "Freitag 13",
+      "Freitag 14",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "day": "Montag",
+    "hour": 12,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 5,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 12,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd828c99546b1d304c7"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6309",
+    "firstName": "Lara",
+    "lastName": "Jansen",
+    "adress": "Dohmstraße 17, 53121 Bonn",
+    "email": "laragjansen@icloud.com",
+    "phone": "17683010745",
+    "birthDate": "",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 10",
+      "Samstag 11",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Mittwoch",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304d6"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa630a",
+    "firstName": "Kinga",
+    "lastName": "Fülöp",
+    "adress": "Elisabethstraße 23",
+    "email": "fulopkinga98@gmail.com",
+    "phone": "491635217421",
+    "birthDate": "17.05.1998",
+    "comment": "Bitte in einer Gruppe mit Ehepartner (Aron Horvath). Bevorzugt samstags",
+    "member": false,
+    "adult": true,
+    "frequence": "3",
+    "skillLevel": "Anfänger",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 10",
+      "Samstag 11",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Donnerstag 20"
+    ],
+    "day": "Freitag",
+    "hour": 19,
+    "coach": "68eba899b18bd6e9d75da5ec",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5ec",
+        "_id": "68f0dbd928c99546b1d304d9"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa630b",
+    "firstName": "Áron",
+    "lastName": "Horváth",
+    "adress": "Elisabethstraße 23",
+    "email": "aaronhorv@gmail.com",
+    "phone": "15906814957",
+    "birthDate": "05.11.1992",
+    "comment": "bitte in einer Gruppe mit Ehepartnerin Kinga Fülöp bevorzugt samstags",
+    "member": false,
+    "adult": true,
+    "frequence": "3",
+    "skillLevel": "Anfänger",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "availableTimes": [
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 10",
+      "Samstag 11",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Donnerstag 20"
+    ],
+    "day": "Donnerstag",
+    "hour": 19,
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbd928c99546b1d304df"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa630c",
+    "firstName": "Alexander Ganiev",
+    "lastName": "Chang",
+    "adress": "Nikolausstrasse 43, 53129, Bonn",
+    "email": "yihuan_chang@yahoo.com",
+    "phone": "15560393209",
+    "birthDate": "02.12.2019",
+    "comment": "",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Kinderland",
+    "team": false,
+    "availableTimes": [
+      "Montag 18",
+      "Dienstag 18",
+      "Donnerstag 18",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 14,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304e2"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa630d",
+    "firstName": "Lysander",
+    "lastName": "Pruys",
+    "adress": "Mohrstr. 24",
+    "email": "sforza_agustina@hotmail.com",
+    "phone": "17643683769",
+    "birthDate": "19.05.2021",
+    "comment": "",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Kinderland",
+    "team": false,
+    "availableTimes": [
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 14,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304e5"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa630e",
+    "firstName": "Nic",
+    "lastName": "K",
+    "adress": "Kesselsfeödweg 7",
+    "email": "jugend@tc-kreuzberg.de",
+    "phone": "22861958290",
+    "birthDate": "25.07.2018",
+    "comment": "Test",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Kinderland",
+    "team": true,
+    "availableTimes": [
+      "Montag 14",
+      "Mittwoch 14",
+      "Donnerstag 14",
+      "Samstag 12"
+    ],
+    "day": "Donnerstag",
+    "hour": 14,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304f4"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa630f",
+    "firstName": "Marlene",
+    "lastName": "Zock",
+    "adress": "Wiedring 31, 53913 Swisttal",
+    "email": "laura.zock@icloud.com",
+    "phone": "17645943527",
+    "birthDate": "5.12.2019",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Kinderland",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 14",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17"
+    ],
+    "day": "Mittwoch",
+    "hour": 14,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304fa"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6310",
+    "firstName": "Maja",
+    "lastName": "Dietzler",
+    "adress": "An der Ohligsmühle 23, 53127 Bonn",
+    "email": "alina.dietzler@gmail.com",
+    "phone": "1605687739",
+    "birthDate": "09.02.2018",
+    "comment": "Gerne Mittwoch mit Victoria schmidt in einen Kurs damit beide zusammen fahren können",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": true,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17"
+    ],
+    "day": "Mittwoch",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304dc"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6311",
+    "firstName": "Victoria",
+    "lastName": "Schmitt",
+    "adress": "Ippendorfer Weg 33, 53127 Bonn",
+    "email": "joergschmitt@web.de",
+    "phone": "1777464740",
+    "birthDate": "07.05.2018",
+    "comment": "Vicky möchte gerne weiterhin mit Maja spielen",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "day": "Mittwoch",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304f7"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6312",
+    "firstName": "Fender",
+    "lastName": "Meijboom",
+    "adress": "Zur Marterkapelle 63, 53127 Bonn",
+    "email": "karlijnmeijboom@hotmail.com",
+    "phone": "1622925948",
+    "birthDate": "03.06.2019",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "availableTimes": [
+      "Dienstag 16",
+      "Dienstag 17",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Freitag 16",
+      "Freitag 17",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14"
+    ],
+    "day": "Samstag",
+    "hour": 12,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d304fd"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6313",
+    "firstName": "Mats",
+    "lastName": "Vogel",
+    "adress": "Luisenstr. 81, 53129 Bonn",
+    "email": "marcus.vogel@alarmtrakt.de",
+    "phone": "1722953999",
+    "birthDate": "17.11.2018",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "availableTimes": [
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "day": "Samstag",
+    "hour": 12,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30500"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6314",
+    "firstName": "Mert",
+    "lastName": "Bakir",
+    "adress": "Buchholzstraße 13, 53127 Bonn",
+    "email": "zelihabakir2022@outlook.de",
+    "phone": "1701480101",
+    "birthDate": "22.02.2019",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 12,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30503"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6315",
+    "firstName": "Laura",
+    "lastName": "Heidemann",
+    "adress": "Kreuzbergstr. 27f, 53127 Bonn",
+    "email": "claudiaheidemann@gmx.net",
+    "phone": "17621179375",
+    "birthDate": "22.03.2019",
+    "comment": "",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17"
+    ],
+    "day": "Mittwoch",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30512"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6316",
+    "firstName": "Josef",
+    "lastName": "Wong",
+    "adress": "Fritz-Bauer-Str. 29, 53123 Bonn",
+    "email": "familie.jf.wong@gmail.com",
+    "phone": "15152361998",
+    "birthDate": "02.12.2018",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "availableTimes": [
+      "Samstag 12"
+    ],
+    "day": "Samstag",
+    "hour": 12,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30515"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6317",
+    "firstName": "Florian Elias",
+    "lastName": "Andrä",
+    "adress": "Lengsdorfer Hauptstr. 51",
+    "email": "mohr-andrae@uni-bonn.de",
+    "phone": "1785335224",
+    "birthDate": "20.01 2017",
+    "comment": "Florian wird während des Wintertrainings 9 (Januar), deshalb haben wir ihn für Orange angemeldet. Er könnte natürlich auch noch weiter mit Rot trainieren die Entscheidung überlassen wir Nicole.",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": true,
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30518"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6318",
+    "firstName": "Paul",
+    "lastName": "Koch-Gombert",
+    "adress": "Meckenheimer Allee 125,53115 Bonn",
+    "email": "mirja.koch-gombert@gmx.de",
+    "phone": "1773065418",
+    "birthDate": "28.06.2015",
+    "comment": "Paul würde sehr gern mit Paula Nettekoven in eine Gruppe",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": false,
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "day": "Donnerstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3051b"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6319",
+    "firstName": "Henrik",
+    "lastName": "Hoesch",
+    "adress": "Dohmstraße 30, 53121 Bonn",
+    "email": "silke.hoesch@me.com",
+    "phone": "1703332836",
+    "birthDate": "23.05.2017",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": true,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Samstag 12",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3051e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa631a",
+    "firstName": "Laura",
+    "lastName": "Wiedbrauck",
+    "adress": "Heinrich-Dittmaier-Str. 11, 53125 Bonn",
+    "email": "m.wiedbrauck@web.de",
+    "phone": "15228635056",
+    "birthDate": "03.02.2017",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": false,
+    "availableTimes": [
+      "Donnerstag 15",
+      "Donnerstag 18",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30521"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa631b",
+    "firstName": "Moritz",
+    "lastName": "Burchart",
+    "adress": "Berliner Ring 42 53175 Bonn",
+    "email": "christiane.trott@gmail.com",
+    "phone": "1714397136",
+    "birthDate": "11.12.2016",
+    "comment": "Evt ändert sich bei Moritz etwas bezüglich des Fussballtrainings, dann hätte er auch zu anderen Zeiten Zeit.",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": true,
+    "availableTimes": [
+      "Dienstag 14",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Donnerstag 14",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17"
+    ],
+    "day": "Donnerstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30530"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa631c",
+    "firstName": "Liam",
+    "lastName": "Döring",
+    "adress": "Auf den Steinen 5",
+    "email": "mail@sara-weller.de",
+    "phone": "1736288553",
+    "birthDate": "9.10.2015",
+    "comment": "Liam ist jedes 2. Wochenende bei seiner leiblichen Mutter. Sollte er Freitags trainieren, ist er evtl nur jedes 2. mal dabei. Wir versuchen natürlich, es passend zu regeln",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 15",
+      "Freitag 16"
+    ],
+    "day": "Mittwoch",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30533"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa631d",
+    "firstName": "Maja",
+    "lastName": "Schrempp",
+    "adress": "Clemens-August-Straße 75c, 53115 Bonn",
+    "email": "maria.schrempp@gmail.com",
+    "phone": "1634134720",
+    "birthDate": "15.05.2016",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": false,
+    "availableTimes": [
+      "Dienstag 14",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Mittwoch 14",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16"
+    ],
+    "day": "Donnerstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30536"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa631e",
+    "firstName": "Leila",
+    "lastName": "Maria",
+    "adress": "Kapellenstrasse 20",
+    "email": "febrink@gmx.de",
+    "phone": "15112672106",
+    "birthDate": "16.03.17",
+    "comment": "Leila möchte gerne in eine Gruppe mit anderen Mädchen (gemischt oder reine Mädchen Gruppe). Wir brauchen möglichst Fahrgemeinschaften und wohnen in Endenich am Fuße des Kreuzbergs.",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Donnerstag 16",
+      "Donnerstag 17"
+    ],
+    "day": "Donnerstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30539"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa631f",
+    "firstName": "Clara",
+    "lastName": "Malinowski",
+    "adress": "Ahornweg 2b",
+    "email": "a-malinowski@web.de",
+    "phone": "17620277474",
+    "birthDate": "20.02.2013",
+    "comment": "Wenn möglich bitte auf dem Brüser Berg.",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 17",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 15",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3053c"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6320",
+    "firstName": "Emilia",
+    "lastName": "Burchart",
+    "adress": "Berliner Ring 42 53175 Bonn",
+    "email": "christianetrott@hotmail.com",
+    "phone": "1714397136",
+    "birthDate": "11.12.2013",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": true,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 14",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "day": "Dienstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3053f"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6321",
+    "firstName": "Schieferdecker",
+    "lastName": "Colleen",
+    "adress": "Kurfürstenplatz 32, 53125 Bonn",
+    "email": "ruby.schieferdecker@gmx.de",
+    "phone": "15157653245",
+    "birthDate": "03.10.2014",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18"
+    ],
+    "day": "Freitag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3054e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6322",
+    "firstName": "Malou",
+    "lastName": "Brieger",
+    "adress": "Venusbergweg 42 , 53115 bonn",
+    "email": "miriam.brieger@gmx.de",
+    "phone": "15146304801",
+    "birthDate": "27.07.2014",
+    "comment": "Gebremst Ella zusammen",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": false,
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "day": "Montag",
+    "hour": 15,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30551"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6323",
+    "firstName": "Clara",
+    "lastName": "Schmitz-Hübsch",
+    "adress": "Im Rebgarten 6, 53127 Bonn",
+    "email": "mirja@schmitz-huebsch.info",
+    "phone": "1633114245",
+    "birthDate": "10.06.2014",
+    "comment": "Clara möchte gerne mit Veerle M. und Paulina M. zusammen trainieren. Dies wäre uns auch wegen der Bildung einer Fahrgemeinschaft wichtig. Danke!",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": false,
+    "availableTimes": [
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18"
+    ],
+    "day": "Dienstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30554"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6324",
+    "firstName": "Lenna",
+    "lastName": "Wolff",
+    "adress": "Im Brandengarten 20 53127 Bonn",
+    "email": "jasse.g@web.de",
+    "phone": "1724285204",
+    "birthDate": "21.10.15",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30557"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6325",
+    "firstName": "Jolin",
+    "lastName": "Kunsch",
+    "adress": "Venusbergweg 14, 53115 Bonn",
+    "email": "steffen.kunsch@gmail.com",
+    "phone": "17682087960",
+    "birthDate": "25.10.2014",
+    "comment": "",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": true,
+    "availableTimes": [
+      "Dienstag 15",
+      "Dienstag 16",
+      "Donnerstag 16",
+      "Donnerstag 17"
+    ],
+    "day": "Dienstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3055a"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6326",
+    "firstName": "Leni",
+    "lastName": "Doutch",
+    "adress": "Kaufmannstraße 38, 53115 Bonn",
+    "email": "m.doutch@gmx.de",
+    "phone": "17623812752",
+    "birthDate": "19.11.2012",
+    "comment": "Leni würde sehr gerne wieder mit den Mädels aus ihrer jetzigen (Sommer) Gruppe trainieren; sehr gerne wieder mit Clara B. und Madita B.L. zusammen; wir würden da auch versuchen ggf. Trainingszeiten/-orte (wenn möglich) anzupassen; ggf. würden wir uns auch in Zukunft für 2 Trainingseinheiten pro Woche interessieren - das können wir dann aber auch sehr gerne noch einmal im Laufer der Saison persönlich besprechen",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18"
+    ],
+    "day": "Montag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3055d"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6327",
+    "firstName": "Henry",
+    "lastName": "King",
+    "adress": "Im Uckerfeld 3",
+    "email": "patrick-king@web.de",
+    "phone": "1749909293",
+    "birthDate": "01.07.2011",
+    "comment": "SEPA-Mandat besteht aus dem Sommer",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 19,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30567"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6328",
+    "firstName": "Jasper",
+    "lastName": "Trump",
+    "adress": "Röckumstr 154, 53122 Bonn",
+    "email": "ines.eichwurzel@gmail.com",
+    "phone": "16096752459",
+    "birthDate": "08.07.2010",
+    "comment": "Jasper würde gerne wieder Mit Henry King in einer Gruppe trainieren. LG!",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 19,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3056f"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6329",
+    "firstName": "Johannes",
+    "lastName": "Küster",
+    "adress": "Ferdinandstr. 66, 53127 Bonn",
+    "email": "heike.n@gmx.de",
+    "phone": "17647947576",
+    "birthDate": "05.04.2009",
+    "comment": "Einzugsermächtigung liegt vor Liebe Grüße Heike",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 19,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30575"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa632a",
+    "firstName": "Elin",
+    "lastName": "Küster",
+    "adress": "Ferdinandstr. 66, 53127 Bonn",
+    "email": "heike.n@gmx.de",
+    "phone": "17647947576",
+    "birthDate": "09.07.2011",
+    "comment": "Hallo Nicole, Elin würde gern wieder in der alten Gruppe trainieren, schafft es dann aber leider nicht am Dienstag zu 16Uhr am BTHV zu sein, da sie Dienstag einen langen Schultag hat. Wir hoffen, dass es trotzdem klappt mit der Gruppe. Eine Einzugsermächtigung liegt euch vor. Grüße Heike ( Mama)",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Freitag",
+    "hour": 19,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30578"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa632b",
+    "firstName": "Clara",
+    "lastName": "Schrempp",
+    "adress": "Clemens-August-Straße 75c , 53115 Bonn",
+    "email": "maria.schrempp@gmail.com",
+    "phone": "1634134720",
+    "birthDate": "03.12.2012",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Freitag 17",
+      "Samstag 12"
+    ],
+    "day": "Donnerstag",
+    "hour": 16,
+    "coach": "68ef9095c8b2bc8c5f35f704",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ef9095c8b2bc8c5f35f704",
+        "_id": "68f0dbd928c99546b1d3057b"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa632c",
+    "firstName": "Finn",
+    "lastName": "Gruber",
+    "adress": "Riesstraße 24",
+    "email": "carsten.schmidt@swisslife-select.de",
+    "phone": "1703573558",
+    "birthDate": "24.01.2012",
+    "comment": "Bitte mit Linus und Benno planen",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": true,
+    "availableTimes": [
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "day": "Donnerstag",
+    "hour": 16,
+    "coach": "68ef9095c8b2bc8c5f35f704",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ef9095c8b2bc8c5f35f704",
+        "_id": "68f0dbd928c99546b1d30572"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa632d",
+    "firstName": "Stella",
+    "lastName": "Hilgers",
+    "adress": "Auf dem Heidgen 57",
+    "email": "stellahilgers897@gmail.com",
+    "phone": "4915123137318",
+    "birthDate": "08.09.2007",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 19",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30581"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa632e",
+    "firstName": "Vogel",
+    "lastName": "Julius",
+    "adress": "Auf den Steinen 11a, 53125 Bonn",
+    "email": "julianemuench@yahoo.de",
+    "phone": "1757461740",
+    "birthDate": "13.07.2012",
+    "comment": "Wie soeben mit Nicole Kreienborg besprochen, möchte Julius gerne den Club wechseln. Er hat in seinem alten Club bereits in der Mannschaft gespielt; Empfehlung erfolgte über Familie Wiedbrauck.",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3058d"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa632f",
+    "firstName": "Philipp",
+    "lastName": "Kluth",
+    "adress": "Baumschulallee 26",
+    "email": "isabel.boehme@gmx.de",
+    "phone": "15154653211",
+    "birthDate": "12.02.2013",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18"
+    ],
+    "day": "Dienstag",
+    "hour": 18,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30594"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6330",
+    "firstName": "Frida",
+    "lastName": "Schulmann",
+    "adress": "Haydnstr. 7 53115 Bonn",
+    "email": "wibkesch@googlemail.com",
+    "phone": "1707182459",
+    "birthDate": "31.12.2009",
+    "comment": "Bitte mit Lola Kornbrust in eine Trainingsgruppe",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Montag 14",
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 14",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 14",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 14",
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Freitag 19",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Montag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30590"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6331",
+    "firstName": "Madita",
+    "lastName": "Böckenförde Leininger",
+    "adress": "Beethovenstr. 57, 53115 Bonn",
+    "email": "julialeininger@online.de",
+    "phone": "1706406464",
+    "birthDate": "09.01.2013",
+    "comment": "Liebe Nicole, Danke für die Anmeldung. Madita würde gerne wieder mit Leni & Co. in eine Gruppe. Wir versuchen uns zeitlich ggf.s anzupassen. Ich wusste nicht was das für ein Niveau ist. Wenn sie mal besser spielt, hat sie sicherlich auch Interesse an Turnieren. Im Moment noch nicht. Herzliche Grüße und gutes Rütteln.",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18"
+    ],
+    "day": "Montag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d30597"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6332",
+    "firstName": "Dana",
+    "lastName": "Stoffels",
+    "adress": "Am Käferberg, 6",
+    "email": "markus.stoffels@gmx.net",
+    "phone": "22892599393",
+    "birthDate": "30.3.2010",
+    "comment": "Möglichst freitags. Auf jeden Fall zusammen mit Jana und Helene.",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18"
+    ],
+    "day": "Freitag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3059a"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6333",
+    "firstName": "Matthis",
+    "lastName": "Hundrup",
+    "adress": "Josef-Schell-Straße 3",
+    "email": "martin.hundrup@gmail.com",
+    "phone": "2288504314",
+    "birthDate": "21.10.2010",
+    "comment": "Matthis möchte gerne mit Justus Jahn und Lennert Maak trainieren, falls die beiden auch das Wintertraining buchen oder mit den älteren Spielern (U18).",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18"
+    ],
+    "day": "Montag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d3059e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6334",
+    "firstName": "Moritz",
+    "lastName": "Hoesch",
+    "adress": "Dohmstraße 30, 53121 Bonn",
+    "email": "silke.hoesch@me.com",
+    "phone": "1703332836",
+    "birthDate": "14.12.2014",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17"
+    ],
+    "day": "Montag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305a9"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6335",
+    "firstName": "Linus",
+    "lastName": "Hoesch",
+    "adress": "Dohmstraße 30, 53121 Bonn",
+    "email": "silke.hoesch@me.com",
+    "phone": "1703332836",
+    "birthDate": "17.07.2012",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "2",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Samstag 12",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Freitag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305af"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6336",
+    "firstName": "Veerle",
+    "lastName": "Meijboom",
+    "adress": "Zur Marterkapelle 63, 53127 Bonn",
+    "email": "karlijnmeijboom@hotmail.com",
+    "phone": "1622925948",
+    "birthDate": "17.01.2013",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "2",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305b2"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6337",
+    "firstName": "Leonard",
+    "lastName": "Welle",
+    "adress": "Am Alten Poststadion 4",
+    "email": "leonard.jv.welle@web.de",
+    "phone": "17684151256",
+    "birthDate": "06.09.2010",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "2",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305b5"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6338",
+    "firstName": "Luke",
+    "lastName": "Fuss",
+    "adress": "Lengsdorfer Hauptstraße 61",
+    "email": "fuss.w@gmx.de",
+    "phone": "1634715989",
+    "birthDate": "07.04.2012",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "day": "Montag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305b9"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6339",
+    "firstName": "Lara-Marie",
+    "lastName": "Wiedbrauck",
+    "adress": "Heinrich-Dittmaier-Str. 11, 53125 Bonn",
+    "email": "m.wiedbrauck@web.de",
+    "phone": "15228635056",
+    "birthDate": "15.03.2013",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "2",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Donnerstag 15",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 15",
+      "Freitag 16",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15"
+    ],
+    "day": "Freitag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305bd"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa633a",
+    "firstName": "Benno",
+    "lastName": "Koch-Gombert",
+    "adress": "Meckenheimer Allee 115",
+    "email": "mirja.koch-gombert@gmx.de",
+    "phone": "1773065418",
+    "birthDate": "30.11.2010",
+    "comment": "Benno würde gerne wieder mit Finn und Linus trainieren.",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18"
+    ],
+    "day": "Montag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305c7"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa633b",
+    "firstName": "Valentin",
+    "lastName": "Agsten",
+    "adress": "Schmittenpfädchen 2, 53121 Bonn",
+    "email": "agnes@agsten-online.de",
+    "phone": "17664644002",
+    "birthDate": "21.02.2012",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 16",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18"
+    ],
+    "day": "Freitag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305cd"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa633c",
+    "firstName": "Marlene",
+    "lastName": "Tripp",
+    "adress": "Beringstraße 33, 53115 Bonn",
+    "email": "eva.tripp@gmx.de",
+    "phone": "15221650406",
+    "birthDate": "06.02.2014",
+    "comment": "Donnerstags hat Marlene derzeit bis 16 Uhr Schule, kann also frühestens um 17 Uhr zum Training kommen.",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Samstag 12"
+    ],
+    "day": "Donnerstag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305d0"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa633d",
+    "firstName": "Benjamin",
+    "lastName": "Coers",
+    "adress": "Am Paulshof 3 53127 Bonn",
+    "email": "dr.a.cramer@web.de",
+    "phone": "1787610526",
+    "birthDate": "28.05.2013",
+    "comment": "Sehr gerne möchte ich meinen Sohn Benjamin für die Wintersaison als Schnupperkind anmelden. Den Erstkontakt hatte Patrick King freundlicherweise vermittelt. Wir sind Nachbarn von Frank, Arthur Schuhmacher. Ben würde sehr gerne in eine Gruppe mit Lara-Marie Wiedbrauck. Er kennt sie aus seiner Klasse. Von der Spielstärke her ist er Benno Gombert ähnlich. Gegen ihn hat er das letzte zumindest gewonnen Favorisiert ist der Samstag. Liebe Grüße und vielen Dank zumindest für den Versuch. A. Cramer",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14"
+    ],
+    "day": "Donnerstag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305d3"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa633e",
+    "firstName": "Justus",
+    "lastName": "Jahn",
+    "adress": "Wasserturmstrasse 20",
+    "email": "susanne.jahn@hbg-troisdorf.de",
+    "phone": "1778054222",
+    "birthDate": "26.05.2011",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "2",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305d8"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa633f",
+    "firstName": "Arthur",
+    "lastName": "Schelz",
+    "adress": "Am Paulshof 5, 53127 Bonn",
+    "email": "frank.schuhmacher@segrids.com",
+    "phone": "15125681672",
+    "birthDate": "12.01.2009",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "availableTimes": [
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Freitag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305dc"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6340",
+    "firstName": "Lukas",
+    "lastName": "Lederer",
+    "adress": "Prinz-Albert-Str. 12",
+    "email": "lukas.lederer06@gmx.de",
+    "phone": "1722510684",
+    "birthDate": "17.02.2006",
+    "comment": "",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+    "sex": "männlich",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18"
+    ],
+    "day": "Freitag",
+    "hour": 16,
+    "coach": "68eba899b18bd6e9d75da5ec",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5ec",
+        "_id": "68f0dbd928c99546b1d305e2"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6341",
+    "firstName": "Christopher",
+    "lastName": "Jahn",
+    "adress": "Wasserturmstr 20, 53127 Bonn",
+    "email": "christopherjahn.eu@gmail.com",
+    "phone": "15906175210",
+    "birthDate": "14.03.2024",
+    "comment": "Freitag am Brüserberg wäre natürlich am besten",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Mittwoch",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305eb"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6342",
+    "firstName": "Ben",
+    "lastName": "Frankenberg",
+    "adress": "Zur Marterkapelle, 69",
+    "email": "andrea.frankenberg@gmx.de",
+    "phone": "15125767787",
+    "birthDate": "30.07.2008",
+    "comment": "mit Joris (Teppich-Halle)...",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "day": "Samstag",
+    "hour": 13,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 13,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305ee"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6343",
+    "firstName": "Joris",
+    "lastName": "Muck",
+    "adress": "Zur Marterkapelle",
+    "email": "andrea_muck@web.de",
+    "phone": "228797590",
+    "birthDate": "28.12.2007",
+    "comment": "Teppichhalle",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "day": "Samstag",
+    "hour": 13,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 13,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305f1"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6344",
+    "firstName": "Laura",
+    "lastName": "Metzer",
+    "adress": "Jagdweg 25A",
+    "email": "arabesq@web.de",
+    "phone": "1775289347",
+    "birthDate": "30.10.2009",
+    "comment": "Laura würde gerne mit Elsa trainieren, wenn möglich, vielen Dank!",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18"
+    ],
+    "day": "Donnerstag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbd928c99546b1d305f6"
+      }
+    ]
+  },
+  {
+    "_id": "68ef85667031d46332aa6345",
+    "firstName": "Claire",
+    "lastName": "Loheider",
+    "adress": "Am Burggraben 10",
+    "email": "claire@loheider.de",
+    "phone": "15141265553",
+    "birthDate": "26.05.2008",
+    "comment": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Mittwoch 18",
+      "Donnerstag 15",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "day": "Donnerstag",
+    "hour": 17,
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d305fa"
+      }
+    ]
+  },
+  {
+    "_id": "68ef89df7031d46332aa6570",
+    "firstName": "Ben",
+    "lastName": "Lange",
+    "adress": "Alexander-Koenig-Str. 10, 53115 Bonn",
+    "email": "lists@einbecker.net",
+    "phone": "015203255786",
+    "birthDate": "25.02.2016",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "coach": "68ef9051c8b2bc8c5f35f701",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ef9051c8b2bc8c5f35f701",
+        "_id": "68f0dbda28c99546b1d30600"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8c0ec8b2bc8c5f35f5cf",
+    "firstName": "Mia",
+    "lastName": "Lange",
+    "adress": "Alexander-Koenig-Str. 10, 53115 Bonn",
+    "email": "lists@einbecker.net",
+    "phone": "015203255786",
+    "birthDate": "1.11.2018",
+    "comment": "Bitte wenn möglich Ben und Mia parallel oder hintereinander einplanen. Danke!",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Rot",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Mittwoch",
+    "hour": 16,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30609"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8c4ec8b2bc8c5f35f68e",
+    "firstName": "Annika",
+    "lastName": "Jahn",
+    "adress": "Wasserturmstr. 20",
+    "email": "annikajahn.eu@gmail.com",
+    "phone": "15906174919",
+    "birthDate": "07.08.2008",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 18",
+      "Donnerstag 18"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3060c"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8ca2c8b2bc8c5f35f699",
+    "firstName": "Helene",
+    "lastName": "Muck",
+    "adress": "Zur Marterkapelle 71",
+    "email": "andrea_muck@web.de",
+    "phone": "0228797590",
+    "birthDate": "07.03.2011",
+    "comment": "Mit Dana und Jana am liebsten Freitag",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Mittwoch",
+    "hour": 17,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3060f"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8cb2c8b2bc8c5f35f69e",
+    "firstName": "Paulina",
+    "lastName": "Muck",
+    "adress": "Zur Marterkapelle 71",
+    "email": "andrea_muck@web.de",
+    "phone": "0228797590",
+    "birthDate": "28.01.2013",
+    "comment": "Mit Veerle und Clara",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Dienstag 17",
+      "Dienstag 18"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Dienstag",
+    "hour": 17,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30614"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8d28c8b2bc8c5f35f6ab",
+    "firstName": "Jana",
+    "lastName": "Frankenberg",
+    "adress": "Zur Marterkapelle, 69",
+    "email": "andrea.frankenberg@gmx.de",
+    "phone": "02289691914",
+    "birthDate": "20.11.2010",
+    "comment": "besser Freitag",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Mittwoch",
+    "hour": 17,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30618"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8d85c8b2bc8c5f35f6b2",
+    "firstName": "Marie",
+    "lastName": "Wolff",
+    "adress": "Im Brandengarten 20 53137 Bonn",
+    "email": "jasse.g@web.de",
+    "phone": "01724285204",
+    "birthDate": "31.5.12",
+    "comment": "Bankdaten sind bereits hinterlegt",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Mittwoch",
+    "hour": 17,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3061e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8dafc8b2bc8c5f35f6b9",
+    "firstName": "Andrea",
+    "lastName": "Muck",
+    "adress": "Zur Marterkapelle 71",
+    "email": "andrea_muck@web.de",
+    "phone": "0228797590",
+    "birthDate": "20.09.73",
+    "comment": "",
+    "comment2": "2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Samstag 10"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Samstag",
+    "hour": 10,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30624"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8db8c8b2bc8c5f35f6be",
+    "firstName": "Anneke",
+    "lastName": "Malinowski",
+    "adress": "Ahornweg 2b, 53347 Alfter",
+    "email": "a-malinowski@web.de",
+    "phone": "017620277474",
+    "birthDate": "13.11.1982",
+    "comment": "Am liebsten Donnerstags oder Freitags. Gerne mit Nicole Berg zusammen.",
+    "comment2": "2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "2",
+    "availableTimes": [
+      "Montag 19",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "day": "Donnerstag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbda28c99546b1d30627"
+      }
+    ]
+  },
+  {
+    "_id": "68ef8dd3c8b2bc8c5f35f6c7",
+    "firstName": "Andrea",
+    "lastName": "Frankenberg",
+    "adress": "Zur Marterkapelle, 69",
+    "email": "andrea.frankenberg@gmx.de",
+    "phone": "015118822236",
+    "birthDate": "21.02.1973",
+    "comment": "",
+    "comment2": "1) Freizeit, 2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Samstag 10"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Samstag",
+    "hour": 10,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3062d"
+      }
+    ]
+  },
+  {
+    "_id": "68ef983ac8b2bc8c5f35f826",
+    "firstName": "Florian",
+    "lastName": "Elias",
+    "adress": "Lengsdorfer Hauptstr. 51",
+    "email": "mohr-andrae@uni-bonn.de",
+    "phone": "01785335224",
+    "birthDate": "20.01 2017",
+    "comment": "Florian wird während des Wintertrainings 9 (Januar), deshalb haben wir ihn für Orange angemeldet. Er könnte natürlich auch noch weiter mit Rot trainieren die Entscheidung überlassen wir Nicole.",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Mittwoch 18",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Samstag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30632"
+      }
+    ]
+  },
+  {
+    "_id": "68ef984ec8b2bc8c5f35f82d",
+    "firstName": "Alexander",
+    "lastName": "Ganiev",
+    "adress": "Nikolausstrasse 43, 53129, Bonn",
+    "email": "yihuan_chang@yahoo.com",
+    "phone": "015560393209",
+    "birthDate": "02.12.2019",
+    "comment": "",
+    "comment2": "",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Kinderland",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 18",
+      "Dienstag 18",
+      "Donnerstag 18",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Samstag",
+    "hour": 14,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30638"
+      }
+    ]
+  },
+  {
+    "_id": "68ef98a0c8b2bc8c5f35f844",
+    "firstName": "Julius",
+    "lastName": "Hof",
+    "adress": "Venusbergweg 18, 53115 Bonn",
+    "email": "anna-linakraft@gmx.de",
+    "phone": "015118116128",
+    "birthDate": "05.11.2017",
+    "comment": "Gerne in den Hallen Brüser Berg, Röttgen und Duisdorf wegen Umzug nach Heimerzheim, lieben Dank",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Dienstag 18",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19"
+    ],
+    "coach": "68ef9051c8b2bc8c5f35f701",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ef9051c8b2bc8c5f35f701",
+        "_id": "68f0dbda28c99546b1d3063e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef98acc8b2bc8c5f35f849",
+    "firstName": "Charlotte",
+    "lastName": "Jansen",
+    "adress": "Dohmstraße 17, 53121 Bonn",
+    "email": "laragjansen@icloud.com",
+    "phone": "017683010745",
+    "birthDate": "16.02.2020",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Kinderland",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 16",
+      "Dienstag 16",
+      "Mittwoch 15",
+      "Mittwoch 16",
+      "Donnerstag 16",
+      "Freitag 15",
+      "Freitag 16",
+      "Samstag 12",
+      "Samstag 13",
+      "Samstag 14",
+      "Samstag 15",
+      "Samstag 16"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Samstag",
+    "hour": 14,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30643"
+      }
+    ]
+  },
+  {
+    "_id": "68ef98c1c8b2bc8c5f35f850",
+    "firstName": "Paula",
+    "lastName": "Nettekoven",
+    "adress": "Beethovenstr. 54, 53115 Bonn",
+    "email": "antonia.blaer@gmail.com",
+    "phone": "017621829324",
+    "birthDate": "12.10.2015",
+    "comment": "Paula würde gerne zusammen mit Paul Koch-Gomert trainieren, damit sie vor allem zusammen zum Training fahren können.",
+    "comment2": "",
+    "member": false,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Orange",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 15",
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 17",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "coach": "68ef9051c8b2bc8c5f35f701",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ef9051c8b2bc8c5f35f701",
+        "_id": "68f0dbda28c99546b1d30646"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9902c8b2bc8c5f35f863",
+    "firstName": "Jaron",
+    "lastName": "Lockmann",
+    "adress": "Kaufmannstr. 50 53115 Bonn",
+    "email": "klaus.eschweiler@t-online.de",
+    "phone": "01716449787",
+    "birthDate": "12.08.2008",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 16,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3064c"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9913c8b2bc8c5f35f86a",
+    "firstName": "Gruber",
+    "lastName": "Ella",
+    "adress": "Riesstrasse 24 53113 Bonn",
+    "email": "carsten.schmidt@swisslife-select.de",
+    "phone": "01703573558",
+    "birthDate": "19.07.2014",
+    "comment": "Gerne wie im Sommer mit Malou und Emilia",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Samstag 12",
+      "Samstag 13"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Dienstag",
+    "hour": 16,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30650"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9939c8b2bc8c5f35f873",
+    "firstName": "Levi",
+    "lastName": "Schüler",
+    "adress": "Königstr. 71, 53115 Bonn",
+    "email": "levilevel@gmx.de",
+    "phone": "015738924178",
+    "birthDate": "08.09.2008",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68ef9051c8b2bc8c5f35f701",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 16,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68ef9051c8b2bc8c5f35f701",
+        "_id": "68f0dbda28c99546b1d30653"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9944c8b2bc8c5f35f878",
+    "firstName": "Nadim",
+    "lastName": "El Gharabawy",
+    "adress": "Schieffelingsweg 22, 53123 Bonn",
+    "email": "m_naggar81@yahoo.com",
+    "phone": "015906598284",
+    "birthDate": "18.04.2011",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Mittwoch 16",
+      "Mittwoch 17",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Freitag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3065c"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9951c8b2bc8c5f35f87d",
+    "firstName": "Nadia",
+    "lastName": "El Gharabawy",
+    "adress": "Schieffelingsweg 22, 53123 Bonn",
+    "email": "m_naggar81@yahoo.com",
+    "phone": "015906598284",
+    "birthDate": "13.09.2012",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Team",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Donnerstag 15",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Freitag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 15,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30664"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9971c8b2bc8c5f35f888",
+    "firstName": "Juno",
+    "lastName": "Glaser",
+    "adress": "Im Mühlenbach 30",
+    "email": "juno.glaser@lfs-bonn.de",
+    "phone": "15906052115",
+    "birthDate": "15.02.2009",
+    "comment": "",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Gelb Hobby",
+    "team": false,
+    "groupSize": "",
+    "availableTimes": [
+      "Dienstag 17",
+      "Dienstag 18"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Dienstag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30669"
+      }
+    ]
+  },
+  {
+    "_id": "68ef997bc8b2bc8c5f35f88d",
+    "firstName": "Vincent",
+    "lastName": "Schrade",
+    "adress": "Hubert-Maurer-Str. 3, 53127 Bonn",
+    "email": "hjsk@gmx.de",
+    "phone": "01706969263",
+    "birthDate": "07.11.2013",
+    "comment": "Vincent möchte gerne in der Gruppe mit Veerle trainieren.",
+    "comment2": "",
+    "member": true,
+    "adult": false,
+    "frequence": "1",
+    "skillLevel": "",
+    "sex": "",
+    "trainigGroup": "Grün",
+    "team": true,
+    "groupSize": "",
+    "availableTimes": [
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Donnerstag 15",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Freitag 15",
+      "Freitag 17"
+    ],
+    "coach": "68ef9095c8b2bc8c5f35f704",
+    "__v": 3,
+    "day": "Donnerstag",
+    "hour": 15,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ef9095c8b2bc8c5f35f704",
+        "_id": "68f0dbda28c99546b1d3066e"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9afac8b2bc8c5f35f8fc",
+    "firstName": "Nicole",
+    "lastName": "Berg",
+    "adress": "Flodelingsweg 34 53121 Bonn",
+    "email": "nicole.berg@magenta.de",
+    "phone": "01718658204",
+    "birthDate": "",
+    "comment": "",
+    "comment2": "1) Freizeit, 2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "day": "Donnerstag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbda28c99546b1d30671"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b0bc8b2bc8c5f35f903",
+    "firstName": "Thiemo",
+    "lastName": "Meyfarth",
+    "adress": "An der Josefshöhe 43, 53117 Bonn",
+    "email": "thiemo.meyfarth@yahoo.de",
+    "phone": "017684659303",
+    "birthDate": "",
+    "comment": "",
+    "comment2": "1) Freizeit, 2) Fitness, 3) Turniere, 4) Mannschaft",
+    "member": true,
+    "adult": true,
+    "frequence": "5",
+    "skillLevel": "Fortgeschritten",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": true,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 17",
+      "Freitag 18",
+      "Donnerstag 20"
+    ],
+    "coach": "68eba899b18bd6e9d75da5ec",
+    "__v": 3,
+    "day": "Freitag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5ec",
+        "_id": "68f0dbda28c99546b1d30680"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b1dc8b2bc8c5f35f90a",
+    "firstName": "Roby",
+    "lastName": "Patani",
+    "adress": "Kreuzbergstr. 6b",
+    "email": "rpatani@gmx.de",
+    "phone": "01713174150",
+    "birthDate": "",
+    "comment": "",
+    "comment2": "1) Freizeit",
+    "member": true,
+    "adult": true,
+    "frequence": "3",
+    "skillLevel": "Fortgeschritten",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 19",
+      "Donnerstag 19",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68eba899b18bd6e9d75da5ec",
+    "__v": 3,
+    "day": "Freitag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5ec",
+        "_id": "68f0dbda28c99546b1d30661"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b26c8b2bc8c5f35f90f",
+    "firstName": "Barbara",
+    "lastName": "Bursch-Brustkern",
+    "adress": "Kaufmannstr. 59",
+    "email": "bbbursch@web.de",
+    "phone": "0151 23326549",
+    "birthDate": "",
+    "comment": "",
+    "comment2": "1) Freizeit",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Dienstag 11",
+      "Donnerstag 10",
+      "Donnerstag 11"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Dienstag",
+    "hour": 11,
+    "assignments": [
+      {
+        "day": "Dienstag",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3068b"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b32c8b2bc8c5f35f914",
+    "firstName": "Maike",
+    "lastName": "Just",
+    "adress": "Franz-Lohe-Str. 12",
+    "email": "just@gmx.net",
+    "phone": "01778254514",
+    "birthDate": "",
+    "comment": "Team mit Andrea Muck, Andrea Frankenberg und Sandra.",
+    "comment2": "1) Freizeit",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Samstag 10"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Samstag",
+    "hour": 10,
+    "assignments": [
+      {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d30691"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b5ec8b2bc8c5f35f923",
+    "firstName": "Ulrike",
+    "lastName": "Patani",
+    "adress": "Kreuzbergstr. 6 B, 53127 Bonn",
+    "email": "ulrike.patani@gmx.net",
+    "phone": "0491713172960",
+    "birthDate": "15.07.1969",
+    "comment": "",
+    "comment2": "1) Freizeit",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Dienstag 15",
+      "Dienstag 16",
+      "Mittwoch 10",
+      "Mittwoch 11",
+      "Mittwoch 12",
+      "Donnerstag 10",
+      "Donnerstag 11"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Mittwoch",
+    "hour": 11,
+    "assignments": [
+      {
+        "day": "Mittwoch",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3067a"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b66c8b2bc8c5f35f928",
+    "firstName": "Stefan",
+    "lastName": "Löwe",
+    "adress": "Buchfinkenweg 7, 53123 Bonn",
+    "email": "stefan.loewe@web.de",
+    "phone": "01788684601",
+    "birthDate": "15.06.1988",
+    "comment": "",
+    "comment2": "1) Freizeit, 2) Fitness",
+    "member": false,
+    "adult": true,
+    "frequence": "4",
+    "skillLevel": "Anfänger",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": true,
+    "groupSize": "4",
+    "availableTimes": [
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "day": "Donnerstag",
+    "hour": 19,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbda28c99546b1d30699"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b6ec8b2bc8c5f35f92d",
+    "firstName": "Helga",
+    "lastName": "Heydweiller",
+    "adress": "Von-Kügelgen-Str., 6",
+    "email": "info@heydweiller.de",
+    "phone": "01632580790",
+    "birthDate": "30.04.1957",
+    "comment": "Ich möchte mit Ulrike Patani , Barbara Bursch-Brustkern und Sabine Löhrl in einer Gruppe trainieren",
+    "comment2": "1) Freizeit, 2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Donnerstag 10",
+      "Donnerstag 11"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Donnerstag",
+    "hour": 11,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 11,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3067d"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b75c8b2bc8c5f35f932",
+    "firstName": "Julia",
+    "lastName": "Leininger",
+    "adress": "Beethovenstr 57",
+    "email": "julialeininger@online.de",
+    "phone": "01706406464",
+    "birthDate": "01.09.1976",
+    "comment": "Gerne mit Claudia, Tatjana und Svenja",
+    "comment2": "2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 18,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3069c"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b7ec8b2bc8c5f35f937",
+    "firstName": "Svenja",
+    "lastName": "Gloger",
+    "adress": "Rosenburgweg 3",
+    "email": "svenjagloger@web.de",
+    "phone": "+49 151 65212271",
+    "birthDate": "26.06.1967",
+    "comment": "Wegen meiner Berufstätigkeit sind Termine ab 17:00 ideal.",
+    "comment2": "1) Freizeit",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 12",
+      "Montag 13",
+      "Montag 16",
+      "Montag 17",
+      "Montag 18",
+      "Montag 19",
+      "Dienstag 13",
+      "Dienstag 14",
+      "Dienstag 15",
+      "Dienstag 16",
+      "Dienstag 17",
+      "Donnerstag 16",
+      "Donnerstag 16",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Freitag 15",
+      "Freitag 16",
+      "Freitag 17",
+      "Freitag 18",
+      "Freitag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+    "__v": 3,
+    "day": "Donnerstag",
+    "hour": 18,
+    "assignments": [
+      {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ef8e9cc8b2bc8c5f35f6fa",
+        "_id": "68f0dbda28c99546b1d30687"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b89c8b2bc8c5f35f93c",
+    "firstName": "Jonas",
+    "lastName": "Plath",
+    "adress": "Dohmstraße 19, 53121 Bonn",
+    "email": "jonas.plath@rwth-aachen.de",
+    "phone": "0171 4177832",
+    "birthDate": "27.11.1990",
+    "comment": "Gerne wie bisher mit: Kristina Müller Friederike Förster Jan",
+    "comment2": "",
+    "member": true,
+    "adult": true,
+    "frequence": "1",
+    "skillLevel": "Anfänger mit Grundkenntnissen",
+    "sex": "männlich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19",
+      "Dienstag 17",
+      "Donnerstag 17",
+      "Donnerstag 18",
+      "Donnerstag 19",
+      "Donnerstag 20"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 19,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d3069f"
+      }
+    ]
+  },
+  {
+    "_id": "68ef9b92c8b2bc8c5f35f941",
+    "firstName": "Claudia",
+    "lastName": "Gregor-Lawrenz",
+    "adress": "Kreuzbergstr., 29",
+    "email": "clawrenz@muenster.de",
+    "phone": "017678032691",
+    "birthDate": "24.01.1971",
+    "comment": "",
+    "comment2": "1) Freizeit, 2) Fitness",
+    "member": true,
+    "adult": true,
+    "frequence": "2",
+    "skillLevel": "Fortgeschritten",
+    "sex": "weiblich",
+    "trainigGroup": "",
+    "team": false,
+    "groupSize": "4",
+    "availableTimes": [
+      "Montag 18",
+      "Montag 19"
+    ],
+    "coach": "68eba899b18bd6e9d75da5f0",
+    "__v": 3,
+    "day": "Montag",
+    "hour": 19,
+    "assignments": [
+      {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68eba899b18bd6e9d75da5f0",
+        "_id": "68f0dbda28c99546b1d306a2"
+      }
+    ]
+  }
+]

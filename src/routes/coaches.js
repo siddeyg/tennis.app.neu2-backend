@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import Coach from "../models/Coach.js";
 
 const router = express.Router();
@@ -17,13 +18,8 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Vorname und Nachname sind erforderlich" });
     }
 
-    // Check for duplicate email if provided
-    if (req.body.email) {
-      const existingCoach = await Coach.findOne({ email: req.body.email });
-      if (existingCoach) {
-        return res.status(409).json({ error: "E-Mail-Adresse bereits vorhanden" });
-      }
-    }
+    // Note: Duplicate email check removed - coaches can share emails (same as students)
+    // Multiple coaches might use the same club email address
 
     const coach = new Coach(req.body);
     await coach.save();
@@ -39,11 +35,39 @@ router.post("/", async (req, res) => {
 
 // Trainer löschen
 router.delete("/:id", async (req, res) => {
-  const coach = await Coach.findByIdAndDelete(req.params.id);
-  if (!coach) {
-    return res.status(404).json({ error: "Coach not found" });
+  try {
+    // Try both string ID and ObjectId format for compatibility
+    // Local DB may use ObjectId, server DB may use string IDs
+    let result = await Coach.collection.findOneAndDelete(
+      { _id: req.params.id } // Try string first
+    );
+
+    // If not found with string, try ObjectId format
+    if (!result?.value && !result?._id) {
+      try {
+        const objectId = new mongoose.Types.ObjectId(req.params.id);
+        result = await Coach.collection.findOneAndDelete(
+          { _id: objectId }
+        );
+      } catch (err) {
+        // ObjectId conversion failed, continue with original result
+      }
+    }
+
+    // MongoDB native driver returns { value: document } not document directly
+    const coach = result?.value || result;
+
+    if (!coach) {
+      return res.status(404).json({ error: "Coach not found" });
+    }
+    res.json({ message: "Coach deleted" });
+  } catch (error) {
+    console.error("Fehler beim Löschen des Trainers:", error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: "Ungültige Trainer-ID" });
+    }
+    res.status(500).json({ error: "Fehler beim Löschen des Trainers" });
   }
-  res.json({ message: "Coach deleted" });
 });
 
 // Trainer-Daten aktualisieren
@@ -64,17 +88,11 @@ router.put("/:id", async (req, res) => {
       comment,
     } = req.body;
 
-    // Check for duplicate email if changed
-    if (email) {
-      const existingCoach = await Coach.findOne({ email, _id: { $ne: req.params.id } });
-      if (existingCoach) {
-        return res.status(409).json({ error: "E-Mail-Adresse bereits vorhanden" });
-      }
-    }
+    // Note: Duplicate email check removed - coaches can share emails (same as students)
+    // Multiple coaches might use the same club email address
 
-    const coach = await Coach.findByIdAndUpdate(
-      req.params.id,
-      {
+    const updateData = {
+      $set: {
         firstName,
         lastName,
         birthday,
@@ -87,9 +105,34 @@ router.put("/:id", async (req, res) => {
         CoachingAdultLevels,
         CoachingChildrenLevels,
         comment,
-      },
-      { new: true, runValidators: true }
+      }
+    };
+
+    // Try both string ID and ObjectId format for compatibility
+    // Local DB may use ObjectId, server DB may use string IDs
+    let result = await Coach.collection.findOneAndUpdate(
+      { _id: req.params.id }, // Try string first
+      updateData,
+      { returnDocument: 'after' }
     );
+
+    // If not found with string, try ObjectId format
+    if (!result?.value && !result?._id) {
+      try {
+        const objectId = new mongoose.Types.ObjectId(req.params.id);
+        result = await Coach.collection.findOneAndUpdate(
+          { _id: objectId },
+          updateData,
+          { returnDocument: 'after' }
+        );
+      } catch (err) {
+        // ObjectId conversion failed, continue with original result
+      }
+    }
+
+    // MongoDB native driver returns { value: document } not document directly
+    const coach = result?.value || result;
+
     if (!coach) {
       return res.status(404).json({ error: "Trainer nicht gefunden" });
     }

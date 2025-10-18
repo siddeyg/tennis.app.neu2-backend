@@ -1,0 +1,112 @@
+Kurs ID,Tag,Uhrzeit,Trainer,Gruppe,Kursgröße,Schüler Name,Schüler Level,Geschlecht
+1,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Anfänger mit Grundkenntnissen",4,"Friederike Förster","Anfänger mit Grundkenntnissen",weiblich
+1,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Anfänger mit Grundkenntnissen",4,"Kristina Müller","Anfänger mit Grundkenntnissen",weiblich
+1,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Anfänger mit Grundkenntnissen",4,"Marie Köhler","Anfänger mit Grundkenntnissen",weiblich
+1,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Anfänger mit Grundkenntnissen",4,"Silke Hoesch","Anfänger mit Grundkenntnissen",weiblich
+2,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Fortgeschritten",4,"Rebecca Mau","Fortgeschritten",weiblich
+2,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Fortgeschritten",4,"Anneke Malinowski","Fortgeschritten",weiblich
+2,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Fortgeschritten",4,"Nicole Berg","Fortgeschritten",weiblich
+2,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Fortgeschritten",4,"Svenja Gloger","Fortgeschritten",weiblich
+3,Donnerstag,20:00,"Helge Padberg","adult-männlich-Anfänger",3,"Antonio Schmandke","Anfänger",männlich
+3,Donnerstag,20:00,"Helge Padberg","adult-männlich-Anfänger",3,"Áron Horváth","Anfänger",männlich
+3,Donnerstag,20:00,"Helge Padberg","adult-männlich-Anfänger",3,"Stefan Löwe","Anfänger",männlich
+4,Donnerstag,20:00,"Helge Padberg","adult-männlich-Anfänger mit Grundkenntnissen",2,"Jan Volkhardt","Anfänger mit Grundkenntnissen",männlich
+4,Donnerstag,20:00,"Helge Padberg","adult-männlich-Anfänger mit Grundkenntnissen",2,"Jonas Plath","Anfänger mit Grundkenntnissen",männlich
+5,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Anfänger",2,"Eva Plath","Anfänger",weiblich
+5,Donnerstag,20:00,"Helge Padberg","adult-weiblich-Anfänger",2,"Kinga Fülöp","Anfänger",weiblich
+6,Donnerstag,20:00,"Helge Padberg","adult-männlich-Fortgeschritten",2,"Thiemo Meyfarth","Fortgeschritten",männlich
+6,Donnerstag,20:00,"Helge Padberg","adult-männlich-Fortgeschritten",2,"Roby Patani","Fortgeschritten",männlich
+7,Donnerstag,20:00,"Helge Padberg","adult-männlich-Leistungsspieler:innen / Turnierspieler:innen",1,"Lennart Maak","Leistungsspieler:innen / Turnierspieler:innen",männlich
+8,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Dana Stoffels","Gelb Team",unknown
+8,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Matthis Hundrup","Gelb Team",unknown
+8,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Moritz Hoesch","Gelb Team",unknown
+8,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Linus Hoesch","Gelb Team",unknown
+9,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Leonard Welle","Gelb Team",unknown
+9,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Luke Fuss","Gelb Team",unknown
+9,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Benno Koch-Gombert","Gelb Team",unknown
+9,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Valentin Agsten","Gelb Team",unknown
+10,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Marlene Tripp","Gelb Team",unknown
+10,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Justus Jahn","Gelb Team",unknown
+10,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Arthur Schelz","Gelb Team",unknown
+10,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Christopher Jahn","Gelb Team",unknown
+11,Montag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Leni Doutch","Gelb Hobby",unknown
+11,Montag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Johannes Küster","Gelb Hobby",unknown
+11,Montag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Elin Küster","Gelb Hobby",unknown
+11,Montag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Frida Schulmann","Gelb Hobby",unknown
+12,Montag,16:00,"Nicole Kreienborg","child-Grün",4,"Clara Malinowski","Grün",unknown
+12,Montag,16:00,"Nicole Kreienborg","child-Grün",4,"Emilia Burchart","Grün",unknown
+12,Montag,16:00,"Nicole Kreienborg","child-Grün",4,"Malou Brieger","Grün",unknown
+12,Montag,16:00,"Nicole Kreienborg","child-Grün",4,"Lenna Wolff","Grün",unknown
+13,Dienstag,16:00,"Nicole Kreienborg","child-Grün",4,"Clara Schmitz-Hübsch","Grün",unknown
+13,Dienstag,16:00,"Nicole Kreienborg","child-Grün",4,"Jolin Kunsch","Grün",unknown
+13,Dienstag,16:00,"Nicole Kreienborg","child-Grün",4,"Gruber Ella","Grün",unknown
+13,Dienstag,16:00,"Nicole Kreienborg","child-Grün",4,"Vincent Schrade","Grün",unknown
+14,Mittwoch,16:00,"Nicole Kreienborg","child-Orange",3,"Henrik Hoesch","Orange",unknown
+14,Mittwoch,16:00,"Nicole Kreienborg","child-Orange",3,"Liam Döring","Orange",unknown
+14,Mittwoch,16:00,"Nicole Kreienborg","child-Orange",3,"Maja Schrempp","Orange",unknown
+15,Mittwoch,16:00,"Nicole Kreienborg","child-Rot",4,"Maja Dietzler","Rot",unknown
+15,Mittwoch,16:00,"Nicole Kreienborg","child-Rot",4,"Victoria Schmitt","Rot",unknown
+15,Mittwoch,16:00,"Nicole Kreienborg","child-Rot",4,"Laura Heidemann","Rot",unknown
+15,Mittwoch,16:00,"Nicole Kreienborg","child-Rot",4,"Mia Lange","Rot",unknown
+16,Donnerstag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Clara Schrempp","Gelb Hobby",unknown
+16,Donnerstag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Finn Gruber","Gelb Hobby",unknown
+16,Donnerstag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Jaron Lockmann","Gelb Hobby",unknown
+16,Donnerstag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Levi Schüler","Gelb Hobby",unknown
+17,Freitag,16:00,"Nicole Kreienborg","child-Orange",4,"Paul Koch-Gombert","Orange",unknown
+17,Freitag,16:00,"Nicole Kreienborg","child-Orange",4,"Florian Elias","Orange",unknown
+17,Freitag,16:00,"Nicole Kreienborg","child-Orange",4,"Julius Hof","Orange",unknown
+17,Freitag,16:00,"Nicole Kreienborg","child-Orange",4,"Paula Nettekoven","Orange",unknown
+18,Freitag,16:00,"Nicole Kreienborg","child-Gelb Team",4,"Lara-Marie Wiedbrauck","Gelb Team",unknown
+18,Freitag,16:00,"Nicole Kreienborg","child-Gelb Team",4,"Marie Wolff","Gelb Team",unknown
+18,Freitag,16:00,"Nicole Kreienborg","child-Gelb Team",4,"Nadim El Gharabawy","Gelb Team",unknown
+18,Freitag,16:00,"Nicole Kreienborg","child-Gelb Team",4,"Nadia El Gharabawy","Gelb Team",unknown
+19,Freitag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Veerle Meijboom","Gelb Team",unknown
+19,Freitag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Claire Loheider","Gelb Team",unknown
+19,Freitag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Helene Muck","Gelb Team",unknown
+19,Freitag,17:00,"Nicole Kreienborg","child-Gelb Team",4,"Jana Frankenberg","Gelb Team",unknown
+20,Freitag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Henry King","Gelb Hobby",unknown
+20,Freitag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Jasper Trump","Gelb Hobby",unknown
+20,Freitag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Vogel Julius","Gelb Hobby",unknown
+20,Freitag,17:00,"Nicole Kreienborg","child-Gelb Hobby",4,"Philipp Kluth","Gelb Hobby",unknown
+21,Samstag,12:00,"Nicole Kreienborg","child-Kinderland",3,"Lysander Pruys","Kinderland",unknown
+21,Samstag,12:00,"Nicole Kreienborg","child-Kinderland",3,"Nic K","Kinderland",unknown
+21,Samstag,12:00,"Nicole Kreienborg","child-Kinderland",3,"Alexander Ganiev","Kinderland",unknown
+22,Samstag,12:00,"Nicole Kreienborg","child-Rot",4,"Fender Meijboom","Rot",unknown
+22,Samstag,12:00,"Nicole Kreienborg","child-Rot",4,"Mats Vogel","Rot",unknown
+22,Samstag,12:00,"Nicole Kreienborg","child-Rot",4,"Mert Bakir","Rot",unknown
+22,Samstag,12:00,"Nicole Kreienborg","child-Rot",4,"Josef Wong","Rot",unknown
+23,Samstag,12:00,"Nicole Kreienborg","child-Gelb Team",3,"Benjamin Coers","Gelb Team",unknown
+23,Samstag,12:00,"Nicole Kreienborg","child-Gelb Team",3,"Ben Frankenberg","Gelb Team",unknown
+23,Samstag,12:00,"Nicole Kreienborg","child-Gelb Team",3,"Joris Muck","Gelb Team",unknown
+24,Mittwoch,15:00,"Nicole Kreienborg","child-Kinderland",2,"Marlene Zock","Kinderland",unknown
+24,Mittwoch,15:00,"Nicole Kreienborg","child-Kinderland",2,"Charlotte Jansen","Kinderland",unknown
+25,Dienstag,17:00,"Nicole Kreienborg","child-Gelb Team",2,"Paulina Muck","Gelb Team",unknown
+25,Dienstag,17:00,"Nicole Kreienborg","child-Gelb Team",2,"Laura Metzer","Gelb Team",unknown
+26,Dienstag,17:00,"Nicole Kreienborg","child-Gelb Hobby",2,"Juno Glaser","Gelb Hobby",unknown
+26,Dienstag,17:00,"Nicole Kreienborg","child-Gelb Hobby",2,"Madita Böckenförde Leininger","Gelb Hobby",unknown
+27,Donnerstag,16:00,"Nicole Kreienborg","child-Orange",3,"Moritz Burchart","Orange",unknown
+27,Donnerstag,16:00,"Nicole Kreienborg","child-Orange",3,"Leila Maria","Orange",unknown
+27,Donnerstag,16:00,"Nicole Kreienborg","child-Orange",3,"Ben Lange","Orange",unknown
+28,Donnerstag,15:00,"Nicole Kreienborg","child-Orange",1,"Laura Wiedbrauck","Orange",unknown
+29,Montag,17:00,"Nicole Kreienborg","child-Gelb Team",1,"Annika Jahn","Gelb Team",unknown
+30,Mittwoch,16:00,"Nicole Kreienborg","child-Grün",1,"Schieferdecker Colleen","Grün",unknown
+31,Samstag,12:00,"Nicole Kreienborg","child-Gelb Hobby",1,"Stella Hilgers","Gelb Hobby",unknown
+32,Samstag,11:00,"Nicole Kreienborg","adult-weiblich-Anfänger mit Grundkenntnissen",3,"Sandra Bourbeck","Anfänger mit Grundkenntnissen",weiblich
+32,Samstag,11:00,"Nicole Kreienborg","adult-weiblich-Anfänger mit Grundkenntnissen",3,"Ilonka Döge","Anfänger mit Grundkenntnissen",weiblich
+32,Samstag,11:00,"Nicole Kreienborg","adult-weiblich-Anfänger mit Grundkenntnissen",3,"Claudia Frank","Anfänger mit Grundkenntnissen",weiblich
+33,Freitag,18:00,"Falko","adult-weiblich-Anfänger mit Grundkenntnissen",2,"Sabrina Schenk","Anfänger mit Grundkenntnissen",weiblich
+33,Freitag,18:00,"Falko","adult-weiblich-Anfänger mit Grundkenntnissen",2,"Lara Jansen","Anfänger mit Grundkenntnissen",weiblich
+34,Freitag,18:00,"Falko","adult-männlich-Fortgeschritten",1,"Tom Jansen","Fortgeschritten",männlich
+35,Donnerstag,16:00,"Nicole Kreienborg","adult-weiblich-Anfänger mit Grundkenntnissen",1,"Damla Darilmaz","Anfänger mit Grundkenntnissen",weiblich
+36,Donnerstag,10:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",2,"Barbara Bursch-Brustkern","Fortgeschritten",weiblich
+36,Donnerstag,10:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",2,"Ulrike Patani","Fortgeschritten",weiblich
+37,Donnerstag,10:00,"Nicole Kreienborg","adult-weiblich-Anfänger mit Grundkenntnissen",1,"Helga Heydweiller","Anfänger mit Grundkenntnissen",weiblich
+38,Samstag,10:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",3,"Andrea Muck","Fortgeschritten",weiblich
+38,Samstag,10:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",3,"Andrea Frankenberg","Fortgeschritten",weiblich
+38,Samstag,10:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",3,"Maike Just","Fortgeschritten",weiblich
+39,Montag,11:00,"Nicole Kreienborg","adult-männlich-Anfänger",1,"Marius Grosch","Anfänger",männlich
+40,Dienstag,11:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",1,"Sabine Löhrl","Fortgeschrittene",weiblich
+41,Freitag,15:00,"Falko","adult-männlich-Leistungsspieler:innen / Turnierspieler:innen",1,"Lukas Lederer","Leistungsspieler:innen / Turnierspieler:innen",männlich
+42,Montag,16:00,"Nicole Kreienborg","adult-weiblich-Erfahrene Spieler:innen / Mannschaftsspieler:innen",1,"Elsa Schreiber","Erfahrene Spieler:innen / Mannschaftsspieler:innen",weiblich
+43,Montag,18:00,"Nicole Kreienborg","adult-weiblich-Anfänger mit Grundkenntnissen",1,"Julia Leininger","Anfänger mit Grundkenntnissen",weiblich
+44,Montag,18:00,"Nicole Kreienborg","adult-weiblich-Fortgeschritten",1,"Claudia Gregor-Lawrenz","Fortgeschritten",weiblich

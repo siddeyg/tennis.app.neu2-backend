@@ -1,0 +1,676 @@
+{
+  "metadata": {
+    "title": "Perfect Optimal Plan - Kinder",
+    "created": "2025-10-17T07:31:06.793Z",
+    "createdBy": "Automated Optimization Algorithm",
+    "description": "Optimaler Trainingsplan nur für Kinder (unter 18)"
+  },
+  "statistics": {
+    "totalCourses": 23,
+    "course4": 15,
+    "course3": 2,
+    "course2": 3,
+    "course1": 3,
+    "assigned": 75,
+    "unassigned": 0
+  },
+  "courses": [
+    {
+      "id": 1,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6332",
+          "name": "Dana Stoffels",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6333",
+          "name": "Matthis Hundrup",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6334",
+          "name": "Moritz Hoesch",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6335",
+          "name": "Linus Hoesch",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6337",
+          "name": "Leonard Welle",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6338",
+          "name": "Luke Fuss",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633a",
+          "name": "Benno Koch-Gombert",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633b",
+          "name": "Valentin Agsten",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa633c",
+          "name": "Marlene Tripp",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633e",
+          "name": "Justus Jahn",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa633f",
+          "name": "Arthur Schelz",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6341",
+          "name": "Christopher Jahn",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "day": "Freitag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6336",
+          "name": "Veerle Meijboom",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6345",
+          "name": "Claire Loheider",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef8ca2c8b2bc8c5f35f699",
+          "name": "Helene Muck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef8d28c8b2bc8c5f35f6ab",
+          "name": "Jana Frankenberg",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "day": "Freitag",
+      "hour": 16,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6339",
+          "name": "Lara-Marie Wiedbrauck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef8d85c8b2bc8c5f35f6b2",
+          "name": "Marie Wolff",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef9944c8b2bc8c5f35f878",
+          "name": "Nadim El Gharabawy",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef9951c8b2bc8c5f35f87d",
+          "name": "Nadia El Gharabawy",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "day": "Mittwoch",
+      "hour": 16,
+      "groupLabel": "child-Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6317",
+          "name": "Florian Elias Andrä",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa6319",
+          "name": "Henrik Hoesch",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa631c",
+          "name": "Liam Döring",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa631d",
+          "name": "Maja Schrempp",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6326",
+          "name": "Leni Doutch",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6329",
+          "name": "Johannes Küster",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632a",
+          "name": "Elin Küster",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6330",
+          "name": "Frida Schulmann",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "day": "Donnerstag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa632b",
+          "name": "Clara Schrempp",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632c",
+          "name": "Finn Gruber",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef9902c8b2bc8c5f35f863",
+          "name": "Jaron Lockmann",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef9939c8b2bc8c5f35f873",
+          "name": "Levi Schüler",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "day": "Freitag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6327",
+          "name": "Henry King",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6328",
+          "name": "Jasper Trump",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632e",
+          "name": "Vogel Julius",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa632f",
+          "name": "Philipp Kluth",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "day": "Freitag",
+      "hour": 16,
+      "groupLabel": "child-Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6318",
+          "name": "Paul Koch-Gombert",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef983ac8b2bc8c5f35f826",
+          "name": "Florian Elias",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef98a0c8b2bc8c5f35f844",
+          "name": "Julius Hof",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef98c1c8b2bc8c5f35f850",
+          "name": "Paula Nettekoven",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child-Kinderland",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630c",
+          "name": "Alexander Ganiev Chang",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef85667031d46332aa630d",
+          "name": "Lysander Pruys",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef85667031d46332aa630e",
+          "name": "Nic K",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef984ec8b2bc8c5f35f82d",
+          "name": "Alexander Ganiev",
+          "gender": "unknown",
+          "level": "Kinderland"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child-Rot",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6312",
+          "name": "Fender Meijboom",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6313",
+          "name": "Mats Vogel",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6314",
+          "name": "Mert Bakir",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6316",
+          "name": "Josef Wong",
+          "gender": "unknown",
+          "level": "Rot"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "day": "Montag",
+      "hour": 16,
+      "groupLabel": "child-Grün",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631f",
+          "name": "Clara Malinowski",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6320",
+          "name": "Emilia Burchart",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6322",
+          "name": "Malou Brieger",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6324",
+          "name": "Lenna Wolff",
+          "gender": "unknown",
+          "level": "Grün"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "day": "Dienstag",
+      "hour": 16,
+      "groupLabel": "child-Grün",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6323",
+          "name": "Clara Schmitz-Hübsch",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef85667031d46332aa6325",
+          "name": "Jolin Kunsch",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef9913c8b2bc8c5f35f86a",
+          "name": "Gruber Ella",
+          "gender": "unknown",
+          "level": "Grün"
+        },
+        {
+          "id": "68ef997bc8b2bc8c5f35f88d",
+          "name": "Vincent Schrade",
+          "gender": "unknown",
+          "level": "Grün"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "day": "Mittwoch",
+      "hour": 16,
+      "groupLabel": "child-Rot",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6310",
+          "name": "Maja Dietzler",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6311",
+          "name": "Victoria Schmitt",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef85667031d46332aa6315",
+          "name": "Laura Heidemann",
+          "gender": "unknown",
+          "level": "Rot"
+        },
+        {
+          "id": "68ef8c0ec8b2bc8c5f35f5cf",
+          "name": "Mia Lange",
+          "gender": "unknown",
+          "level": "Rot"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "day": "Donnerstag",
+      "hour": 16,
+      "groupLabel": "child-Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631b",
+          "name": "Moritz Burchart",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef85667031d46332aa631e",
+          "name": "Leila Maria",
+          "gender": "unknown",
+          "level": "Orange"
+        },
+        {
+          "id": "68ef89df7031d46332aa6570",
+          "name": "Ben Lange",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "day": "Samstag",
+      "hour": 12,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa633d",
+          "name": "Benjamin Coers",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6342",
+          "name": "Ben Frankenberg",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6343",
+          "name": "Joris Muck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "day": "Dienstag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8cb2c8b2bc8c5f35f69e",
+          "name": "Paulina Muck",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        },
+        {
+          "id": "68ef85667031d46332aa6344",
+          "name": "Laura Metzer",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "day": "Dienstag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Hobby",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9971c8b2bc8c5f35f888",
+          "name": "Juno Glaser",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        },
+        {
+          "id": "68ef85667031d46332aa6331",
+          "name": "Madita Böckenförde Leininger",
+          "gender": "unknown",
+          "level": "Gelb Hobby"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "day": "Mittwoch",
+      "hour": 15,
+      "groupLabel": "child-Kinderland",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa630f",
+          "name": "Marlene Zock",
+          "gender": "unknown",
+          "level": "Kinderland"
+        },
+        {
+          "id": "68ef98acc8b2bc8c5f35f849",
+          "name": "Charlotte Jansen",
+          "gender": "unknown",
+          "level": "Kinderland"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "day": "Donnerstag",
+      "hour": 15,
+      "groupLabel": "child-Orange",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa631a",
+          "name": "Laura Wiedbrauck",
+          "gender": "unknown",
+          "level": "Orange"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "day": "Mittwoch",
+      "hour": 16,
+      "groupLabel": "child-Grün",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6321",
+          "name": "Schieferdecker Colleen",
+          "gender": "unknown",
+          "level": "Grün"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "day": "Montag",
+      "hour": 17,
+      "groupLabel": "child-Gelb Team",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8c4ec8b2bc8c5f35f68e",
+          "name": "Annika Jahn",
+          "gender": "unknown",
+          "level": "Gelb Team"
+        }
+      ]
+    }
+  ]
+}

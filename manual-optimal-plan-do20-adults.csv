@@ -1,0 +1,38 @@
+Kurs ID,Tag,Uhrzeit,Trainer,Gruppe,Kursgröße,Schüler Name,Schüler Level,Geschlecht
+1,Montag,18:00,"Nicole Kreienborg","adult_männlich_Anfänger mit Grundkenntnissen",2,"Jan Volkhardt","Anfänger mit Grundkenntnissen",männlich
+1,Montag,18:00,"Nicole Kreienborg","adult_männlich_Anfänger mit Grundkenntnissen",2,"Jonas Plath","Anfänger mit Grundkenntnissen",männlich
+2,Donnerstag,19:00,"Helge Padberg","adult_männlich_Anfänger",3,"Antonio Schmandke","Anfänger",männlich
+2,Donnerstag,19:00,"Helge Padberg","adult_männlich_Anfänger",3,"Áron Horváth","Anfänger",männlich
+2,Donnerstag,19:00,"Helge Padberg","adult_männlich_Anfänger",3,"Stefan Löwe","Anfänger",männlich
+3,Montag,11:00,"Nicole Kreienborg","adult_männlich_Anfänger",1,"Marius Grosch","Anfänger",männlich
+4,Freitag,18:00,"Falko ","adult_männlich_Fortgeschritten",3,"Tom Jansen","Fortgeschritten",männlich
+4,Freitag,18:00,"Falko ","adult_männlich_Fortgeschritten",3,"Thiemo Meyfarth","Fortgeschritten",männlich
+4,Freitag,18:00,"Falko ","adult_männlich_Fortgeschritten",3,"Roby Patani","Fortgeschritten",männlich
+5,Freitag,15:00,"Falko ","adult_männlich_Leistungsspieler:innen / Turnierspieler:innen",2,"Lennart Maak","Leistungsspieler:innen / Turnierspieler:innen",männlich
+5,Freitag,15:00,"Falko ","adult_männlich_Leistungsspieler:innen / Turnierspieler:innen",2,"Lukas Lederer","Leistungsspieler:innen / Turnierspieler:innen",männlich
+6,Samstag,11:00,"Nicole Kreienborg","adult_weiblich_Anfänger mit Grundkenntnissen",3,"Sandra Bourbeck","Anfänger mit Grundkenntnissen",weiblich
+6,Samstag,11:00,"Nicole Kreienborg","adult_weiblich_Anfänger mit Grundkenntnissen",3,"Ilonka Döge","Anfänger mit Grundkenntnissen",weiblich
+6,Samstag,11:00,"Nicole Kreienborg","adult_weiblich_Anfänger mit Grundkenntnissen",3,"Claudia Frank","Anfänger mit Grundkenntnissen",weiblich
+7,Freitag,18:00,"Falko ","adult_weiblich_Anfänger mit Grundkenntnissen",2,"Sabrina Schenk","Anfänger mit Grundkenntnissen",weiblich
+7,Freitag,18:00,"Falko ","adult_weiblich_Anfänger mit Grundkenntnissen",2,"Lara Jansen","Anfänger mit Grundkenntnissen",weiblich
+8,Donnerstag,16:00,"Nicole Kreienborg","adult_weiblich_Anfänger mit Grundkenntnissen",1,"Damla Darilmaz","Anfänger mit Grundkenntnissen",weiblich
+9,Donnerstag,10:00,"Nicole Kreienborg","adult_weiblich_Anfänger mit Grundkenntnissen",1,"Helga Heydweiller","Anfänger mit Grundkenntnissen",weiblich
+10,Montag,18:00,"Nicole Kreienborg","adult_weiblich_Anfänger mit Grundkenntnissen",1,"Julia Leininger","Anfänger mit Grundkenntnissen",weiblich
+11,Donnerstag,19:00,"Helge Padberg","adult_weiblich_Anfänger",2,"Eva Plath","Anfänger",weiblich
+11,Donnerstag,19:00,"Helge Padberg","adult_weiblich_Anfänger",2,"Kinga Fülöp","Anfänger",weiblich
+12,Montag,16:00,"Nicole Kreienborg","adult_weiblich_Erfahrene Spieler:innen / Mannschaftsspieler:innen",1,"Elsa Schreiber","Erfahrene Spieler:innen / Mannschaftsspieler:innen",weiblich
+13,Samstag,10:00,"Nicole Kreienborg","adult_weiblich_Fortgeschritten",3,"Andrea Muck","Fortgeschritten",weiblich
+13,Samstag,10:00,"Nicole Kreienborg","adult_weiblich_Fortgeschritten",3,"Andrea Frankenberg","Fortgeschritten",weiblich
+13,Samstag,10:00,"Nicole Kreienborg","adult_weiblich_Fortgeschritten",3,"Maike Just","Fortgeschritten",weiblich
+14,Donnerstag,10:00,"Nicole Kreienborg","adult_weiblich_Fortgeschritten",2,"Barbara Bursch-Brustkern","Fortgeschritten",weiblich
+14,Donnerstag,10:00,"Nicole Kreienborg","adult_weiblich_Fortgeschritten",2,"Ulrike Patani","Fortgeschritten",weiblich
+15,Montag,18:00,"Nicole Kreienborg","adult_weiblich_Fortgeschritten",1,"Claudia Gregor-Lawrenz","Fortgeschritten",weiblich
+16,Dienstag,11:00,"Nicole Kreienborg","adult_weiblich_Fortgeschrittene",1,"Sabine Löhrl","Fortgeschrittene",weiblich
+43,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Anfänger mit Grundkenntnissen",4,"Friederike Förster","Anfänger mit Grundkenntnissen",weiblich
+43,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Anfänger mit Grundkenntnissen",4,"Kristina Müller","Anfänger mit Grundkenntnissen",weiblich
+43,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Anfänger mit Grundkenntnissen",4,"Marie Köhler","Anfänger mit Grundkenntnissen",weiblich
+43,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Anfänger mit Grundkenntnissen",4,"Silke Hoesch","Anfänger mit Grundkenntnissen",weiblich
+44,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Fortgeschritten",4,"Rebecca Mau","Fortgeschritten",weiblich
+44,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Fortgeschritten",4,"Anneke Malinowski","Fortgeschritten",weiblich
+44,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Fortgeschritten",4,"Nicole Berg","Fortgeschritten",weiblich
+44,Donnerstag,20:00,"Helge Padberg","adult_weiblich_Fortgeschritten",4,"Svenja Gloger","Fortgeschritten",weiblich

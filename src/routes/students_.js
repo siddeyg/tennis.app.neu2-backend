@@ -24,13 +24,7 @@ router.post("/", async (req, res) => {
     // Note: Duplicate email check removed - families can share emails (parent email for multiple children)
     // Duplicate detection is handled on frontend with firstName + lastName + birthDate matching
 
-    // Sanitize coach field: convert empty string to null (Mongoose expects ObjectId or null, not "")
-    const studentData = { ...req.body };
-    if (studentData.coach === "" || studentData.coach === undefined) {
-      studentData.coach = null;
-    }
-
-    const student = new Student(studentData);
+    const student = new Student(req.body);
     await student.save();
     res.status(201).json(student);
   } catch (error) {
@@ -149,10 +143,9 @@ router.put("/:id/assignments/replace", async (req, res) => {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
 
-    // Use raw MongoDB collection method to query string _id directly
-    // (Database has string _ids, not ObjectIds - Mongoose conversion causes failures)
-    const result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id }, // Query with string _id directly - no conversion
+    // Use Mongoose's findByIdAndUpdate (handles ObjectId conversion automatically)
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
       {
         $set: {
           assignments: [{ day, hour, coach: coach || null }],
@@ -161,10 +154,8 @@ router.put("/:id/assignments/replace", async (req, res) => {
           coach: coach || null
         }
       },
-      { returnDocument: 'after' }
+      { new: true } // Return updated document
     );
-
-    const student = result?.value || result;
 
     if (!student) {
       console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND in database`);
@@ -191,32 +182,7 @@ router.put("/:id/assignments/replace", async (req, res) => {
 // Schüler löschen
 router.delete("/:id", async (req, res) => {
   try {
-    console.log(`[DELETE /:id] Deleting student with ID: ${req.params.id}`);
-
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Student.collection.findOneAndDelete(
-      { _id: req.params.id } // Try string first
-    );
-
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      console.log(`[DELETE /:id] String ID not found, trying ObjectId format`);
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Student.collection.findOneAndDelete(
-          { _id: objectId }
-        );
-      } catch (err) {
-        console.log(`[DELETE /:id] ObjectId conversion failed:`, err.message);
-      }
-    }
-
-    // MongoDB native driver returns { value: document } not document directly
-    const student = result?.value || result;
-
-    console.log(`[DELETE /:id] Student found: ${!!student}`);
-
+    const student = await Student.findByIdAndDelete(req.params.id);
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
@@ -258,57 +224,33 @@ router.put("/:id", async (req, res) => {
     // Note: Duplicate email check removed - families can share emails
     // Duplicate detection is handled on frontend
 
-    // Sanitize coach field: convert empty string to null (Mongoose expects ObjectId or null, not "")
-    const sanitizedCoach = (coach === "" || coach === undefined) ? null : coach;
-
-    const updateData = {
-      $set: {
-        day,
-        hour,
-        adress,
-        email,
-        phone,
-        member,
-        adult,
-        sex,
-        team,
-        trainigGroup,
-        groupSize,
-        firstName,
-        lastName,
-        birthDate,
-        skillLevel,
-        availableTimes,
-        comment,
-        coach: sanitizedCoach,
-        frequence,
-      }
-    };
-
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id }, // Try string first
-      updateData,
-      { returnDocument: 'after' }
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          day,
+          hour,
+          adress,
+          email,
+          phone,
+          member,
+          adult,
+          sex,
+          team,
+          trainigGroup,
+          groupSize,
+          firstName,
+          lastName,
+          birthDate,
+          skillLevel,
+          availableTimes,
+          comment,
+          coach,
+          frequence,
+        }
+      },
+      { new: true } // Return updated document
     );
-
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Student.collection.findOneAndUpdate(
-          { _id: objectId },
-          updateData,
-          { returnDocument: 'after' }
-        );
-      } catch (err) {
-        // ObjectId conversion failed, continue with original result
-      }
-    }
-
-    // MongoDB native driver returns { value: document } not document directly
-    const student = result?.value || result;
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });

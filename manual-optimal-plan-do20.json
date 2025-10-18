@@ -1,20 +1,20 @@
 {
   "metadata": {
-    "title": "Manual Optimal Plan (Gender-Aware)",
-    "created": "2025-10-16T22:04:52.128Z",
+    "title": "Manual Optimal Plan (With Donnerstag 20:00)",
+    "created": "2025-10-17T06:22:54.357Z",
     "createdBy": "Manual Planning",
-    "description": "Hand-crafted optimal schedule with strict gender matching for adults"
+    "description": "Hand-crafted optimal schedule with Donnerstag 20:00 for adults who have Do 18/19"
   },
   "statistics": {
-    "totalCourses": 43,
-    "course4": 18,
-    "course3": 4,
+    "totalCourses": 44,
+    "course4": 17,
+    "course3": 5,
     "course2": 8,
-    "course1": 13,
+    "course1": 14,
     "assigned": 113,
     "unassigned": 0,
-    "adultCourses": 16,
-    "childCourses": 27
+    "adultCourses": 18,
+    "childCourses": 26
   },
   "courses": [
     {
@@ -142,12 +142,6 @@
           "level": "Anfänger mit Grundkenntnissen"
         },
         {
-          "id": "68ef85667031d46332aa62fc",
-          "name": "Marie Köhler",
-          "gender": "weiblich",
-          "level": "Anfänger mit Grundkenntnissen"
-        },
-        {
           "id": "68ef85667031d46332aa62ff",
           "name": "Ilonka Döge",
           "gender": "weiblich",
@@ -169,20 +163,8 @@
       "coach": "Falko ",
       "students": [
         {
-          "id": "68ef85667031d46332aa62fa",
-          "name": "Kristina Müller",
-          "gender": "weiblich",
-          "level": "Anfänger mit Grundkenntnissen"
-        },
-        {
           "id": "68ef85667031d46332aa62fe",
           "name": "Sabrina Schenk",
-          "gender": "weiblich",
-          "level": "Anfänger mit Grundkenntnissen"
-        },
-        {
-          "id": "68ef85667031d46332aa6305",
-          "name": "Silke Hoesch",
           "gender": "weiblich",
           "level": "Anfänger mit Grundkenntnissen"
         },
@@ -201,12 +183,6 @@
       "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
       "coach": "Nicole Kreienborg",
       "students": [
-        {
-          "id": "68ef85667031d46332aa62f9",
-          "name": "Friederike Förster",
-          "gender": "weiblich",
-          "level": "Anfänger mit Grundkenntnissen"
-        },
         {
           "id": "68ef85667031d46332aa6304",
           "name": "Damla Darilmaz",
@@ -283,39 +259,6 @@
     },
     {
       "id": 13,
-      "day": "Montag",
-      "hour": 19,
-      "groupLabel": "adult_weiblich_Fortgeschritten",
-      "coach": "Nicole Kreienborg",
-      "students": [
-        {
-          "id": "68ef85667031d46332aa6303",
-          "name": "Rebecca Mau",
-          "gender": "weiblich",
-          "level": "Fortgeschritten"
-        },
-        {
-          "id": "68ef8db8c8b2bc8c5f35f6be",
-          "name": "Anneke Malinowski",
-          "gender": "weiblich",
-          "level": "Fortgeschritten"
-        },
-        {
-          "id": "68ef9afac8b2bc8c5f35f8fc",
-          "name": "Nicole Berg",
-          "gender": "weiblich",
-          "level": "Fortgeschritten"
-        },
-        {
-          "id": "68ef9b7ec8b2bc8c5f35f937",
-          "name": "Svenja Gloger",
-          "gender": "weiblich",
-          "level": "Fortgeschritten"
-        }
-      ]
-    },
-    {
-      "id": 14,
       "day": "Samstag",
       "hour": 10,
       "groupLabel": "adult_weiblich_Fortgeschritten",
@@ -342,7 +285,7 @@
       ]
     },
     {
-      "id": 15,
+      "id": 14,
       "day": "Donnerstag",
       "hour": 10,
       "groupLabel": "adult_weiblich_Fortgeschritten",
@@ -363,7 +306,7 @@
       ]
     },
     {
-      "id": 16,
+      "id": 15,
       "day": "Montag",
       "hour": 18,
       "groupLabel": "adult_weiblich_Fortgeschritten",
@@ -378,7 +321,7 @@
       ]
     },
     {
-      "id": 17,
+      "id": 16,
       "day": "Dienstag",
       "hour": 11,
       "groupLabel": "adult_weiblich_Fortgeschrittene",
@@ -393,7 +336,7 @@
       ]
     },
     {
-      "id": 18,
+      "id": 17,
       "day": "Donnerstag",
       "hour": 18,
       "groupLabel": "child_Gelb Hobby",
@@ -426,7 +369,7 @@
       ]
     },
     {
-      "id": 19,
+      "id": 18,
       "day": "Montag",
       "hour": 17,
       "groupLabel": "child_Gelb Hobby",
@@ -459,7 +402,7 @@
       ]
     },
     {
-      "id": 20,
+      "id": 19,
       "day": "Samstag",
       "hour": 12,
       "groupLabel": "child_Gelb Hobby",
@@ -492,7 +435,7 @@
       ]
     },
     {
-      "id": 21,
+      "id": 20,
       "day": "Dienstag",
       "hour": 17,
       "groupLabel": "child_Gelb Hobby",
@@ -513,7 +456,7 @@
       ]
     },
     {
-      "id": 22,
+      "id": 21,
       "day": "Montag",
       "hour": 16,
       "groupLabel": "child_Gelb Hobby",
@@ -528,7 +471,7 @@
       ]
     },
     {
-      "id": 23,
+      "id": 22,
       "day": "Donnerstag",
       "hour": 18,
       "groupLabel": "child_Gelb Team",
@@ -561,7 +504,7 @@
       ]
     },
     {
-      "id": 24,
+      "id": 23,
       "day": "Donnerstag",
       "hour": 18,
       "groupLabel": "child_Gelb Team",
@@ -594,7 +537,7 @@
       ]
     },
     {
-      "id": 25,
+      "id": 24,
       "day": "Donnerstag",
       "hour": 18,
       "groupLabel": "child_Gelb Team",
@@ -627,7 +570,7 @@
       ]
     },
     {
-      "id": 26,
+      "id": 25,
       "day": "Montag",
       "hour": 17,
       "groupLabel": "child_Gelb Team",
@@ -660,7 +603,7 @@
       ]
     },
     {
-      "id": 27,
+      "id": 26,
       "day": "Freitag",
       "hour": 17,
       "groupLabel": "child_Gelb Team",
@@ -693,7 +636,7 @@
       ]
     },
     {
-      "id": 28,
+      "id": 27,
       "day": "Freitag",
       "hour": 17,
       "groupLabel": "child_Gelb Team",
@@ -714,7 +657,7 @@
       ]
     },
     {
-      "id": 29,
+      "id": 28,
       "day": "Samstag",
       "hour": 12,
       "groupLabel": "child_Gelb Team",
@@ -729,7 +672,7 @@
       ]
     },
     {
-      "id": 30,
+      "id": 29,
       "day": "Samstag",
       "hour": 12,
       "groupLabel": "child_Gelb Team",
@@ -744,7 +687,7 @@
       ]
     },
     {
-      "id": 31,
+      "id": 30,
       "day": "Montag",
       "hour": 17,
       "groupLabel": "child_Gelb Team",
@@ -759,7 +702,7 @@
       ]
     },
     {
-      "id": 32,
+      "id": 31,
       "day": "Dienstag",
       "hour": 17,
       "groupLabel": "child_Gelb Team",
@@ -774,7 +717,7 @@
       ]
     },
     {
-      "id": 33,
+      "id": 32,
       "day": "Montag",
       "hour": 16,
       "groupLabel": "child_Grün",
@@ -807,7 +750,7 @@
       ]
     },
     {
-      "id": 34,
+      "id": 33,
       "day": "Dienstag",
       "hour": 16,
       "groupLabel": "child_Grün",
@@ -840,7 +783,7 @@
       ]
     },
     {
-      "id": 35,
+      "id": 34,
       "day": "Mittwoch",
       "hour": 16,
       "groupLabel": "child_Grün",
@@ -855,7 +798,7 @@
       ]
     },
     {
-      "id": 36,
+      "id": 35,
       "day": "Samstag",
       "hour": 12,
       "groupLabel": "child_Kinderland",
@@ -888,7 +831,7 @@
       ]
     },
     {
-      "id": 37,
+      "id": 36,
       "day": "Mittwoch",
       "hour": 15,
       "groupLabel": "child_Kinderland",
@@ -909,7 +852,7 @@
       ]
     },
     {
-      "id": 38,
+      "id": 37,
       "day": "Mittwoch",
       "hour": 16,
       "groupLabel": "child_Orange",
@@ -942,7 +885,7 @@
       ]
     },
     {
-      "id": 39,
+      "id": 38,
       "day": "Freitag",
       "hour": 16,
       "groupLabel": "child_Orange",
@@ -975,7 +918,7 @@
       ]
     },
     {
-      "id": 40,
+      "id": 39,
       "day": "Donnerstag",
       "hour": 16,
       "groupLabel": "child_Orange",
@@ -1002,7 +945,7 @@
       ]
     },
     {
-      "id": 41,
+      "id": 40,
       "day": "Donnerstag",
       "hour": 15,
       "groupLabel": "child_Orange",
@@ -1017,7 +960,7 @@
       ]
     },
     {
-      "id": 42,
+      "id": 41,
       "day": "Samstag",
       "hour": 12,
       "groupLabel": "child_Rot",
@@ -1050,7 +993,7 @@
       ]
     },
     {
-      "id": 43,
+      "id": 42,
       "day": "Mittwoch",
       "hour": 16,
       "groupLabel": "child_Rot",
@@ -1079,6 +1022,72 @@
           "name": "Mia Lange",
           "gender": "unknown",
           "level": "Rot"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult_weiblich_Anfänger mit Grundkenntnissen",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "name": "Friederike Förster",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "name": "Kristina Müller",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "name": "Marie Köhler",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "name": "Silke Hoesch",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult_weiblich_Fortgeschritten",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "name": "Rebecca Mau",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "name": "Anneke Malinowski",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "name": "Nicole Berg",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "name": "Svenja Gloger",
+          "gender": "weiblich",
+          "level": "Fortgeschritten"
         }
       ]
     }

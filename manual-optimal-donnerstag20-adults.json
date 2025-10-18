@@ -1,0 +1,532 @@
+{
+  "metadata": {
+    "title": "Manual Optimal Plan - Erwachsene (18+) - Donnerstag 20 Focus",
+    "created": "2025-10-17T06:46:59.666Z",
+    "createdBy": "Manual Planning",
+    "description": "Hand-crafted optimal schedule with Donnerstag 20:00 for 18 adults (based on DONNERSTAG_20_RECOMMENDATION.md)"
+  },
+  "statistics": {
+    "totalCourses": 20,
+    "course4": 2,
+    "course3": 3,
+    "course2": 5,
+    "course1": 10,
+    "assigned": 37,
+    "unassigned": 0
+  },
+  "courses": [
+    {
+      "id": 1,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f9",
+          "firstName": "Friederike",
+          "lastName": "Förster",
+          "name": "Friederike Förster",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa62fa",
+          "firstName": "Kristina",
+          "lastName": "Müller",
+          "name": "Kristina Müller",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa62fc",
+          "firstName": "Marie",
+          "lastName": "Köhler",
+          "name": "Marie Köhler",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa6305",
+          "firstName": "Silke",
+          "lastName": "Hoesch",
+          "name": "Silke Hoesch",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-weiblich-Fortgeschritten",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6303",
+          "firstName": "Rebecca",
+          "lastName": "Mau",
+          "name": "Rebecca Mau",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef8db8c8b2bc8c5f35f6be",
+          "firstName": "Anneke",
+          "lastName": "Malinowski",
+          "name": "Anneke Malinowski",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef9afac8b2bc8c5f35f8fc",
+          "firstName": "Nicole",
+          "lastName": "Berg",
+          "name": "Nicole Berg",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef9b7ec8b2bc8c5f35f937",
+          "firstName": "Svenja",
+          "lastName": "Gloger",
+          "name": "Svenja Gloger",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-männlich-Anfänger",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6306",
+          "firstName": "Antonio",
+          "lastName": "Schmandke",
+          "name": "Antonio Schmandke",
+          "gender": "männlich",
+          "level": "Anfänger",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa630b",
+          "firstName": "Áron",
+          "lastName": "Horváth",
+          "name": "Áron Horváth",
+          "gender": "männlich",
+          "level": "Anfänger",
+          "adult": true
+        },
+        {
+          "id": "68ef9b66c8b2bc8c5f35f928",
+          "firstName": "Stefan",
+          "lastName": "Löwe",
+          "name": "Stefan Löwe",
+          "gender": "männlich",
+          "level": "Anfänger",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-männlich-Anfänger mit Grundkenntnissen",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fb",
+          "firstName": "Jan",
+          "lastName": "Volkhardt",
+          "name": "Jan Volkhardt",
+          "gender": "männlich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef9b89c8b2bc8c5f35f93c",
+          "firstName": "Jonas",
+          "lastName": "Plath",
+          "name": "Jonas Plath",
+          "gender": "männlich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-weiblich-Anfänger",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6307",
+          "firstName": "Eva",
+          "lastName": "Plath",
+          "name": "Eva Plath",
+          "gender": "weiblich",
+          "level": "Anfänger",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa630a",
+          "firstName": "Kinga",
+          "lastName": "Fülöp",
+          "name": "Kinga Fülöp",
+          "gender": "weiblich",
+          "level": "Anfänger",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-männlich-Fortgeschritten",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef9b0bc8b2bc8c5f35f903",
+          "firstName": "Thiemo",
+          "lastName": "Meyfarth",
+          "name": "Thiemo Meyfarth",
+          "gender": "männlich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef9b1dc8b2bc8c5f35f90a",
+          "firstName": "Roby",
+          "lastName": "Patani",
+          "name": "Roby Patani",
+          "gender": "männlich",
+          "level": "Fortgeschritten",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "day": "Donnerstag",
+      "hour": 20,
+      "groupLabel": "adult-männlich-Leistungsspieler:innen / Turnierspieler:innen",
+      "coach": "Helge Padberg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6300",
+          "firstName": "Lennart",
+          "lastName": "Maak",
+          "name": "Lennart Maak",
+          "gender": "männlich",
+          "level": "Leistungsspieler:innen / Turnierspieler:innen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "day": "Samstag",
+      "hour": 11,
+      "groupLabel": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f8",
+          "firstName": "Sandra",
+          "lastName": "Bourbeck",
+          "name": "Sandra Bourbeck",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa62ff",
+          "firstName": "Ilonka",
+          "lastName": "Döge",
+          "name": "Ilonka Döge",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa6302",
+          "firstName": "Claudia",
+          "lastName": "Frank",
+          "name": "Claudia Frank",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "day": "Freitag",
+      "hour": 18,
+      "groupLabel": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "coach": "Falko",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fe",
+          "firstName": "Sabrina",
+          "lastName": "Schenk",
+          "name": "Sabrina Schenk",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        },
+        {
+          "id": "68ef85667031d46332aa6309",
+          "firstName": "Lara",
+          "lastName": "Jansen",
+          "name": "Lara Jansen",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "day": "Freitag",
+      "hour": 18,
+      "groupLabel": "adult-männlich-Fortgeschritten",
+      "coach": "Falko",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62fd",
+          "firstName": "Tom",
+          "lastName": "Jansen",
+          "name": "Tom Jansen",
+          "gender": "männlich",
+          "level": "Fortgeschritten",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "day": "Donnerstag",
+      "hour": 16,
+      "groupLabel": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6304",
+          "firstName": "Damla",
+          "lastName": "Darilmaz",
+          "name": "Damla Darilmaz",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "day": "Donnerstag",
+      "hour": 10,
+      "groupLabel": "adult-weiblich-Fortgeschritten",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b26c8b2bc8c5f35f90f",
+          "firstName": "Barbara",
+          "lastName": "Bursch-Brustkern",
+          "name": "Barbara Bursch-Brustkern",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef9b5ec8b2bc8c5f35f923",
+          "firstName": "Ulrike",
+          "lastName": "Patani",
+          "name": "Ulrike Patani",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "day": "Donnerstag",
+      "hour": 10,
+      "groupLabel": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b6ec8b2bc8c5f35f92d",
+          "firstName": "Helga",
+          "lastName": "Heydweiller",
+          "name": "Helga Heydweiller",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "day": "Samstag",
+      "hour": 10,
+      "groupLabel": "adult-weiblich-Fortgeschritten",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef8dafc8b2bc8c5f35f6b9",
+          "firstName": "Andrea",
+          "lastName": "Muck",
+          "name": "Andrea Muck",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef8dd3c8b2bc8c5f35f6c7",
+          "firstName": "Andrea",
+          "lastName": "Frankenberg",
+          "name": "Andrea Frankenberg",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        },
+        {
+          "id": "68ef9b32c8b2bc8c5f35f914",
+          "firstName": "Maike",
+          "lastName": "Just",
+          "name": "Maike Just",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "day": "Montag",
+      "hour": 11,
+      "groupLabel": "adult-männlich-Anfänger",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6308",
+          "firstName": "Marius",
+          "lastName": "Grosch",
+          "name": "Marius Grosch",
+          "gender": "männlich",
+          "level": "Anfänger",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "day": "Dienstag",
+      "hour": 11,
+      "groupLabel": "adult-weiblich-Fortgeschritten",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa62f7",
+          "firstName": "Sabine",
+          "lastName": "Löhrl",
+          "name": "Sabine Löhrl",
+          "gender": "weiblich",
+          "level": "Fortgeschrittene",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "day": "Freitag",
+      "hour": 15,
+      "groupLabel": "adult-männlich-Leistungsspieler:innen / Turnierspieler:innen",
+      "coach": "Falko",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6340",
+          "firstName": "Lukas",
+          "lastName": "Lederer",
+          "name": "Lukas Lederer",
+          "gender": "männlich",
+          "level": "Leistungsspieler:innen / Turnierspieler:innen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "day": "Montag",
+      "hour": 16,
+      "groupLabel": "adult-weiblich-Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef85667031d46332aa6301",
+          "firstName": "Elsa",
+          "lastName": "Schreiber",
+          "name": "Elsa Schreiber",
+          "gender": "weiblich",
+          "level": "Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "day": "Montag",
+      "hour": 18,
+      "groupLabel": "adult-weiblich-Anfänger mit Grundkenntnissen",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b75c8b2bc8c5f35f932",
+          "firstName": "Julia",
+          "lastName": "Leininger",
+          "name": "Julia Leininger",
+          "gender": "weiblich",
+          "level": "Anfänger mit Grundkenntnissen",
+          "adult": true
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "day": "Montag",
+      "hour": 18,
+      "groupLabel": "adult-weiblich-Fortgeschritten",
+      "coach": "Nicole Kreienborg",
+      "students": [
+        {
+          "id": "68ef9b92c8b2bc8c5f35f941",
+          "firstName": "Claudia",
+          "lastName": "Gregor-Lawrenz",
+          "name": "Claudia Gregor-Lawrenz",
+          "gender": "weiblich",
+          "level": "Fortgeschritten",
+          "adult": true
+        }
+      ]
+    }
+  ]
+}
