@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import passport from "passport";
 import rateLimit from "express-rate-limit";
 import User from "../models/User.js";
+import LoginSession from "../models/LoginSession.js";
+import UserSettings from "../models/UserSettings.js";
 
 const router = express.Router();
 
@@ -83,6 +85,22 @@ router.post("/login", loginLimiter, (req, res, next) => {
       ...cookieOptions,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
+
+    // Update lastLogin and lastActivity
+    User.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          lastLogin: new Date(),
+          lastActivity: new Date()
+        }
+      }
+    ).catch(err => console.error("Error updating login time:", err));
+
+    // Create login session (keeps last 30 automatically)
+    const userAgent = req.get('user-agent') || 'Unknown';
+    LoginSession.createSession(user._id, userAgent)
+      .catch(err => console.error("Error creating login session:", err));
 
     // Return user data (password already excluded by toJSON method)
     res.json({
@@ -220,6 +238,15 @@ router.post("/register", async (req, res) => {
     });
 
     await user.save();
+
+    // Auto-create UserSettings with default values
+    await UserSettings.create({
+      userId: user._id,
+      allowResetSchedule: true, // Default: user CAN click "Plan generieren"
+    }).catch(err => {
+      // Non-blocking: If settings creation fails, don't fail the registration
+      console.error("Error creating user settings:", err);
+    });
 
     res.status(201).json({
       message: "Benutzer erfolgreich erstellt",

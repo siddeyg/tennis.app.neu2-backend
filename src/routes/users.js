@@ -1,8 +1,64 @@
 import express from "express";
 import User from "../models/User.js";
+import LoginSession from "../models/LoginSession.js";
 import bcrypt from "bcryptjs";
 
 const router = express.Router();
+
+/**
+ * GET /api/users/active
+ * Get active users (logged in within last 60 minutes)
+ * Admin only
+ */
+router.get("/active", async (req, res) => {
+  try {
+    const sixtyMinutesAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+    const activeUsers = await User.find({
+      isActive: true,
+      lastActivity: { $gte: sixtyMinutesAgo }
+    })
+      .select("firstName lastName lastActivity")
+      .sort({ lastActivity: -1 });
+
+    res.json(activeUsers);
+  } catch (error) {
+    console.error("Error fetching active users:", error);
+    res.status(500).json({ error: "Fehler beim Abrufen der aktiven Benutzer" });
+  }
+});
+
+/**
+ * GET /api/users/:userId/login-history
+ * Get login history for specific user (last 30 logins)
+ * Admin only
+ */
+router.get("/:userId/login-history", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Verify user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "Benutzer nicht gefunden" });
+    }
+
+    // Get last 30 login sessions
+    const sessions = await LoginSession.getRecentSessions(userId, 30);
+
+    res.json({
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+      sessions,
+    });
+  } catch (error) {
+    console.error("Error fetching login history:", error);
+    res.status(500).json({ error: "Fehler beim Abrufen der Login-Historie" });
+  }
+});
 
 /**
  * GET /api/users

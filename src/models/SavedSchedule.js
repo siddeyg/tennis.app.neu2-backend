@@ -63,7 +63,11 @@ const savedScheduleSchema = new mongoose.Schema({
     },
     courseCount: {
       type: Number,
-      default: 0,                       // Anzahl Kurse im Plan
+      default: 0,                       // Anzahl Kurse mit mindestens 1 Schüler
+    },
+    possibleCourseCount: {
+      type: Number,
+      default: 0,                       // Anzahl möglicher Kurse (basierend auf Trainer-Verfügbarkeit)
     },
     unassignedCount: {
       type: Number,

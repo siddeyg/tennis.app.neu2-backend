@@ -50,6 +50,21 @@ router.post("/", async (req, res) => {
       (s) => !s.day || s.hour === null || s.hour === undefined
     );
 
+    // Calculate actual course count (only count time slots with at least 1 student)
+    const actualCourseCount = schedule.filter(
+      (course) => course.students && course.students.length > 0
+    ).length;
+
+    // Calculate possible courses (count each coach-time combination)
+    // Each coach at each time slot = one possible course
+    let possibleCourseCount = 0;
+
+    coaches.forEach(coach => {
+      if (Array.isArray(coach.availableTimes)) {
+        possibleCourseCount += coach.availableTimes.length;
+      }
+    });
+
     // Create saved schedule
     const savedSchedule = new SavedSchedule({
       name,
@@ -63,7 +78,8 @@ router.post("/", async (req, res) => {
       metadata: {
         studentCount: students.length,
         coachCount: coaches.length,
-        courseCount: schedule.length,
+        courseCount: actualCourseCount,
+        possibleCourseCount: possibleCourseCount,
         unassignedCount: studentsNotSet.length,
       },
     });
@@ -136,6 +152,19 @@ router.post("/:id/load", async (req, res) => {
       (s) => !s.day || s.hour === null || s.hour === undefined
     );
 
+    // Calculate actual course count for backup
+    const backupCourseCount = currentSchedule.filter(
+      (course) => course.students && course.students.length > 0
+    ).length;
+
+    // Calculate possible courses for backup (count each coach-time combination)
+    let backupPossibleCourseCount = 0;
+    currentCoaches.forEach(coach => {
+      if (Array.isArray(coach.availableTimes)) {
+        backupPossibleCourseCount += coach.availableTimes.length;
+      }
+    });
+
     const backupName = `Backup vor Laden - ${new Date().toLocaleString("de-DE")}`;
     const backup = new SavedSchedule({
       name: backupName,
@@ -149,7 +178,8 @@ router.post("/:id/load", async (req, res) => {
       metadata: {
         studentCount: currentStudents.length,
         coachCount: currentCoaches.length,
-        courseCount: currentSchedule.length,
+        courseCount: backupCourseCount,
+        possibleCourseCount: backupPossibleCourseCount,
         unassignedCount: currentUnassigned.length,
       },
     });

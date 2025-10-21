@@ -1,0 +1,79 @@
+Date : 2025-10-20 21:52:35
+Directory : c:\projects\tennis app neu2\backend\src
+Total : 45 files,  3296 codes, 577 comments, 687 blanks, all 4560 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         44 |      3,263 |        577 |        681 |      4,521 |
+| PostCSS    |          1 |         33 |          0 |          6 |         39 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                            | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                               |         45 |      3,296 |        577 |        687 |      4,560 |
+| . (Files)                                                                       |          6 |        263 |         49 |         47 |        359 |
+| __tests__                                                                       |          3 |        384 |         41 |        104 |        529 |
+| __tests__\integration                                                           |          3 |        384 |         41 |        104 |        529 |
+| config                                                                          |          2 |         81 |         18 |         18 |        117 |
+| controllers                                                                     |          4 |        127 |         27 |         27 |        181 |
+| middleware                                                                      |          4 |         98 |         46 |         26 |        170 |
+| models                                                                          |          9 |        378 |         76 |         61 |        515 |
+| routes                                                                          |         11 |      1,514 |        238 |        297 |      2,049 |
+| scripts                                                                         |          6 |        451 |         82 |        107 |        640 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                        | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\projects\tennis app neu2\backend\src\App.css                                 | PostCSS    |         33 |          0 |          6 |         39 |
+| c:\projects\tennis app neu2\backend\src\App.js                                  | JavaScript |         17 |          0 |          4 |         21 |
+| c:\projects\tennis app neu2\backend\src\__tests__\integration\coaches.test.js   | JavaScript |        124 |         12 |         37 |        173 |
+| c:\projects\tennis app neu2\backend\src\__tests__\integration\settings.test.js  | JavaScript |        163 |         17 |         36 |        216 |
+| c:\projects\tennis app neu2\backend\src\__tests__\integration\students.test.js  | JavaScript |         97 |         12 |         31 |        140 |
+| c:\projects\tennis app neu2\backend\src\config\db.js                            | JavaScript |         15 |          0 |          3 |         18 |
+| c:\projects\tennis app neu2\backend\src\config\passport.js                      | JavaScript |         66 |         18 |         15 |         99 |
+| c:\projects\tennis app neu2\backend\src\controllers\coachController.js          | JavaScript |         36 |          0 |          5 |         41 |
+| c:\projects\tennis app neu2\backend\src\controllers\scheduleController-lokal.js | JavaScript |         25 |          1 |          5 |         31 |
+| c:\projects\tennis app neu2\backend\src\controllers\scheduleController.js       | JavaScript |         30 |         26 |         12 |         68 |
+| c:\projects\tennis app neu2\backend\src\controllers\studentController.js        | JavaScript |         36 |          0 |          5 |         41 |
+| c:\projects\tennis app neu2\backend\src\index.js                                | JavaScript |         12 |          3 |          3 |         18 |
+| c:\projects\tennis app neu2\backend\src\middleware\checkStudentAccess.js        | JavaScript |         49 |         22 |         13 |         84 |
+| c:\projects\tennis app neu2\backend\src\middleware\requireAuth.js               | JavaScript |         13 |          6 |          4 |         23 |
+| c:\projects\tennis app neu2\backend\src\middleware\requireRole.js               | JavaScript |         14 |          9 |          3 |         26 |
+| c:\projects\tennis app neu2\backend\src\middleware\updateActivity.js            | JavaScript |         22 |          9 |          6 |         37 |
+| c:\projects\tennis app neu2\backend\src\models\Coach.js                         | JavaScript |         21 |         12 |          6 |         39 |
+| c:\projects\tennis app neu2\backend\src\models\LoginSession.js                  | JavaScript |         57 |         12 |         13 |         82 |
+| c:\projects\tennis app neu2\backend\src\models\SavedSchedule.js                 | JavaScript |         64 |         11 |          7 |         82 |
+| c:\projects\tennis app neu2\backend\src\models\Schedule-lokal.js                | JavaScript |          7 |          0 |          3 |         10 |
+| c:\projects\tennis app neu2\backend\src\models\Schedule.js                      | JavaScript |         15 |          6 |          3 |         24 |
+| c:\projects\tennis app neu2\backend\src\models\Settings.js                      | JavaScript |         47 |          3 |          7 |         57 |
+| c:\projects\tennis app neu2\backend\src\models\Student.js                       | JavaScript |         59 |         14 |          9 |         82 |
+| c:\projects\tennis app neu2\backend\src\models\User.js                          | JavaScript |         80 |         10 |          8 |         98 |
+| c:\projects\tennis app neu2\backend\src\models\UserSettings.js                  | JavaScript |         28 |          8 |          5 |         41 |
+| c:\projects\tennis app neu2\backend\src\routes\auth.js                          | JavaScript |        178 |         46 |         38 |        262 |
+| c:\projects\tennis app neu2\backend\src\routes\coaches.js                       | JavaScript |        116 |         19 |         18 |        153 |
+| c:\projects\tennis app neu2\backend\src\routes\savedSchedules.js                | JavaScript |        189 |         25 |         42 |        256 |
+| c:\projects\tennis app neu2\backend\src\routes\schedule-lokal.js                | JavaScript |          9 |          0 |          3 |         12 |
+| c:\projects\tennis app neu2\backend\src\routes\schedule.js                      | JavaScript |          6 |          0 |          4 |         10 |
+| c:\projects\tennis app neu2\backend\src\routes\settings.js                      | JavaScript |         42 |          2 |         11 |         55 |
+| c:\projects\tennis app neu2\backend\src\routes\students-fix.js                  | JavaScript |         46 |          4 |          6 |         56 |
+| c:\projects\tennis app neu2\backend\src\routes\students.js                      | JavaScript |        438 |         51 |         77 |        566 |
+| c:\projects\tennis app neu2\backend\src\routes\students_.js                     | JavaScript |        288 |         30 |         48 |        366 |
+| c:\projects\tennis app neu2\backend\src\routes\userSettings.js                  | JavaScript |         45 |         14 |         11 |         70 |
+| c:\projects\tennis app neu2\backend\src\routes\users.js                         | JavaScript |        157 |         47 |         39 |        243 |
+| c:\projects\tennis app neu2\backend\src\scripts\checkTeamValues.js              | JavaScript |         20 |          0 |          7 |         27 |
+| c:\projects\tennis app neu2\backend\src\scripts\cleanTeamData.js                | JavaScript |         62 |          7 |         17 |         86 |
+| c:\projects\tennis app neu2\backend\src\scripts\createAdmin.js                  | JavaScript |         47 |         11 |         12 |         70 |
+| c:\projects\tennis app neu2\backend\src\scripts\createUser.js                   | JavaScript |         83 |         10 |         18 |        111 |
+| c:\projects\tennis app neu2\backend\src\scripts\migrateCoachData.js             | JavaScript |        115 |         26 |         28 |        169 |
+| c:\projects\tennis app neu2\backend\src\scripts\migrateSkillLevels.js           | JavaScript |        124 |         28 |         25 |        177 |
+| c:\projects\tennis app neu2\backend\src\server-lokal.js                         | JavaScript |         18 |          2 |          6 |         26 |
+| c:\projects\tennis app neu2\backend\src\server.js                               | JavaScript |         85 |         17 |         17 |        119 |
+| c:\projects\tennis app neu2\backend\src\testHelpers.js                          | JavaScript |         98 |         27 |         11 |        136 |
+| Total                                                                           |            |      3,296 |        577 |        687 |      4,560 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

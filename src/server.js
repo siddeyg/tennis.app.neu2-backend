@@ -32,8 +32,10 @@ console.log(`🛢️ MongoDB URI: ${process.env.MONGO_URI}`);
 import passport, { configurePassport } from "./config/passport.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 import { requireRole } from "./middleware/requireRole.js";
+import updateActivity from "./middleware/updateActivity.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
+import userSettingsRoutes from "./routes/userSettings.js";
 import studentRoutes from "./routes/students.js";
 import scheduleRoutes from "./routes/schedule.js";
 import coachRoutes from "./routes/coaches.js";
@@ -102,13 +104,15 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 // Protected routes - require authentication
-app.use("/api/students", requireAuth, studentRoutes);
-app.use("/api/schedule", requireAuth, scheduleRoutes);
-app.use("/api/coaches", requireAuth, coachRoutes);
-app.use("/api/saved-schedules", requireAuth, savedScheduleRoutes);
-app.use("/api/settings", requireAuth, settingsRoutes);
+// updateActivity middleware updates lastActivity timestamp every 5 minutes
+app.use("/api/students", requireAuth, updateActivity, studentRoutes);
+app.use("/api/schedule", requireAuth, updateActivity, scheduleRoutes);
+app.use("/api/coaches", requireAuth, updateActivity, coachRoutes);
+app.use("/api/saved-schedules", requireAuth, updateActivity, savedScheduleRoutes);
+app.use("/api/settings", requireAuth, updateActivity, settingsRoutes);
+app.use("/api/user-settings", requireAuth, updateActivity, userSettingsRoutes);
 
 // User management routes - admin only
-app.use("/api/users", requireAuth, requireRole(["admin"]), userRoutes);
+app.use("/api/users", requireAuth, updateActivity, requireRole(["admin"]), userRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server läuft auf Port ${PORT}`));
