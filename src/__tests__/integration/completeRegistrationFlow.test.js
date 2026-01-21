@@ -1,0 +1,329 @@
+/**
+ * Complete Registration Flow - End-to-End Integration Test
+ *
+ * Tests the complete GDPR-compliant user journey from registration
+ * to seasonal training signup with auto-created Student record.
+ */
+
+import request from 'supertest';
+import express from 'express';
+import mongoose from 'mongoose';
+import StudentPortalUser from '../../models/StudentPortalUser.js';
+import Student from '../../models/Student.js';
+import RegistrationPeriod from '../../models/RegistrationPeriod.js';
+import SeasonalRegistration from '../../models/SeasonalRegistration.js';
+import User from '../../models/User.js';
+import portalAuthRoutes from '../../routes/portalAuth.js';
+import portalSeasonalRegistrationsRoutes from '../../routes/portalSeasonalRegistrations.js';
+import {
+  connectTestDB,
+  disconnectTestDB,
+  clearTestDB,
+} from '../../testHelpers.js';
+
+const app = express();
+app.use(express.json());
+app.use('/api/portal/auth', portalAuthRoutes);
+app.use('/api/portal/seasonal-registrations', portalSeasonalRegistrationsRoutes);
+
+describe('Complete Registration Flow - E2E', () => {
+  let registrationPeriod;
+  let adminUser;
+
+  beforeAll(async () => {
+    await connectTestDB();
+  });
+
+  afterAll(async () => {
+    await disconnectTestDB();
+  });
+
+  beforeEach(async () => {
+    await clearTestDB();
+
+    // Create mock admin user
+    adminUser = new User({
+      email: 'admin@test.com',
+      password: 'hashedpassword123',
+      firstName: 'Test',
+      lastName: 'Admin',
+      role: 'admin',
+    });
+    await adminUser.save();
+
+    // Create active registration period
+    registrationPeriod = new RegistrationPeriod({
+      name: 'Summer 2026 Training',
+      season: 'summer',
+      registrationStart: new Date('2026-01-01'),
+      registrationDeadline: new Date('2026-12-31'),
+      trainingStartDate: new Date('2026-04-01'),
+      trainingEndDate: new Date('2026-09-30'),
+      isActive: true,
+      status: 'open',
+      createdBy: adminUser._id,
+      kidsFormConfig: {
+        enabledFields: ['mitgliedsstatus', 'trainingsart', 'trainingshäufigkeit', 'teamParticipation', 'availableTimesKids'],
+        requiredFields: ['mitgliedsstatus', 'trainingsart', 'trainingshäufigkeit', 'availableTimesKids']
+      }
+    });
+    await registrationPeriod.save();
+  });
+
+  test('Complete Flow: Registration → Verification → Login → Seasonal Registration → Student Created', async () => {
+    const userEmail = 'e2e@example.com';
+    const userPassword = 'SecurePass123!';
+
+    // STEP 1: User Registers
+    const registrationRes = await request(app)
+      .post('/api/portal/auth/register')
+      .send({
+        email: userEmail,
+        password: userPassword,
+        firstName: 'Emma',
+        lastName: 'E2E-Test',
+        birthdate: '2013-07-20',
+        phone: '+49111222333'
+      })
+      .expect(201);
+
+    expect(registrationRes.body.message).toContain('Registrierung erfolgreich');
+    const userId = registrationRes.body.userId;
+
+    let user = await StudentPortalUser.findById(userId);
+    expect(user.emailVerified).toBe(false);
+    expect(user.studentId).toBeNull();
+
+    // STEP 2: User Tries to Login (Should Fail)
+    const loginFailRes = await request(app)
+      .post('/api/portal/auth/login')
+      .send({ email: userEmail, password: userPassword })
+      .expect(403);
+
+    expect(loginFailRes.body.error).toContain('Email noch nicht verifiziert');
+
+    // STEP 3: User Verifies Email
+    const verificationToken = user.verificationToken;
+    const verifyRes = await request(app)
+      .post('/api/portal/auth/verify-email')
+      .send({ token: verificationToken })
+      .expect(200);
+
+    expect(verifyRes.body.message).toContain('Email erfolgreich verifiziert');
+
+    user = await StudentPortalUser.findById(userId);
+    expect(user.emailVerified).toBe(true);
+
+    // STEP 4: User Logs In Successfully
+    const loginSuccessRes = await request(app)
+      .post('/api/portal/auth/login')
+      .send({ email: userEmail, password: userPassword })
+      .expect(200);
+
+    expect(loginSuccessRes.body.message).toBe('Login erfolgreich');
+    const authCookies = loginSuccessRes.headers['set-cookie'];
+
+    // STEP 5: User Submits Seasonal Registration
+    const seasonalRegData = {
+      periodId: registrationPeriod._id,
+      formType: 'kids',
+      firstName: 'Emma',
+      lastName: 'E2E-Test',
+      birthdate: '2013-07-20',
+      email: userEmail,
+      phone: '+49111222333',
+      address: 'E2E-Teststr. 99, 10115 Berlin',
+      mitgliedsstatus: 'Mitglied',
+      trainingsart: 'Gelb Team',
+      trainingshäufigkeit: '2',
+      teamParticipation: true,
+      availableTimesKids: ['Dienstag 15', 'Dienstag 16', 'Donnerstag 15', 'Donnerstag 16', 'Freitag 15'],
+      privacyConsent: true,
+      remarks: 'E2E Test - Bitte Teamtraining'
+    };
+
+    const seasonalRegRes = await request(app)
+      .post('/api/portal/seasonal-registrations')
+      .set('Cookie', authCookies)
+      .send(seasonalRegData)
+      .expect(201);
+
+    expect(seasonalRegRes.body.success).toBe(true);
+
+    // STEP 6: Verify Student Auto-Created
+    const students = await Student.find({});
+    expect(students).toHaveLength(1);
+
+    const student = students[0];
+    expect(student.firstName).toBe('Emma');
+    expect(student.lastName).toBe('E2E-Test');
+    expect(student.member).toBe(true);
+    expect(student.trainigGroup).toBe('Gelb Team');
+    expect(student.frequence).toBe('2');
+
+    // STEP 7: Verify StudentPortalUser Linked
+    user = await StudentPortalUser.findById(userId);
+    expect(user.studentId).toBeDefined();
+    expect(user.studentId.toString()).toBe(student._id.toString());
+
+    // STEP 8: Verify Registration Auto-Approved
+    const seasonalReg = await SeasonalRegistration.findOne({
+      studentPortalUserId: userId,
+      periodId: registrationPeriod._id
+    });
+
+    expect(seasonalReg.status).toBe('processed');
+    expect(seasonalReg.processedAt).toBeDefined();
+
+    // STEP 9: User Can Login Again and See Student Info
+    const secondLoginRes = await request(app)
+      .post('/api/portal/auth/login')
+      .send({ email: userEmail, password: userPassword })
+      .expect(200);
+
+    expect(secondLoginRes.body.user.studentId).toBeDefined();
+    expect(secondLoginRes.body.user.studentName).toBe('Emma E2E-Test');
+
+    // STEP 10: Admin Can See Student in Database
+    const allStudents = await Student.find({});
+    expect(allStudents).toHaveLength(1);
+    expect(allStudents[0].email).toBe(userEmail);
+  });
+
+  test('Complete Flow: Adult User Registration', async () => {
+    const userEmail = 'adult-e2e@example.com';
+    const userPassword = 'AdultPass123!';
+
+    registrationPeriod.adultsFormConfig = {
+      enabledFields: ['spielstärke', 'trainingGoals', 'groupSize', 'availableTimesAdults'],
+      requiredFields: ['spielstärke', 'availableTimesAdults']
+    };
+    await registrationPeriod.save();
+
+    // Register
+    const regRes = await request(app)
+      .post('/api/portal/auth/register')
+      .send({
+        email: userEmail,
+        password: userPassword,
+        firstName: 'Peter',
+        lastName: 'Erwachsen',
+        birthdate: '1982-11-05',
+        phone: '+49222333444'
+      })
+      .expect(201);
+
+    const userId = regRes.body.userId;
+    let user = await StudentPortalUser.findById(userId);
+
+    // Verify email
+    await request(app)
+      .post('/api/portal/auth/verify-email')
+      .send({ token: user.verificationToken })
+      .expect(200);
+
+    // Login
+    const loginRes = await request(app)
+      .post('/api/portal/auth/login')
+      .send({ email: userEmail, password: userPassword })
+      .expect(200);
+
+    const authCookies = loginRes.headers['set-cookie'];
+
+    // Submit seasonal registration
+    await request(app)
+      .post('/api/portal/seasonal-registrations')
+      .set('Cookie', authCookies)
+      .send({
+        periodId: registrationPeriod._id,
+        formType: 'adults',
+        firstName: 'Peter',
+        lastName: 'Erwachsen',
+        birthdate: '1982-11-05',
+        email: userEmail,
+        phone: '+49222333444',
+        address: 'Erwachsenenstr. 7, 80331 München',
+        spielstärke: 'gute:r Spieler:in',
+        trainingGoals: ['Matchtraining', 'Technik'],
+        groupSize: ['2er', '3er'],
+        availableTimesAdults: ['Montag 19', 'Mittwoch 19', 'Freitag 19', 'Samstag 10', 'Samstag 11'],
+        privacyConsent: true,
+        remarks: 'Bevorzugt Doppeltraining'
+      })
+      .expect(201);
+
+    // Verify adult Student created
+    const student = await Student.findOne({ email: userEmail });
+    expect(student).toBeDefined();
+    expect(student.adult).toBe(true);
+    expect(student.skillLevel).toBe('gute:r Spieler:in');
+    expect(student.comment2).toBe('Matchtraining, Technik');
+    expect(student.groupSize).toBe('2er, 3er');
+    expect(student.frequence).toBe('1');
+  });
+
+  test('Error Handling: Cannot register for season without email verification', async () => {
+    // Register user but don't verify
+    const regRes = await request(app)
+      .post('/api/portal/auth/register')
+      .send({
+        email: 'unverified-e2e@example.com',
+        password: 'TestPass123!',
+        firstName: 'Unverified',
+        lastName: 'User',
+        birthdate: '2010-01-01'
+      })
+      .expect(201);
+
+    // Try to login (should fail)
+    const loginRes = await request(app)
+      .post('/api/portal/auth/login')
+      .send({ email: 'unverified-e2e@example.com', password: 'TestPass123!' })
+      .expect(403);
+
+    expect(loginRes.body.error).toContain('Email noch nicht verifiziert');
+
+    // Verify no Student was created
+    const students = await Student.find({});
+    expect(students).toHaveLength(0);
+  });
+
+  test('GDPR Compliance: No public student list exposure', async () => {
+    // Create some students in database
+    const student1 = new Student({
+      firstName: 'Private',
+      lastName: 'Student1',
+      email: 'private1@example.com',
+      birthDate: '2010-01-01'
+    });
+    await student1.save();
+
+    const student2 = new Student({
+      firstName: 'Private',
+      lastName: 'Student2',
+      email: 'private2@example.com',
+      birthDate: '2011-01-01'
+    });
+    await student2.save();
+
+    // Registration should NOT require selecting from student list
+    const regRes = await request(app)
+      .post('/api/portal/auth/register')
+      .send({
+        email: 'gdpr-test@example.com',
+        password: 'TestPass123!',
+        firstName: 'New',
+        lastName: 'User',
+        birthdate: '2012-06-15'
+      })
+      .expect(201);
+
+    expect(regRes.body.userId).toBeDefined();
+
+    // Verify new user created without needing existing student data
+    const user = await StudentPortalUser.findById(regRes.body.userId);
+    expect(user.firstName).toBe('New');
+    expect(user.lastName).toBe('User');
+    expect(user.studentId).toBeNull();
+  });
+});
