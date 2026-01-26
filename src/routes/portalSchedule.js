@@ -238,7 +238,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       birthDate: portalUser.birthdate,
       email: portalUser.email || '',
       phone: portalUser.phone || '',
-      adress: '',  // Not stored in StudentPortalUser model
+      adress: portalUser.address || '',  // Return address from StudentPortalUser
       hasStudentRecord: false
     });
 
@@ -317,9 +317,12 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
-    // Update only email and phone (adress not stored in StudentPortalUser)
+    // Update email, phone, and address
     portalUser.email = email?.trim() || portalUser.email;
     portalUser.phone = phone?.trim() || '';
+    if (adress && adress.trim() !== '') {
+      portalUser.address = adress.trim();
+    }
 
     await portalUser.save();
 
@@ -333,7 +336,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       birthDate: portalUser.birthdate,
       email: portalUser.email,
       phone: portalUser.phone,
-      adress: '',  // Not stored in StudentPortalUser
+      adress: portalUser.address || '',  // Return address from StudentPortalUser
       hasStudentRecord: false
     });
 
