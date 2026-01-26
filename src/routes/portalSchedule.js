@@ -344,6 +344,72 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
 });
 
 /**
+ * @route   POST /api/portal/profile/complete
+ * @desc    Complete user profile with address and parent info (for children)
+ * @access  Private (student portal users only)
+ */
+router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
+  try {
+    const portalUserId = req.user.id;
+    const { address, parentName, parentEmail, parentPhone } = req.body;
+
+    // Validate address (required for all)
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Adresse ist erforderlich' });
+    }
+
+    // Get portal user
+    const portalUser = await StudentPortalUser.findById(portalUserId);
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
+    }
+
+    // Check if user is a child - if so, parent info is required
+    const isChild = portalUser.isChild();
+
+    if (isChild) {
+      if (!parentName || parentName.trim().length === 0) {
+        return res.status(400).json({ error: 'Name eines Elternteils ist erforderlich für Kinder' });
+      }
+      if (!parentEmail || parentEmail.trim().length === 0) {
+        return res.status(400).json({ error: 'E-Mail eines Elternteils ist erforderlich für Kinder' });
+      }
+      if (!parentPhone || parentPhone.trim().length === 0) {
+        return res.status(400).json({ error: 'Telefonnummer eines Elternteils ist erforderlich für Kinder' });
+      }
+
+      // Validate parent email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(parentEmail.trim())) {
+        return res.status(400).json({ error: 'Ungültige E-Mail-Adresse des Elternteils' });
+      }
+    }
+
+    // Update portal user
+    portalUser.address = address.trim();
+
+    if (isChild) {
+      portalUser.parentName = parentName.trim();
+      portalUser.parentEmail = parentEmail.trim().toLowerCase();
+      portalUser.parentPhone = parentPhone.trim();
+    }
+
+    portalUser.profileCompleted = true;
+    await portalUser.save();
+
+    res.json({
+      message: 'Profil erfolgreich vervollständigt',
+      profileCompleted: true,
+      isChild
+    });
+
+  } catch (error) {
+    console.error('Error completing profile:', error);
+    res.status(500).json({ error: 'Serverfehler beim Vervollständigen des Profils' });
+  }
+});
+
+/**
  * @route   POST /api/portal/schedule-change-requests
  * @desc    Create a new schedule change request
  * @access  Private (student portal users only)
