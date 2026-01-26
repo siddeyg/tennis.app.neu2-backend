@@ -390,6 +390,14 @@ router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
+    // Check if email is verified
+    if (!portalUser.emailVerified) {
+      return res.status(400).json({
+        error: 'Bitte verifizieren Sie zuerst Ihre E-Mail-Adresse',
+        emailVerified: false
+      });
+    }
+
     // Check if user is a child - if so, parent info is required
     const isChild = portalUser.isChild();
 
