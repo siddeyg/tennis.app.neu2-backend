@@ -339,10 +339,105 @@ export function generatePasswordResetToken() {
   return { token, expires };
 }
 
+/**
+ * Send admin notification about parent info changes (child users)
+ *
+ * @param {Object} options - Notification options
+ * @param {string} options.childName - Name of the child
+ * @param {string} options.childEmail - Email of the child account
+ * @param {Object} options.oldValues - Old parent contact values
+ * @param {Object} options.newValues - New parent contact values
+ */
+export async function sendParentInfoChangeNotification({ childName, childEmail, oldValues, newValues }) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@tcgw.de';
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Elterninformationen aktualisiert</title>
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 TC GW Am Kreuzberg</h1>
+        <p style="color: white; margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">Admin Benachrichtigung</p>
+      </div>
+
+      <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
+        <h2 style="color: #333; margin-top: 0;">Elterninformationen geändert</h2>
+
+        <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 20px 0; border-radius: 4px;">
+          <p style="margin: 0; font-weight: 600; color: #1565c0;">Schüler (minderjährig):</p>
+          <p style="margin: 5px 0 0 0; color: #333;">${childName}</p>
+          <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">${childEmail}</p>
+        </div>
+
+        <h3 style="color: #666; font-size: 16px; margin-top: 25px;">Geänderte Elterndaten:</h3>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+          <thead>
+            <tr style="background: #f5f5f5;">
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e0e0e0; font-weight: 600;">Feld</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e0e0e0; font-weight: 600;">Alter Wert</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e0e0e0; font-weight: 600;">Neuer Wert</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${oldValues.parentName !== newValues.parentName ? `
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; font-weight: 500;">Name</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #999;">${oldValues.parentName || '(leer)'}</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #4caf50; font-weight: 600;">${newValues.parentName || '(leer)'}</td>
+            </tr>
+            ` : ''}
+            ${oldValues.parentEmail !== newValues.parentEmail ? `
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; font-weight: 500;">E-Mail</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #999;">${oldValues.parentEmail || '(leer)'}</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #4caf50; font-weight: 600;">${newValues.parentEmail || '(leer)'}</td>
+            </tr>
+            ` : ''}
+            ${oldValues.parentPhone !== newValues.parentPhone ? `
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; font-weight: 500;">Telefon</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #999;">${oldValues.parentPhone || '(leer)'}</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #4caf50; font-weight: 600;">${newValues.parentPhone || '(leer)'}</td>
+            </tr>
+            ` : ''}
+          </tbody>
+        </table>
+
+        <p style="color: #666; font-size: 14px; margin-top: 25px;">Diese Änderungen wurden vom Schüler-Konto vorgenommen und dienen zu Ihrer Information.</p>
+
+        <p style="color: #666; font-size: 14px;">Zeitstempel: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })}</p>
+
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+
+        <p style="color: #999; font-size: 12px; margin: 0;">Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.</p>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
+        <p style="margin: 5px 0;">Tennis-Schule TC GW Am Kreuzberg</p>
+        <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  await sendEmail({
+    to: adminEmail,
+    subject: `Elterninformationen geändert - ${childName}`,
+    html,
+  });
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
+  sendParentInfoChangeNotification,
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };

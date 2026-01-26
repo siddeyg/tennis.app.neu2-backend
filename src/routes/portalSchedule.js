@@ -331,6 +331,13 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
+    // Track old parent values for admin notification
+    const oldParentValues = {
+      parentName: portalUser.parentName || '',
+      parentEmail: portalUser.parentEmail || '',
+      parentPhone: portalUser.parentPhone || ''
+    };
+
     // Update email, phone, and address
     portalUser.email = email?.trim() || portalUser.email;
     portalUser.phone = phone?.trim() || '';
@@ -339,11 +346,45 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     }
 
     // Update parent info if provided (for children)
-    if (parentName !== undefined) portalUser.parentName = parentName?.trim() || '';
-    if (parentEmail !== undefined) portalUser.parentEmail = parentEmail?.trim().toLowerCase() || '';
-    if (parentPhone !== undefined) portalUser.parentPhone = parentPhone?.trim() || '';
+    let parentInfoChanged = false;
+    if (parentName !== undefined) {
+      const newValue = parentName?.trim() || '';
+      if (newValue !== oldParentValues.parentName) parentInfoChanged = true;
+      portalUser.parentName = newValue;
+    }
+    if (parentEmail !== undefined) {
+      const newValue = parentEmail?.trim().toLowerCase() || '';
+      if (newValue !== oldParentValues.parentEmail) parentInfoChanged = true;
+      portalUser.parentEmail = newValue;
+    }
+    if (parentPhone !== undefined) {
+      const newValue = parentPhone?.trim() || '';
+      if (newValue !== oldParentValues.parentPhone) parentInfoChanged = true;
+      portalUser.parentPhone = newValue;
+    }
 
     await portalUser.save();
+
+    // Send admin notification if parent info changed (for children)
+    if (parentInfoChanged && portalUser.isChild && portalUser.isChild()) {
+      try {
+        const { sendParentInfoChangeNotification } = await import('../utils/emailService.js');
+        await sendParentInfoChangeNotification({
+          childName: `${portalUser.firstName} ${portalUser.lastName}`,
+          childEmail: portalUser.email,
+          oldValues: oldParentValues,
+          newValues: {
+            parentName: portalUser.parentName || '',
+            parentEmail: portalUser.parentEmail || '',
+            parentPhone: portalUser.parentPhone || ''
+          }
+        });
+        console.log(`Admin notification sent for parent info change: ${portalUser.email}`);
+      } catch (emailError) {
+        // Log but don't fail the request if email fails
+        console.error('Failed to send admin notification:', emailError.message);
+      }
+    }
 
     console.log(`Profile updated for portal user: ${portalUser.firstName} ${portalUser.lastName}`);
 
