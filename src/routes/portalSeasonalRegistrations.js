@@ -1,0 +1,602 @@
+/**
+ * Portal Seasonal Registrations Routes
+ *
+ * Student Portal API for seasonal training registrations.
+ * Authenticated students can register for active training periods.
+ *
+ * Endpoints:
+ * - GET    /api/portal/seasonal-registrations/active-period    - Get active registration period
+ * - GET    /api/portal/seasonal-registrations/my-registration  - Get current user's registration
+ * - POST   /api/portal/seasonal-registrations                  - Submit new registration
+ * - PUT    /api/portal/seasonal-registrations/:id              - Update pending registration
+ * - DELETE /api/portal/seasonal-registrations/:id              - Delete pending registration
+ */
+
+import express from 'express';
+import RegistrationPeriod from '../models/RegistrationPeriod.js';
+import SeasonalRegistration from '../models/SeasonalRegistration.js';
+import StudentPortalUser from '../models/StudentPortalUser.js';
+import Student from '../models/Student.js';
+import requireAuth from '../middleware/requireAuth.js';
+import logger from '../utils/logger.js';
+import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
+
+const router = express.Router();
+
+// All routes require portal authentication
+// Note: requireAuth middleware works for both admin and portal users
+router.use(requireAuth);
+
+/**
+ * GET /api/portal/seasonal-registrations/active-period
+ * Get active registration period with form configuration
+ *
+ * Returns null if no active period
+ */
+router.get('/active-period', async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findOne({
+      isActive: true,
+      status: 'open'
+    }).select('-createdBy'); // Don't expose admin user ID
+
+    if (!period) {
+      return res.json({
+        success: true,
+        period: null,
+        message: 'Derzeit ist kein Anmeldezeitraum aktiv'
+      });
+    }
+
+    // Check if registration deadline has passed
+    if (new Date() > period.registrationDeadline) {
+      return res.json({
+        success: true,
+        period: null,
+        message: 'Die Anmeldefrist ist bereits abgelaufen'
+      });
+    }
+
+    res.json({
+      success: true,
+      period
+    });
+  } catch (error) {
+    logger.error('Error fetching active period:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Abrufen des Anmeldezeitraums'
+    });
+  }
+});
+
+/**
+ * GET /api/portal/seasonal-registrations/my-registration
+ * Get current user's registration for active period
+ *
+ * Query params:
+ * - periodId: optional - get registration for specific period (defaults to active)
+ */
+router.get('/my-registration', async (req, res) => {
+  try {
+    const { periodId } = req.query;
+
+    let period;
+    if (periodId) {
+      period = await RegistrationPeriod.findById(periodId);
+    } else {
+      period = await RegistrationPeriod.findOne({
+        isActive: true,
+        status: 'open'
+      });
+    }
+
+    if (!period) {
+      return res.json({
+        success: true,
+        registration: null,
+        message: 'Kein Anmeldezeitraum gefunden'
+      });
+    }
+
+    // Find registration for this user and period
+    const registration = await SeasonalRegistration.findOne({
+      studentPortalUserId: req.user.id,
+      periodId: period._id
+    }).populate('periodId', 'name season trainingStartDate trainingEndDate');
+
+    // Don't send encrypted IBAN to frontend
+    if (registration && registration.iban) {
+      const obj = registration.toObject();
+      delete obj.iban;
+      return res.json({
+        success: true,
+        registration: obj
+      });
+    }
+
+    res.json({
+      success: true,
+      registration
+    });
+  } catch (error) {
+    logger.error('Error fetching user registration:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Abrufen der Anmeldung'
+    });
+  }
+});
+
+/**
+ * POST /api/portal/seasonal-registrations
+ * Submit new registration
+ *
+ * Body: Registration fields (auto-filled + user-entered)
+ */
+router.post('/', async (req, res) => {
+  try {
+    // Check if user has completed profile (CRITICAL SECURITY CHECK)
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+    if (!portalUser) {
+      return res.status(404).json({
+        success: false,
+        error: 'Benutzer nicht gefunden'
+      });
+    }
+
+    if (!portalUser.profileCompleted) {
+      return res.status(400).json({
+        success: false,
+        error: 'Bitte vervollständigen Sie zuerst Ihr Profil',
+        requiresProfileCompletion: true
+      });
+    }
+
+    const {
+      periodId,
+      formType,
+      // Auto-filled fields (from StudentPortalUser)
+      firstName,
+      lastName,
+      birthdate,
+      email,
+      phone,
+      address,
+      // Kids-specific
+      mitgliedsstatus,
+      trainingsart,
+      trainingshäufigkeit,
+      teamParticipation,
+      availableTimesKids,
+      // Adults-specific
+      spielstärke,
+      trainingGoals,
+      groupSize,
+      availableTimesAdults,
+      // SEPA
+      sepaMandate,
+      accountHolder,
+      iban,
+      // Privacy & remarks
+      privacyConsent,
+      remarks
+    } = req.body;
+
+    // Validate required fields
+    if (!periodId || !formType || !firstName || !lastName || !birthdate || !email || !privacyConsent) {
+      return res.status(400).json({
+        success: false,
+        error: 'Erforderliche Felder fehlen'
+      });
+    }
+
+    // Check if period exists and is active
+    const period = await RegistrationPeriod.findById(periodId);
+
+    if (!period) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldezeitraum nicht gefunden'
+      });
+    }
+
+    if (!period.isActive || period.status !== 'open') {
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldungen für diesen Zeitraum sind nicht möglich'
+      });
+    }
+
+    // Check deadline
+    if (new Date() > period.registrationDeadline) {
+      return res.status(400).json({
+        success: false,
+        error: 'Die Anmeldefrist ist bereits abgelaufen'
+      });
+    }
+
+    // Check if user already has registration for this period
+    const existingRegistration = await SeasonalRegistration.findOne({
+      studentPortalUserId: req.user.id,
+      periodId: period._id
+    });
+
+    if (existingRegistration) {
+      return res.status(400).json({
+        success: false,
+        error: 'Sie haben bereits eine Anmeldung für diesen Zeitraum'
+      });
+    }
+
+    // Validate form-specific required fields
+    if (formType === 'kids') {
+      const kidsEnabled = period.kidsFormConfig?.enabledFields || [];
+      const kidsRequired = period.kidsFormConfig?.requiredFields || [];
+
+      if (kidsRequired.includes('mitgliedsstatus') && !mitgliedsstatus) {
+        return res.status(400).json({ success: false, error: 'Mitgliedsstatus ist erforderlich' });
+      }
+      if (kidsRequired.includes('trainingsart') && !trainingsart) {
+        return res.status(400).json({ success: false, error: 'Trainingsart ist erforderlich' });
+      }
+      if (kidsRequired.includes('trainingshäufigkeit') && !trainingshäufigkeit) {
+        return res.status(400).json({ success: false, error: 'Trainingshäufigkeit ist erforderlich' });
+      }
+      if (kidsRequired.includes('availableTimesKids') && (!availableTimesKids || availableTimesKids.length === 0)) {
+        return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
+      }
+
+      // Check minimum available times (5)
+      if (availableTimesKids && availableTimesKids.length < 5) {
+        return res.status(400).json({
+          success: false,
+          error: 'Bitte wählen Sie mindestens 5 verfügbare Zeiten aus'
+        });
+      }
+    } else if (formType === 'adults') {
+      const adultsEnabled = period.adultsFormConfig?.enabledFields || [];
+      const adultsRequired = period.adultsFormConfig?.requiredFields || [];
+
+      if (adultsRequired.includes('spielstärke') && !spielstärke) {
+        return res.status(400).json({ success: false, error: 'Spielstärke ist erforderlich' });
+      }
+      if (adultsRequired.includes('trainingGoals') && (!trainingGoals || trainingGoals.length === 0)) {
+        return res.status(400).json({ success: false, error: 'Trainingsziele sind erforderlich' });
+      }
+      if (adultsRequired.includes('groupSize') && (!groupSize || groupSize.length === 0)) {
+        return res.status(400).json({ success: false, error: 'Gruppengröße ist erforderlich' });
+      }
+      if (adultsRequired.includes('availableTimesAdults') && (!availableTimesAdults || availableTimesAdults.length === 0)) {
+        return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
+      }
+
+      // Check minimum available times (5)
+      if (availableTimesAdults && availableTimesAdults.length < 5) {
+        return res.status(400).json({
+          success: false,
+          error: 'Bitte wählen Sie mindestens 5 verfügbare Zeiten aus'
+        });
+      }
+    }
+
+    // Prepare registration data
+    const registrationData = {
+      periodId: period._id,
+      studentPortalUserId: req.user.id,
+      formType,
+      firstName,
+      lastName,
+      birthdate: new Date(birthdate),
+      email,
+      phone: phone || '',
+      address: address || '',
+      privacyConsent,
+      remarks: remarks || ''
+    };
+
+    // Add form-specific fields
+    if (formType === 'kids') {
+      registrationData.mitgliedsstatus = mitgliedsstatus;
+      registrationData.trainingsart = trainingsart;
+      registrationData.trainingshäufigkeit = trainingshäufigkeit;
+      registrationData.teamParticipation = teamParticipation || false;
+      registrationData.availableTimesKids = availableTimesKids || [];
+    } else {
+      registrationData.spielstärke = spielstärke;
+      registrationData.trainingGoals = trainingGoals || [];
+      registrationData.groupSize = groupSize || [];
+      registrationData.availableTimesAdults = availableTimesAdults || [];
+    }
+
+    // Handle SEPA mandate
+    if (sepaMandate && accountHolder && iban) {
+      // Validate IBAN format
+      if (!validateIBANFormat(iban)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültiges IBAN-Format'
+        });
+      }
+
+      registrationData.sepaMandate = true;
+      registrationData.accountHolder = accountHolder;
+      registrationData.iban = encryptIBAN(iban);
+    }
+
+    // Create registration
+    const registration = new SeasonalRegistration(registrationData);
+    await registration.save();
+
+    // Auto-create Student record if portal user doesn't have one yet
+    // (portalUser already fetched at start of function for profile check)
+    let studentId = portalUser.studentId;
+
+    if (!studentId) {
+      // Create new Student record from registration data
+      const studentData = {
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: new Date(birthdate).toISOString().split('T')[0], // Format: YYYY-MM-DD
+        email: email,
+        phone: phone || '',
+        adress: address || '',
+        comment: remarks || '',
+        member: formType === 'kids' ? (mitgliedsstatus === 'Mitglied') : false,
+        adult: formType === 'adults',
+        frequence: formType === 'kids' ? (trainingshäufigkeit || '1') : '1',
+        assignments: [] // Will be assigned during schedule planning
+      };
+
+      // Add form-specific fields
+      if (formType === 'kids') {
+        studentData.team = teamParticipation || false;
+        studentData.trainigGroup = trainingsart || ''; // e.g. "Rot", "Orange", "Gelb Team"
+        studentData.availableTimes = availableTimesKids || [];
+      } else {
+        // Adults
+        studentData.skillLevel = spielstärke || '';
+        studentData.comment2 = trainingGoals ? trainingGoals.join(', ') : ''; // Trainingsziele
+        studentData.groupSize = groupSize ? groupSize.join(', ') : ''; // Gruppengröße preferences
+        studentData.availableTimes = availableTimesAdults || [];
+      }
+
+      const student = new Student(studentData);
+      await student.save();
+
+      studentId = student._id;
+
+      // Link Student to StudentPortalUser
+      portalUser.studentId = studentId;
+      await portalUser.save();
+
+      logger.info('Auto-created Student record from seasonal registration', {
+        studentId: studentId,
+        portalUserId: req.user.id,
+        formType
+      });
+    }
+
+    // Update registration status to 'processed' (auto-approved)
+    registration.status = 'processed';
+    registration.processedAt = new Date();
+    await registration.save();
+
+    logger.info('Seasonal registration created and auto-approved', {
+      registrationId: registration._id,
+      userId: req.user.id,
+      studentId: studentId,
+      periodId: period._id,
+      formType
+    });
+
+    // Don't send encrypted IBAN back
+    const responseObj = registration.toObject();
+    delete responseObj.iban;
+
+    res.status(201).json({
+      success: true,
+      message: 'Anmeldung erfolgreich eingereicht',
+      registration: responseObj
+    });
+  } catch (error) {
+    logger.error('Error creating seasonal registration:', error);
+
+    // Handle duplicate registration error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        error: 'Sie haben bereits eine Anmeldung für diesen Zeitraum'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Einreichen der Anmeldung'
+    });
+  }
+});
+
+/**
+ * PUT /api/portal/seasonal-registrations/:id
+ * Update pending registration
+ *
+ * Users can only update their own pending registrations
+ */
+router.put('/:id', async (req, res) => {
+  try {
+    const registration = await SeasonalRegistration.findById(req.params.id);
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    // Check ownership
+    if (registration.studentPortalUserId.toString() !== req.user.id.toString()) {
+      return res.status(403).json({
+        success: false,
+        error: 'Keine Berechtigung'
+      });
+    }
+
+    // Only allow updating pending registrations
+    if (registration.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        error: 'Nur ausstehende Anmeldungen können bearbeitet werden'
+      });
+    }
+
+    // Check if registration period is still open
+    const period = await RegistrationPeriod.findById(registration.periodId);
+    if (!period || !period.isActive || period.status !== 'open') {
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldungen für diesen Zeitraum sind nicht mehr möglich'
+      });
+    }
+
+    // Update allowed fields (similar validation as POST)
+    const {
+      mitgliedsstatus,
+      trainingsart,
+      trainingshäufigkeit,
+      teamParticipation,
+      availableTimesKids,
+      spielstärke,
+      trainingGoals,
+      groupSize,
+      availableTimesAdults,
+      sepaMandate,
+      accountHolder,
+      iban,
+      remarks
+    } = req.body;
+
+    // Update form-specific fields
+    if (registration.formType === 'kids') {
+      if (mitgliedsstatus) registration.mitgliedsstatus = mitgliedsstatus;
+      if (trainingsart) registration.trainingsart = trainingsart;
+      if (trainingshäufigkeit) registration.trainingshäufigkeit = trainingshäufigkeit;
+      if (teamParticipation !== undefined) registration.teamParticipation = teamParticipation;
+      if (availableTimesKids) {
+        if (availableTimesKids.length < 5) {
+          return res.status(400).json({
+            success: false,
+            error: 'Bitte wählen Sie mindestens 5 verfügbare Zeiten aus'
+          });
+        }
+        registration.availableTimesKids = availableTimesKids;
+      }
+    } else {
+      if (spielstärke) registration.spielstärke = spielstärke;
+      if (trainingGoals) registration.trainingGoals = trainingGoals;
+      if (groupSize) registration.groupSize = groupSize;
+      if (availableTimesAdults) {
+        if (availableTimesAdults.length < 5) {
+          return res.status(400).json({
+            success: false,
+            error: 'Bitte wählen Sie mindestens 5 verfügbare Zeiten aus'
+          });
+        }
+        registration.availableTimesAdults = availableTimesAdults;
+      }
+    }
+
+    // Update SEPA fields
+    if (sepaMandate !== undefined) registration.sepaMandate = sepaMandate;
+    if (accountHolder) registration.accountHolder = accountHolder;
+    if (iban) {
+      if (!validateIBANFormat(iban)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültiges IBAN-Format'
+        });
+      }
+      registration.iban = encryptIBAN(iban);
+    }
+
+    if (remarks !== undefined) registration.remarks = remarks;
+
+    await registration.save();
+
+    logger.info('Seasonal registration updated', {
+      registrationId: registration._id,
+      userId: req.user.id
+    });
+
+    // Don't send encrypted IBAN back
+    const responseObj = registration.toObject();
+    delete responseObj.iban;
+
+    res.json({
+      success: true,
+      message: 'Anmeldung erfolgreich aktualisiert',
+      registration: responseObj
+    });
+  } catch (error) {
+    logger.error('Error updating seasonal registration:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Aktualisieren der Anmeldung'
+    });
+  }
+});
+
+/**
+ * DELETE /api/portal/seasonal-registrations/:id
+ * Delete pending registration
+ *
+ * Users can only delete their own pending registrations
+ */
+router.delete('/:id', async (req, res) => {
+  try {
+    const registration = await SeasonalRegistration.findById(req.params.id);
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    // Check ownership
+    if (registration.studentPortalUserId.toString() !== req.user.id.toString()) {
+      return res.status(403).json({
+        success: false,
+        error: 'Keine Berechtigung'
+      });
+    }
+
+    // Only allow deleting pending registrations
+    if (registration.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        error: 'Nur ausstehende Anmeldungen können gelöscht werden'
+      });
+    }
+
+    await registration.deleteOne();
+
+    logger.info('Seasonal registration deleted by user', {
+      registrationId: registration._id,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      message: 'Anmeldung erfolgreich gelöscht'
+    });
+  } catch (error) {
+    logger.error('Error deleting seasonal registration:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Löschen der Anmeldung'
+    });
+  }
+});
+
+export default router;

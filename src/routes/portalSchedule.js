@@ -212,7 +212,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
         birthDate: student.birthDate,
         email: student.email || '',
         phone: student.phone || '',
-        adress: student.adress || '',
+        address: student.adress || '',  // Map Student.adress to response.address
         adult: student.adult,
         skillLevel: student.skillLevel || '',
         trainigGroup: student.trainigGroup || '',
@@ -238,7 +238,11 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       birthDate: portalUser.birthdate,
       email: portalUser.email || '',
       phone: portalUser.phone || '',
-      adress: portalUser.address || '',  // Return address from StudentPortalUser
+      address: portalUser.address || '',  // Return address from StudentPortalUser
+      // Parent contact info (for children)
+      parentName: portalUser.parentName || '',
+      parentEmail: portalUser.parentEmail || '',
+      parentPhone: portalUser.parentPhone || '',
       hasStudentRecord: false
     });
 
@@ -250,14 +254,16 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
 
 /**
  * @route   PUT /api/portal/profile
- * @desc    Update student contact information (email, phone, adress only)
+ * @desc    Update student contact information (email, phone, address only)
  * @access  Private (student portal users only)
  */
 router.put('/profile', verifyPortalAuth, async (req, res) => {
   try {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
-    const { email, phone, adress } = req.body;
+    // Accept both 'address' (correct) and 'adress' (legacy) for backward compatibility
+    const { email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
+    const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
 
     // Validate email format if provided (test trimmed value)
     if (email && email.trim() !== '') {
@@ -275,6 +281,14 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       }
     }
 
+    // Validate parent email format if provided
+    if (parentEmail && parentEmail.trim() !== '') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(parentEmail.trim())) {
+        return res.status(400).json({ error: 'Ungültige Email-Adresse des Elternteils' });
+      }
+    }
+
     // If user has a Student record, update Student model
     if (studentId) {
       const student = await Student.findById(studentId);
@@ -285,7 +299,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       // Update ONLY editable contact fields (prevent modification of stammdaten)
       student.email = email?.trim() || '';
       student.phone = phone?.trim() || '';
-      student.adress = adress?.trim() || '';
+      student.adress = addressValue?.trim() || '';  // Update Student.adress field (legacy)
 
       await student.save();
 
@@ -299,7 +313,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         birthDate: student.birthDate,
         email: student.email,
         phone: student.phone,
-        adress: student.adress,
+        address: student.adress,  // Map Student.adress to response.address
         adult: student.adult,
         skillLevel: student.skillLevel || '',
         trainigGroup: student.trainigGroup || '',
@@ -320,9 +334,14 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     // Update email, phone, and address
     portalUser.email = email?.trim() || portalUser.email;
     portalUser.phone = phone?.trim() || '';
-    if (adress && adress.trim() !== '') {
-      portalUser.address = adress.trim();
+    if (addressValue && addressValue.trim() !== '') {
+      portalUser.address = addressValue.trim();
     }
+
+    // Update parent info if provided (for children)
+    if (parentName !== undefined) portalUser.parentName = parentName?.trim() || '';
+    if (parentEmail !== undefined) portalUser.parentEmail = parentEmail?.trim().toLowerCase() || '';
+    if (parentPhone !== undefined) portalUser.parentPhone = parentPhone?.trim() || '';
 
     await portalUser.save();
 
@@ -336,7 +355,11 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       birthDate: portalUser.birthdate,
       email: portalUser.email,
       phone: portalUser.phone,
-      adress: portalUser.address || '',  // Return address from StudentPortalUser
+      address: portalUser.address || '',  // Return address from StudentPortalUser
+      // Parent contact info (for children)
+      parentName: portalUser.parentName || '',
+      parentEmail: portalUser.parentEmail || '',
+      parentPhone: portalUser.parentPhone || '',
       hasStudentRecord: false
     });
 
