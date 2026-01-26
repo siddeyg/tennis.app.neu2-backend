@@ -349,7 +349,7 @@ export function generatePasswordResetToken() {
  * @param {Object} options.newValues - New parent contact values
  */
 export async function sendParentInfoChangeNotification({ childName, childEmail, oldValues, newValues }) {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@tcgw.de';
+  const adminEmail = process.env.ADMIN_EMAIL || 'tennisapp-admin@diemachtderworte.de';
 
   const html = `
     <!DOCTYPE html>
