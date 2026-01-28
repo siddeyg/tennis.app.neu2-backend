@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
+import User from '../models/User.js';
 import {
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
@@ -152,16 +153,82 @@ router.post('/login', authLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Email und Passwort erforderlich' });
     }
 
-    // Find user
-    const portalUser = await StudentPortalUser.findOne({
+    // Find user in StudentPortalUser table
+    let portalUser = await StudentPortalUser.findOne({
       email: email.toLowerCase(),
       isActive: true
     }).populate('studentId');
 
+    // If no portal user found, check if this is an admin from User table
     if (!portalUser) {
+      const adminUser = await User.findOne({
+        email: email.toLowerCase(),
+        isActive: true,
+        role: 'admin'  // ONLY allow admin role for security
+      });
+
+      // If admin user found, handle admin login
+      if (adminUser) {
+        // Verify admin password
+        const isAdminMatch = await adminUser.comparePassword(password);
+        if (!isAdminMatch) {
+          return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
+        }
+
+        // Generate JWT tokens for admin (using portal secrets)
+        const adminTokenPayload = {
+          id: adminUser._id,
+          role: 'admin',  // Preserve admin role
+          name: adminUser.name
+        };
+
+        const adminAccessToken = jwt.sign(
+          adminTokenPayload,
+          process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET,
+          { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+        );
+
+        const adminRefreshToken = jwt.sign(
+          {
+            id: adminUser._id,
+            role: 'admin'
+          },
+          process.env.PORTAL_REFRESH_TOKEN_SECRET || process.env.REFRESH_TOKEN_SECRET,
+          { expiresIn: process.env.REFRESH_EXPIRES_IN || '7d' }
+        );
+
+        // Set cookies
+        res.cookie('portalAccessToken', adminAccessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 15 * 60 * 1000 // 15 minutes
+        });
+
+        res.cookie('portalRefreshToken', adminRefreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
+        // Return admin response
+        return res.json({
+          message: 'Admin Login erfolgreich',
+          user: {
+            id: adminUser._id,
+            email: adminUser.email,
+            role: 'admin',
+            name: adminUser.name
+          }
+        });
+      }
+
+      // Neither portal user nor admin found
       return res.status(401).json({ error: 'E-Mail Adresse unbekannt' });
     }
 
+    // Continue with normal student portal user login
     // Check if email is verified
     if (!portalUser.emailVerified) {
       return res.status(403).json({
