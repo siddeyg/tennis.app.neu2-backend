@@ -33,6 +33,18 @@ const savedScheduleSchema = new mongoose.Schema({
     required: true,
   },
 
+  // ===== Verknüpfung mit Anmeldezeitraum =====
+  periodId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'RegistrationPeriod',
+    required: false,                    // Nullable für Migration (Legacy-Pläne)
+    index: true,                        // Index für schnelle Abfragen nach Zeitraum
+  },
+  version: {
+    type: Number,
+    default: 1,                         // Versionsnummer innerhalb eines Zeitraums
+  },
+
   // ===== Snapshot-Daten =====
   students: {
     type: Array,                        // Vollständiger Snapshot aller Schüler zum Speicherzeitpunkt
@@ -75,6 +87,10 @@ const savedScheduleSchema = new mongoose.Schema({
     },
   },
 });
+
+// ===== Compound Index für effiziente Abfragen =====
+// Suche nach allen Plänen eines Zeitraums, sortiert nach Erstellungsdatum
+savedScheduleSchema.index({ periodId: 1, createdAt: -1 });
 
 const SavedSchedule = mongoose.model("SavedSchedule", savedScheduleSchema);
 

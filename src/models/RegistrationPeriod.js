@@ -1,0 +1,185 @@
+import mongoose from 'mongoose';
+
+/**
+ * RegistrationPeriod Schema
+ *
+ * Manages seasonal training registration periods (Winter/Summer).
+ * Admins create periods with flexible dates and form configurations.
+ * Only one period can be active at a time.
+ */
+const registrationPeriodSchema = new mongoose.Schema(
+  {
+    // Period identification
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      // Example: "Wintertraining 2025/26"
+    },
+
+    season: {
+      type: String,
+      required: true,
+      enum: ['winter', 'summer'],
+    },
+
+    // Important dates
+    trainingStartDate: {
+      type: Date,
+      required: true,
+      // Example: 2025-10-27
+    },
+
+    trainingEndDate: {
+      type: Date,
+      required: true,
+      // Example: 2026-03-28
+    },
+
+    registrationDeadline: {
+      type: Date,
+      required: true,
+      // Example: 2025-10-10
+    },
+
+    // Registration status
+    status: {
+      type: String,
+      required: true,
+      enum: ['draft', 'open', 'closed', 'archived'],
+      default: 'draft',
+    },
+
+    // Only one period can be active at a time
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Link to current training plan
+    currentPlanId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'SavedSchedule',
+      required: false,  // Nullable until plan is created
+      index: true,
+    },
+
+    // Form configuration for kids
+    kidsFormConfig: {
+      enabledFields: {
+        type: [String],
+        default: [
+          'mitgliedsstatus',
+          'trainingsart',
+          'trainingshäufigkeit',
+          'teamParticipation',
+          'availableTimes',
+          'sepaMandate',
+          'accountHolder',
+          'iban',
+          'privacyConsent',
+          'remarks',
+        ],
+      },
+      requiredFields: {
+        type: [String],
+        default: [
+          'mitgliedsstatus',
+          'trainingsart',
+          'trainingshäufigkeit',
+          'availableTimes',
+          'privacyConsent',
+        ],
+      },
+    },
+
+    // Form configuration for adults
+    adultsFormConfig: {
+      enabledFields: {
+        type: [String],
+        default: [
+          'spielstärke',
+          'trainingGoals',
+          'groupSize',
+          'availableTimes',
+          'remarks',
+        ],
+      },
+      requiredFields: {
+        type: [String],
+        default: [
+          'spielstärke',
+          'availableTimes',
+        ],
+      },
+    },
+
+    // Metadata
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  {
+    timestamps: true, // Adds createdAt and updatedAt
+  }
+);
+
+// Indexes
+registrationPeriodSchema.index({ status: 1, isActive: 1 });
+registrationPeriodSchema.index({ season: 1, trainingStartDate: -1 });
+
+// Virtual: Count of submissions
+registrationPeriodSchema.virtual('submissionsCount', {
+  ref: 'SeasonalRegistration',
+  localField: '_id',
+  foreignField: 'periodId',
+  count: true,
+});
+
+// Virtual: Count of pending submissions
+registrationPeriodSchema.virtual('pendingSubmissionsCount', {
+  ref: 'SeasonalRegistration',
+  localField: '_id',
+  foreignField: 'periodId',
+  match: { status: 'pending' },
+  count: true,
+});
+
+// Virtual: Current training plan
+registrationPeriodSchema.virtual('currentPlan', {
+  ref: 'SavedSchedule',
+  localField: 'currentPlanId',
+  foreignField: '_id',
+  justOne: true,
+});
+
+// Ensure only one active period at a time
+registrationPeriodSchema.pre('save', async function (next) {
+  if (this.isActive && this.isModified('isActive')) {
+    // Deactivate all other periods
+    await mongoose.model('RegistrationPeriod').updateMany(
+      { _id: { $ne: this._id }, isActive: true },
+      { isActive: false }
+    );
+  }
+  next();
+});
+
+// Auto-open registration when status changes to 'open' + validate plan exists
+registrationPeriodSchema.pre('save', function (next) {
+  if (this.status === 'open' && this.isModified('status')) {
+    // Validation: Cannot open registration without linked training plan
+    if (!this.currentPlanId) {
+      const error = new Error('Cannot open registration period without a linked training plan. Please create a plan first.');
+      return next(error);
+    }
+    this.isActive = true;
+  }
+  next();
+});
+
+const RegistrationPeriod = mongoose.model('RegistrationPeriod', registrationPeriodSchema);
+
+export default RegistrationPeriod;

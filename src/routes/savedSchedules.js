@@ -1,5 +1,6 @@
 import express from "express";
 import SavedSchedule from "../models/SavedSchedule.js";
+import RegistrationPeriod from "../models/RegistrationPeriod.js";
 import Student from "../models/Student.js";
 import Coach from "../models/Coach.js";
 import Schedule from "../models/Schedule.js";
@@ -34,11 +35,37 @@ router.get("/:id", async (req, res) => {
 // POST - Save current schedule state
 router.post("/", async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, periodId } = req.body;
+
+    // Validate periodId is provided
+    if (!periodId) {
+      return res.status(400).json({
+        error: "periodId is required. Plans must be linked to a registration period."
+      });
+    }
+
+    // Validate period exists
+    const period = await RegistrationPeriod.findById(periodId);
+    if (!period) {
+      return res.status(404).json({
+        error: "Registration period not found"
+      });
+    }
+
+    // Validate period is not closed/archived (can't save to closed periods)
+    if (period.status === 'closed' || period.status === 'archived') {
+      return res.status(403).json({
+        error: "Cannot save plan to a closed or archived registration period"
+      });
+    }
 
     // User info (will be replaced by new auth system)
     const userId = "system-user";
     const userEmail = "system@example.com";
+
+    // Calculate version number (count existing plans for this period + 1)
+    const existingPlansCount = await SavedSchedule.countDocuments({ periodId });
+    const version = existingPlansCount + 1;
 
     // Fetch current state from database
     const students = await Student.find();
@@ -69,6 +96,76 @@ router.post("/", async (req, res) => {
     const savedSchedule = new SavedSchedule({
       name,
       description,
+      periodId,
+      version,
+      createdBy: userId,
+      createdByEmail: userEmail,
+      students: students,
+      coaches: coaches,
+      schedule: schedule,
+      studentsNotSet: studentsNotSet,
+      metadata: {
+        studentCount: students.length,
+        coachCount: coaches.length,
+        courseCount: actualCourseCount,
+        possibleCourseCount: possibleCourseCount,
+        unassignedCount: studentsNotSet.length,
+      },
+    });
+
+    await savedSchedule.save();
+
+    // Auto-update period's currentPlanId to this new plan
+    period.currentPlanId = savedSchedule._id;
+    await period.save();
+
+    console.log(`Saved schedule for period ${period.name}, version ${version}, set as currentPlanId`);
+
+    res.status(201).json(savedSchedule);
+  } catch (error) {
+    console.error("Error saving schedule:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /import - Create saved schedule from imported JSON data
+router.post("/import", async (req, res) => {
+  try {
+    const { name, description, students, coaches, schedule } = req.body;
+
+    // Validate required fields
+    if (!students || !coaches || !schedule) {
+      return res.status(400).json({
+        error: "Invalid import data: missing required fields (students, coaches, schedule)"
+      });
+    }
+
+    // User info (will be replaced by new auth system)
+    const userId = "system-user";
+    const userEmail = "system@example.com";
+
+    // Calculate unassigned students from imported data
+    const studentsNotSet = students.filter(
+      (s) => !s.day || s.hour === null || s.hour === undefined
+    );
+
+    // Calculate actual course count from imported data
+    const actualCourseCount = schedule.filter(
+      (course) => course.students && course.students.length > 0
+    ).length;
+
+    // Calculate possible courses from imported coaches
+    let possibleCourseCount = 0;
+    coaches.forEach(coach => {
+      if (Array.isArray(coach.availableTimes)) {
+        possibleCourseCount += coach.availableTimes.length;
+      }
+    });
+
+    // Create saved schedule with imported data
+    const savedSchedule = new SavedSchedule({
+      name,
+      description: description || "Importiert aus JSON-Datei",
       createdBy: userId,
       createdByEmail: userEmail,
       students: students,
@@ -88,7 +185,7 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(savedSchedule);
   } catch (error) {
-    console.error("Error saving schedule:", error);
+    console.error("Error importing schedule:", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -138,10 +235,33 @@ router.post("/:id/load", async (req, res) => {
     const userId = "system-user";
     const userEmail = "system@example.com";
 
-    // Get the saved schedule
-    const savedSchedule = await SavedSchedule.findById(req.params.id);
+    // Get the saved schedule with populated period
+    const savedSchedule = await SavedSchedule.findById(req.params.id)
+      .populate('periodId');
     if (!savedSchedule) {
       return res.status(404).json({ error: "Saved schedule not found" });
+    }
+
+    // Check if period is closed/archived → view-only mode
+    let viewOnly = false;
+    if (savedSchedule.periodId) {
+      const periodStatus = savedSchedule.periodId.status;
+      if (periodStatus === 'closed' || periodStatus === 'archived') {
+        viewOnly = true;
+
+        // Return view-only response (don't actually load into DB)
+        return res.json({
+          success: true,
+          viewOnly: true,
+          message: "This plan belongs to a closed period and is read-only",
+          period: savedSchedule.periodId,
+          plan: savedSchedule,
+          // Send plan data but don't modify DB
+          studentsPreview: savedSchedule.students.length,
+          coachesPreview: savedSchedule.coaches.length,
+          coursesPreview: savedSchedule.schedule.length
+        });
+      }
     }
 
     // Step 1: Create automatic backup of current state
@@ -211,9 +331,22 @@ router.post("/:id/load", async (req, res) => {
       const oldId = student._id;
       delete student._id;
 
-      // Update coach reference if it exists
+      // Update coach reference if it exists (legacy field)
       if (student.coach && coachIdMap.has(String(student.coach))) {
         student.coach = coachIdMap.get(String(student.coach));
+      }
+
+      // Update coach references in assignments array
+      if (Array.isArray(student.assignments)) {
+        student.assignments = student.assignments.map(assignment => {
+          if (assignment.coach && coachIdMap.has(String(assignment.coach))) {
+            return {
+              ...assignment,
+              coach: coachIdMap.get(String(assignment.coach))
+            };
+          }
+          return assignment;
+        });
       }
 
       const newStudent = new Student(student);
@@ -239,7 +372,11 @@ router.post("/:id/load", async (req, res) => {
     }
 
     res.json({
+      success: true,
+      viewOnly: false,
       message: "Schedule loaded successfully",
+      period: savedSchedule.periodId,
+      plan: savedSchedule,
       backupId: backup._id,
       backupName: backup.name,
       studentsRestored: savedSchedule.students.length,
