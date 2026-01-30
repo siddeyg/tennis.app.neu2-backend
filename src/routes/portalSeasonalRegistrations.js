@@ -17,15 +17,15 @@ import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
-import requireAuth from '../middleware/requireAuth.js';
+import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 
 const router = express.Router();
 
 // All routes require portal authentication
-// Note: requireAuth middleware works for both admin and portal users
-router.use(requireAuth);
+// Uses verifyPortalAuth middleware which checks portalAccessToken cookie
+router.use(verifyPortalAuth);
 
 /**
  * GET /api/portal/seasonal-registrations/active-period
@@ -352,13 +352,16 @@ router.post('/', async (req, res) => {
       if (formType === 'kids') {
         studentData.team = teamParticipation || false;
         studentData.trainigGroup = trainingsart || ''; // e.g. "Rot", "Orange", "Gelb Team"
-        studentData.availableTimes = availableTimesKids || [];
+        // Transform availableTimesKids from [{day, hour, venue}] to ["Tag Stunde"] format
+        studentData.availableTimes = (availableTimesKids || []).map(time => `${time.day} ${time.hour}`);
       } else {
         // Adults
         studentData.skillLevel = spielstärke || '';
         studentData.comment2 = trainingGoals ? trainingGoals.join(', ') : ''; // Trainingsziele
         studentData.groupSize = groupSize ? groupSize.join(', ') : ''; // Gruppengröße preferences
-        studentData.availableTimes = availableTimesAdults || [];
+        // Transform availableTimesAdults from [{day, hour, venue}] to ["Tag Stunde"] format
+        // Note: Adults hour can be string like "10:00" or "15:00 - 16:30 (Duisdorf)"
+        studentData.availableTimes = (availableTimesAdults || []).map(time => `${time.day} ${time.hour}`);
       }
 
       const student = new Student(studentData);

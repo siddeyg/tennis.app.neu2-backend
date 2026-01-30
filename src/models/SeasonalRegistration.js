@@ -62,13 +62,13 @@ const seasonalRegistrationSchema = new mongoose.Schema(
 
     phone: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
 
     address: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
 

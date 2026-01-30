@@ -1,5 +1,4 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import Student from '../models/Student.js';
 import Coach from '../models/Coach.js';
 import Announcement from '../models/Announcement.js';
@@ -7,43 +6,9 @@ import ScheduleChangeRequest from '../models/ScheduleChangeRequest.js';
 import Absence from '../models/Absence.js';
 import Attendance from '../models/Attendance.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
+import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 
 const router = express.Router();
-
-/**
- * Middleware to verify portal JWT token
- * Extracts user info from portal access token cookie
- * In test mode, allows mock authentication by checking if req.user is already set
- */
-const verifyPortalAuth = async (req, res, next) => {
-  try {
-    // Allow test mocks to bypass JWT verification
-    // If req.user is already set (by test middleware), skip JWT verification
-    if (req.user && req.user.role === 'student') {
-      return next();
-    }
-
-    const token = req.cookies.portalAccessToken;
-
-    if (!token) {
-      return res.status(401).json({ error: 'Nicht authentifiziert' });
-    }
-
-    // Verify token
-    const decoded = jwt.verify(
-      token,
-      process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET
-    );
-
-    // Attach user info to request
-    req.user = decoded;
-    next();
-
-  } catch (error) {
-    console.error('Portal auth error:', error);
-    res.status(401).json({ error: 'Ungültiger oder abgelaufener Token' });
-  }
-};
 
 /**
  * @route   GET /api/portal/schedule
