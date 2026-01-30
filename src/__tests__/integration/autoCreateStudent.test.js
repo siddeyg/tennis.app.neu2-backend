@@ -109,10 +109,16 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         phone: '+49123456789',
         address: 'Teststr. 123, 10115 Berlin',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Orange',
-        trainingshäufigkeit: '2',
-        teamParticipation: true,
-        availableTimesKids: ['Montag 14', 'Montag 15', 'Mittwoch 14', 'Mittwoch 15', 'Freitag 14'],
+        trainingsart: 'KIDS-ORANGE (ca. 8-10 Jahre)',
+        trainingshäufigkeit: '2x pro Woche',
+        teamParticipation: '-',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Montag', hour: 15, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 14, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 15, venue: 'BTHV' },
+          { day: 'Freitag', hour: 14, venue: 'BTHV' }
+        ],
         privacyConsent: true,
         remarks: 'Testbemerkung'
       };
@@ -129,7 +135,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
       expect(student).toBeDefined();
       expect(student.firstName).toBe('Max');
       expect(student.member).toBe(true);
-      expect(student.trainigGroup).toBe('Orange');
+      expect(student.trainigGroup).toBe('KIDS-ORANGE (ca. 8-10 Jahre)');
       expect(student.frequence).toBe('2');
 
       const updatedPortalUser = await StudentPortalUser.findById(portalUser._id);
@@ -150,10 +156,18 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         lastName: 'Test',
         birthdate: '2014-03-20',
         email: 'emma@example.com',
+        phone: '+49111222333',
+        address: 'Emma Str. 1, 12345 Berlin',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
-        trainingshäufigkeit: '3',
-        availableTimesKids: ['Montag 14', 'Dienstag 15', 'Mittwoch 14', 'Donnerstag 15', 'Freitag 14'],
+        trainingsart: 'Jugend TEAM (Gelb)',
+        trainingshäufigkeit: '2x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 15, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 14, venue: 'BTHV' },
+          { day: 'Donnerstag', hour: 15, venue: 'BTHV' },
+          { day: 'Freitag', hour: 14, venue: 'BTHV' }
+        ],
         privacyConsent: true
       };
 
@@ -190,10 +204,18 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         lastName: 'Test',
         birthdate: '2014-03-20',
         email: 'emma@example.com',
+        phone: '+49111222333',
+        address: 'Emma Str. 1, 12345 Berlin',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Grün',
-        trainingshäufigkeit: '2',
-        availableTimesKids: ['Montag 15', 'Dienstag 15', 'Mittwoch 15', 'Donnerstag 15', 'Freitag 15'],
+        trainingsart: 'KIDS-GRÜN (ca. 10-12 Jahre)',
+        trainingshäufigkeit: '2x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 15, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 15, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 15, venue: 'BTHV' },
+          { day: 'Donnerstag', hour: 15, venue: 'BTHV' },
+          { day: 'Freitag', hour: 15, venue: 'BTHV' }
+        ],
         privacyConsent: true
       };
 
@@ -215,11 +237,19 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         lastName: 'Fieldtest',
         birthdate: '2013-11-10',
         email: 'leon@example.com',
-        mitgliedsstatus: 'Nicht-Mitglied',
-        trainingsart: 'Rot',
-        trainingshäufigkeit: '1',
-        teamParticipation: false,
-        availableTimesKids: ['Montag 14', 'Dienstag 14', 'Mittwoch 14', 'Donnerstag 14', 'Freitag 14'],
+        phone: '+49444555666',
+        address: 'Leon Weg 5, 54321 Stadt',
+        mitgliedsstatus: 'Nicht-Mitglied/Schnupperkind',
+        trainingsart: 'KIDS-ROT (ca. 6-8 Jahre)',
+        trainingshäufigkeit: '1x pro Woche',
+        teamParticipation: '-',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 14, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 14, venue: 'BTHV' },
+          { day: 'Donnerstag', hour: 14, venue: 'BTHV' },
+          { day: 'Freitag', hour: 14, venue: 'BTHV' }
+        ],
         privacyConsent: true
       };
 
@@ -231,7 +261,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
 
       const student = await Student.findOne({ email: 'leon@example.com' });
       expect(student.member).toBe(false);
-      expect(student.trainigGroup).toBe('Rot');
+      expect(student.trainigGroup).toBe('KIDS-ROT (ca. 6-8 Jahre)');
       expect(student.frequence).toBe('1');
       expect(student.team).toBe(false);
       expect(student.adult).toBe(false);
@@ -249,10 +279,16 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         email: 'peter@example.com',
         phone: '+49987654321',
         address: 'Erwachsenenstr. 99, 80331 München',
-        spielstärke: 'gute:r Spieler:in',
-        trainingGoals: ['Matchtraining', 'Technik', 'Taktik'],
-        groupSize: ['2er', '3er'],
-        availableTimesAdults: ['Montag 19', 'Mittwoch 19', 'Freitag 19', 'Samstag 10', 'Samstag 11'],
+        spielstärke: 'Erfahrene Spieler:innen / Mannschaftsspieler:innen',
+        trainingGoals: ['Turniere', 'Mannschaft'],
+        groupSize: ['zu zweit', 'zu dritt'],
+        availableTimesAdults: [
+          { day: 'Montag', hour: '19:00', venue: 'BTHV (Teppich)' },
+          { day: 'Mittwoch', hour: '19:00', venue: 'BTHV (Teppich)' },
+          { day: 'Freitag', hour: '19:00', venue: 'BTHV (Teppich)' },
+          { day: 'Samstag', hour: '10:00', venue: 'BTHV (Traglufthalle)' },
+          { day: 'Samstag', hour: '11:00', venue: 'BTHV (Traglufthalle)' }
+        ],
         privacyConsent: true,
         remarks: 'Bevorzugt Doppeltraining'
       };
@@ -266,9 +302,9 @@ describe('Auto-Create Student on Seasonal Registration', () => {
       const student = await Student.findOne({ email: 'peter@example.com' });
       expect(student).toBeDefined();
       expect(student.adult).toBe(true);
-      expect(student.skillLevel).toBe('gute:r Spieler:in');
-      expect(student.comment2).toBe('Matchtraining, Technik, Taktik');
-      expect(student.groupSize).toBe('2er, 3er');
+      expect(student.skillLevel).toBe('Erfahrene Spieler:innen / Mannschaftsspieler:innen');
+      expect(student.comment2).toBe('Turniere, Mannschaft');
+      expect(student.groupSize).toBe('zu zweit, zu dritt');
       expect(student.frequence).toBe('1');
     });
   });
@@ -282,10 +318,18 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         lastName: 'Approved',
         birthdate: '2012-01-01',
         email: 'autoapproved@example.com',
+        phone: '+49777888999',
+        address: 'Auto Str. 10, 11111 Auto City',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Orange',
-        trainingshäufigkeit: '2',
-        availableTimesKids: ['Montag 14', 'Dienstag 14', 'Mittwoch 14', 'Donnerstag 14', 'Freitag 14'],
+        trainingsart: 'KIDS-ORANGE (ca. 8-10 Jahre)',
+        trainingshäufigkeit: '2x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 14, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 14, venue: 'BTHV' },
+          { day: 'Donnerstag', hour: 14, venue: 'BTHV' },
+          { day: 'Freitag', hour: 14, venue: 'BTHV' }
+        ],
         privacyConsent: true
       };
 
@@ -312,10 +356,18 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         lastName: 'Test',
         birthdate: '2011-06-15',
         email: 'timestamp@example.com',
+        phone: '+49666777888',
+        address: 'Time St. 20, 22222 Time Town',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Grün',
-        trainingshäufigkeit: '2',
-        availableTimesKids: ['Montag 14', 'Dienstag 14', 'Mittwoch 14', 'Donnerstag 14', 'Freitag 14'],
+        trainingsart: 'KIDS-GRÜN (ca. 10-12 Jahre)',
+        trainingshäufigkeit: '2x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 14, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 14, venue: 'BTHV' },
+          { day: 'Donnerstag', hour: 14, venue: 'BTHV' },
+          { day: 'Freitag', hour: 14, venue: 'BTHV' }
+        ],
         privacyConsent: true
       };
 
@@ -344,10 +396,18 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         lastName: 'Link',
         birthdate: '2014-09-01',
         email: 'immediate@example.com',
+        phone: '+49555666777',
+        address: 'Immediate Ave 30, 33333 Quick City',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Hobby',
-        trainingshäufigkeit: '2',
-        availableTimesKids: ['Montag 14', 'Dienstag 14', 'Mittwoch 14', 'Donnerstag 14', 'Freitag 14'],
+        trainingsart: 'Jugend HOBBY (Gelb)',
+        trainingshäufigkeit: '2x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 14, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 14, venue: 'BTHV' },
+          { day: 'Donnerstag', hour: 14, venue: 'BTHV' },
+          { day: 'Freitag', hour: 14, venue: 'BTHV' }
+        ],
         privacyConsent: true
       };
 

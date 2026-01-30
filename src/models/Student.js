@@ -23,9 +23,11 @@ const studentSchema = new mongoose.Schema({
   adult: Boolean,                       // Erwachsenen-Training (true) oder Kinder-Training (false)
   frequence: String,                    // Trainingshäufigkeit pro Woche ("1", "2", "3")
 
+  // ===== Geschlecht (für alle Schüler) =====
+  sex: String,                          // Geschlecht: "männlich" oder "weiblich" (für Erwachsene UND Kinder)
+
   // ===== Erwachsenen-spezifisch (nur wenn adult = true) =====
   skillLevel: String,                   // Spielstärke: "Anfänger", "wenig Fortgeschritten", "Fortgeschritten", "gute:r Spieler:in", "Leistungsspieler:in"
-  sex: String,                          // Geschlecht: "männlich" oder "weiblich"
 
   // ===== Kinder-spezifisch (nur wenn adult = false) =====
   trainigGroup: String,                 // Trainingsgruppe: "Kinderland", "Rot", "Grün", "Orange", "Gelb Team", "Gelb Hobby"
@@ -65,7 +67,7 @@ const studentSchema = new mongoose.Schema({
     },
     coach: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Coach',
+      ref: 'User', // References User model (role: 'trainer')
       default: null,
       validate: {
         validator: function(value) {

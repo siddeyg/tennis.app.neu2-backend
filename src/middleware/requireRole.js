@@ -23,3 +23,14 @@ export const requireRole = (roles) => {
     next();
   };
 };
+
+/**
+ * Middleware to check if user is a coach (trainer)
+ * Convenience wrapper for requireRole(['trainer'])
+ * Must be used AFTER requireAuth middleware
+ * Usage: app.use('/api/coach/*', requireAuth, requireCoach, yourRouteHandler)
+ */
+export const requireCoach = requireRole(['trainer']);
+
+// Export as default for convenience (allows both import patterns)
+export default requireRole;

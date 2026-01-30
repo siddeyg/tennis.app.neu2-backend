@@ -93,11 +93,23 @@ export const createTestSettings = (overrides = {}) => ({
 });
 
 /**
- * Mock Clerk authentication middleware for testing
+ * Mock admin authentication middleware for testing
+ * Creates a mock admin user for requireAuth/requireRole middleware
  */
-export const mockAuth = (userId = 'test-user-123') => {
+export const mockAuth = (userId = null) => {
   return (req, res, next) => {
-    req.auth = { userId };
+    // Create ObjectId if not provided
+    const adminId = userId || new mongoose.Types.ObjectId();
+
+    // Create mock admin user compatible with Passport JWT strategy
+    req.user = {
+      _id: adminId,
+      id: adminId,
+      role: 'admin',
+      firstName: 'Test',
+      lastName: 'Admin',
+      email: 'admin@test.com'
+    };
     next();
   };
 };

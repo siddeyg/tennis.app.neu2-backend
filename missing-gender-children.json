@@ -1,0 +1,524 @@
+[
+  {
+    "firstName": "Tom",
+    "lastName": "Jansen",
+    "trainigGroup": "",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Lennart",
+    "lastName": "Maak",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Elsa",
+    "lastName": "Schreiber",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Alexander Ganiev",
+    "lastName": "Chang",
+    "trainigGroup": "Kinderland",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Lysander",
+    "lastName": "Pruys",
+    "trainigGroup": "Kinderland",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Marlene",
+    "lastName": "Zock",
+    "trainigGroup": "Kinderland",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Maja",
+    "lastName": "Dietzler",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Victoria",
+    "lastName": "Schmitt",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Fender",
+    "lastName": "Meijboom",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Mats",
+    "lastName": "Vogel",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Mert",
+    "lastName": "Bakir",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Laura",
+    "lastName": "Heidemann",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Josef",
+    "lastName": "Wong",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Florian Elias",
+    "lastName": "Andrä",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Paul",
+    "lastName": "Koch-Gombert",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Henrik",
+    "lastName": "Hoesch",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Laura",
+    "lastName": "Wiedbrauck",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Moritz",
+    "lastName": "Burchart",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Liam",
+    "lastName": "Döring",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Maja",
+    "lastName": "Schrempp",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Leila",
+    "lastName": "Maria",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Clara",
+    "lastName": "Malinowski",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Emilia",
+    "lastName": "Burchart",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Schieferdecker",
+    "lastName": "Colleen",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Malou",
+    "lastName": "Brieger",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Clara",
+    "lastName": "Schmitz-Hübsch",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Lenna",
+    "lastName": "Wolff",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jolin",
+    "lastName": "Kunsch",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Leni",
+    "lastName": "Doutch",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Henry",
+    "lastName": "King",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jasper",
+    "lastName": "Trump",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Johannes",
+    "lastName": "Küster",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Elin",
+    "lastName": "Küster",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Clara",
+    "lastName": "Schrempp",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Finn",
+    "lastName": "Gruber",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Stella",
+    "lastName": "Hilgers",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Vogel",
+    "lastName": "Julius",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Philipp",
+    "lastName": "Kluth",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Frida",
+    "lastName": "Schulmann",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Madita",
+    "lastName": "Böckenförde Leininger",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Dana",
+    "lastName": "Stoffels",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Matthis",
+    "lastName": "Hundrup",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Moritz",
+    "lastName": "Hoesch",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Linus",
+    "lastName": "Hoesch",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Veerle",
+    "lastName": "Meijboom",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Leonard",
+    "lastName": "Welle",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Luke",
+    "lastName": "Fuss",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Lara-Marie",
+    "lastName": "Wiedbrauck",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Benno",
+    "lastName": "Koch-Gombert",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Valentin",
+    "lastName": "Agsten",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Marlene",
+    "lastName": "Tripp",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Benjamin",
+    "lastName": "Coers",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Justus",
+    "lastName": "Jahn",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Arthur",
+    "lastName": "Schelz",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Christopher",
+    "lastName": "Jahn",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Ben",
+    "lastName": "Frankenberg",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Joris",
+    "lastName": "Muck",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Laura",
+    "lastName": "Metzer",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Claire",
+    "lastName": "Loheider",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Ben",
+    "lastName": "Lange",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Mia",
+    "lastName": "Lange",
+    "trainigGroup": "Rot",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Annika",
+    "lastName": "Jahn",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Helene",
+    "lastName": "Muck",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Paulina",
+    "lastName": "Muck",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jana",
+    "lastName": "Frankenberg",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Marie",
+    "lastName": "Wolff",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Julius",
+    "lastName": "Hof",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Charlotte",
+    "lastName": "Jansen",
+    "trainigGroup": "Kinderland",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Paula",
+    "lastName": "Nettekoven",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jaron",
+    "lastName": "Lockmann",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Gruber",
+    "lastName": "Ella",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Levi",
+    "lastName": "Schüler",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Nadim",
+    "lastName": "El Gharabawy",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Nadia",
+    "lastName": "El Gharabawy",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Juno",
+    "lastName": "Glaser",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Vincent",
+    "lastName": "Schrade",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Julia",
+    "lastName": "Leininger",
+    "trainigGroup": "",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Frederik",
+    "lastName": "Winograd",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jona",
+    "lastName": "Berghoff",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Joris",
+    "lastName": "Kunsch",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "kein",
+    "lastName": "Platz",
+    "trainigGroup": "",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Emma",
+    "lastName": "Sturm",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jan",
+    "lastName": "Dwinger",
+    "trainigGroup": "Gelb Team",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Jonas",
+    "lastName": "Wichterich",
+    "trainigGroup": "Orange",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Lars",
+    "lastName": "Wichterich",
+    "trainigGroup": "Grün",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Lola",
+    "lastName": "Kornbrust",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  },
+  {
+    "firstName": "Franzi",
+    "lastName": "Glasner",
+    "trainigGroup": "Gelb Hobby",
+    "suggestedGender": ""
+  }
+]

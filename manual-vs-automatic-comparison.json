@@ -1,0 +1,2568 @@
+{
+  "timestamp": "2025-10-27T19:08:18.025Z",
+  "manualPlanDate": "2025-10-27T18:29:15.349Z",
+  "differences": {
+    "assignmentChanges": [
+      {
+        "student": "Sabine Löhrl",
+        "level": "Fortgeschrittene",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 13,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Sandra Bourbeck",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 10,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Friederike Förster",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 13,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Kristina Müller",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jan Volkhardt",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Marie Köhler",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Tom Jansen",
+        "level": "",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Sabrina Schenk",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Ilonka Döge",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Elsa Schreiber",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Claudia Frank",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Rebecca Mau",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Damla Darilmaz",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Silke Hoesch",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Antonio Schmandke",
+        "level": "Anfänger",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Marius Grosch",
+        "level": "Anfänger",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 12,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Lara Jansen",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Kinga Fülöp",
+        "level": "Anfänger",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Áron Horváth",
+        "level": "Anfänger",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 10,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Alexander Ganiev Chang",
+        "level": "Kinderland",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Lysander Pruys",
+        "level": "Kinderland",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Marlene Zock",
+        "level": "Kinderland",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Fender Meijboom",
+        "level": "Rot",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "COACH_CHANGED"
+      },
+      {
+        "student": "Mert Bakir",
+        "level": "Rot",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Josef Wong",
+        "level": "Rot",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "COACH_CHANGED"
+      },
+      {
+        "student": "Florian Elias Andrä",
+        "level": "Orange",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Paul Koch-Gombert",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Henrik Hoesch",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Liam Döring",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Leila Maria",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Clara Malinowski",
+        "level": "Grün",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Schieferdecker Colleen",
+        "level": "Grün",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Lenna Wolff",
+        "level": "Grün",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Leni Doutch",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Henry King",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jasper Trump",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Johannes Küster",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Elin Küster",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Clara Schrempp",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Finn Gruber",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Stella Hilgers",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Vogel Julius",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Philipp Kluth",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Frida Schulmann",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Dana Stoffels",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Moritz Hoesch",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Linus Hoesch",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Veerle Meijboom",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Leonard Welle",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Luke Fuss",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Lara-Marie Wiedbrauck",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Benno Koch-Gombert",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "COACH_CHANGED"
+      },
+      {
+        "student": "Valentin Agsten",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Marlene Tripp",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Benjamin Coers",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Justus Jahn",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Arthur Schelz",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Lukas Lederer",
+        "level": "Leistungsspieler:innen / Turnierspieler:innen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Christopher Jahn",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Ben Frankenberg",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Joris Muck",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Ben Frankenberg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Laura Metzer",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Claire Loheider",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Ben Lange",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Annika Jahn",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Helene Muck",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Paulina Muck",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jana Frankenberg",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Anneke Malinowski",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Julius Hof",
+        "level": "Orange",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Charlotte Jansen",
+        "level": "Kinderland",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Paula Nettekoven",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jaron Lockmann",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Gruber Ella",
+        "level": "Grün",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Levi Schüler",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Nadim El Gharabawy",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Juno Glaser",
+        "level": "Gelb Hobby",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Vincent Schrade",
+        "level": "Grün",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Nicole Berg",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Thiemo Meyfarth",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Barbara Bursch-Brustkern",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Dienstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Ulrike Patani",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Stefan Löwe",
+        "level": "Anfänger",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Helga Heydweiller",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Julia Leininger",
+        "level": "",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 18,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      },
+      {
+        "student": "Svenja Gloger",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jonas Plath",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Claudia Gregor-Lawrenz",
+        "level": "Fortgeschritten",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Karl Schmiedt",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Karl-August Brensing",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Stephan Hörning",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Manfred Stiller",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Frederik Winograd",
+        "level": "Grün",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jona Berghoff",
+        "level": "Orange",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "Christopher Jahn"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Joris Kunsch",
+        "level": "Orange",
+        "manual": {
+          "count": 2,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "Nicole Kreienborg"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "Joris muck"
+            }
+          ]
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Emma Sturm",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Anna Plath",
+        "level": "",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "type": "TIME_CHANGED"
+      },
+      {
+        "student": "Jan Dwinger",
+        "level": "Gelb Team",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Lennart Patani",
+        "level": "",
+        "manual": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "Nicole Kreienborg"
+            }
+          ]
+        },
+        "automatic": {
+          "count": 0,
+          "slots": []
+        },
+        "type": "REDUCED_ASSIGNMENTS"
+      },
+      {
+        "student": "Armin Berger",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manual": {
+          "count": 0,
+          "slots": []
+        },
+        "automatic": {
+          "count": 1,
+          "slots": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "Helge Palenberg"
+            }
+          ]
+        },
+        "type": "INCREASED_ASSIGNMENTS"
+      }
+    ],
+    "timeSlotChanges": [],
+    "coachChanges": [],
+    "capacityChanges": [],
+    "levelMixingChanges": []
+  },
+  "patterns": {
+    "preferredTimeSlots": {
+      "Donnerstag 10": {
+        "manualCount": 4,
+        "autoCount": 0,
+        "difference": 4,
+        "manualLevels": {
+          "Fortgeschrittene": 1,
+          "Fortgeschritten": 2,
+          "Anfänger mit Grundkenntnissen": 1
+        },
+        "autoLevels": {}
+      },
+      "Freitag 14": {
+        "manualCount": 4,
+        "autoCount": 0,
+        "difference": 4,
+        "manualLevels": {
+          "Anfänger mit Grundkenntnissen": 2,
+          "Fortgeschritten": 2
+        },
+        "autoLevels": {}
+      },
+      "Montag 15": {
+        "manualCount": 7,
+        "autoCount": 1,
+        "difference": 6,
+        "manualLevels": {
+          "Orange": 5,
+          "Grün": 2
+        },
+        "autoLevels": {
+          "Grün": 1
+        }
+      }
+    },
+    "preferredCoaches": {
+      "68ffae13f2204e8cb9fb52a4_Anfänger mit Grundkenntnissen": {
+        "coach": "Helge Palenberg",
+        "level": "Anfänger mit Grundkenntnissen",
+        "manualCount": 8,
+        "autoCount": 3,
+        "difference": 5
+      },
+      "68ffae13f2204e8cb9fb52a6_Gelb Team": {
+        "coach": "Joris muck",
+        "level": "Gelb Team",
+        "manualCount": 2,
+        "autoCount": 0,
+        "difference": 2
+      },
+      "68ffae13f2204e8cb9fb52a2_Anfänger": {
+        "coach": "Nicole Kreienborg",
+        "level": "Anfänger",
+        "manualCount": 6,
+        "autoCount": 3,
+        "difference": 3
+      },
+      "68ffae13f2204e8cb9fb52a8_Kinderland": {
+        "coach": "Ben Frankenberg",
+        "level": "Kinderland",
+        "manualCount": 2,
+        "autoCount": 0,
+        "difference": 2
+      },
+      "68ffae13f2204e8cb9fb52a8_Rot": {
+        "coach": "Ben Frankenberg",
+        "level": "Rot",
+        "manualCount": 2,
+        "autoCount": 0,
+        "difference": 2
+      },
+      "68ffae13f2204e8cb9fb52a2_Grün": {
+        "coach": "Nicole Kreienborg",
+        "level": "Grün",
+        "manualCount": 10,
+        "autoCount": 6,
+        "difference": 4
+      },
+      "68ffae13f2204e8cb9fb52aa_Gelb Team": {
+        "coach": "Christopher Jahn",
+        "level": "Gelb Team",
+        "manualCount": 5,
+        "autoCount": 1,
+        "difference": 4
+      },
+      "68ffae13f2204e8cb9fb52a6_Gelb Hobby": {
+        "coach": "Joris muck",
+        "level": "Gelb Hobby",
+        "manualCount": 2,
+        "autoCount": 0,
+        "difference": 2
+      }
+    },
+    "avoidedTimeSlots": {
+      "Samstag 11": {
+        "manualCount": 1,
+        "autoCount": 4,
+        "difference": 3,
+        "manualLevels": {
+          "Anfänger mit Grundkenntnissen": 1
+        },
+        "autoLevels": {
+          "Anfänger mit Grundkenntnissen": 4
+        }
+      },
+      "Montag 18": {
+        "manualCount": 0,
+        "autoCount": 4,
+        "difference": 4,
+        "manualLevels": {},
+        "autoLevels": {
+          "Anfänger mit Grundkenntnissen": 1,
+          "Gelb Team": 1,
+          "Gelb Hobby": 1,
+          "": 1
+        }
+      }
+    },
+    "courseCapacityPreferences": {},
+    "studentGroupings": [],
+    "timeSlotAdjacency": [],
+    "coachWorkloadBalance": {},
+    "dayDistribution": {}
+  },
+  "insights": []
+}

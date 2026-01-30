@@ -1,39 +1,42 @@
+// CRITICAL: Load environment variables FIRST before any other imports
+// This ensures env vars are available when other modules initialize
+import { envInfo } from "./loadEnv.js";
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import morgan from "morgan";
+import logger from "./utils/logger.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 // Get directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// load env based on NODE_ENV - MUST BE BEFORE OTHER IMPORTS THAT USE process.env
-const activeEnvFile =
-  process.env.NODE_ENV === "production"
-    ? ".env.production"
-    : ".env.development";
+// Log startup info (sanitized - no sensitive data)
+const { activeEnvFile, envPath, isProduction } = envInfo;
+logger.info(`🌱 Environment: ${process.env.NODE_ENV}`);
+logger.info(`📄 Config file: ${activeEnvFile}`);
+logger.info(`📍 Config path: ${envPath}`);
+logger.info(`${activeEnvFile} exists: ${fs.existsSync(envPath)}`);
+logger.info(`🔑 JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
+logger.info(`🛢️ MongoDB connection configured: ${!!process.env.MONGO_URI}`);
 
-// Load .env from project root (one level up from src/)
-const envPath = path.resolve(__dirname, "..", activeEnvFile);
-dotenv.config({ path: envPath });
-
-console.log(`🌱 NODE_ENV=${process.env.NODE_ENV}`);
-console.log(`📄 Geladene .env-Datei: ${activeEnvFile}`);
-console.log(`📍 .env path: ${envPath}`);
-console.log(`${activeEnvFile} existiert:`, fs.existsSync(envPath));
-console.log(`🔑 JWT_SECRET exists: ${!!process.env.JWT_SECRET}`);
-console.log(`🛢️ MongoDB URI: ${process.env.MONGO_URI}`);
-
-// Now import modules that depend on env variables
+// Now import modules that depend on env variables (loaded via loadEnv.js above)
 import passport, { configurePassport } from "./config/passport.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 import { requireRole } from "./middleware/requireRole.js";
 import updateActivity from "./middleware/updateActivity.js";
 import authRoutes from "./routes/auth.js";
+import portalAuthRoutes from "./routes/portalAuth.js";
+import portalScheduleRoutes from "./routes/portalSchedule.js";
+import portalSeasonalRegistrationsRoutes from "./routes/portalSeasonalRegistrations.js";
 import userRoutes from "./routes/users.js";
 import userSettingsRoutes from "./routes/userSettings.js";
 import studentRoutes from "./routes/students.js";
@@ -41,6 +44,13 @@ import scheduleRoutes from "./routes/schedule.js";
 import coachRoutes from "./routes/coaches.js";
 import savedScheduleRoutes from "./routes/savedSchedules.js";
 import settingsRoutes from "./routes/settings.js";
+import announcementsRoutes from "./routes/announcements.js";
+import scheduleChangeRequestsRoutes from "./routes/scheduleChangeRequests.js";
+import coachPortalRoutes from "./routes/coachPortal.js";
+import attendanceRoutes from "./routes/attendance.js";
+import registrationPeriodsRoutes from "./routes/registrationPeriods.js";
+import seasonalRegistrationsRoutes from "./routes/seasonalRegistrations.js";
+import portalUsersRoutes from "./routes/portalUsers.js";
 
 const app = express();
 
@@ -48,31 +58,83 @@ const app = express();
 // This allows rate limiters and IP detection to work correctly
 app.set('trust proxy', true);
 
-// CORS configuration
+// ========================================
+// Security Middleware
+// ========================================
+
+// 1. Helmet - Security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for React
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true,
+    },
+    frameguard: { action: 'deny' },
+    noSniff: true,
+    xssFilter: true,
+  })
+);
+
+// 2. Force HTTPS in production
+if (isProduction) {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') {
+      logger.warn(`HTTP request redirected to HTTPS: ${req.method} ${req.originalUrl}`);
+      return res.redirect(`https://${req.header('host')}${req.url}`);
+    }
+    next();
+  });
+}
+
+// 3. CORS configuration - Strict whitelist validation
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    // In production, only allow the configured origin
-    if (process.env.NODE_ENV === 'production') {
-      const allowedOrigin = process.env.CORS_ORIGIN || "https://mondo.suwar.de";
-      if (origin === allowedOrigin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    } else {
-      // In development, allow both localhost and 127.0.0.1
+    // In production, only allow explicitly configured origins
+    if (isProduction) {
       const allowedOrigins = [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'http://localhost:3001',
-        'http://127.0.0.1:3001'
+        process.env.CORS_ORIGIN || "https://mondo.suwar.de",
+        process.env.CORS_ORIGIN_STUDENT || "https://mondo.suwar.de", // Student portal
+        process.env.CORS_ORIGIN_COACH || "https://mondo.suwar.de", // Coach portal
       ];
+
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        logger.warn(`CORS blocked request from origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    } else {
+      // In development, allow localhost on all three portal ports
+      const allowedOrigins = [
+        'http://localhost:3000', // Admin portal
+        'http://127.0.0.1:3000',
+        'http://localhost:3001', // Student portal
+        'http://127.0.0.1:3001',
+        'http://localhost:3002', // Coach portal
+        'http://127.0.0.1:3002'
+      ];
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        logger.warn(`CORS blocked request from origin: ${origin} (development mode)`);
         callback(new Error('Not allowed by CORS'));
       }
     }
@@ -82,18 +144,44 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use(express.json()); // Middleware für JSON-Daten
+app.use(express.json({ limit: '10mb' })); // Middleware für JSON-Daten (increased limit for large schedule imports)
 app.use(cookieParser()); // Middleware für Cookies
+
+// 4. MongoDB sanitization - Prevent NoSQL injection
+app.use(
+  mongoSanitize({
+    replaceWith: '_', // Replace prohibited characters with underscore
+    onSanitize: ({ req, key }) => {
+      logger.warn(`MongoDB injection attempt detected: ${key} in ${req.method} ${req.originalUrl}`);
+    },
+  })
+);
+
+// 5. Request logging with Morgan
+app.use(
+  morgan('combined', {
+    stream: {
+      write: (message) => logger.http(message.trim()),
+    },
+    skip: (req) => {
+      // Skip logging health check endpoints in production
+      return isProduction && req.originalUrl === '/';
+    },
+  })
+);
 
 // Configure and initialize Passport AFTER env is loaded
 configurePassport();
 app.use(passport.initialize());
 
-// MongoDB-Verbindung
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 30000 })
-  .then(() => console.log("MongoDB verbunden"))
-  .catch((err) => console.error("Fehler bei der MongoDB-Verbindung:", err));
+  .then(() => logger.info("✅ MongoDB connected successfully"))
+  .catch((err) => {
+    logger.error(`❌ MongoDB connection error: ${err.message}`);
+    process.exit(1); // Exit if database connection fails
+  });
 
 // Public routes
 app.get("/", (req, res) => {
@@ -102,6 +190,11 @@ app.get("/", (req, res) => {
 
 // Auth routes (public - no authentication required)
 app.use("/api/auth", authRoutes);
+app.use("/api/portal/auth", portalAuthRoutes);
+
+// Student portal routes (uses custom portal auth middleware in route file)
+app.use("/api/portal", portalScheduleRoutes);
+app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes);
 
 // Protected routes - require authentication
 // updateActivity middleware updates lastActivity timestamp every 5 minutes
@@ -112,7 +205,34 @@ app.use("/api/saved-schedules", requireAuth, updateActivity, savedScheduleRoutes
 app.use("/api/settings", requireAuth, updateActivity, settingsRoutes);
 app.use("/api/user-settings", requireAuth, updateActivity, userSettingsRoutes);
 
+// Coach portal routes - trainer role required (handled in route file)
+app.use("/api/coach", coachPortalRoutes);
+
+// Attendance routes - coaches and admins (authorization in route file)
+app.use("/api/attendance", attendanceRoutes);
+
 // User management routes - admin only
 app.use("/api/users", requireAuth, updateActivity, requireRole(["admin"]), userRoutes);
+
+// Announcements routes - admin only
+app.use("/api/announcements", requireAuth, updateActivity, requireRole(["admin"]), announcementsRoutes);
+
+// Schedule change requests routes - admin only
+app.use("/api/schedule-change-requests", requireAuth, updateActivity, requireRole(["admin"]), scheduleChangeRequestsRoutes);
+
+// Registration periods routes - admin only
+app.use("/api/registration-periods", requireAuth, updateActivity, requireRole(["admin"]), registrationPeriodsRoutes);
+
+// Seasonal registrations routes - admin only
+app.use("/api/seasonal-registrations", requireAuth, updateActivity, requireRole(["admin"]), seasonalRegistrationsRoutes);
+
+// Portal users management routes - admin only
+app.use("/api/portal-users", requireAuth, updateActivity, requireRole(["admin"]), portalUsersRoutes);
+
+// ========================================
+// Error Handler Middleware (MUST BE LAST)
+// ========================================
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server läuft auf Port ${PORT}`));
+app.listen(PORT, () => logger.info(`🚀 Server running on port ${PORT} (${process.env.NODE_ENV} mode)`));

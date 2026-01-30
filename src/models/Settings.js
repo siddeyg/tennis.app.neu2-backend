@@ -33,6 +33,38 @@ const settingsSchema = new mongoose.Schema({
     }
   },
 
+  // Time Range Settings
+  timeRanges: {
+    students: {
+      startHour: {
+        type: Number,
+        default: 10,
+        min: 6,
+        max: 23
+      },
+      endHour: {
+        type: Number,
+        default: 21,
+        min: 6,
+        max: 23
+      }
+    },
+    coaches: {
+      startHour: {
+        type: Number,
+        default: 10,
+        min: 6,
+        max: 23
+      },
+      endHour: {
+        type: Number,
+        default: 21,
+        min: 6,
+        max: 23
+      }
+    }
+  },
+
   lastModified: {
     type: Date,
     default: Date.now

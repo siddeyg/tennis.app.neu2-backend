@@ -1,0 +1,6783 @@
+{
+  "timestamp": "2025-10-27T18:29:15.349Z",
+  "overview": {
+    "totalStudents": 135,
+    "totalCoaches": 6,
+    "totalScheduleItems": 72
+  },
+  "students": [
+    {
+      "_id": "68ffae13f2204e8cb9fb52ac",
+      "name": "Sabine Löhrl",
+      "adult": true,
+      "skillLevel": "Fortgeschrittene",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Dienstag 11",
+        "Dienstag 12",
+        "Dienstag 13",
+        "Dienstag 15",
+        "Donnerstag 10",
+        "Donnerstag 11",
+        "Donnerstag 12"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e905"
+        },
+        {
+          "day": "Donnerstag",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e906"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52b0",
+      "name": "Sandra Bourbeck",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 14",
+        "Samstag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68f7eaf4132f0a1cfaf86787"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52b3",
+      "name": "Friederike Förster",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e908"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52b6",
+      "name": "Kristina Müller",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e909"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52b9",
+      "name": "Jan Volkhardt",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e90a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52bc",
+      "name": "Marie Köhler",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e90b"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52bf",
+      "name": "Tom Jansen",
+      "adult": false,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52c1",
+      "name": "Sabrina Schenk",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e90c"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52c4",
+      "name": "Ilonka Döge",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Freitag 12",
+        "Freitag 13",
+        "Samstag 11",
+        "Freitag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e90d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52c7",
+      "name": "Lennart Maak",
+      "adult": false,
+      "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+      "trainigGroup": "Gelb Team",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Freitag 14",
+        "Freitag 15",
+        "Freitag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e90e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52ca",
+      "name": "Elsa Schreiber",
+      "adult": false,
+      "skillLevel": "Erfahrene Spieler:innen / Mannschaftsspieler:innen",
+      "trainigGroup": "Gelb Team",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e90f"
+        },
+        {
+          "day": "Montag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e910"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a6"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52ce",
+      "name": "Claudia Frank",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Freitag 13",
+        "Samstag 11",
+        "Freitag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e911"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52d1",
+      "name": "Rebecca Mau",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Dienstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e912"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52d4",
+      "name": "Damla Darilmaz",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": false,
+      "frequence": "2",
+      "availableTimes": [
+        "Montag 16",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 16",
+        "Freitag 15",
+        "Freitag 16"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52d6",
+      "name": "Silke Hoesch",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e913"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52d9",
+      "name": "Antonio Schmandke",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e914"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52dc",
+      "name": "Eva Plath",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Samstag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e915"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52df",
+      "name": "Marius Grosch",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 11",
+        "Montag 12",
+        "Montag 13",
+        "Montag 14",
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 14",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 10",
+        "Freitag 11",
+        "Freitag 12",
+        "Freitag 13",
+        "Freitag 14",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e916"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52e2",
+      "name": "Lara Jansen",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e917"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52e5",
+      "name": "Kinga Fülöp",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e918"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52e8",
+      "name": "Áron Horváth",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e919"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52eb",
+      "name": "Alexander Ganiev Chang",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Kinderland",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Dienstag 18",
+        "Donnerstag 18",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e91a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52ee",
+      "name": "Lysander Pruys",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Kinderland",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e91b"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52f1",
+      "name": "Marlene Zock",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Kinderland",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 14",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e91c"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52f4",
+      "name": "Maja Dietzler",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e91d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52f7",
+      "name": "Victoria Schmitt",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e91e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52fa",
+      "name": "Fender Meijboom",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 16",
+        "Freitag 17",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e91f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52fd",
+      "name": "Mats Vogel",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e920"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5300",
+      "name": "Mert Bakir",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16",
+        "Mittwoch 15"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68f903d5af68cea161a98ad3"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5303",
+      "name": "Laura Heidemann",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e922"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5306",
+      "name": "Josef Wong",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 12"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e923"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5309",
+      "name": "Florian Elias Andrä",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 16",
+        "Donnerstag 17"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb530b",
+      "name": "Paul Koch-Gombert",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e924"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a6"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb530e",
+      "name": "Henrik Hoesch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Samstag 12",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e925"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5311",
+      "name": "Laura Wiedbrauck",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 15",
+        "Donnerstag 18",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e926"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5314",
+      "name": "Moritz Burchart",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 14",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 14",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e927"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5317",
+      "name": "Liam Döring",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e928"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb531a",
+      "name": "Maja Schrempp",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 14",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Mittwoch 14",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e929"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb531d",
+      "name": "Leila Maria",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 16",
+        "Donnerstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e92a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5320",
+      "name": "Clara Malinowski",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 17",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 15",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e92b"
+        },
+        {
+          "day": "Donnerstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e92c"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5324",
+      "name": "Emilia Burchart",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 14",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e92d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5327",
+      "name": "Schieferdecker Colleen",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e92e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb532a",
+      "name": "Malou Brieger",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e92f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb532d",
+      "name": "Clara Schmitz-Hübsch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e930"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5330",
+      "name": "Lenna Wolff",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e931"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5333",
+      "name": "Jolin Kunsch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 15",
+        "Dienstag 16",
+        "Donnerstag 16",
+        "Donnerstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e932"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5336",
+      "name": "Leni Doutch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e933"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5339",
+      "name": "Henry King",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e934"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb533c",
+      "name": "Jasper Trump",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e935"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb533f",
+      "name": "Johannes Küster",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e936"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5342",
+      "name": "Elin Küster",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e937"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5345",
+      "name": "Clara Schrempp",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Freitag 17",
+        "Samstag 12",
+        "Dienstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e938"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5348",
+      "name": "Finn Gruber",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e939"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb534b",
+      "name": "Stella Hilgers",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 19",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb534d",
+      "name": "Vogel Julius",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e93a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5350",
+      "name": "Philipp Kluth",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e93b"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5353",
+      "name": "Frida Schulmann",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 14",
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 14",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 14",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 14",
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 19",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 13,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e93c"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 13,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5356",
+      "name": "Madita Böckenförde Leininger",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e93d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5359",
+      "name": "Dana Stoffels",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Mittwoch 16"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e93e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb535c",
+      "name": "Matthis Hundrup",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e93f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb535f",
+      "name": "Moritz Hoesch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e940"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5362",
+      "name": "Linus Hoesch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Samstag 12",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e941"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5365",
+      "name": "Veerle Meijboom",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e942"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5368",
+      "name": "Leonard Welle",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e943"
+        },
+        {
+          "day": "Donnerstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e944"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb536c",
+      "name": "Luke Fuss",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Freitag 16",
+        "Freitag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e945"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb536f",
+      "name": "Lara-Marie Wiedbrauck",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Donnerstag 15",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 15",
+        "Freitag 16",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e946"
+        },
+        {
+          "day": "Samstag",
+          "hour": 13,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e947"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 13,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5373",
+      "name": "Benno Koch-Gombert",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e948"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5376",
+      "name": "Valentin Agsten",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 16",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e949"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5379",
+      "name": "Marlene Tripp",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Samstag 12"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e94a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb537c",
+      "name": "Benjamin Coers",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 13,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e94b"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 13,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb537f",
+      "name": "Justus Jahn",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e94c"
+        },
+        {
+          "day": "Freitag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e94d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5383",
+      "name": "Arthur Schelz",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e94e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5386",
+      "name": "Lukas Lederer",
+      "adult": true,
+      "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+      "trainigGroup": "Gelb Team",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e94f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5389",
+      "name": "Christopher Jahn",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e950"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb538c",
+      "name": "Ben Frankenberg",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb538e",
+      "name": "Joris Muck",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5390",
+      "name": "Laura Metzer",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e951"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5393",
+      "name": "Claire Loheider",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Mittwoch 18",
+        "Donnerstag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5395",
+      "name": "Ben Lange",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e952"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a6"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb5398",
+      "name": "Mia Lange",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Rot",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e953"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb539b",
+      "name": "Annika Jahn",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 18",
+        "Donnerstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e954"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb539e",
+      "name": "Helene Muck",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e955"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb53a1",
+      "name": "Paulina Muck",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 17",
+        "Dienstag 18",
+        "Dienstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Dienstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68f903a2af68cea161a98969"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Dienstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53a4",
+      "name": "Jana Frankenberg",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e957"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53a7",
+      "name": "Marie Wolff",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Freitag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e958"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53aa",
+      "name": "Andrea Muck",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 10"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e959"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53ad",
+      "name": "Anneke Malinowski",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e95a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53b0",
+      "name": "Andrea Frankenberg",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 10"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e95b"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53b3",
+      "name": "Julius Hof",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e95c"
+        },
+        {
+          "day": "Montag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e95d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53b7",
+      "name": "Charlotte Jansen",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Kinderland",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Dienstag 16",
+        "Mittwoch 15",
+        "Mittwoch 16",
+        "Donnerstag 16",
+        "Freitag 15",
+        "Freitag 16",
+        "Samstag 12",
+        "Samstag 13",
+        "Samstag 14",
+        "Samstag 15",
+        "Samstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e95e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53ba",
+      "name": "Paula Nettekoven",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 17",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e95f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a6"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53bd",
+      "name": "Jaron Lockmann",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e960"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a6"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53c0",
+      "name": "Gruber Ella",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Samstag 12",
+        "Samstag 13",
+        "Montag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e961"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53c3",
+      "name": "Levi Schüler",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Donnerstag 20"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a6",
+          "_id": "68ffa66baf68cea161a9e962"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a6"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53c6",
+      "name": "Nadim El Gharabawy",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Donnerstag 16"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e963"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53c9",
+      "name": "Nadia El Gharabawy",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 15",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e964"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53cc",
+      "name": "Juno Glaser",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 17",
+        "Dienstag 18"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53ce",
+      "name": "Vincent Schrade",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Freitag 15",
+        "Freitag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e965"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53d1",
+      "name": "Nicole Berg",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e966"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53d4",
+      "name": "Thiemo Meyfarth",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53d6",
+      "name": "Roby Patani",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 19",
+        "Donnerstag 19",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e967"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53d9",
+      "name": "Barbara Bursch-Brustkern",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Dienstag 11",
+        "Donnerstag 10",
+        "Donnerstag 11"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e968"
+        },
+        {
+          "day": "Donnerstag",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e969"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53dd",
+      "name": "Maike Just",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Samstag 10"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e96a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 10,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53e0",
+      "name": "Ulrike Patani",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Dienstag 15",
+        "Dienstag 16",
+        "Mittwoch 10",
+        "Mittwoch 11",
+        "Mittwoch 12",
+        "Donnerstag 10",
+        "Donnerstag 11"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e96b"
+        },
+        {
+          "day": "Donnerstag",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e96c"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53e4",
+      "name": "Stefan Löwe",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e96d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53e7",
+      "name": "Helga Heydweiller",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 10",
+        "Donnerstag 11"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e96e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 10,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53ea",
+      "name": "Julia Leininger",
+      "adult": false,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53ec",
+      "name": "Svenja Gloger",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 12",
+        "Montag 13",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Montag 19",
+        "Dienstag 13",
+        "Dienstag 14",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Donnerstag 16",
+        "Donnerstag 16",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Freitag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e96f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53ef",
+      "name": "Jonas Plath",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Dienstag 17",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e970"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53f2",
+      "name": "Claudia Gregor-Lawrenz",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 14,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e971"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 14,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53f5",
+      "name": "Karl Schmiedt",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 19",
+        "Montag 20",
+        "Montag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e972"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53f8",
+      "name": "Karl-August Brensing",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Montag 20"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e973"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53fb",
+      "name": "Stephan Hörning",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Montag 20"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e974"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb53fe",
+      "name": "Manfred Stiller",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19",
+        "Montag 20"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 19,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e975"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 19,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5401",
+      "name": "Frederik Winograd",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Mittwoch 16",
+        "Mittwoch 17",
+        "Donnerstag 16",
+        "Donnerstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e976"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5404",
+      "name": "Jona Berghoff",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Dienstag 15",
+        "Mittwoch 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Mittwoch 16",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Mittwoch 17",
+        "Donnerstag 17"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52aa",
+          "_id": "68ffa66baf68cea161a9e977"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 15,
+        "coach": "68ffae13f2204e8cb9fb52aa"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5407",
+      "name": "Joris Kunsch",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 16",
+        "Montag 17",
+        "Montag 15"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 15,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e978"
+        },
+        {
+          "day": "Montag",
+          "hour": 16,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e979"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 16,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb540b",
+      "name": "Sascha Schuh",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Montag 18",
+        "Montag 19"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb540d",
+      "name": "Wing Chi Kunsch",
+      "adult": true,
+      "skillLevel": "Anfänger",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Mittwoch 10"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 10,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e97a"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 10,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5410",
+      "name": "Simone Fromm",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Mittwoch 11"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e97b"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5413",
+      "name": "Susi Hennes",
+      "adult": true,
+      "skillLevel": "Fortgeschritten",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Mittwoch 11"
+      ],
+      "assignments": [
+        {
+          "day": "Mittwoch",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e97c"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Mittwoch",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5416",
+      "name": "Kirsten Altvater",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Donnerstag 12"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e97d"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5419",
+      "name": "Christian Nick",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "männlich",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Freitag 11"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 11,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e97e"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 11,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb541c",
+      "name": "Carin Arck",
+      "adult": true,
+      "skillLevel": "Leistungsspieler:innen / Turnierspieler:innen",
+      "trainigGroup": "",
+      "sex": "weiblich",
+      "member": false,
+      "frequence": "",
+      "availableTimes": [
+        "Freitag 12"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e97f"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb541f",
+      "name": "kein Platz",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Dienstag 18",
+        "Mittwoch 18"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5421",
+      "name": "Emma Sturm",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "2",
+      "availableTimes": [
+        "Montag 17",
+        "Montag 18",
+        "Dienstag 17",
+        "Dienstag 18",
+        "Mittwoch 17",
+        "Mittwoch 18",
+        "Donnerstag 17",
+        "Donnerstag 18",
+        "Donnerstag 18",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Montag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e980"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Montag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5424",
+      "name": "Lisa Schnell",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "",
+      "member": false,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Donnerstag",
+          "hour": 18,
+          "coach": "68ffae13f2204e8cb9fb52a4",
+          "_id": "68ffa66baf68cea161a9e981"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Donnerstag",
+        "hour": 18,
+        "coach": "68ffae13f2204e8cb9fb52a4"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5427",
+      "name": "Anna Plath",
+      "adult": true,
+      "skillLevel": "",
+      "trainigGroup": "",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 12,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e982"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 12,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb542a",
+      "name": "Jan Dwinger",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Team",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68f8a314af68cea161a960b6"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb542d",
+      "name": "Lennart Patani",
+      "adult": true,
+      "skillLevel": "",
+      "trainigGroup": "",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18"
+      ],
+      "assignments": [
+        {
+          "day": "Freitag",
+          "hour": 17,
+          "coach": "68ffae13f2204e8cb9fb52a2",
+          "_id": "68ffa66baf68cea161a9e984"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Freitag",
+        "hour": 17,
+        "coach": "68ffae13f2204e8cb9fb52a2"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5430",
+      "name": "Jonas Wichterich",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Orange",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "coach": null
+      }
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5432",
+      "name": "Lars Wichterich",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Grün",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Donnerstag 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "coach": null
+      }
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5434",
+      "name": "Lola Kornbrust",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "1",
+      "availableTimes": [
+        "Montag 18",
+        "Freitag 15",
+        "Freitag 16",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "day": null,
+        "hour": null,
+        "coach": null
+      },
+      "isAssigned": null
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5436",
+      "name": "Franzi Glasner",
+      "adult": false,
+      "skillLevel": "",
+      "trainigGroup": "Gelb Hobby",
+      "sex": "",
+      "member": true,
+      "frequence": "",
+      "availableTimes": [
+        "Samstag 13",
+        "Samstag 14"
+      ],
+      "assignments": [
+        {
+          "day": "Samstag",
+          "hour": 13,
+          "coach": "68ffae13f2204e8cb9fb52a8",
+          "_id": "68ffa66baf68cea161a9e985"
+        }
+      ],
+      "legacyAssignment": {
+        "day": "Samstag",
+        "hour": 13,
+        "coach": "68ffae13f2204e8cb9fb52a8"
+      },
+      "isAssigned": true
+    },
+    {
+      "_id": "68ffae14f2204e8cb9fb5439",
+      "name": "Armin Berger",
+      "adult": true,
+      "skillLevel": "Anfänger mit Grundkenntnissen",
+      "trainigGroup": "",
+      "sex": "",
+      "member": true,
+      "frequence": "5",
+      "availableTimes": [
+        "Montag 17",
+        "Montag 18",
+        "Montag 19",
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Freitag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Samstag 11",
+        "Samstag 12"
+      ],
+      "assignments": [],
+      "legacyAssignment": {
+        "coach": null
+      }
+    }
+  ],
+  "coaches": [
+    {
+      "_id": "68ffae13f2204e8cb9fb52a0",
+      "name": "Falko Schüßler",
+      "availableTimes": [],
+      "isCoachingAdult": false,
+      "isCoachingChildren": false,
+      "CoachingAdultLevels": [],
+      "CoachingChildrenLevels": [],
+      "assignedStudentCount": 0,
+      "assignedStudents": []
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52a2",
+      "name": "Nicole Kreienborg",
+      "availableTimes": [
+        "Samstag 13",
+        "Montag 14",
+        "Dienstag 14",
+        "Mittwoch 14",
+        "Donnerstag 14",
+        "Samstag 14",
+        "Samstag 12",
+        "Freitag 15",
+        "Donnerstag 15",
+        "Donnerstag 16",
+        "Freitag 16",
+        "Freitag 17",
+        "Donnerstag 17",
+        "Freitag 18",
+        "Freitag 19",
+        "Mittwoch 17",
+        "Mittwoch 16",
+        "Mittwoch 15",
+        "Dienstag 15",
+        "Dienstag 16",
+        "Dienstag 17",
+        "Montag 15",
+        "Montag 16",
+        "Montag 17",
+        "Montag 18",
+        "Montag 19",
+        "Samstag 10",
+        "Samstag 11",
+        "Montag 11",
+        "Montag 12",
+        "Montag 13",
+        "Dienstag 12",
+        "Dienstag 13",
+        "Dienstag 11",
+        "Mittwoch 10",
+        "Mittwoch 11",
+        "Mittwoch 12",
+        "Mittwoch 13",
+        "Donnerstag 10",
+        "Donnerstag 11",
+        "Donnerstag 12",
+        "Donnerstag 13",
+        "Freitag 10",
+        "Freitag 11",
+        "Freitag 12",
+        "Freitag 13",
+        "Freitag 14"
+      ],
+      "isCoachingAdult": true,
+      "isCoachingChildren": true,
+      "CoachingAdultLevels": [],
+      "CoachingChildrenLevels": [
+        "Kinderland",
+        "Grün",
+        "Orange",
+        "Gelb Team",
+        "Gelb Hobby",
+        "Rot"
+      ],
+      "assignedStudentCount": 89,
+      "assignedStudents": [
+        {
+          "name": "Sabine Löhrl",
+          "adult": true,
+          "level": "Fortgeschrittene",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e905"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e906"
+            }
+          ]
+        },
+        {
+          "name": "Sandra Bourbeck",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68f7eaf4132f0a1cfaf86787"
+            }
+          ]
+        },
+        {
+          "name": "Ilonka Döge",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e90d"
+            }
+          ]
+        },
+        {
+          "name": "Lennart Maak",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e90e"
+            }
+          ]
+        },
+        {
+          "name": "Elsa Schreiber",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e90f"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e910"
+            }
+          ]
+        },
+        {
+          "name": "Claudia Frank",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e911"
+            }
+          ]
+        },
+        {
+          "name": "Silke Hoesch",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e913"
+            }
+          ]
+        },
+        {
+          "name": "Antonio Schmandke",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e914"
+            }
+          ]
+        },
+        {
+          "name": "Marius Grosch",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e916"
+            }
+          ]
+        },
+        {
+          "name": "Kinga Fülöp",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e918"
+            }
+          ]
+        },
+        {
+          "name": "Áron Horváth",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e919"
+            }
+          ]
+        },
+        {
+          "name": "Marlene Zock",
+          "adult": false,
+          "level": "Kinderland",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e91c"
+            }
+          ]
+        },
+        {
+          "name": "Maja Dietzler",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e91d"
+            }
+          ]
+        },
+        {
+          "name": "Victoria Schmitt",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e91e"
+            }
+          ]
+        },
+        {
+          "name": "Mats Vogel",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e920"
+            }
+          ]
+        },
+        {
+          "name": "Mert Bakir",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68f903d5af68cea161a98ad3"
+            }
+          ]
+        },
+        {
+          "name": "Laura Heidemann",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e922"
+            }
+          ]
+        },
+        {
+          "name": "Henrik Hoesch",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e925"
+            }
+          ]
+        },
+        {
+          "name": "Laura Wiedbrauck",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e926"
+            }
+          ]
+        },
+        {
+          "name": "Moritz Burchart",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e927"
+            }
+          ]
+        },
+        {
+          "name": "Liam Döring",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e928"
+            }
+          ]
+        },
+        {
+          "name": "Maja Schrempp",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e929"
+            }
+          ]
+        },
+        {
+          "name": "Leila Maria",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e92a"
+            }
+          ]
+        },
+        {
+          "name": "Clara Malinowski",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e92b"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e92c"
+            }
+          ]
+        },
+        {
+          "name": "Emilia Burchart",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e92d"
+            }
+          ]
+        },
+        {
+          "name": "Schieferdecker Colleen",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e92e"
+            }
+          ]
+        },
+        {
+          "name": "Malou Brieger",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e92f"
+            }
+          ]
+        },
+        {
+          "name": "Clara Schmitz-Hübsch",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e930"
+            }
+          ]
+        },
+        {
+          "name": "Lenna Wolff",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e931"
+            }
+          ]
+        },
+        {
+          "name": "Jolin Kunsch",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e932"
+            }
+          ]
+        },
+        {
+          "name": "Leni Doutch",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e933"
+            }
+          ]
+        },
+        {
+          "name": "Henry King",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e934"
+            }
+          ]
+        },
+        {
+          "name": "Jasper Trump",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e935"
+            }
+          ]
+        },
+        {
+          "name": "Johannes Küster",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e936"
+            }
+          ]
+        },
+        {
+          "name": "Elin Küster",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e937"
+            }
+          ]
+        },
+        {
+          "name": "Clara Schrempp",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e938"
+            }
+          ]
+        },
+        {
+          "name": "Finn Gruber",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e939"
+            }
+          ]
+        },
+        {
+          "name": "Vogel Julius",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e93a"
+            }
+          ]
+        },
+        {
+          "name": "Philipp Kluth",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e93b"
+            }
+          ]
+        },
+        {
+          "name": "Madita Böckenförde Leininger",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e93d"
+            }
+          ]
+        },
+        {
+          "name": "Dana Stoffels",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e93e"
+            }
+          ]
+        },
+        {
+          "name": "Matthis Hundrup",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e93f"
+            }
+          ]
+        },
+        {
+          "name": "Moritz Hoesch",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e940"
+            }
+          ]
+        },
+        {
+          "name": "Linus Hoesch",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e941"
+            }
+          ]
+        },
+        {
+          "name": "Veerle Meijboom",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e942"
+            }
+          ]
+        },
+        {
+          "name": "Luke Fuss",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e945"
+            }
+          ]
+        },
+        {
+          "name": "Lara-Marie Wiedbrauck",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e946"
+            },
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e947"
+            }
+          ]
+        },
+        {
+          "name": "Marlene Tripp",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e94a"
+            }
+          ]
+        },
+        {
+          "name": "Justus Jahn",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e94c"
+            },
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e94d"
+            }
+          ]
+        },
+        {
+          "name": "Arthur Schelz",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e94e"
+            }
+          ]
+        },
+        {
+          "name": "Lukas Lederer",
+          "adult": true,
+          "level": "Leistungsspieler:innen / Turnierspieler:innen",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e94f"
+            }
+          ]
+        },
+        {
+          "name": "Christopher Jahn",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e950"
+            }
+          ]
+        },
+        {
+          "name": "Laura Metzer",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e951"
+            }
+          ]
+        },
+        {
+          "name": "Mia Lange",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e953"
+            }
+          ]
+        },
+        {
+          "name": "Annika Jahn",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e954"
+            }
+          ]
+        },
+        {
+          "name": "Helene Muck",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e955"
+            }
+          ]
+        },
+        {
+          "name": "Paulina Muck",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68f903a2af68cea161a98969"
+            }
+          ]
+        },
+        {
+          "name": "Jana Frankenberg",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e957"
+            }
+          ]
+        },
+        {
+          "name": "Marie Wolff",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e958"
+            }
+          ]
+        },
+        {
+          "name": "Andrea Muck",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e959"
+            }
+          ]
+        },
+        {
+          "name": "Andrea Frankenberg",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e95b"
+            }
+          ]
+        },
+        {
+          "name": "Julius Hof",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e95c"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e95d"
+            }
+          ]
+        },
+        {
+          "name": "Charlotte Jansen",
+          "adult": false,
+          "level": "Kinderland",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e95e"
+            }
+          ]
+        },
+        {
+          "name": "Gruber Ella",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e961"
+            }
+          ]
+        },
+        {
+          "name": "Vincent Schrade",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e965"
+            }
+          ]
+        },
+        {
+          "name": "Roby Patani",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e967"
+            }
+          ]
+        },
+        {
+          "name": "Barbara Bursch-Brustkern",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e968"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e969"
+            }
+          ]
+        },
+        {
+          "name": "Maike Just",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e96a"
+            }
+          ]
+        },
+        {
+          "name": "Ulrike Patani",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e96b"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e96c"
+            }
+          ]
+        },
+        {
+          "name": "Stefan Löwe",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e96d"
+            }
+          ]
+        },
+        {
+          "name": "Helga Heydweiller",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e96e"
+            }
+          ]
+        },
+        {
+          "name": "Svenja Gloger",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e96f"
+            }
+          ]
+        },
+        {
+          "name": "Claudia Gregor-Lawrenz",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e971"
+            }
+          ]
+        },
+        {
+          "name": "Karl Schmiedt",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e972"
+            }
+          ]
+        },
+        {
+          "name": "Karl-August Brensing",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e973"
+            }
+          ]
+        },
+        {
+          "name": "Stephan Hörning",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e974"
+            }
+          ]
+        },
+        {
+          "name": "Manfred Stiller",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e975"
+            }
+          ]
+        },
+        {
+          "name": "Frederik Winograd",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e976"
+            }
+          ]
+        },
+        {
+          "name": "Joris Kunsch",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e978"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e979"
+            }
+          ]
+        },
+        {
+          "name": "Wing Chi Kunsch",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 10,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e97a"
+            }
+          ]
+        },
+        {
+          "name": "Simone Fromm",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e97b"
+            }
+          ]
+        },
+        {
+          "name": "Susi Hennes",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Mittwoch",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e97c"
+            }
+          ]
+        },
+        {
+          "name": "Kirsten Altvater",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e97d"
+            }
+          ]
+        },
+        {
+          "name": "Christian Nick",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 11,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e97e"
+            }
+          ]
+        },
+        {
+          "name": "Carin Arck",
+          "adult": true,
+          "level": "Leistungsspieler:innen / Turnierspieler:innen",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e97f"
+            }
+          ]
+        },
+        {
+          "name": "Emma Sturm",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e980"
+            }
+          ]
+        },
+        {
+          "name": "Anna Plath",
+          "adult": true,
+          "level": "",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e982"
+            }
+          ]
+        },
+        {
+          "name": "Jan Dwinger",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68f8a314af68cea161a960b6"
+            }
+          ]
+        },
+        {
+          "name": "Lennart Patani",
+          "adult": true,
+          "level": "",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e984"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52a4",
+      "name": "Helge Palenberg",
+      "availableTimes": [
+        "Donnerstag 18",
+        "Donnerstag 19",
+        "Samstag 10",
+        "Samstag 14"
+      ],
+      "isCoachingAdult": true,
+      "isCoachingChildren": false,
+      "CoachingAdultLevels": [],
+      "CoachingChildrenLevels": [],
+      "assignedStudentCount": 12,
+      "assignedStudents": [
+        {
+          "name": "Friederike Förster",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e908"
+            }
+          ]
+        },
+        {
+          "name": "Kristina Müller",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e909"
+            }
+          ]
+        },
+        {
+          "name": "Jan Volkhardt",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e90a"
+            }
+          ]
+        },
+        {
+          "name": "Marie Köhler",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e90b"
+            }
+          ]
+        },
+        {
+          "name": "Sabrina Schenk",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e90c"
+            }
+          ]
+        },
+        {
+          "name": "Rebecca Mau",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e912"
+            }
+          ]
+        },
+        {
+          "name": "Eva Plath",
+          "adult": true,
+          "level": "Anfänger",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e915"
+            }
+          ]
+        },
+        {
+          "name": "Lara Jansen",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 14,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e917"
+            }
+          ]
+        },
+        {
+          "name": "Anneke Malinowski",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e95a"
+            }
+          ]
+        },
+        {
+          "name": "Nicole Berg",
+          "adult": true,
+          "level": "Fortgeschritten",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e966"
+            }
+          ]
+        },
+        {
+          "name": "Jonas Plath",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 19,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e970"
+            }
+          ]
+        },
+        {
+          "name": "Lisa Schnell",
+          "adult": true,
+          "level": "Anfänger mit Grundkenntnissen",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 18,
+              "coach": "68ffae13f2204e8cb9fb52a4",
+              "_id": "68ffa66baf68cea161a9e981"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52a6",
+      "name": "Joris muck",
+      "availableTimes": [
+        "Montag 15",
+        "Montag 16"
+      ],
+      "isCoachingAdult": false,
+      "isCoachingChildren": true,
+      "CoachingAdultLevels": [],
+      "CoachingChildrenLevels": [
+        "Kinderland",
+        "Rot",
+        "Orange",
+        "Grün",
+        "Gelb Hobby",
+        "Gelb Team"
+      ],
+      "assignedStudentCount": 7,
+      "assignedStudents": [
+        {
+          "name": "Elsa Schreiber",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e90f"
+            },
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e910"
+            }
+          ]
+        },
+        {
+          "name": "Paul Koch-Gombert",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e924"
+            }
+          ]
+        },
+        {
+          "name": "Leonard Welle",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e943"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e944"
+            }
+          ]
+        },
+        {
+          "name": "Ben Lange",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e952"
+            }
+          ]
+        },
+        {
+          "name": "Paula Nettekoven",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e95f"
+            }
+          ]
+        },
+        {
+          "name": "Jaron Lockmann",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e960"
+            }
+          ]
+        },
+        {
+          "name": "Levi Schüler",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e962"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52a8",
+      "name": "Ben Frankenberg",
+      "availableTimes": [
+        "Samstag 12",
+        "Samstag 13"
+      ],
+      "isCoachingAdult": false,
+      "isCoachingChildren": true,
+      "CoachingAdultLevels": [],
+      "CoachingChildrenLevels": [
+        "Kinderland",
+        "Rot",
+        "Orange",
+        "Grün",
+        "Gelb Hobby",
+        "Gelb Team"
+      ],
+      "assignedStudentCount": 8,
+      "assignedStudents": [
+        {
+          "name": "Alexander Ganiev Chang",
+          "adult": false,
+          "level": "Kinderland",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e91a"
+            }
+          ]
+        },
+        {
+          "name": "Lysander Pruys",
+          "adult": false,
+          "level": "Kinderland",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e91b"
+            }
+          ]
+        },
+        {
+          "name": "Fender Meijboom",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e91f"
+            }
+          ]
+        },
+        {
+          "name": "Josef Wong",
+          "adult": false,
+          "level": "Rot",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 12,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e923"
+            }
+          ]
+        },
+        {
+          "name": "Frida Schulmann",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e93c"
+            }
+          ]
+        },
+        {
+          "name": "Lara-Marie Wiedbrauck",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Freitag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e946"
+            },
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e947"
+            }
+          ]
+        },
+        {
+          "name": "Benjamin Coers",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e94b"
+            }
+          ]
+        },
+        {
+          "name": "Franzi Glasner",
+          "adult": false,
+          "level": "Gelb Hobby",
+          "assignments": [
+            {
+              "day": "Samstag",
+              "hour": 13,
+              "coach": "68ffae13f2204e8cb9fb52a8",
+              "_id": "68ffa66baf68cea161a9e985"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "68ffae13f2204e8cb9fb52aa",
+      "name": "Christopher Jahn",
+      "availableTimes": [
+        "Donnerstag 15",
+        "Donnerstag 16"
+      ],
+      "isCoachingAdult": false,
+      "isCoachingChildren": true,
+      "CoachingAdultLevels": [],
+      "CoachingChildrenLevels": [
+        "Kinderland",
+        "Rot",
+        "Orange",
+        "Grün",
+        "Gelb Hobby",
+        "Gelb Team"
+      ],
+      "assignedStudentCount": 7,
+      "assignedStudents": [
+        {
+          "name": "Clara Malinowski",
+          "adult": false,
+          "level": "Grün",
+          "assignments": [
+            {
+              "day": "Dienstag",
+              "hour": 17,
+              "coach": "68ffae13f2204e8cb9fb52a2",
+              "_id": "68ffa66baf68cea161a9e92b"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e92c"
+            }
+          ]
+        },
+        {
+          "name": "Leonard Welle",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Montag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52a6",
+              "_id": "68ffa66baf68cea161a9e943"
+            },
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e944"
+            }
+          ]
+        },
+        {
+          "name": "Benno Koch-Gombert",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e948"
+            }
+          ]
+        },
+        {
+          "name": "Valentin Agsten",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e949"
+            }
+          ]
+        },
+        {
+          "name": "Nadim El Gharabawy",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 16,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e963"
+            }
+          ]
+        },
+        {
+          "name": "Nadia El Gharabawy",
+          "adult": false,
+          "level": "Gelb Team",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e964"
+            }
+          ]
+        },
+        {
+          "name": "Jona Berghoff",
+          "adult": false,
+          "level": "Orange",
+          "assignments": [
+            {
+              "day": "Donnerstag",
+              "hour": 15,
+              "coach": "68ffae13f2204e8cb9fb52aa",
+              "_id": "68ffa66baf68cea161a9e977"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "patterns": {
+    "assignmentOutsideAvailability": [
+      {
+        "student": "Luke Fuss",
+        "assignment": "Freitag 18",
+        "availableTimes": [
+          "Montag 17",
+          "Montag 18",
+          "Dienstag 16",
+          "Dienstag 17",
+          "Dienstag 18",
+          "Freitag 16",
+          "Freitag 17"
+        ],
+        "reason": "Assigned to time slot outside student availability"
+      },
+      {
+        "student": "Laura Metzer",
+        "assignment": "Dienstag 15",
+        "availableTimes": [
+          "Montag 16",
+          "Montag 17",
+          "Dienstag 16",
+          "Dienstag 17",
+          "Donnerstag 16",
+          "Donnerstag 17",
+          "Donnerstag 18"
+        ],
+        "reason": "Assigned to time slot outside student availability"
+      },
+      {
+        "student": "Claudia Gregor-Lawrenz",
+        "assignment": "Freitag 14",
+        "availableTimes": [
+          "Montag 18",
+          "Montag 19"
+        ],
+        "reason": "Assigned to time slot outside student availability"
+      }
+    ],
+    "multipleAssignments": [
+      {
+        "student": "Sabine Löhrl",
+        "frequence": "2",
+        "assignmentCount": 2,
+        "assignments": [
+          "Donnerstag 10",
+          "Donnerstag 11"
+        ]
+      },
+      {
+        "student": "Elsa Schreiber",
+        "frequence": "1",
+        "assignmentCount": 2,
+        "assignments": [
+          "Dienstag 15",
+          "Montag 16"
+        ]
+      },
+      {
+        "student": "Clara Malinowski",
+        "frequence": "1",
+        "assignmentCount": 2,
+        "assignments": [
+          "Dienstag 17",
+          "Donnerstag 15"
+        ]
+      },
+      {
+        "student": "Leonard Welle",
+        "frequence": "2",
+        "assignmentCount": 2,
+        "assignments": [
+          "Montag 16",
+          "Donnerstag 16"
+        ]
+      },
+      {
+        "student": "Lara-Marie Wiedbrauck",
+        "frequence": "2",
+        "assignmentCount": 2,
+        "assignments": [
+          "Freitag 15",
+          "Samstag 13"
+        ]
+      },
+      {
+        "student": "Justus Jahn",
+        "frequence": "2",
+        "assignmentCount": 2,
+        "assignments": [
+          "Montag 17",
+          "Freitag 16"
+        ]
+      },
+      {
+        "student": "Julius Hof",
+        "frequence": "1",
+        "assignmentCount": 2,
+        "assignments": [
+          "Montag 15",
+          "Montag 16"
+        ]
+      },
+      {
+        "student": "Barbara Bursch-Brustkern",
+        "frequence": "1",
+        "assignmentCount": 2,
+        "assignments": [
+          "Donnerstag 10",
+          "Donnerstag 11"
+        ]
+      },
+      {
+        "student": "Ulrike Patani",
+        "frequence": "2",
+        "assignmentCount": 2,
+        "assignments": [
+          "Donnerstag 10",
+          "Donnerstag 11"
+        ]
+      },
+      {
+        "student": "Joris Kunsch",
+        "frequence": "",
+        "assignmentCount": 2,
+        "assignments": [
+          "Montag 15",
+          "Montag 16"
+        ]
+      }
+    ],
+    "coachSpecialization": [],
+    "levelMixing": [
+      {
+        "timeSlot": "Montag 15",
+        "type": "Children group mixing",
+        "groups": [
+          "Orange",
+          "Grün"
+        ],
+        "students": [
+          "Paul Koch-Gombert (Orange)",
+          "Malou Brieger (Grün)",
+          "Ben Lange (Orange)",
+          "Julius Hof (Orange)",
+          "Paula Nettekoven (Orange)",
+          "Gruber Ella (Grün)",
+          "Joris Kunsch (Orange)"
+        ]
+      },
+      {
+        "timeSlot": "Montag 16",
+        "type": "Children group mixing",
+        "groups": [
+          "Gelb Team",
+          "Orange",
+          "Gelb Hobby"
+        ],
+        "students": [
+          "Elsa Schreiber (Gelb Team)",
+          "Leonard Welle (Gelb Team)",
+          "Julius Hof (Orange)",
+          "Jaron Lockmann (Gelb Hobby)",
+          "Levi Schüler (Gelb Hobby)",
+          "Joris Kunsch (Orange)"
+        ]
+      },
+      {
+        "timeSlot": "Montag 19",
+        "type": "Adult level mixing",
+        "levels": [
+          "Fortgeschritten",
+          "Anfänger mit Grundkenntnissen"
+        ],
+        "students": [
+          "Roby Patani (Fortgeschritten)",
+          "Karl Schmiedt (Anfänger mit Grundkenntnissen)",
+          "Karl-August Brensing (Anfänger mit Grundkenntnissen)",
+          "Stephan Hörning (Anfänger mit Grundkenntnissen)",
+          "Manfred Stiller (Anfänger mit Grundkenntnissen)"
+        ]
+      },
+      {
+        "timeSlot": "Dienstag 16",
+        "type": "Children group mixing",
+        "groups": [
+          "Grün",
+          "Gelb Team"
+        ],
+        "students": [
+          "Emilia Burchart (Grün)",
+          "Clara Schmitz-Hübsch (Grün)",
+          "Jolin Kunsch (Grün)",
+          "Paulina Muck (Gelb Team)"
+        ]
+      },
+      {
+        "timeSlot": "Dienstag 17",
+        "type": "Children group mixing",
+        "groups": [
+          "Grün",
+          "Gelb Hobby"
+        ],
+        "students": [
+          "Clara Malinowski (Grün)",
+          "Leni Doutch (Gelb Hobby)",
+          "Elin Küster (Gelb Hobby)",
+          "Clara Schrempp (Gelb Hobby)",
+          "Madita Böckenförde Leininger (Gelb Hobby)"
+        ]
+      },
+      {
+        "timeSlot": "Mittwoch 15",
+        "type": "Children group mixing",
+        "groups": [
+          "Kinderland",
+          "Rot"
+        ],
+        "students": [
+          "Marlene Zock (Kinderland)",
+          "Mert Bakir (Rot)"
+        ]
+      },
+      {
+        "timeSlot": "Mittwoch 17",
+        "type": "Children group mixing",
+        "groups": [
+          "Orange",
+          "Grün"
+        ],
+        "students": [
+          "Henrik Hoesch (Orange)",
+          "Liam Döring (Orange)",
+          "Leila Maria (Orange)",
+          "Schieferdecker Colleen (Grün)",
+          "Lenna Wolff (Grün)",
+          "Frederik Winograd (Grün)"
+        ]
+      },
+      {
+        "timeSlot": "Donnerstag 10",
+        "type": "Adult level mixing",
+        "levels": [
+          "Fortgeschrittene",
+          "Fortgeschritten",
+          "Anfänger mit Grundkenntnissen"
+        ],
+        "students": [
+          "Sabine Löhrl (Fortgeschrittene)",
+          "Barbara Bursch-Brustkern (Fortgeschritten)",
+          "Ulrike Patani (Fortgeschritten)",
+          "Helga Heydweiller (Anfänger mit Grundkenntnissen)"
+        ]
+      },
+      {
+        "timeSlot": "Donnerstag 11",
+        "type": "Adult level mixing",
+        "levels": [
+          "Fortgeschrittene",
+          "Fortgeschritten"
+        ],
+        "students": [
+          "Sabine Löhrl (Fortgeschrittene)",
+          "Barbara Bursch-Brustkern (Fortgeschritten)",
+          "Ulrike Patani (Fortgeschritten)"
+        ]
+      },
+      {
+        "timeSlot": "Donnerstag 15",
+        "type": "Children group mixing",
+        "groups": [
+          "Orange",
+          "Grün",
+          "Gelb Team"
+        ],
+        "students": [
+          "Laura Wiedbrauck (Orange)",
+          "Moritz Burchart (Orange)",
+          "Maja Schrempp (Orange)",
+          "Clara Malinowski (Grün)",
+          "Nadia El Gharabawy (Gelb Team)",
+          "Jona Berghoff (Orange)"
+        ]
+      },
+      {
+        "timeSlot": "Donnerstag 16",
+        "type": "Children group mixing",
+        "groups": [
+          "Gelb Hobby",
+          "Gelb Team"
+        ],
+        "students": [
+          "Finn Gruber (Gelb Hobby)",
+          "Linus Hoesch (Gelb Team)",
+          "Leonard Welle (Gelb Team)",
+          "Benno Koch-Gombert (Gelb Team)",
+          "Valentin Agsten (Gelb Team)",
+          "Nadim El Gharabawy (Gelb Team)"
+        ]
+      },
+      {
+        "timeSlot": "Donnerstag 17",
+        "type": "Children group mixing",
+        "groups": [
+          "Gelb Team",
+          "Grün"
+        ],
+        "students": [
+          "Moritz Hoesch (Gelb Team)",
+          "Veerle Meijboom (Gelb Team)",
+          "Marlene Tripp (Gelb Team)",
+          "Vincent Schrade (Grün)"
+        ]
+      },
+      {
+        "timeSlot": "Donnerstag 18",
+        "type": "Adult level mixing",
+        "levels": [
+          "Fortgeschritten",
+          "Anfänger mit Grundkenntnissen"
+        ],
+        "students": [
+          "Rebecca Mau (Fortgeschritten)",
+          "Anneke Malinowski (Fortgeschritten)",
+          "Nicole Berg (Fortgeschritten)",
+          "Lisa Schnell (Anfänger mit Grundkenntnissen)"
+        ]
+      },
+      {
+        "timeSlot": "Freitag 14",
+        "type": "Adult level mixing",
+        "levels": [
+          "Anfänger mit Grundkenntnissen",
+          "Fortgeschritten"
+        ],
+        "students": [
+          "Ilonka Döge (Anfänger mit Grundkenntnissen)",
+          "Claudia Frank (Anfänger mit Grundkenntnissen)",
+          "Svenja Gloger (Fortgeschritten)",
+          "Claudia Gregor-Lawrenz (Fortgeschritten)"
+        ]
+      },
+      {
+        "timeSlot": "Freitag 17",
+        "issue": "CRITICAL: Adults and children mixed",
+        "adults": [
+          "Lukas Lederer",
+          "Lennart Patani"
+        ],
+        "children": [
+          "Christopher Jahn",
+          "Jan Dwinger"
+        ]
+      },
+      {
+        "timeSlot": "Freitag 17",
+        "type": "Adult level mixing",
+        "levels": [
+          "Leistungsspieler:innen / Turnierspieler:innen",
+          ""
+        ],
+        "students": [
+          "Lukas Lederer (Leistungsspieler:innen / Turnierspieler:innen)",
+          "Lennart Patani ()"
+        ]
+      },
+      {
+        "timeSlot": "Freitag 18",
+        "type": "Children group mixing",
+        "groups": [
+          "Gelb Hobby",
+          "Gelb Team"
+        ],
+        "students": [
+          "Henry King (Gelb Hobby)",
+          "Jasper Trump (Gelb Hobby)",
+          "Johannes Küster (Gelb Hobby)",
+          "Vogel Julius (Gelb Hobby)",
+          "Philipp Kluth (Gelb Hobby)",
+          "Luke Fuss (Gelb Team)"
+        ]
+      },
+      {
+        "timeSlot": "Samstag 10",
+        "type": "Adult level mixing",
+        "levels": [
+          "Anfänger mit Grundkenntnissen",
+          "Fortgeschritten"
+        ],
+        "students": [
+          "Sandra Bourbeck (Anfänger mit Grundkenntnissen)",
+          "Andrea Muck (Fortgeschritten)",
+          "Andrea Frankenberg (Fortgeschritten)",
+          "Maike Just (Fortgeschritten)"
+        ]
+      },
+      {
+        "timeSlot": "Samstag 12",
+        "issue": "CRITICAL: Adults and children mixed",
+        "adults": [
+          "Anna Plath"
+        ],
+        "children": [
+          "Alexander Ganiev Chang",
+          "Lysander Pruys",
+          "Fender Meijboom",
+          "Mats Vogel",
+          "Josef Wong",
+          "Charlotte Jansen"
+        ]
+      },
+      {
+        "timeSlot": "Samstag 12",
+        "type": "Children group mixing",
+        "groups": [
+          "Kinderland",
+          "Rot"
+        ],
+        "students": [
+          "Alexander Ganiev Chang (Kinderland)",
+          "Lysander Pruys (Kinderland)",
+          "Fender Meijboom (Rot)",
+          "Mats Vogel (Rot)",
+          "Josef Wong (Rot)",
+          "Charlotte Jansen (Kinderland)"
+        ]
+      },
+      {
+        "timeSlot": "Samstag 13",
+        "type": "Children group mixing",
+        "groups": [
+          "Gelb Hobby",
+          "Gelb Team"
+        ],
+        "students": [
+          "Frida Schulmann (Gelb Hobby)",
+          "Lara-Marie Wiedbrauck (Gelb Team)",
+          "Benjamin Coers (Gelb Team)",
+          "Franzi Glasner (Gelb Hobby)"
+        ]
+      },
+      {
+        "timeSlot": "Samstag 14",
+        "type": "Adult level mixing",
+        "levels": [
+          "Anfänger mit Grundkenntnissen",
+          "Anfänger"
+        ],
+        "students": [
+          "Marie Köhler (Anfänger mit Grundkenntnissen)",
+          "Sabrina Schenk (Anfänger mit Grundkenntnissen)",
+          "Eva Plath (Anfänger)",
+          "Lara Jansen (Anfänger mit Grundkenntnissen)"
+        ]
+      }
+    ],
+    "timeSlotPreferences": {
+      "Montag 15": 1,
+      "Montag 16": 1,
+      "Montag 17": 1,
+      "Montag 19": 1,
+      "Dienstag 15": 1,
+      "Dienstag 16": 1,
+      "Dienstag 17": 1,
+      "Mittwoch 10": 1,
+      "Mittwoch 11": 1,
+      "Mittwoch 15": 1,
+      "Mittwoch 16": 1,
+      "Mittwoch 17": 1,
+      "Donnerstag 10": 1,
+      "Donnerstag 11": 1,
+      "Donnerstag 12": 1,
+      "Donnerstag 15": 1,
+      "Donnerstag 16": 1,
+      "Donnerstag 17": 1,
+      "Donnerstag 18": 1,
+      "Donnerstag 19": 1,
+      "Freitag 11": 1,
+      "Freitag 12": 1,
+      "Freitag 14": 1,
+      "Freitag 15": 1,
+      "Freitag 16": 1,
+      "Freitag 17": 1,
+      "Freitag 18": 1,
+      "Freitag 19": 1,
+      "Samstag 10": 1,
+      "Samstag 11": 1,
+      "Samstag 12": 1,
+      "Samstag 13": 1,
+      "Samstag 14": 1
+    },
+    "courseCapacities": {
+      "1": 5,
+      "2": 3,
+      "3": 2,
+      "4": 12,
+      "5": 4,
+      "6": 5,
+      "7": 2
+    }
+  }
+}

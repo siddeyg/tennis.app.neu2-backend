@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "coach", "student"],
+    enum: ["admin", "coach", "trainer", "student"],
     default: "student",
   },
   // Link to Student record (for role: "student")
@@ -59,6 +59,24 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  // Password reset fields
+  resetPasswordToken: {
+    type: String,
+    default: null,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    default: null,
+  },
+  // Email verification fields
+  emailVerificationToken: {
+    type: String,
+    default: null,
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
   },
 });
 

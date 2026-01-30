@@ -1,0 +1,263 @@
+[
+  {
+    "firstName": "Sabine",
+    "lastName": "Löhrl",
+    "email": "sabine.loehrl@web.de",
+    "phone": "1735353633",
+    "adult": true,
+    "trainigGroup": "Fortgeschrittene",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Sandra",
+    "lastName": "Bourbeck",
+    "email": "s.bourbeck@gmx.de",
+    "phone": "15170179189",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Friederike",
+    "lastName": "Förster",
+    "email": "friederike-foerster@t-online.de",
+    "phone": "15165266420",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Kristina",
+    "lastName": "Müller",
+    "email": "kristina-marie-mueller@gmx.net",
+    "phone": "15253453168",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Jan",
+    "lastName": "Volkhardt",
+    "email": "vojan98@gmail.com",
+    "phone": "15786839775",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Marie",
+    "lastName": "Köhler",
+    "email": "mariekoehler@gmx.net",
+    "phone": "1719951791",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Tom",
+    "lastName": "Jansen",
+    "email": "tomrjansen@gmail.com",
+    "phone": "15144048433",
+    "adult": false,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Antonio",
+    "lastName": "Schmandke",
+    "email": "antonio.schmandke@gmail.com",
+    "phone": "0177 8675191",
+    "adult": true,
+    "trainigGroup": "Anfänger",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Eva",
+    "lastName": "Plath",
+    "email": "e.weffer@gmx.de",
+    "phone": "1757300106",
+    "adult": true,
+    "trainigGroup": "Anfänger",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Marius",
+    "lastName": "Grosch",
+    "email": "mail@mariusgrosch.de",
+    "phone": "17630364483",
+    "adult": true,
+    "trainigGroup": "Anfänger",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Lara",
+    "lastName": "Jansen",
+    "email": "laragjansen@icloud.com",
+    "phone": "17683010745",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Nicole",
+    "lastName": "Berg",
+    "email": "nicole.berg@magenta.de",
+    "phone": "01718658204",
+    "adult": true,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Thiemo",
+    "lastName": "Meyfarth",
+    "email": "thiemo.meyfarth@yahoo.de",
+    "phone": "017684659303",
+    "adult": true,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Roby",
+    "lastName": "Patani",
+    "email": "rpatani@gmx.de",
+    "phone": "01713174150",
+    "adult": true,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Barbara",
+    "lastName": "Bursch-Brustkern",
+    "email": "bbbursch@web.de",
+    "phone": "0151 23326549",
+    "adult": true,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Maike",
+    "lastName": "Just",
+    "email": "just@gmx.net",
+    "phone": "01778254514",
+    "adult": true,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Karl",
+    "lastName": "Schmiedt",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Karl-August",
+    "lastName": "Brensing",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Stephan",
+    "lastName": "Hörning",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Manfred",
+    "lastName": "Stiller",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Anfänger mit Grundkenntnissen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Frederik",
+    "lastName": "Winograd",
+    "email": "",
+    "phone": "",
+    "adult": false,
+    "trainigGroup": "Grün",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Joris",
+    "lastName": "Kunsch",
+    "email": "",
+    "phone": "",
+    "adult": false,
+    "trainigGroup": "Orange",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Sascha",
+    "lastName": "Schuh",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Fortgeschritten",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Wing Chi",
+    "lastName": "Kunsch",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Anfänger",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Carin",
+    "lastName": "Arck",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "Leistungsspieler:innen / Turnierspieler:innen",
+    "birthDate": ""
+  },
+  {
+    "firstName": "kein",
+    "lastName": "Platz",
+    "email": "",
+    "phone": "",
+    "adult": false,
+    "trainigGroup": "",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Jan",
+    "lastName": "Dwinger",
+    "email": "",
+    "phone": "",
+    "adult": false,
+    "trainigGroup": "Gelb Team",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Lennart",
+    "lastName": "Patani",
+    "email": "",
+    "phone": "",
+    "adult": true,
+    "trainigGroup": "",
+    "birthDate": ""
+  },
+  {
+    "firstName": "Franzi",
+    "lastName": "Glasner",
+    "email": "",
+    "phone": "",
+    "adult": false,
+    "trainigGroup": "Gelb Hobby",
+    "birthDate": ""
+  }
+]

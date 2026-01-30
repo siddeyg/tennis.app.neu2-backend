@@ -1,0 +1,427 @@
+{
+  "highConfidence": [
+    {
+      "id": "68ffae13f2204e8cb9fb5300",
+      "firstName": "Mert",
+      "lastName": "Bakir",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb530e",
+      "firstName": "Henrik",
+      "lastName": "Hoesch",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5317",
+      "firstName": "Liam",
+      "lastName": "Döring",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb531d",
+      "firstName": "Leila",
+      "lastName": "Maria",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb533c",
+      "firstName": "Jasper",
+      "lastName": "Trump",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5342",
+      "firstName": "Elin",
+      "lastName": "Küster",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5353",
+      "firstName": "Frida",
+      "lastName": "Schulmann",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5356",
+      "firstName": "Madita",
+      "lastName": "Böckenförde Leininger",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5359",
+      "firstName": "Dana",
+      "lastName": "Stoffels",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb535c",
+      "firstName": "Matthis",
+      "lastName": "Hundrup",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5365",
+      "firstName": "Veerle",
+      "lastName": "Meijboom",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb536c",
+      "firstName": "Luke",
+      "lastName": "Fuss",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb536f",
+      "firstName": "Lara-Marie",
+      "lastName": "Wiedbrauck",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5373",
+      "firstName": "Benno",
+      "lastName": "Koch-Gombert",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 98,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb537f",
+      "firstName": "Justus",
+      "lastName": "Jahn",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5383",
+      "firstName": "Arthur",
+      "lastName": "Schelz",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 98,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5389",
+      "firstName": "Christopher",
+      "lastName": "Jahn",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb538e",
+      "firstName": "Joris",
+      "lastName": "Muck",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5393",
+      "firstName": "Claire",
+      "lastName": "Loheider",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 98,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb53a1",
+      "firstName": "Paulina",
+      "lastName": "Muck",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb53bd",
+      "firstName": "Jaron",
+      "lastName": "Lockmann",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb53c3",
+      "firstName": "Levi",
+      "lastName": "Schüler",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb53c6",
+      "firstName": "Nadim",
+      "lastName": "El Gharabawy",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb53cc",
+      "firstName": "Juno",
+      "lastName": "Glaser",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb5404",
+      "firstName": "Jona",
+      "lastName": "Berghoff",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb5407",
+      "firstName": "Joris",
+      "lastName": "Kunsch",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 95,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb542a",
+      "firstName": "Jan",
+      "lastName": "Dwinger",
+      "currentSex": "(not set)",
+      "detectedGender": "männlich",
+      "confidence": 98,
+      "reason": "Found in 90K database (common in Germany)",
+      "adult": false,
+      "source": "database-90k"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb5436",
+      "firstName": "Franzi",
+      "lastName": "Glasner",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 95,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    }
+  ],
+  "mediumConfidence": [
+    {
+      "id": "68ffae13f2204e8cb9fb532a",
+      "firstName": "Malou",
+      "lastName": "Brieger",
+      "currentSex": "(not set)",
+      "detectedGender": "weiblich",
+      "confidence": 70,
+      "reason": "Found in 90K database",
+      "adult": false,
+      "source": "database-90k"
+    }
+  ],
+  "needsReview": [
+    {
+      "id": "68ffae13f2204e8cb9fb52eb",
+      "firstName": "Alexander Ganiev",
+      "lastName": "Chang",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb52fa",
+      "firstName": "Fender",
+      "lastName": "Meijboom",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5309",
+      "firstName": "Florian Elias",
+      "lastName": "Andrä",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5327",
+      "firstName": "Schieferdecker",
+      "lastName": "Colleen",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5330",
+      "firstName": "Lenna",
+      "lastName": "Wolff",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb5333",
+      "firstName": "Jolin",
+      "lastName": "Kunsch",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae13f2204e8cb9fb534d",
+      "firstName": "Vogel",
+      "lastName": "Julius",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb53c0",
+      "firstName": "Gruber",
+      "lastName": "Ella",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    },
+    {
+      "id": "68ffae14f2204e8cb9fb541f",
+      "firstName": "kein",
+      "lastName": "Platz",
+      "currentSex": "(not set)",
+      "detectedGender": null,
+      "confidence": 0,
+      "reason": "Name not found in database",
+      "adult": false,
+      "source": "unknown"
+    }
+  ],
+  "unknown": []
+}

@@ -1,0 +1,5337 @@
+{
+  "siblings": [
+    {
+      "lastName": "Jansen",
+      "count": 2,
+      "children": [
+        "Tom Jansen",
+        "Charlotte Jansen"
+      ],
+      "assignments": [
+        [],
+        [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95e"
+          }
+        ]
+      ],
+      "sameEmail": false,
+      "samePhone": false
+    },
+    {
+      "lastName": "Hoesch",
+      "count": 3,
+      "children": [
+        "Henrik Hoesch",
+        "Moritz Hoesch",
+        "Linus Hoesch"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e925"
+          }
+        ],
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e940"
+          }
+        ],
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e941"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Meijboom",
+      "count": 2,
+      "children": [
+        "Fender Meijboom",
+        "Veerle Meijboom"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91f"
+          }
+        ],
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e942"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Koch-Gombert",
+      "count": 2,
+      "children": [
+        "Paul Koch-Gombert",
+        "Benno Koch-Gombert"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e924"
+          }
+        ],
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e948"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Wiedbrauck",
+      "count": 2,
+      "children": [
+        "Laura Wiedbrauck",
+        "Lara-Marie Wiedbrauck"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e926"
+          }
+        ],
+        [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e946"
+          },
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e947"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Burchart",
+      "count": 2,
+      "children": [
+        "Moritz Burchart",
+        "Emilia Burchart"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e927"
+          }
+        ],
+        [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92d"
+          }
+        ]
+      ],
+      "sameEmail": false,
+      "samePhone": true
+    },
+    {
+      "lastName": "Schrempp",
+      "count": 2,
+      "children": [
+        "Maja Schrempp",
+        "Clara Schrempp"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e929"
+          }
+        ],
+        [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e938"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Wolff",
+      "count": 2,
+      "children": [
+        "Lenna Wolff",
+        "Marie Wolff"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e931"
+          }
+        ],
+        [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e958"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": false
+    },
+    {
+      "lastName": "Kunsch",
+      "count": 2,
+      "children": [
+        "Jolin Kunsch",
+        "Joris Kunsch"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e932"
+          }
+        ],
+        [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e978"
+          },
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e979"
+          }
+        ]
+      ],
+      "sameEmail": false,
+      "samePhone": false
+    },
+    {
+      "lastName": "Küster",
+      "count": 2,
+      "children": [
+        "Johannes Küster",
+        "Elin Küster"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e936"
+          }
+        ],
+        [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e937"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Jahn",
+      "count": 3,
+      "children": [
+        "Justus Jahn",
+        "Christopher Jahn",
+        "Annika Jahn"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94c"
+          },
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94d"
+          }
+        ],
+        [
+          {
+            "day": "Freitag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e950"
+          }
+        ],
+        [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e954"
+          }
+        ]
+      ],
+      "sameEmail": false,
+      "samePhone": false
+    },
+    {
+      "lastName": "Frankenberg",
+      "count": 2,
+      "children": [
+        "Ben Frankenberg",
+        "Jana Frankenberg"
+      ],
+      "assignments": [
+        [],
+        [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e957"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": false
+    },
+    {
+      "lastName": "Muck",
+      "count": 3,
+      "children": [
+        "Joris Muck",
+        "Helene Muck",
+        "Paulina Muck"
+      ],
+      "assignments": [
+        [],
+        [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e955"
+          }
+        ],
+        [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68f903a2af68cea161a98969"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": false
+    },
+    {
+      "lastName": "Lange",
+      "count": 2,
+      "children": [
+        "Ben Lange",
+        "Mia Lange"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e952"
+          }
+        ],
+        [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e953"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "El Gharabawy",
+      "count": 2,
+      "children": [
+        "Nadim El Gharabawy",
+        "Nadia El Gharabawy"
+      ],
+      "assignments": [
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e963"
+          }
+        ],
+        [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e964"
+          }
+        ]
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    },
+    {
+      "lastName": "Wichterich",
+      "count": 2,
+      "children": [
+        "Jonas Wichterich",
+        "Lars Wichterich"
+      ],
+      "assignments": [
+        [],
+        []
+      ],
+      "sameEmail": true,
+      "samePhone": true
+    }
+  ],
+  "sameTimeSlot": [
+    {
+      "slot": "Donnerstag 10",
+      "count": 4,
+      "students": [
+        "Sabine Löhrl",
+        "Barbara Bursch-Brustkern",
+        "Ulrike Patani",
+        "Helga Heydweiller"
+      ],
+      "levels": [
+        "Fortgeschrittene",
+        "Fortgeschritten",
+        "Anfänger mit Grundkenntnissen"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Donnerstag 11",
+      "count": 3,
+      "students": [
+        "Sabine Löhrl",
+        "Barbara Bursch-Brustkern",
+        "Ulrike Patani"
+      ],
+      "levels": [
+        "Fortgeschrittene",
+        "Fortgeschritten"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Samstag 10",
+      "count": 4,
+      "students": [
+        "Sandra Bourbeck",
+        "Andrea Muck",
+        "Andrea Frankenberg",
+        "Maike Just"
+      ],
+      "levels": [
+        "Anfänger mit Grundkenntnissen",
+        "Fortgeschritten"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Donnerstag 19",
+      "count": 4,
+      "students": [
+        "Friederike Förster",
+        "Kristina Müller",
+        "Jan Volkhardt",
+        "Jonas Plath"
+      ],
+      "levels": [
+        "Anfänger mit Grundkenntnissen"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Samstag 14",
+      "count": 4,
+      "students": [
+        "Marie Köhler",
+        "Sabrina Schenk",
+        "Eva Plath",
+        "Lara Jansen"
+      ],
+      "levels": [
+        "Anfänger mit Grundkenntnissen",
+        "Anfänger"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Freitag 14",
+      "count": 4,
+      "students": [
+        "Ilonka Döge",
+        "Claudia Frank",
+        "Svenja Gloger",
+        "Claudia Gregor-Lawrenz"
+      ],
+      "levels": [
+        "Anfänger mit Grundkenntnissen",
+        "Fortgeschritten"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Freitag 16",
+      "count": 3,
+      "students": [
+        "Lennart Maak",
+        "Justus Jahn",
+        "Arthur Schelz"
+      ],
+      "levels": [
+        "Gelb Team"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Dienstag 15",
+      "count": 2,
+      "students": [
+        "Elsa Schreiber",
+        "Laura Metzer"
+      ],
+      "levels": [
+        "Gelb Team"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Montag 16",
+      "count": 6,
+      "students": [
+        "Elsa Schreiber",
+        "Leonard Welle",
+        "Julius Hof",
+        "Jaron Lockmann",
+        "Levi Schüler",
+        "Joris Kunsch"
+      ],
+      "levels": [
+        "Gelb Team",
+        "Orange",
+        "Gelb Hobby"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Donnerstag 18",
+      "count": 4,
+      "students": [
+        "Rebecca Mau",
+        "Anneke Malinowski",
+        "Nicole Berg",
+        "Lisa Schnell"
+      ],
+      "levels": [
+        "Fortgeschritten",
+        "Anfänger mit Grundkenntnissen"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Freitag 19",
+      "count": 5,
+      "students": [
+        "Antonio Schmandke",
+        "Marius Grosch",
+        "Kinga Fülöp",
+        "Áron Horváth",
+        "Stefan Löwe"
+      ],
+      "levels": [
+        "Anfänger"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Samstag 12",
+      "count": 7,
+      "students": [
+        "Alexander Ganiev Chang",
+        "Lysander Pruys",
+        "Fender Meijboom",
+        "Mats Vogel",
+        "Josef Wong",
+        "Charlotte Jansen",
+        "Anna Plath"
+      ],
+      "levels": [
+        "Kinderland",
+        "Rot",
+        ""
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": false
+    },
+    {
+      "slot": "Mittwoch 15",
+      "count": 2,
+      "students": [
+        "Marlene Zock",
+        "Mert Bakir"
+      ],
+      "levels": [
+        "Kinderland",
+        "Rot"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Mittwoch 16",
+      "count": 4,
+      "students": [
+        "Maja Dietzler",
+        "Victoria Schmitt",
+        "Laura Heidemann",
+        "Mia Lange"
+      ],
+      "levels": [
+        "Rot"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Montag 15",
+      "count": 7,
+      "students": [
+        "Paul Koch-Gombert",
+        "Malou Brieger",
+        "Ben Lange",
+        "Julius Hof",
+        "Paula Nettekoven",
+        "Gruber Ella",
+        "Joris Kunsch"
+      ],
+      "levels": [
+        "Orange",
+        "Grün"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Mittwoch 17",
+      "count": 6,
+      "students": [
+        "Henrik Hoesch",
+        "Liam Döring",
+        "Leila Maria",
+        "Schieferdecker Colleen",
+        "Lenna Wolff",
+        "Frederik Winograd"
+      ],
+      "levels": [
+        "Orange",
+        "Grün"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Donnerstag 15",
+      "count": 6,
+      "students": [
+        "Laura Wiedbrauck",
+        "Moritz Burchart",
+        "Maja Schrempp",
+        "Clara Malinowski",
+        "Nadia El Gharabawy",
+        "Jona Berghoff"
+      ],
+      "levels": [
+        "Orange",
+        "Grün",
+        "Gelb Team"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Dienstag 17",
+      "count": 5,
+      "students": [
+        "Clara Malinowski",
+        "Leni Doutch",
+        "Elin Küster",
+        "Clara Schrempp",
+        "Madita Böckenförde Leininger"
+      ],
+      "levels": [
+        "Grün",
+        "Gelb Hobby"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Dienstag 16",
+      "count": 4,
+      "students": [
+        "Emilia Burchart",
+        "Clara Schmitz-Hübsch",
+        "Jolin Kunsch",
+        "Paulina Muck"
+      ],
+      "levels": [
+        "Grün",
+        "Gelb Team"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Freitag 18",
+      "count": 6,
+      "students": [
+        "Henry King",
+        "Jasper Trump",
+        "Johannes Küster",
+        "Vogel Julius",
+        "Philipp Kluth",
+        "Luke Fuss"
+      ],
+      "levels": [
+        "Gelb Hobby",
+        "Gelb Team"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Donnerstag 16",
+      "count": 6,
+      "students": [
+        "Finn Gruber",
+        "Linus Hoesch",
+        "Leonard Welle",
+        "Benno Koch-Gombert",
+        "Valentin Agsten",
+        "Nadim El Gharabawy"
+      ],
+      "levels": [
+        "Gelb Hobby",
+        "Gelb Team"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Samstag 13",
+      "count": 4,
+      "students": [
+        "Frida Schulmann",
+        "Lara-Marie Wiedbrauck",
+        "Benjamin Coers",
+        "Franzi Glasner"
+      ],
+      "levels": [
+        "Gelb Hobby",
+        "Gelb Team"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Freitag 15",
+      "count": 5,
+      "students": [
+        "Dana Stoffels",
+        "Lara-Marie Wiedbrauck",
+        "Helene Muck",
+        "Jana Frankenberg",
+        "Marie Wolff"
+      ],
+      "levels": [
+        "Gelb Team"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Montag 17",
+      "count": 4,
+      "students": [
+        "Matthis Hundrup",
+        "Justus Jahn",
+        "Annika Jahn",
+        "Emma Sturm"
+      ],
+      "levels": [
+        "Gelb Team"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": true,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Donnerstag 17",
+      "count": 4,
+      "students": [
+        "Moritz Hoesch",
+        "Veerle Meijboom",
+        "Marlene Tripp",
+        "Vincent Schrade"
+      ],
+      "levels": [
+        "Gelb Team",
+        "Grün"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": true
+    },
+    {
+      "slot": "Freitag 17",
+      "count": 4,
+      "students": [
+        "Lukas Lederer",
+        "Christopher Jahn",
+        "Jan Dwinger",
+        "Lennart Patani"
+      ],
+      "levels": [
+        "Leistungsspieler:innen / Turnierspieler:innen",
+        "Gelb Team",
+        ""
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": false,
+      "allChildren": false
+    },
+    {
+      "slot": "Montag 19",
+      "count": 5,
+      "students": [
+        "Roby Patani",
+        "Karl Schmiedt",
+        "Karl-August Brensing",
+        "Stephan Hörning",
+        "Manfred Stiller"
+      ],
+      "levels": [
+        "Fortgeschritten",
+        "Anfänger mit Grundkenntnissen"
+      ],
+      "sameLevelGroup": false,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    },
+    {
+      "slot": "Mittwoch 11",
+      "count": 2,
+      "students": [
+        "Simone Fromm",
+        "Susi Hennes"
+      ],
+      "levels": [
+        "Fortgeschritten"
+      ],
+      "sameLevelGroup": true,
+      "hasSiblings": false,
+      "allAdults": true,
+      "allChildren": false
+    }
+  ],
+  "ageGroups": {
+    "NaN-NaN": [
+      {
+        "name": "Lennart Maak",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e90e"
+          }
+        ]
+      },
+      {
+        "name": "Lysander Pruys",
+        "age": null,
+        "trainigGroup": "Kinderland",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91b"
+          }
+        ]
+      },
+      {
+        "name": "Mats Vogel",
+        "age": null,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e920"
+          }
+        ]
+      },
+      {
+        "name": "Mert Bakir",
+        "age": null,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68f903d5af68cea161a98ad3"
+          }
+        ]
+      },
+      {
+        "name": "Laura Heidemann",
+        "age": null,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e922"
+          }
+        ]
+      },
+      {
+        "name": "Florian Elias Andrä",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": []
+      },
+      {
+        "name": "Paul Koch-Gombert",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e924"
+          }
+        ]
+      },
+      {
+        "name": "Henrik Hoesch",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e925"
+          }
+        ]
+      },
+      {
+        "name": "Maja Schrempp",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e929"
+          }
+        ]
+      },
+      {
+        "name": "Leila Maria",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92a"
+          }
+        ]
+      },
+      {
+        "name": "Clara Malinowski",
+        "age": null,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92b"
+          },
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e92c"
+          }
+        ]
+      },
+      {
+        "name": "Malou Brieger",
+        "age": null,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92f"
+          }
+        ]
+      },
+      {
+        "name": "Lenna Wolff",
+        "age": null,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e931"
+          }
+        ]
+      },
+      {
+        "name": "Jolin Kunsch",
+        "age": null,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e932"
+          }
+        ]
+      },
+      {
+        "name": "Leni Doutch",
+        "age": null,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e933"
+          }
+        ]
+      },
+      {
+        "name": "Finn Gruber",
+        "age": null,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e939"
+          }
+        ]
+      },
+      {
+        "name": "Vogel Julius",
+        "age": null,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93a"
+          }
+        ]
+      },
+      {
+        "name": "Frida Schulmann",
+        "age": null,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e93c"
+          }
+        ]
+      },
+      {
+        "name": "Dana Stoffels",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93e"
+          }
+        ]
+      },
+      {
+        "name": "Matthis Hundrup",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93f"
+          }
+        ]
+      },
+      {
+        "name": "Moritz Hoesch",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e940"
+          }
+        ]
+      },
+      {
+        "name": "Linus Hoesch",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e941"
+          }
+        ]
+      },
+      {
+        "name": "Veerle Meijboom",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e942"
+          }
+        ]
+      },
+      {
+        "name": "Lara-Marie Wiedbrauck",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e946"
+          },
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e947"
+          }
+        ]
+      },
+      {
+        "name": "Benno Koch-Gombert",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e948"
+          }
+        ]
+      },
+      {
+        "name": "Valentin Agsten",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e949"
+          }
+        ]
+      },
+      {
+        "name": "Benjamin Coers",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e94b"
+          }
+        ]
+      },
+      {
+        "name": "Justus Jahn",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94c"
+          },
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94d"
+          }
+        ]
+      },
+      {
+        "name": "Christopher Jahn",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e950"
+          }
+        ]
+      },
+      {
+        "name": "Ben Frankenberg",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": []
+      },
+      {
+        "name": "Joris Muck",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": []
+      },
+      {
+        "name": "Laura Metzer",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e951"
+          }
+        ]
+      },
+      {
+        "name": "Claire Loheider",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": []
+      },
+      {
+        "name": "Ben Lange",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e952"
+          }
+        ]
+      },
+      {
+        "name": "Paulina Muck",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68f903a2af68cea161a98969"
+          }
+        ]
+      },
+      {
+        "name": "Jana Frankenberg",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e957"
+          }
+        ]
+      },
+      {
+        "name": "Marie Wolff",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e958"
+          }
+        ]
+      },
+      {
+        "name": "Charlotte Jansen",
+        "age": null,
+        "trainigGroup": "Kinderland",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95e"
+          }
+        ]
+      },
+      {
+        "name": "Gruber Ella",
+        "age": null,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e961"
+          }
+        ]
+      },
+      {
+        "name": "Nadim El Gharabawy",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e963"
+          }
+        ]
+      },
+      {
+        "name": "Nadia El Gharabawy",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e964"
+          }
+        ]
+      },
+      {
+        "name": "Juno Glaser",
+        "age": null,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": []
+      },
+      {
+        "name": "Emma Sturm",
+        "age": null,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e980"
+          }
+        ]
+      },
+      {
+        "name": "Jonas Wichterich",
+        "age": null,
+        "trainigGroup": "Orange",
+        "assignments": []
+      },
+      {
+        "name": "Lars Wichterich",
+        "age": null,
+        "trainigGroup": "Grün",
+        "assignments": []
+      }
+    ],
+    "14-15": [
+      {
+        "name": "Elsa Schreiber",
+        "age": 15,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e90f"
+          },
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e910"
+          }
+        ]
+      },
+      {
+        "name": "Henry King",
+        "age": 14,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e934"
+          }
+        ]
+      },
+      {
+        "name": "Jasper Trump",
+        "age": 15,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e935"
+          }
+        ]
+      },
+      {
+        "name": "Elin Küster",
+        "age": 14,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e937"
+          }
+        ]
+      },
+      {
+        "name": "Leonard Welle",
+        "age": 15,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e943"
+          },
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e944"
+          }
+        ]
+      },
+      {
+        "name": "Helene Muck",
+        "age": 14,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e955"
+          }
+        ]
+      }
+    ],
+    "6-7": [
+      {
+        "name": "Alexander Ganiev Chang",
+        "age": 6,
+        "trainigGroup": "Kinderland",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91a"
+          }
+        ]
+      },
+      {
+        "name": "Marlene Zock",
+        "age": 6,
+        "trainigGroup": "Kinderland",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e91c"
+          }
+        ]
+      },
+      {
+        "name": "Maja Dietzler",
+        "age": 7,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e91d"
+          }
+        ]
+      },
+      {
+        "name": "Victoria Schmitt",
+        "age": 7,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e91e"
+          }
+        ]
+      },
+      {
+        "name": "Fender Meijboom",
+        "age": 6,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91f"
+          }
+        ]
+      },
+      {
+        "name": "Josef Wong",
+        "age": 7,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e923"
+          }
+        ]
+      },
+      {
+        "name": "Mia Lange",
+        "age": 7,
+        "trainigGroup": "Rot",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e953"
+          }
+        ]
+      }
+    ],
+    "8-9": [
+      {
+        "name": "Laura Wiedbrauck",
+        "age": 8,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e926"
+          }
+        ]
+      },
+      {
+        "name": "Moritz Burchart",
+        "age": 9,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e927"
+          }
+        ]
+      },
+      {
+        "name": "Julius Hof",
+        "age": 8,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95c"
+          },
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95d"
+          }
+        ]
+      }
+    ],
+    "10-11": [
+      {
+        "name": "Liam Döring",
+        "age": 10,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e928"
+          }
+        ]
+      },
+      {
+        "name": "Schieferdecker Colleen",
+        "age": 11,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92e"
+          }
+        ]
+      },
+      {
+        "name": "Clara Schmitz-Hübsch",
+        "age": 11,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e930"
+          }
+        ]
+      },
+      {
+        "name": "Marlene Tripp",
+        "age": 11,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94a"
+          }
+        ]
+      },
+      {
+        "name": "Paula Nettekoven",
+        "age": 10,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e95f"
+          }
+        ]
+      }
+    ],
+    "12-13": [
+      {
+        "name": "Emilia Burchart",
+        "age": 12,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92d"
+          }
+        ]
+      },
+      {
+        "name": "Clara Schrempp",
+        "age": 13,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e938"
+          }
+        ]
+      },
+      {
+        "name": "Philipp Kluth",
+        "age": 12,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93b"
+          }
+        ]
+      },
+      {
+        "name": "Madita Böckenförde Leininger",
+        "age": 12,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93d"
+          }
+        ]
+      },
+      {
+        "name": "Luke Fuss",
+        "age": 13,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e945"
+          }
+        ]
+      },
+      {
+        "name": "Vincent Schrade",
+        "age": 12,
+        "trainigGroup": "Grün",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e965"
+          }
+        ]
+      },
+      {
+        "name": "Jona Berghoff",
+        "age": 12,
+        "trainigGroup": "Orange",
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e977"
+          }
+        ]
+      }
+    ],
+    "16-17": [
+      {
+        "name": "Johannes Küster",
+        "age": 16,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e936"
+          }
+        ]
+      },
+      {
+        "name": "Arthur Schelz",
+        "age": 16,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94e"
+          }
+        ]
+      },
+      {
+        "name": "Annika Jahn",
+        "age": 17,
+        "trainigGroup": "Gelb Team",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e954"
+          }
+        ]
+      },
+      {
+        "name": "Jaron Lockmann",
+        "age": 17,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e960"
+          }
+        ]
+      },
+      {
+        "name": "Levi Schüler",
+        "age": 17,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e962"
+          }
+        ]
+      },
+      {
+        "name": "Lola Kornbrust",
+        "age": 16,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": []
+      }
+    ],
+    "18-19": [
+      {
+        "name": "Stella Hilgers",
+        "age": 18,
+        "trainigGroup": "Gelb Hobby",
+        "assignments": []
+      }
+    ],
+    "48-49": [
+      {
+        "name": "Julia Leininger",
+        "age": 49,
+        "trainigGroup": "",
+        "assignments": []
+      }
+    ]
+  },
+  "memberVsNonMember": {
+    "member": [
+      {
+        "name": "Sabine Löhrl",
+        "adult": true,
+        "level": "Fortgeschrittene",
+        "assigned": true
+      },
+      {
+        "name": "Sandra Bourbeck",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Friederike Förster",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Kristina Müller",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Jan Volkhardt",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Marie Köhler",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Tom Jansen",
+        "adult": false,
+        "level": "",
+        "assigned": null
+      },
+      {
+        "name": "Sabrina Schenk",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Ilonka Döge",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Lennart Maak",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Elsa Schreiber",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Claudia Frank",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Rebecca Mau",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Silke Hoesch",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Eva Plath",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Lara Jansen",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Marlene Zock",
+        "adult": false,
+        "level": "Kinderland",
+        "assigned": true
+      },
+      {
+        "name": "Maja Dietzler",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Victoria Schmitt",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Fender Meijboom",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Mats Vogel",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Mert Bakir",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Josef Wong",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Florian Elias Andrä",
+        "adult": false,
+        "level": "Orange",
+        "assigned": null
+      },
+      {
+        "name": "Paul Koch-Gombert",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Henrik Hoesch",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Laura Wiedbrauck",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Moritz Burchart",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Maja Schrempp",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Emilia Burchart",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Schieferdecker Colleen",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Clara Schmitz-Hübsch",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Lenna Wolff",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Henry King",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Jasper Trump",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Johannes Küster",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Elin Küster",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Clara Schrempp",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Finn Gruber",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Stella Hilgers",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": null
+      },
+      {
+        "name": "Philipp Kluth",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Frida Schulmann",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Madita Böckenförde Leininger",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Dana Stoffels",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Matthis Hundrup",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Moritz Hoesch",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Linus Hoesch",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Veerle Meijboom",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Leonard Welle",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Luke Fuss",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Lara-Marie Wiedbrauck",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Benno Koch-Gombert",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Valentin Agsten",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Marlene Tripp",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Justus Jahn",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Arthur Schelz",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Lukas Lederer",
+        "adult": true,
+        "level": "Leistungsspieler:innen / Turnierspieler:innen",
+        "assigned": true
+      },
+      {
+        "name": "Christopher Jahn",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Ben Frankenberg",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": null
+      },
+      {
+        "name": "Joris Muck",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": null
+      },
+      {
+        "name": "Laura Metzer",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Claire Loheider",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": null
+      },
+      {
+        "name": "Ben Lange",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Mia Lange",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Annika Jahn",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Helene Muck",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Paulina Muck",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Jana Frankenberg",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Marie Wolff",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Andrea Muck",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Anneke Malinowski",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Andrea Frankenberg",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Julius Hof",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Charlotte Jansen",
+        "adult": false,
+        "level": "Kinderland",
+        "assigned": true
+      },
+      {
+        "name": "Jaron Lockmann",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Gruber Ella",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Levi Schüler",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Nadim El Gharabawy",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Nadia El Gharabawy",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Juno Glaser",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": null
+      },
+      {
+        "name": "Vincent Schrade",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Nicole Berg",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Thiemo Meyfarth",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": null
+      },
+      {
+        "name": "Roby Patani",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Barbara Bursch-Brustkern",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Maike Just",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Ulrike Patani",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Helga Heydweiller",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Julia Leininger",
+        "adult": false,
+        "level": "",
+        "assigned": null
+      },
+      {
+        "name": "Svenja Gloger",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Jonas Plath",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Claudia Gregor-Lawrenz",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Karl Schmiedt",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Karl-August Brensing",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Stephan Hörning",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Manfred Stiller",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Frederik Winograd",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Jona Berghoff",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Joris Kunsch",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Sascha Schuh",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": null
+      },
+      {
+        "name": "Wing Chi Kunsch",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Simone Fromm",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Susi Hennes",
+        "adult": true,
+        "level": "Fortgeschritten",
+        "assigned": true
+      },
+      {
+        "name": "Kirsten Altvater",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "Christian Nick",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      },
+      {
+        "name": "kein Platz",
+        "adult": false,
+        "level": "",
+        "assigned": null
+      },
+      {
+        "name": "Emma Sturm",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Anna Plath",
+        "adult": true,
+        "level": "",
+        "assigned": true
+      },
+      {
+        "name": "Jan Dwinger",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Lennart Patani",
+        "adult": true,
+        "level": "",
+        "assigned": true
+      },
+      {
+        "name": "Jonas Wichterich",
+        "adult": false,
+        "level": "Orange"
+      },
+      {
+        "name": "Lars Wichterich",
+        "adult": false,
+        "level": "Grün"
+      },
+      {
+        "name": "Lola Kornbrust",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": null
+      },
+      {
+        "name": "Franzi Glasner",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Armin Berger",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen"
+      }
+    ],
+    "nonMember": [
+      {
+        "name": "Damla Darilmaz",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": null
+      },
+      {
+        "name": "Antonio Schmandke",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Marius Grosch",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Kinga Fülöp",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Áron Horváth",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Alexander Ganiev Chang",
+        "adult": false,
+        "level": "Kinderland",
+        "assigned": true
+      },
+      {
+        "name": "Lysander Pruys",
+        "adult": false,
+        "level": "Kinderland",
+        "assigned": true
+      },
+      {
+        "name": "Laura Heidemann",
+        "adult": false,
+        "level": "Rot",
+        "assigned": true
+      },
+      {
+        "name": "Liam Döring",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Leila Maria",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Clara Malinowski",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Malou Brieger",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Jolin Kunsch",
+        "adult": false,
+        "level": "Grün",
+        "assigned": true
+      },
+      {
+        "name": "Leni Doutch",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Vogel Julius",
+        "adult": false,
+        "level": "Gelb Hobby",
+        "assigned": true
+      },
+      {
+        "name": "Benjamin Coers",
+        "adult": false,
+        "level": "Gelb Team",
+        "assigned": true
+      },
+      {
+        "name": "Paula Nettekoven",
+        "adult": false,
+        "level": "Orange",
+        "assigned": true
+      },
+      {
+        "name": "Stefan Löwe",
+        "adult": true,
+        "level": "Anfänger",
+        "assigned": true
+      },
+      {
+        "name": "Carin Arck",
+        "adult": true,
+        "level": "Leistungsspieler:innen / Turnierspieler:innen",
+        "assigned": true
+      },
+      {
+        "name": "Lisa Schnell",
+        "adult": true,
+        "level": "Anfänger mit Grundkenntnissen",
+        "assigned": true
+      }
+    ]
+  },
+  "emailDomains": {
+    "web.de": [
+      {
+        "name": "Sabine Löhrl",
+        "email": "sabine.loehrl@web.de",
+        "adult": true
+      },
+      {
+        "name": "Victoria Schmitt",
+        "email": "joergschmitt@web.de",
+        "adult": false
+      },
+      {
+        "name": "Laura Wiedbrauck",
+        "email": "m.wiedbrauck@web.de",
+        "adult": false
+      },
+      {
+        "name": "Clara Malinowski",
+        "email": "a-malinowski@web.de",
+        "adult": false
+      },
+      {
+        "name": "Lenna Wolff",
+        "email": "jasse.g@web.de",
+        "adult": false
+      },
+      {
+        "name": "Henry King",
+        "email": "patrick-king@web.de",
+        "adult": false
+      },
+      {
+        "name": "Leonard Welle",
+        "email": "leonard.jv.welle@web.de",
+        "adult": false
+      },
+      {
+        "name": "Lara-Marie Wiedbrauck",
+        "email": "m.wiedbrauck@web.de",
+        "adult": false
+      },
+      {
+        "name": "Benjamin Coers",
+        "email": "dr.a.cramer@web.de",
+        "adult": false
+      },
+      {
+        "name": "Joris Muck",
+        "email": "andrea_muck@web.de",
+        "adult": false
+      },
+      {
+        "name": "Laura Metzer",
+        "email": "arabesq@web.de",
+        "adult": false
+      },
+      {
+        "name": "Helene Muck",
+        "email": "andrea_muck@web.de",
+        "adult": false
+      },
+      {
+        "name": "Paulina Muck",
+        "email": "andrea_muck@web.de",
+        "adult": false
+      },
+      {
+        "name": "Marie Wolff",
+        "email": "jasse.g@web.de",
+        "adult": false
+      },
+      {
+        "name": "Andrea Muck",
+        "email": "andrea_muck@web.de",
+        "adult": true
+      },
+      {
+        "name": "Anneke Malinowski",
+        "email": "a-malinowski@web.de",
+        "adult": true
+      },
+      {
+        "name": "Barbara Bursch-Brustkern",
+        "email": "bbbursch@web.de",
+        "adult": true
+      },
+      {
+        "name": "Stefan Löwe",
+        "email": "stefan.loewe@web.de",
+        "adult": true
+      },
+      {
+        "name": "Svenja Gloger",
+        "email": "svenjagloger@web.de",
+        "adult": true
+      },
+      {
+        "name": "Christian Nick",
+        "email": "Dr.c.nick@web.de",
+        "adult": true
+      }
+    ],
+    "gmx.de": [
+      {
+        "name": "Sandra Bourbeck",
+        "email": "s.bourbeck@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Sabrina Schenk",
+        "email": "sabrinaschenk1@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Rebecca Mau",
+        "email": "rebecca.mau@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Eva Plath",
+        "email": "e.weffer@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Paul Koch-Gombert",
+        "email": "mirja.koch-gombert@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Leila Maria",
+        "email": "febrink@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Schieferdecker Colleen",
+        "email": "ruby.schieferdecker@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Malou Brieger",
+        "email": "miriam.brieger@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Leni Doutch",
+        "email": "m.doutch@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Johannes Küster",
+        "email": "heike.n@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Elin Küster",
+        "email": "heike.n@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Philipp Kluth",
+        "email": "isabel.boehme@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Luke Fuss",
+        "email": "fuss.w@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Benno Koch-Gombert",
+        "email": "mirja.koch-gombert@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Marlene Tripp",
+        "email": "eva.tripp@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Lukas Lederer",
+        "email": "lukas.lederer06@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Ben Frankenberg",
+        "email": "andrea.frankenberg@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Jana Frankenberg",
+        "email": "andrea.frankenberg@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Andrea Frankenberg",
+        "email": "andrea.frankenberg@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Julius Hof",
+        "email": "anna-linakraft@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Levi Schüler",
+        "email": "levilevel@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Vincent Schrade",
+        "email": "hjsk@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Roby Patani",
+        "email": "rpatani@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Jona Berghoff",
+        "email": "dberghoff@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Susi Hennes",
+        "email": "hennes.susanne@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Kirsten Altvater",
+        "email": "kirstenaltvater@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Lisa Schnell",
+        "email": "lisaschnell@gmx.de",
+        "adult": true
+      },
+      {
+        "name": "Jonas Wichterich",
+        "email": "h.wichterich@gmx.de",
+        "adult": false
+      },
+      {
+        "name": "Lars Wichterich",
+        "email": "h.wichterich@gmx.de",
+        "adult": false
+      }
+    ],
+    "t-online.de": [
+      {
+        "name": "Friederike Förster",
+        "email": "friederike-foerster@t-online.de",
+        "adult": true
+      },
+      {
+        "name": "Ilonka Döge",
+        "email": "doege-duo@t-online.de",
+        "adult": true
+      },
+      {
+        "name": "Jaron Lockmann",
+        "email": "klaus.eschweiler@t-online.de",
+        "adult": false
+      }
+    ],
+    "gmx.net": [
+      {
+        "name": "Kristina Müller",
+        "email": "kristina-marie-mueller@gmx.net",
+        "adult": true
+      },
+      {
+        "name": "Marie Köhler",
+        "email": "mariekoehler@gmx.net",
+        "adult": true
+      },
+      {
+        "name": "Laura Heidemann",
+        "email": "claudiaheidemann@gmx.net",
+        "adult": false
+      },
+      {
+        "name": "Dana Stoffels",
+        "email": "markus.stoffels@gmx.net",
+        "adult": false
+      },
+      {
+        "name": "Maike Just",
+        "email": "just@gmx.net",
+        "adult": true
+      },
+      {
+        "name": "Ulrike Patani",
+        "email": "ulrike.patani@gmx.net",
+        "adult": true
+      }
+    ],
+    "gmail.com": [
+      {
+        "name": "Jan Volkhardt",
+        "email": "vojan98@gmail.com",
+        "adult": true
+      },
+      {
+        "name": "Tom Jansen",
+        "email": "tomrjansen@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Lennart Maak",
+        "email": "maaklennart@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Elsa Schreiber",
+        "email": "elsa.schreiber02@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Antonio Schmandke",
+        "email": "antonio.schmandke@gmail.com",
+        "adult": true
+      },
+      {
+        "name": "Kinga Fülöp",
+        "email": "fulopkinga98@gmail.com",
+        "adult": true
+      },
+      {
+        "name": "Áron Horváth",
+        "email": "aaronhorv@gmail.com",
+        "adult": true
+      },
+      {
+        "name": "Maja Dietzler",
+        "email": "alina.dietzler@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Josef Wong",
+        "email": "familie.jf.wong@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Moritz Burchart",
+        "email": "christiane.trott@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Maja Schrempp",
+        "email": "maria.schrempp@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Jolin Kunsch",
+        "email": "steffen.kunsch@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Jasper Trump",
+        "email": "ines.eichwurzel@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Clara Schrempp",
+        "email": "maria.schrempp@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Stella Hilgers",
+        "email": "stellahilgers897@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Matthis Hundrup",
+        "email": "martin.hundrup@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Christopher Jahn",
+        "email": "christopherjahn.eu@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Annika Jahn",
+        "email": "annikajahn.eu@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Paula Nettekoven",
+        "email": "antonia.blaer@gmail.com",
+        "adult": false
+      },
+      {
+        "name": "Simone Fromm",
+        "email": "simyogabonn@gmail.com",
+        "adult": true
+      },
+      {
+        "name": "Armin Berger",
+        "email": "arminberger5@gmail.com",
+        "adult": true
+      }
+    ],
+    "arcor.de": [
+      {
+        "name": "Claudia Frank",
+        "email": "fam.frankbonn@arcor.de",
+        "adult": true
+      }
+    ],
+    "hotmail.de": [
+      {
+        "name": "Damla Darilmaz",
+        "email": "damla_darilmaz@hotmail.de",
+        "adult": true
+      }
+    ],
+    "yahoo.de": [
+      {
+        "name": "Silke Hoesch",
+        "email": "silke.hoesch@yahoo.de",
+        "adult": true
+      },
+      {
+        "name": "Vogel Julius",
+        "email": "julianemuench@yahoo.de",
+        "adult": false
+      },
+      {
+        "name": "Thiemo Meyfarth",
+        "email": "thiemo.meyfarth@yahoo.de",
+        "adult": true
+      }
+    ],
+    "mariusgrosch.de": [
+      {
+        "name": "Marius Grosch",
+        "email": "mail@mariusgrosch.de",
+        "adult": true
+      }
+    ],
+    "icloud.com": [
+      {
+        "name": "Lara Jansen",
+        "email": "laragjansen@icloud.com",
+        "adult": true
+      },
+      {
+        "name": "Marlene Zock",
+        "email": "laura.zock@icloud.com",
+        "adult": false
+      },
+      {
+        "name": "Charlotte Jansen",
+        "email": "laragjansen@icloud.com",
+        "adult": false
+      },
+      {
+        "name": "Emma Sturm",
+        "email": "emma_sturm@icloud.com",
+        "adult": false
+      }
+    ],
+    "yahoo.com": [
+      {
+        "name": "Alexander Ganiev Chang",
+        "email": "yihuan_chang@yahoo.com",
+        "adult": false
+      },
+      {
+        "name": "Nadim El Gharabawy",
+        "email": "m_naggar81@yahoo.com",
+        "adult": false
+      },
+      {
+        "name": "Nadia El Gharabawy",
+        "email": "m_naggar81@yahoo.com",
+        "adult": false
+      }
+    ],
+    "hotmail.com": [
+      {
+        "name": "Lysander Pruys",
+        "email": "sforza_agustina@hotmail.com",
+        "adult": false
+      },
+      {
+        "name": "Fender Meijboom",
+        "email": "karlijnmeijboom@hotmail.com",
+        "adult": false
+      },
+      {
+        "name": "Emilia Burchart",
+        "email": "christianetrott@hotmail.com",
+        "adult": false
+      },
+      {
+        "name": "Veerle Meijboom",
+        "email": "karlijnmeijboom@hotmail.com",
+        "adult": false
+      }
+    ],
+    "alarmtrakt.de": [
+      {
+        "name": "Mats Vogel",
+        "email": "marcus.vogel@alarmtrakt.de",
+        "adult": false
+      }
+    ],
+    "outlook.de": [
+      {
+        "name": "Mert Bakir",
+        "email": "zelihabakir2022@outlook.de",
+        "adult": false
+      }
+    ],
+    "uni-bonn.de": [
+      {
+        "name": "Florian Elias Andrä",
+        "email": "mohr-andrae@uni-bonn.de",
+        "adult": false
+      }
+    ],
+    "me.com": [
+      {
+        "name": "Henrik Hoesch",
+        "email": "silke.hoesch@me.com",
+        "adult": false
+      },
+      {
+        "name": "Moritz Hoesch",
+        "email": "silke.hoesch@me.com",
+        "adult": false
+      },
+      {
+        "name": "Linus Hoesch",
+        "email": "silke.hoesch@me.com",
+        "adult": false
+      }
+    ],
+    "sara-weller.de": [
+      {
+        "name": "Liam Döring",
+        "email": "mail@sara-weller.de",
+        "adult": false
+      }
+    ],
+    "schmitz-huebsch.info": [
+      {
+        "name": "Clara Schmitz-Hübsch",
+        "email": "mirja@schmitz-huebsch.info",
+        "adult": false
+      }
+    ],
+    "swisslife-select.de": [
+      {
+        "name": "Finn Gruber",
+        "email": "carsten.schmidt@swisslife-select.de",
+        "adult": false
+      },
+      {
+        "name": "Gruber Ella",
+        "email": "carsten.schmidt@swisslife-select.de",
+        "adult": false
+      }
+    ],
+    "googlemail.com": [
+      {
+        "name": "Frida Schulmann",
+        "email": "wibkesch@googlemail.com",
+        "adult": false
+      }
+    ],
+    "online.de": [
+      {
+        "name": "Madita Böckenförde Leininger",
+        "email": "julialeininger@online.de",
+        "adult": false
+      },
+      {
+        "name": "Julia Leininger",
+        "email": "julialeininger@online.de",
+        "adult": false
+      }
+    ],
+    "agsten-online.de": [
+      {
+        "name": "Valentin Agsten",
+        "email": "agnes@agsten-online.de",
+        "adult": false
+      }
+    ],
+    "hbg-troisdorf.de": [
+      {
+        "name": "Justus Jahn",
+        "email": "susanne.jahn@hbg-troisdorf.de",
+        "adult": false
+      }
+    ],
+    "segrids.com": [
+      {
+        "name": "Arthur Schelz",
+        "email": "frank.schuhmacher@segrids.com",
+        "adult": false
+      }
+    ],
+    "loheider.de": [
+      {
+        "name": "Claire Loheider",
+        "email": "claire@loheider.de",
+        "adult": false
+      }
+    ],
+    "einbecker.net": [
+      {
+        "name": "Ben Lange",
+        "email": "lists@einbecker.net",
+        "adult": false
+      },
+      {
+        "name": "Mia Lange",
+        "email": "lists@einbecker.net",
+        "adult": false
+      }
+    ],
+    "lfs-bonn.de": [
+      {
+        "name": "Juno Glaser",
+        "email": "juno.glaser@lfs-bonn.de",
+        "adult": false
+      }
+    ],
+    "magenta.de": [
+      {
+        "name": "Nicole Berg",
+        "email": "nicole.berg@magenta.de",
+        "adult": true
+      }
+    ],
+    "heydweiller.de": [
+      {
+        "name": "Helga Heydweiller",
+        "email": "info@heydweiller.de",
+        "adult": true
+      }
+    ],
+    "rwth-aachen.de": [
+      {
+        "name": "Jonas Plath",
+        "email": "jonas.plath@rwth-aachen.de",
+        "adult": true
+      }
+    ],
+    "muenster.de": [
+      {
+        "name": "Claudia Gregor-Lawrenz",
+        "email": "clawrenz@muenster.de",
+        "adult": true
+      }
+    ],
+    "posteo.de": [
+      {
+        "name": "Lola Kornbrust",
+        "email": "lola.kornbrust@posteo.de",
+        "adult": false
+      }
+    ]
+  },
+  "teamVsHobby": {
+    "team": [
+      {
+        "name": "Lennart Maak",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e90e"
+          }
+        ]
+      },
+      {
+        "name": "Elsa Schreiber",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e90f"
+          },
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e910"
+          }
+        ]
+      },
+      {
+        "name": "Dana Stoffels",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93e"
+          }
+        ]
+      },
+      {
+        "name": "Matthis Hundrup",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93f"
+          }
+        ]
+      },
+      {
+        "name": "Moritz Hoesch",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e940"
+          }
+        ]
+      },
+      {
+        "name": "Linus Hoesch",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e941"
+          }
+        ]
+      },
+      {
+        "name": "Veerle Meijboom",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e942"
+          }
+        ]
+      },
+      {
+        "name": "Leonard Welle",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e943"
+          },
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e944"
+          }
+        ]
+      },
+      {
+        "name": "Luke Fuss",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e945"
+          }
+        ]
+      },
+      {
+        "name": "Lara-Marie Wiedbrauck",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e946"
+          },
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e947"
+          }
+        ]
+      },
+      {
+        "name": "Benno Koch-Gombert",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e948"
+          }
+        ]
+      },
+      {
+        "name": "Valentin Agsten",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e949"
+          }
+        ]
+      },
+      {
+        "name": "Marlene Tripp",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94a"
+          }
+        ]
+      },
+      {
+        "name": "Benjamin Coers",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e94b"
+          }
+        ]
+      },
+      {
+        "name": "Justus Jahn",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94c"
+          },
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94d"
+          }
+        ]
+      },
+      {
+        "name": "Arthur Schelz",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e94e"
+          }
+        ]
+      },
+      {
+        "name": "Christopher Jahn",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e950"
+          }
+        ]
+      },
+      {
+        "name": "Ben Frankenberg",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Joris Muck",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Laura Metzer",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e951"
+          }
+        ]
+      },
+      {
+        "name": "Claire Loheider",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Annika Jahn",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e954"
+          }
+        ]
+      },
+      {
+        "name": "Helene Muck",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e955"
+          }
+        ]
+      },
+      {
+        "name": "Paulina Muck",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68f903a2af68cea161a98969"
+          }
+        ]
+      },
+      {
+        "name": "Jana Frankenberg",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e957"
+          }
+        ]
+      },
+      {
+        "name": "Marie Wolff",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e958"
+          }
+        ]
+      },
+      {
+        "name": "Nadim El Gharabawy",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e963"
+          }
+        ]
+      },
+      {
+        "name": "Nadia El Gharabawy",
+        "trainigGroup": "Gelb Team",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e964"
+          }
+        ]
+      },
+      {
+        "name": "Emma Sturm",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e980"
+          }
+        ]
+      },
+      {
+        "name": "Jan Dwinger",
+        "trainigGroup": "Gelb Team",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68f8a314af68cea161a960b6"
+          }
+        ]
+      }
+    ],
+    "hobby": [
+      {
+        "name": "Leni Doutch",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e933"
+          }
+        ]
+      },
+      {
+        "name": "Henry King",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e934"
+          }
+        ]
+      },
+      {
+        "name": "Jasper Trump",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e935"
+          }
+        ]
+      },
+      {
+        "name": "Johannes Küster",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e936"
+          }
+        ]
+      },
+      {
+        "name": "Elin Küster",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e937"
+          }
+        ]
+      },
+      {
+        "name": "Clara Schrempp",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e938"
+          }
+        ]
+      },
+      {
+        "name": "Finn Gruber",
+        "trainigGroup": "Gelb Hobby",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e939"
+          }
+        ]
+      },
+      {
+        "name": "Stella Hilgers",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Vogel Julius",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93a"
+          }
+        ]
+      },
+      {
+        "name": "Philipp Kluth",
+        "trainigGroup": "Gelb Hobby",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Freitag",
+            "hour": 18,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93b"
+          }
+        ]
+      },
+      {
+        "name": "Frida Schulmann",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e93c"
+          }
+        ]
+      },
+      {
+        "name": "Madita Böckenförde Leininger",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e93d"
+          }
+        ]
+      },
+      {
+        "name": "Jaron Lockmann",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e960"
+          }
+        ]
+      },
+      {
+        "name": "Levi Schüler",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e962"
+          }
+        ]
+      },
+      {
+        "name": "Juno Glaser",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Lola Kornbrust",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Franzi Glasner",
+        "trainigGroup": "Gelb Hobby",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 13,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e985"
+          }
+        ]
+      }
+    ],
+    "neither": [
+      {
+        "name": "Tom Jansen",
+        "trainigGroup": "",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Alexander Ganiev Chang",
+        "trainigGroup": "Kinderland",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91a"
+          }
+        ]
+      },
+      {
+        "name": "Lysander Pruys",
+        "trainigGroup": "Kinderland",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91b"
+          }
+        ]
+      },
+      {
+        "name": "Marlene Zock",
+        "trainigGroup": "Kinderland",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e91c"
+          }
+        ]
+      },
+      {
+        "name": "Maja Dietzler",
+        "trainigGroup": "Rot",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e91d"
+          }
+        ]
+      },
+      {
+        "name": "Victoria Schmitt",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e91e"
+          }
+        ]
+      },
+      {
+        "name": "Fender Meijboom",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e91f"
+          }
+        ]
+      },
+      {
+        "name": "Mats Vogel",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e920"
+          }
+        ]
+      },
+      {
+        "name": "Mert Bakir",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68f903d5af68cea161a98ad3"
+          }
+        ]
+      },
+      {
+        "name": "Laura Heidemann",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e922"
+          }
+        ]
+      },
+      {
+        "name": "Josef Wong",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a8",
+            "_id": "68ffa66baf68cea161a9e923"
+          }
+        ]
+      },
+      {
+        "name": "Florian Elias Andrä",
+        "trainigGroup": "Orange",
+        "team": true,
+        "assignments": []
+      },
+      {
+        "name": "Paul Koch-Gombert",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e924"
+          }
+        ]
+      },
+      {
+        "name": "Henrik Hoesch",
+        "trainigGroup": "Orange",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e925"
+          }
+        ]
+      },
+      {
+        "name": "Laura Wiedbrauck",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e926"
+          }
+        ]
+      },
+      {
+        "name": "Moritz Burchart",
+        "trainigGroup": "Orange",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e927"
+          }
+        ]
+      },
+      {
+        "name": "Liam Döring",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e928"
+          }
+        ]
+      },
+      {
+        "name": "Maja Schrempp",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e929"
+          }
+        ]
+      },
+      {
+        "name": "Leila Maria",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92a"
+          }
+        ]
+      },
+      {
+        "name": "Clara Malinowski",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92b"
+          },
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e92c"
+          }
+        ]
+      },
+      {
+        "name": "Emilia Burchart",
+        "trainigGroup": "Grün",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92d"
+          }
+        ]
+      },
+      {
+        "name": "Schieferdecker Colleen",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92e"
+          }
+        ]
+      },
+      {
+        "name": "Malou Brieger",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e92f"
+          }
+        ]
+      },
+      {
+        "name": "Clara Schmitz-Hübsch",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e930"
+          }
+        ]
+      },
+      {
+        "name": "Lenna Wolff",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e931"
+          }
+        ]
+      },
+      {
+        "name": "Jolin Kunsch",
+        "trainigGroup": "Grün",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Dienstag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e932"
+          }
+        ]
+      },
+      {
+        "name": "Ben Lange",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e952"
+          }
+        ]
+      },
+      {
+        "name": "Mia Lange",
+        "trainigGroup": "Rot",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e953"
+          }
+        ]
+      },
+      {
+        "name": "Julius Hof",
+        "trainigGroup": "Orange",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95c"
+          },
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95d"
+          }
+        ]
+      },
+      {
+        "name": "Charlotte Jansen",
+        "trainigGroup": "Kinderland",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Samstag",
+            "hour": 12,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e95e"
+          }
+        ]
+      },
+      {
+        "name": "Paula Nettekoven",
+        "trainigGroup": "Orange",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a6",
+            "_id": "68ffa66baf68cea161a9e95f"
+          }
+        ]
+      },
+      {
+        "name": "Gruber Ella",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e961"
+          }
+        ]
+      },
+      {
+        "name": "Vincent Schrade",
+        "trainigGroup": "Grün",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e965"
+          }
+        ]
+      },
+      {
+        "name": "Julia Leininger",
+        "trainigGroup": "",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Frederik Winograd",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Mittwoch",
+            "hour": 17,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e976"
+          }
+        ]
+      },
+      {
+        "name": "Jona Berghoff",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": [
+          {
+            "day": "Donnerstag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52aa",
+            "_id": "68ffa66baf68cea161a9e977"
+          }
+        ]
+      },
+      {
+        "name": "Joris Kunsch",
+        "trainigGroup": "Orange",
+        "team": true,
+        "assignments": [
+          {
+            "day": "Montag",
+            "hour": 15,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e978"
+          },
+          {
+            "day": "Montag",
+            "hour": 16,
+            "coach": "68ffae13f2204e8cb9fb52a2",
+            "_id": "68ffa66baf68cea161a9e979"
+          }
+        ]
+      },
+      {
+        "name": "kein Platz",
+        "trainigGroup": "",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Jonas Wichterich",
+        "trainigGroup": "Orange",
+        "team": false,
+        "assignments": []
+      },
+      {
+        "name": "Lars Wichterich",
+        "trainigGroup": "Grün",
+        "team": false,
+        "assignments": []
+      }
+    ]
+  },
+  "coordinatedPickup": [
+    {
+      "lastName": "Hoesch",
+      "slot1": "Donnerstag 17",
+      "slot2": "Donnerstag 16",
+      "pattern": "sequential_hours"
+    },
+    {
+      "lastName": "Jahn",
+      "slot1": "Freitag 16",
+      "slot2": "Freitag 17",
+      "pattern": "sequential_hours"
+    },
+    {
+      "lastName": "El Gharabawy",
+      "slot1": "Donnerstag 16",
+      "slot2": "Donnerstag 15",
+      "pattern": "sequential_hours"
+    }
+  ],
+  "addressClusters": {
+    "6": [
+      {
+        "name": "Dana Stoffels",
+        "address": "Am Käferberg, 6",
+        "adult": false
+      },
+      {
+        "name": "Helga Heydweiller",
+        "address": "Von-Kügelgen-Str., 6",
+        "adult": true
+      }
+    ],
+    "12": [
+      {
+        "name": "Lola Kornbrust",
+        "address": "Mondofer Str., 12",
+        "adult": false
+      }
+    ],
+    "29": [
+      {
+        "name": "Claudia Gregor-Lawrenz",
+        "address": "Kreuzbergstr., 29",
+        "adult": true
+      }
+    ],
+    "69": [
+      {
+        "name": "Ben Frankenberg",
+        "address": "Zur Marterkapelle, 69",
+        "adult": false
+      },
+      {
+        "name": "Jana Frankenberg",
+        "address": "Zur Marterkapelle, 69",
+        "adult": false
+      },
+      {
+        "name": "Andrea Frankenberg",
+        "address": "Zur Marterkapelle, 69",
+        "adult": true
+      }
+    ],
+    "Lotharstrasse 152 53115 Bonn": [
+      {
+        "name": "Sabine Löhrl",
+        "address": "Lotharstrasse 152 53115 Bonn",
+        "adult": true
+      }
+    ],
+    "Thomas-Mann-Str. 49": [
+      {
+        "name": "Sandra Bourbeck",
+        "address": "Thomas-Mann-Str. 49",
+        "adult": true
+      }
+    ],
+    "53121 Bonn": [
+      {
+        "name": "Friederike Förster",
+        "address": "Wiesenweg 3,53121 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Tom Jansen",
+        "address": "Dohmstraße 17, 53121 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Silke Hoesch",
+        "address": "Dohmstraße 30, 53121 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Eva Plath",
+        "address": "Dohmstr. 19, 53121 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Marius Grosch",
+        "address": "Am Burggraben 51, 53121 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Lara Jansen",
+        "address": "Dohmstraße 17, 53121 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Henrik Hoesch",
+        "address": "Dohmstraße 30, 53121 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Moritz Hoesch",
+        "address": "Dohmstraße 30, 53121 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Linus Hoesch",
+        "address": "Dohmstraße 30, 53121 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Valentin Agsten",
+        "address": "Schmittenpfädchen 2, 53121 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Charlotte Jansen",
+        "address": "Dohmstraße 17, 53121 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Jonas Plath",
+        "address": "Dohmstraße 19, 53121 Bonn",
+        "adult": true
+      }
+    ],
+    "Lengsdorfer Hauptstraße 21": [
+      {
+        "name": "Kristina Müller",
+        "address": "Lengsdorfer Hauptstraße 21",
+        "adult": true
+      },
+      {
+        "name": "Jan Volkhardt",
+        "address": "Lengsdorfer Hauptstraße 21",
+        "adult": true
+      }
+    ],
+    "53115 Bonn": [
+      {
+        "name": "Marie Köhler",
+        "address": "Sebastianstraße 152, 53115 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Paul Koch-Gombert",
+        "address": "Meckenheimer Allee 125,53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Maja Schrempp",
+        "address": "Clemens-August-Straße 75c, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Jolin Kunsch",
+        "address": "Venusbergweg 14, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Leni Doutch",
+        "address": "Kaufmannstraße 38, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Clara Schrempp",
+        "address": "Clemens-August-Straße 75c , 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Madita Böckenförde Leininger",
+        "address": "Beethovenstr. 57, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Marlene Tripp",
+        "address": "Beringstraße 33, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Ben Lange",
+        "address": "Alexander-Koenig-Str. 10, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Mia Lange",
+        "address": "Alexander-Koenig-Str. 10, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Julius Hof",
+        "address": "Venusbergweg 18, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Paula Nettekoven",
+        "address": "Beethovenstr. 54, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Levi Schüler",
+        "address": "Königstr. 71, 53115 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Lisa Schnell",
+        "address": "Meckenheimer Allee 152, 53115 Bonn",
+        "adult": true
+      }
+    ],
+    "53127 Bonn": [
+      {
+        "name": "Sabrina Schenk",
+        "address": "Enggasse 23, 53127 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Lennart Maak",
+        "address": "Ippendorfer Weg 9, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Antonio Schmandke",
+        "address": "Höhenweg 82a, 53127 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Maja Dietzler",
+        "address": "An der Ohligsmühle 23, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Victoria Schmitt",
+        "address": "Ippendorfer Weg 33, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Fender Meijboom",
+        "address": "Zur Marterkapelle 63, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Mert Bakir",
+        "address": "Buchholzstraße 13, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Laura Heidemann",
+        "address": "Kreuzbergstr. 27f, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Clara Schmitz-Hübsch",
+        "address": "Im Rebgarten 6, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Johannes Küster",
+        "address": "Ferdinandstr. 66, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Elin Küster",
+        "address": "Ferdinandstr. 66, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Veerle Meijboom",
+        "address": "Zur Marterkapelle 63, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Arthur Schelz",
+        "address": "Am Paulshof 5, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Christopher Jahn",
+        "address": "Wasserturmstr 20, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Vincent Schrade",
+        "address": "Hubert-Maurer-Str. 3, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Ulrike Patani",
+        "address": "Kreuzbergstr. 6 B, 53127 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Jonas Wichterich",
+        "address": "Zur Marterkapelle 34, 53127 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Lars Wichterich",
+        "address": "Zur Marterkapelle 34, 53127 Bonn",
+        "adult": false
+      }
+    ],
+    "53129 Bonn": [
+      {
+        "name": "Ilonka Döge",
+        "address": "Rheinweg 142, 53129 Bonn",
+        "adult": true
+      },
+      {
+        "name": "Mats Vogel",
+        "address": "Luisenstr. 81, 53129 Bonn",
+        "adult": false
+      }
+    ],
+    "Clemens-august-str 87": [
+      {
+        "name": "Elsa Schreiber",
+        "address": "Clemens-august-str 87",
+        "adult": false
+      }
+    ],
+    "Am Ledenhof 8": [
+      {
+        "name": "Claudia Frank",
+        "address": "Am Ledenhof 8",
+        "adult": true
+      }
+    ],
+    "Kollegienweg 44": [
+      {
+        "name": "Rebecca Mau",
+        "address": "Kollegienweg 44",
+        "adult": true
+      }
+    ],
+    "Alfred-Bucherer-Str. 101": [
+      {
+        "name": "Damla Darilmaz",
+        "address": "Alfred-Bucherer-Str. 101",
+        "adult": true
+      }
+    ],
+    "Elisabethstraße 23": [
+      {
+        "name": "Kinga Fülöp",
+        "address": "Elisabethstraße 23",
+        "adult": true
+      },
+      {
+        "name": "Áron Horváth",
+        "address": "Elisabethstraße 23",
+        "adult": true
+      }
+    ],
+    "Bonn": [
+      {
+        "name": "Alexander Ganiev Chang",
+        "address": "Nikolausstrasse 43, 53129, Bonn",
+        "adult": false
+      }
+    ],
+    "Mohrstr. 24": [
+      {
+        "name": "Lysander Pruys",
+        "address": "Mohrstr. 24",
+        "adult": false
+      }
+    ],
+    "53913 Swisttal": [
+      {
+        "name": "Marlene Zock",
+        "address": "Wiedring 31, 53913 Swisttal",
+        "adult": false
+      }
+    ],
+    "53123 Bonn": [
+      {
+        "name": "Josef Wong",
+        "address": "Fritz-Bauer-Str. 29, 53123 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Nadim El Gharabawy",
+        "address": "Schieffelingsweg 22, 53123 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Nadia El Gharabawy",
+        "address": "Schieffelingsweg 22, 53123 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Stefan Löwe",
+        "address": "Buchfinkenweg 7, 53123 Bonn",
+        "adult": true
+      }
+    ],
+    "Lengsdorfer Hauptstr. 51": [
+      {
+        "name": "Florian Elias Andrä",
+        "address": "Lengsdorfer Hauptstr. 51",
+        "adult": false
+      }
+    ],
+    "53125 Bonn": [
+      {
+        "name": "Laura Wiedbrauck",
+        "address": "Heinrich-Dittmaier-Str. 11, 53125 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Schieferdecker Colleen",
+        "address": "Kurfürstenplatz 32, 53125 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Vogel Julius",
+        "address": "Auf den Steinen 11a, 53125 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Lara-Marie Wiedbrauck",
+        "address": "Heinrich-Dittmaier-Str. 11, 53125 Bonn",
+        "adult": false
+      }
+    ],
+    "Berliner Ring 42 53175 Bonn": [
+      {
+        "name": "Moritz Burchart",
+        "address": "Berliner Ring 42 53175 Bonn",
+        "adult": false
+      },
+      {
+        "name": "Emilia Burchart",
+        "address": "Berliner Ring 42 53175 Bonn",
+        "adult": false
+      }
+    ],
+    "Auf den Steinen 5": [
+      {
+        "name": "Liam Döring",
+        "address": "Auf den Steinen 5",
+        "adult": false
+      }
+    ],
+    "Kapellenstrasse 20": [
+      {
+        "name": "Leila Maria",
+        "address": "Kapellenstrasse 20",
+        "adult": false
+      }
+    ],
+    "Ahornweg 2b": [
+      {
+        "name": "Clara Malinowski",
+        "address": "Ahornweg 2b",
+        "adult": false
+      }
+    ],
+    "53115 bonn": [
+      {
+        "name": "Malou Brieger",
+        "address": "Venusbergweg 42 , 53115 bonn",
+        "adult": false
+      }
+    ],
+    "Im Brandengarten 20 53127 Bonn": [
+      {
+        "name": "Lenna Wolff",
+        "address": "Im Brandengarten 20 53127 Bonn",
+        "adult": false
+      }
+    ],
+    "Im Uckerfeld 3": [
+      {
+        "name": "Henry King",
+        "address": "Im Uckerfeld 3",
+        "adult": false
+      }
+    ],
+    "53122 Bonn": [
+      {
+        "name": "Jasper Trump",
+        "address": "Röckumstr 154, 53122 Bonn",
+        "adult": false
+      }
+    ],
+    "Riesstraße 24": [
+      {
+        "name": "Finn Gruber",
+        "address": "Riesstraße 24",
+        "adult": false
+      }
+    ],
+    "Auf dem Heidgen 57": [
+      {
+        "name": "Stella Hilgers",
+        "address": "Auf dem Heidgen 57",
+        "adult": false
+      }
+    ],
+    "Baumschulallee 26": [
+      {
+        "name": "Philipp Kluth",
+        "address": "Baumschulallee 26",
+        "adult": false
+      }
+    ],
+    "Haydnstr. 7 53115 Bonn": [
+      {
+        "name": "Frida Schulmann",
+        "address": "Haydnstr. 7 53115 Bonn",
+        "adult": false
+      }
+    ],
+    "Josef-Schell-Straße 3": [
+      {
+        "name": "Matthis Hundrup",
+        "address": "Josef-Schell-Straße 3",
+        "adult": false
+      }
+    ],
+    "Am Alten Poststadion 4": [
+      {
+        "name": "Leonard Welle",
+        "address": "Am Alten Poststadion 4",
+        "adult": false
+      }
+    ],
+    "Lengsdorfer Hauptstraße 61": [
+      {
+        "name": "Luke Fuss",
+        "address": "Lengsdorfer Hauptstraße 61",
+        "adult": false
+      }
+    ],
+    "Meckenheimer Allee 115": [
+      {
+        "name": "Benno Koch-Gombert",
+        "address": "Meckenheimer Allee 115",
+        "adult": false
+      }
+    ],
+    "Am Paulshof 3 53127 Bonn": [
+      {
+        "name": "Benjamin Coers",
+        "address": "Am Paulshof 3 53127 Bonn",
+        "adult": false
+      }
+    ],
+    "Wasserturmstrasse 20": [
+      {
+        "name": "Justus Jahn",
+        "address": "Wasserturmstrasse 20",
+        "adult": false
+      }
+    ],
+    "Prinz-Albert-Str. 12": [
+      {
+        "name": "Lukas Lederer",
+        "address": "Prinz-Albert-Str. 12",
+        "adult": true
+      }
+    ],
+    "Zur Marterkapelle": [
+      {
+        "name": "Joris Muck",
+        "address": "Zur Marterkapelle",
+        "adult": false
+      }
+    ],
+    "Jagdweg 25A": [
+      {
+        "name": "Laura Metzer",
+        "address": "Jagdweg 25A",
+        "adult": false
+      }
+    ],
+    "Am Burggraben 10": [
+      {
+        "name": "Claire Loheider",
+        "address": "Am Burggraben 10",
+        "adult": false
+      }
+    ],
+    "Wasserturmstr. 20": [
+      {
+        "name": "Annika Jahn",
+        "address": "Wasserturmstr. 20",
+        "adult": false
+      }
+    ],
+    "Zur Marterkapelle 71": [
+      {
+        "name": "Helene Muck",
+        "address": "Zur Marterkapelle 71",
+        "adult": false
+      },
+      {
+        "name": "Paulina Muck",
+        "address": "Zur Marterkapelle 71",
+        "adult": false
+      },
+      {
+        "name": "Andrea Muck",
+        "address": "Zur Marterkapelle 71",
+        "adult": true
+      }
+    ],
+    "Im Brandengarten 20 53137 Bonn": [
+      {
+        "name": "Marie Wolff",
+        "address": "Im Brandengarten 20 53137 Bonn",
+        "adult": false
+      }
+    ],
+    "53347 Alfter": [
+      {
+        "name": "Anneke Malinowski",
+        "address": "Ahornweg 2b, 53347 Alfter",
+        "adult": true
+      }
+    ],
+    "Kaufmannstr. 50 53115 Bonn": [
+      {
+        "name": "Jaron Lockmann",
+        "address": "Kaufmannstr. 50 53115 Bonn",
+        "adult": false
+      }
+    ],
+    "Riesstrasse 24 53113 Bonn": [
+      {
+        "name": "Gruber Ella",
+        "address": "Riesstrasse 24 53113 Bonn",
+        "adult": false
+      }
+    ],
+    "Im Mühlenbach 30": [
+      {
+        "name": "Juno Glaser",
+        "address": "Im Mühlenbach 30",
+        "adult": false
+      }
+    ],
+    "Flodelingsweg 34 53121 Bonn": [
+      {
+        "name": "Nicole Berg",
+        "address": "Flodelingsweg 34 53121 Bonn",
+        "adult": true
+      }
+    ],
+    "53117 Bonn": [
+      {
+        "name": "Thiemo Meyfarth",
+        "address": "An der Josefshöhe 43, 53117 Bonn",
+        "adult": true
+      }
+    ],
+    "Kreuzbergstr. 6b": [
+      {
+        "name": "Roby Patani",
+        "address": "Kreuzbergstr. 6b",
+        "adult": true
+      }
+    ],
+    "Kaufmannstr. 59": [
+      {
+        "name": "Barbara Bursch-Brustkern",
+        "address": "Kaufmannstr. 59",
+        "adult": true
+      }
+    ],
+    "Franz-Lohe-Str. 12": [
+      {
+        "name": "Maike Just",
+        "address": "Franz-Lohe-Str. 12",
+        "adult": true
+      }
+    ],
+    "Beethovenstr 57": [
+      {
+        "name": "Julia Leininger",
+        "address": "Beethovenstr 57",
+        "adult": false
+      }
+    ],
+    "Rosenburgweg 3": [
+      {
+        "name": "Svenja Gloger",
+        "address": "Rosenburgweg 3",
+        "adult": true
+      }
+    ],
+    "Am Sennertspfad 22": [
+      {
+        "name": "Emma Sturm",
+        "address": "Am Sennertspfad 22",
+        "adult": false
+      }
+    ],
+    "Simone-Veil-Straße 26 53121 Bonn": [
+      {
+        "name": "Armin Berger",
+        "address": "Simone-Veil-Straße 26 53121 Bonn",
+        "adult": true
+      }
+    ]
+  },
+  "frequencePatterns": {
+    "1": {
+      "total": 125,
+      "assigned": 111,
+      "multiAssigned": 5
+    },
+    "2": {
+      "total": 9,
+      "assigned": 8,
+      "multiAssigned": 5
+    },
+    "5": {
+      "total": 1,
+      "assigned": 0,
+      "multiAssigned": 0
+    }
+  },
+  "availabilityPatterns": {}
+}

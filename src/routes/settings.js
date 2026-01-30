@@ -43,6 +43,19 @@ router.put("/", async (req, res) => {
       }
     }
 
+    if (req.body.timeRanges) {
+      settings.timeRanges = {
+        students: {
+          ...settings.timeRanges?.students,
+          ...req.body.timeRanges.students
+        },
+        coaches: {
+          ...settings.timeRanges?.coaches,
+          ...req.body.timeRanges.coaches
+        }
+      };
+    }
+
     await settings.save();
     res.json(settings);
   } catch (error) {
