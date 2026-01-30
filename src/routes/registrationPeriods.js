@@ -54,6 +54,8 @@ router.get('/', async (req, res) => {
 
     const periods = await RegistrationPeriod.find(filter)
       .populate('createdBy', 'firstName lastName email')
+      .populate('submissionsCount')
+      .populate('pendingSubmissionsCount')
       .sort({ createdAt: -1 });
 
     logger.info(`Listed ${periods.length} registration periods`, {

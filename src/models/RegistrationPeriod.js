@@ -123,6 +123,8 @@ const registrationPeriodSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Adds createdAt and updatedAt
+    toJSON: { virtuals: true }, // Include virtual fields when converting to JSON
+    toObject: { virtuals: true }, // Include virtual fields when converting to object
   }
 );
 
