@@ -219,7 +219,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
 
 /**
  * @route   PUT /api/portal/profile
- * @desc    Update student contact information (email, phone, address only)
+ * @desc    Update student profile information (all editable fields)
  * @access  Private (student portal users only)
  */
 router.put('/profile', verifyPortalAuth, async (req, res) => {
@@ -227,8 +227,27 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
     // Accept both 'address' (correct) and 'adress' (legacy) for backward compatibility
-    const { email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
+    const { firstName, lastName, birthDate, email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
     const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
+
+    // Validate required fields
+    if (!firstName || firstName.trim() === '') {
+      return res.status(400).json({ error: 'Vorname ist erforderlich' });
+    }
+
+    if (!lastName || lastName.trim() === '') {
+      return res.status(400).json({ error: 'Nachname ist erforderlich' });
+    }
+
+    if (!birthDate) {
+      return res.status(400).json({ error: 'Geburtsdatum ist erforderlich' });
+    }
+
+    // Validate birthDate format
+    const birthDateObj = new Date(birthDate);
+    if (isNaN(birthDateObj.getTime())) {
+      return res.status(400).json({ error: 'Ungültiges Geburtsdatum' });
+    }
 
     // Validate email format if provided (test trimmed value)
     if (email && email.trim() !== '') {
@@ -261,7 +280,10 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         return res.status(404).json({ error: 'Schüler nicht gefunden' });
       }
 
-      // Update ONLY editable contact fields (prevent modification of stammdaten)
+      // Update all editable fields including name and birthdate
+      student.firstName = firstName.trim();
+      student.lastName = lastName.trim();
+      student.birthDate = birthDateObj;
       student.email = email?.trim() || '';
       student.phone = phone?.trim() || '';
       student.adress = addressValue?.trim() || '';  // Update Student.adress field (legacy)
@@ -295,6 +317,11 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     if (!portalUser) {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
+
+    // Update personal data in StudentPortalUser
+    portalUser.firstName = firstName.trim();
+    portalUser.lastName = lastName.trim();
+    portalUser.birthdate = birthDateObj;
 
     // Track old parent values for admin notification
     const oldParentValues = {
