@@ -517,9 +517,13 @@ router.get('/me', async (req, res) => {
 
     // Prepare family members data
     const familyMembers = portalUser.familyMembers.map((member) => ({
-      studentId: member.studentId._id,
+      studentId: member.studentId?._id || null,
       relationship: member.relationship,
-      name: member.name || `${member.studentId.firstName} ${member.studentId.lastName}`
+      name: member.name || (member.firstName && member.lastName
+        ? `${member.firstName} ${member.lastName}`
+        : member.studentId
+          ? `${member.studentId.firstName} ${member.studentId.lastName}`
+          : 'Unknown')
     }));
 
     // Prepare response object
