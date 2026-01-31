@@ -21,7 +21,7 @@ const calculateAge = (birthdate) => {
 // GET /api/portal/children - Get all children for logged-in parent
 router.get('/', verifyPortalAuth, async (req, res) => {
   try {
-    const user = await StudentPortalUser.findById(req.user.userId)
+    const user = await StudentPortalUser.findById(req.user.id)
       .populate('familyMembers.studentId', 'firstName lastName');
 
     if (!user) {
@@ -90,7 +90,7 @@ router.post('/', verifyPortalAuth, async (req, res) => {
       });
     }
 
-    const user = await StudentPortalUser.findById(req.user.userId);
+    const user = await StudentPortalUser.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: 'Benutzer nicht gefunden' });
     }
@@ -156,7 +156,7 @@ router.put('/:childId', verifyPortalAuth, async (req, res) => {
     const { childId } = req.params;
     const { firstName, lastName, birthdate, phone } = req.body;
 
-    const user = await StudentPortalUser.findById(req.user.userId);
+    const user = await StudentPortalUser.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: 'Benutzer nicht gefunden' });
     }
@@ -239,7 +239,7 @@ router.delete('/:childId', verifyPortalAuth, async (req, res) => {
   try {
     const { childId } = req.params;
 
-    const user = await StudentPortalUser.findById(req.user.userId);
+    const user = await StudentPortalUser.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: 'Benutzer nicht gefunden' });
     }
@@ -252,7 +252,7 @@ router.delete('/:childId', verifyPortalAuth, async (req, res) => {
 
     // Check for active registrations
     const activeRegistrations = await SeasonalRegistration.countDocuments({
-      studentPortalUserId: req.user.userId,
+      studentPortalUserId: req.user.id,
       familyMemberId: childId,
       status: { $in: ['pending', 'approved'] }
     });

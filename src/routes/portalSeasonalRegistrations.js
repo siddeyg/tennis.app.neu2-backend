@@ -13,6 +13,7 @@
  */
 
 import express from 'express';
+import mongoose from 'mongoose';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
@@ -85,6 +86,15 @@ router.get('/my-registrations', async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'periodId ist erforderlich'
+      });
+    }
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(periodId)) {
+      return res.json({
+        success: true,
+        registrations: [],
+        message: 'Ungültige periodId'
       });
     }
 

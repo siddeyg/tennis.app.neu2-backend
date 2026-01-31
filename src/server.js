@@ -56,8 +56,9 @@ import portalUsersRoutes from "./routes/portalUsers.js";
 const app = express();
 
 // Trust proxy - required when behind reverse proxy (Caddy/nginx)
+// Set to 1 to trust the first proxy (Caddy in production, none in development)
 // This allows rate limiters and IP detection to work correctly
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // ========================================
 // Security Middleware
