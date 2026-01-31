@@ -123,14 +123,16 @@ const corsOptions = {
         callback(new Error('Not allowed by CORS'));
       }
     } else {
-      // In development, allow localhost on all three portal ports
+      // In development, allow localhost on all three portal ports + backend (for proxy origin rewrite)
       const allowedOrigins = [
         'http://localhost:3000', // Admin portal
         'http://127.0.0.1:3000',
         'http://localhost:3001', // Student portal
         'http://127.0.0.1:3001',
         'http://localhost:3002', // Coach portal
-        'http://127.0.0.1:3002'
+        'http://127.0.0.1:3002',
+        'http://localhost:5000', // Backend (proxy rewrites origin to this)
+        'http://127.0.0.1:5000'
       ];
 
       if (allowedOrigins.includes(origin)) {
