@@ -71,6 +71,77 @@ router.get('/active-period', async (req, res) => {
 });
 
 /**
+ * GET /api/portal/seasonal-registrations/my-registrations
+ * Get all registrations for current user (parent + all children) for a period
+ *
+ * Query params:
+ * - periodId: required - get registrations for specific period
+ */
+router.get('/my-registrations', async (req, res) => {
+  try {
+    const { periodId } = req.query;
+
+    if (!periodId) {
+      return res.status(400).json({
+        success: false,
+        error: 'periodId ist erforderlich'
+      });
+    }
+
+    const period = await RegistrationPeriod.findById(periodId);
+    if (!period) {
+      return res.json({
+        success: true,
+        registrations: [],
+        message: 'Anmeldezeitraum nicht gefunden'
+      });
+    }
+
+    // Find all registrations for this user and period (parent + children)
+    const registrations = await SeasonalRegistration.find({
+      studentPortalUserId: req.user.id,
+      periodId: period._id
+    })
+      .populate('periodId', 'name season trainingStartDate trainingEndDate')
+      .sort({ createdAt: 1 });
+
+    // Get parent user to fetch child names
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+
+    // Format registrations with child name
+    const formattedRegistrations = registrations.map(reg => {
+      const obj = reg.toObject();
+
+      // Remove encrypted IBAN
+      delete obj.iban;
+
+      // Add child name if familyMemberId exists
+      if (reg.familyMemberId && portalUser) {
+        const child = portalUser.familyMembers.id(reg.familyMemberId);
+        obj.childName = child
+          ? `${child.firstName || ''} ${child.lastName || ''}`.trim()
+          : 'Unbekannt';
+      } else {
+        obj.childName = null; // Parent's own registration
+      }
+
+      return obj;
+    });
+
+    res.json({
+      success: true,
+      registrations: formattedRegistrations
+    });
+  } catch (error) {
+    logger.error('Error fetching user registrations:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Abrufen der Anmeldungen'
+    });
+  }
+});
+
+/**
  * GET /api/portal/seasonal-registrations/my-registration
  * Get current user's registration for active period
  *
@@ -156,7 +227,8 @@ router.post('/', async (req, res) => {
     const {
       periodId,
       formType,
-      // Auto-filled fields (from StudentPortalUser)
+      familyMemberId, // Optional: ID of child in parent's familyMembers array
+      // Auto-filled fields (from StudentPortalUser or child)
       firstName,
       lastName,
       birthdate,
@@ -216,16 +288,41 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Check if user already has registration for this period
-    const existingRegistration = await SeasonalRegistration.findOne({
+    // Validate familyMemberId if provided
+    let childData = null;
+    if (familyMemberId) {
+      const child = portalUser.familyMembers.id(familyMemberId);
+      if (!child || child.relationship !== 'child') {
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültige familyMemberId'
+        });
+      }
+      childData = child;
+    }
+
+    // Check if user already has registration for this period + familyMember combo
+    const query = {
       studentPortalUserId: req.user.id,
       periodId: period._id
-    });
+    };
+
+    if (familyMemberId) {
+      query.familyMemberId = familyMemberId;
+    } else {
+      // For parent's own registration, familyMemberId should be null
+      query.familyMemberId = { $exists: false };
+    }
+
+    const existingRegistration = await SeasonalRegistration.findOne(query);
 
     if (existingRegistration) {
+      const childName = childData
+        ? `${childData.firstName} ${childData.lastName}`
+        : 'Sie';
       return res.status(400).json({
         success: false,
-        error: 'Sie haben bereits eine Anmeldung für diesen Zeitraum'
+        error: `${childName} ${childData ? 'hat' : 'haben'} bereits eine Anmeldung für diesen Zeitraum`
       });
     }
 
@@ -281,19 +378,25 @@ router.post('/', async (req, res) => {
     }
 
     // Prepare registration data
+    // Use child data if familyMemberId provided, otherwise use request data
     const registrationData = {
       periodId: period._id,
       studentPortalUserId: req.user.id,
       formType,
-      firstName,
-      lastName,
-      birthdate: new Date(birthdate),
-      email,
-      phone: phone || '',
-      address: address || '',
+      firstName: childData?.firstName || firstName,
+      lastName: childData?.lastName || lastName,
+      birthdate: childData?.birthdate ? new Date(childData.birthdate) : new Date(birthdate),
+      email: childData ? portalUser.email : email, // Use parent's email for children
+      phone: childData?.phone || phone || '',
+      address: portalUser.address || address || '',
       privacyConsent,
       remarks: remarks || ''
     };
+
+    // Add familyMemberId if this is a child registration
+    if (familyMemberId) {
+      registrationData.familyMemberId = familyMemberId;
+    }
 
     // Add form-specific fields
     if (formType === 'kids') {
@@ -328,9 +431,18 @@ router.post('/', async (req, res) => {
     const registration = new SeasonalRegistration(registrationData);
     await registration.save();
 
-    // Auto-create Student record if portal user doesn't have one yet
-    // (portalUser already fetched at start of function for profile check)
-    let studentId = portalUser.studentId;
+    // Auto-create Student record
+    // For child registrations: check if child already has studentId
+    // For parent registrations: check if portalUser already has studentId
+    let studentId = null;
+
+    if (familyMemberId && childData) {
+      // Check if child already has a Student record
+      studentId = childData.studentId;
+    } else {
+      // Parent's own registration
+      studentId = portalUser.studentId;
+    }
 
     if (!studentId) {
       // Create new Student record from registration data
@@ -369,15 +481,30 @@ router.post('/', async (req, res) => {
 
       studentId = student._id;
 
-      // Link Student to StudentPortalUser
-      portalUser.studentId = studentId;
-      await portalUser.save();
+      // Link Student to StudentPortalUser or familyMember
+      if (familyMemberId && childData) {
+        // Link to child's familyMember entry
+        childData.studentId = studentId;
+        await portalUser.save();
 
-      logger.info('Auto-created Student record from seasonal registration', {
-        studentId: studentId,
-        portalUserId: req.user.id,
-        formType
-      });
+        logger.info('Auto-created Student record from child registration', {
+          studentId: studentId,
+          portalUserId: req.user.id,
+          familyMemberId: familyMemberId,
+          childName: `${childData.firstName} ${childData.lastName}`,
+          formType
+        });
+      } else {
+        // Link to parent's studentId
+        portalUser.studentId = studentId;
+        await portalUser.save();
+
+        logger.info('Auto-created Student record from seasonal registration', {
+          studentId: studentId,
+          portalUserId: req.user.id,
+          formType
+        });
+      }
     }
 
     // Update registration status to 'processed' (auto-approved)

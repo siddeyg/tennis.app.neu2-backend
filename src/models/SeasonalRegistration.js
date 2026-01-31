@@ -22,6 +22,13 @@ const seasonalRegistrationSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Optional: Links to specific child in parent's familyMembers array
+    // If null, registration is for the portal user themselves
+    familyMemberId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+    },
+
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
@@ -232,14 +239,14 @@ const seasonalRegistrationSchema = new mongoose.Schema(
 
 // Indexes
 seasonalRegistrationSchema.index({ periodId: 1, status: 1 });
-seasonalRegistrationSchema.index({ studentPortalUserId: 1, periodId: 1 });
 seasonalRegistrationSchema.index({ email: 1, periodId: 1 });
 seasonalRegistrationSchema.index({ formType: 1, status: 1 });
 
 // Ensure only one active registration per student per period
+// Includes familyMemberId to allow multiple children per parent per period
 seasonalRegistrationSchema.index(
-  { studentPortalUserId: 1, periodId: 1 },
-  { unique: true }
+  { studentPortalUserId: 1, periodId: 1, familyMemberId: 1 },
+  { unique: true, sparse: true }
 );
 
 // Virtual: Full name

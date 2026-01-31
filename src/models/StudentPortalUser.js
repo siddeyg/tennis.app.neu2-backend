@@ -66,6 +66,10 @@ const StudentPortalUserSchema = new mongoose.Schema({
     required: false  // Will be linked when first seasonal registration is submitted
   },
   familyMembers: [{
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      auto: true
+    },
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student'
@@ -74,7 +78,24 @@ const StudentPortalUserSchema = new mongoose.Schema({
       type: String,
       enum: ['child', 'spouse', 'self']
     },
-    name: String
+    name: String,  // Keep for backward compatibility
+    firstName: {
+      type: String,
+      trim: true
+    },
+    lastName: {
+      type: String,
+      trim: true
+    },
+    birthdate: Date,
+    phone: {
+      type: String,
+      trim: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   }],
   isActive: {
     type: Boolean,

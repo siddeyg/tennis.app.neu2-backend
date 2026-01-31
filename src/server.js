@@ -37,6 +37,7 @@ import authRoutes from "./routes/auth.js";
 import portalAuthRoutes from "./routes/portalAuth.js";
 import portalScheduleRoutes from "./routes/portalSchedule.js";
 import portalSeasonalRegistrationsRoutes from "./routes/portalSeasonalRegistrations.js";
+import portalChildrenRoutes from "./routes/portalChildren.js";
 import userRoutes from "./routes/users.js";
 import userSettingsRoutes from "./routes/userSettings.js";
 import studentRoutes from "./routes/students.js";
@@ -195,6 +196,7 @@ app.use("/api/portal/auth", portalAuthRoutes);
 // Student portal routes (uses custom portal auth middleware in route file)
 app.use("/api/portal", portalScheduleRoutes);
 app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes);
+app.use("/api/portal/children", portalChildrenRoutes);
 
 // Protected routes - require authentication
 // updateActivity middleware updates lastActivity timestamp every 5 minutes
