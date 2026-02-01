@@ -122,9 +122,11 @@ async function sendEmail({ to, subject, html }) {
  * @param {string} email - Recipient email address
  * @param {string} resetToken - Password reset token
  * @param {string} studentName - Recipient name
+ * @param {string} portalUrl - Optional portal URL (defaults to STUDENT_PORTAL_URL)
  */
-export async function sendPasswordResetEmail(email, resetToken, studentName) {
-  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3001'}/reset-password?token=${resetToken}`;
+export async function sendPasswordResetEmail(email, resetToken, studentName, portalUrl = null) {
+  const baseUrl = portalUrl || process.env.STUDENT_PORTAL_URL || 'http://localhost:3001';
+  const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
 
   const html = `
     <!DOCTYPE html>
@@ -185,9 +187,11 @@ export async function sendPasswordResetEmail(email, resetToken, studentName) {
  * @param {string} email - Recipient email address
  * @param {string} verificationToken - Email verification token
  * @param {string} studentName - Recipient name
+ * @param {string} portalUrl - Optional portal URL (defaults to STUDENT_PORTAL_URL)
  */
-export async function sendVerificationEmail(email, verificationToken, studentName) {
-  const verifyUrl = `${process.env.FRONTEND_URL || 'http://localhost:3001'}/verify-email?token=${verificationToken}`;
+export async function sendVerificationEmail(email, verificationToken, studentName, portalUrl = null) {
+  const baseUrl = portalUrl || process.env.STUDENT_PORTAL_URL || 'http://localhost:3001';
+  const verifyUrl = `${baseUrl}/verify-email?token=${verificationToken}`;
 
   const html = `
     <!DOCTYPE html>

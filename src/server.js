@@ -114,8 +114,9 @@ const corsOptions = {
     if (isProduction) {
       const allowedOrigins = [
         process.env.CORS_ORIGIN || "https://mondo.suwar.de",
-        process.env.CORS_ORIGIN_STUDENT || "https://mondo.suwar.de", // Student portal
-        process.env.CORS_ORIGIN_COACH || "https://mondo.suwar.de", // Coach portal
+        process.env.CORS_ORIGIN_ADMIN2 || "https://mondo2.suwar.de", // New admin portal
+        process.env.CORS_ORIGIN_STUDENT || "https://user.suwar.de", // Student portal
+        process.env.CORS_ORIGIN_COACH || "https://coach.suwar.de", // Coach portal
       ];
 
       if (allowedOrigins.includes(origin)) {

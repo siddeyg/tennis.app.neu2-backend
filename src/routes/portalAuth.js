@@ -250,7 +250,9 @@ router.post('/login', authLimiter, async (req, res) => {
             id: adminUser._id,
             email: adminUser.email,
             role: 'admin',
-            name: adminUser.name
+            name: adminUser.name,
+            emailVerified: true,  // Admins don't need email verification
+            profileCompleted: true  // Admins don't need profile completion
           }
         });
       }
@@ -344,6 +346,7 @@ router.post('/login', authLimiter, async (req, res) => {
       familyMembers,
       preferences: portalUser.preferences,
       lastLogin: portalUser.lastLogin,
+      emailVerified: portalUser.emailVerified,
       profileCompleted: portalUser.profileCompleted || false
     };
 
@@ -537,10 +540,26 @@ router.get('/me', async (req, res) => {
       process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET
     );
 
-    // Find user
-    const portalUser = await StudentPortalUser.findById(decoded.id)
+    // Find user - first check StudentPortalUser
+    let portalUser = await StudentPortalUser.findById(decoded.id)
       .populate('studentId')
       .populate('familyMembers.studentId');
+
+    // If not found in StudentPortalUser, check if it's an admin user
+    if (!portalUser && decoded.role === 'admin') {
+      const adminUser = await User.findById(decoded.id);
+      if (adminUser && adminUser.isActive && adminUser.role === 'admin') {
+        // Return admin user response
+        return res.json({
+          id: adminUser._id,
+          email: adminUser.email,
+          role: 'admin',
+          name: adminUser.name,
+          emailVerified: true,
+          profileCompleted: true
+        });
+      }
+    }
 
     if (!portalUser || !portalUser.isActive) {
       return res.status(401).json({ error: 'Benutzer nicht gefunden' });
