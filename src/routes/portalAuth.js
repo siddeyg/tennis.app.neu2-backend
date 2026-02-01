@@ -4,6 +4,7 @@ import rateLimit from 'express-rate-limit';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import User from '../models/User.js';
+import Settings from '../models/Settings.js';
 import {
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
@@ -39,6 +40,15 @@ const registerLimiter = rateLimit({
  */
 router.post('/register', registerLimiter, async (req, res) => {
   try {
+    // Check if portal registration is enabled
+    const settings = await Settings.findOne({ singleton: true });
+    if (settings && settings.portalRegistrationEnabled === false) {
+      return res.status(403).json({
+        error: 'Registrierung vorübergehend geschlossen',
+        registrationDisabled: true
+      });
+    }
+
     const { email, password, firstName, lastName, birthdate, phone } = req.body;
 
     // Validation
@@ -92,6 +102,27 @@ router.post('/register', registerLimiter, async (req, res) => {
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Serverfehler bei der Registrierung' });
+  }
+});
+
+/**
+ * @route   GET /api/portal/auth/registration-status
+ * @desc    Check if portal registration is enabled
+ * @access  Public
+ */
+router.get('/registration-status', async (req, res) => {
+  try {
+    const settings = await Settings.findOne({ singleton: true });
+    const enabled = settings ? settings.portalRegistrationEnabled !== false : true;
+
+    res.json({
+      enabled,
+      message: enabled ? null : 'Registrierung vorübergehend geschlossen'
+    });
+  } catch (error) {
+    console.error('Error fetching registration status:', error);
+    // Default to enabled if there's an error
+    res.json({ enabled: true });
   }
 });
 

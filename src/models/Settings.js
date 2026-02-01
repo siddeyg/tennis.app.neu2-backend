@@ -65,6 +65,12 @@ const settingsSchema = new mongoose.Schema({
     }
   },
 
+  // Portal Registration Settings
+  portalRegistrationEnabled: {
+    type: Boolean,
+    default: true
+  },
+
   lastModified: {
     type: Date,
     default: Date.now
