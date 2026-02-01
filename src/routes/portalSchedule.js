@@ -280,6 +280,17 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         return res.status(404).json({ error: 'Schüler nicht gefunden' });
       }
 
+      console.log('BEFORE UPDATE:', {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        birthDate: student.birthDate
+      });
+      console.log('NEW VALUES:', {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        birthDate: birthDateObj
+      });
+
       // Update all editable fields including name and birthdate
       student.firstName = firstName.trim();
       student.lastName = lastName.trim();
@@ -289,6 +300,12 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       student.adress = addressValue?.trim() || '';  // Update Student.adress field (legacy)
 
       await student.save();
+
+      console.log('AFTER SAVE:', {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        birthDate: student.birthDate
+      });
 
       console.log(`Profile updated for student: ${student.firstName} ${student.lastName}`);
 

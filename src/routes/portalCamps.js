@@ -1,0 +1,466 @@
+/**
+ * Portal Camps Routes (Student Portal)
+ *
+ * Student-facing API for browsing and registering for camps.
+ *
+ * Endpoints:
+ * - GET    /api/portal/camps                   - Browse available camps (status=open only)
+ * - GET    /api/portal/camps/:id               - Get camp details
+ * - GET    /api/portal/camps/my-registrations  - My camp registrations
+ * - POST   /api/portal/camps/:id/register      - Register for camp (atomic capacity check)
+ * - DELETE /api/portal/camps/registrations/:id - Cancel my registration
+ */
+
+import express from 'express';
+import Camp from '../models/Camp.js';
+import CampRegistration from '../models/CampRegistration.js';
+import requireAuth from '../middleware/requireAuth.js';
+import mongoose from 'mongoose';
+
+const router = express.Router();
+
+// All routes require authentication
+router.use(requireAuth);
+
+/**
+ * GET /api/portal/camps
+ * Browse available camps (status=open only)
+ *
+ * Query params:
+ * - targetAudience: filter by audience (all, adults, children)
+ * - skillLevel: filter by skill level
+ */
+router.get('/', async (req, res) => {
+  try {
+    const { targetAudience, skillLevel } = req.query;
+
+    // Build filter - only show open camps
+    const filter = {
+      status: 'open',
+      deletedAt: null,
+      registrationCloseDate: { $gte: new Date() } // Registration still open
+    };
+
+    if (targetAudience && targetAudience !== 'all') {
+      filter.targetAudience = { $in: ['all', targetAudience] };
+    }
+
+    if (skillLevel) {
+      filter.skillLevels = skillLevel;
+    }
+
+    const camps = await Camp.find(filter)
+      .populate('trainerId', 'name')
+      .sort({ startDate: 1 }); // Upcoming first
+
+    res.json({
+      success: true,
+      count: camps.length,
+      camps
+    });
+  } catch (error) {
+    console.error('Error listing camps:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Laden der Camps'
+    });
+  }
+});
+
+/**
+ * GET /api/portal/camps/:id
+ * Get camp details (any status - for viewing own registrations)
+ */
+router.get('/:id', async (req, res) => {
+  try {
+    // Try string ID first, then ObjectId
+    let camp = await Camp.findById(req.params.id)
+      .populate('trainerId', 'name');
+
+    if (!camp) {
+      const { ObjectId } = require('mongodb');
+      camp = await Camp.findById(new ObjectId(req.params.id))
+        .populate('trainerId', 'name');
+    }
+
+    if (!camp || camp.deletedAt) {
+      return res.status(404).json({
+        success: false,
+        error: 'Camp nicht gefunden'
+      });
+    }
+
+    res.json({
+      success: true,
+      camp
+    });
+  } catch (error) {
+    console.error('Error fetching camp:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Laden des Camps'
+    });
+  }
+});
+
+/**
+ * GET /api/portal/camps/my-registrations
+ * Get my camp registrations (as student or parent)
+ */
+router.get('/my-registrations', async (req, res) => {
+  try {
+    // Find all registrations for this user
+    const registrations = await CampRegistration.find({
+      studentPortalUserId: req.user._id,
+      status: { $in: ['confirmed', 'waitlist'] } // Exclude cancelled
+    })
+    .populate('campId')
+    .sort({ 'campId.startDate': 1 }); // Upcoming first
+
+    // Filter out registrations for deleted camps
+    const validRegistrations = registrations.filter(r => r.campId && !r.campId.deletedAt);
+
+    res.json({
+      success: true,
+      count: validRegistrations.length,
+      registrations: validRegistrations
+    });
+  } catch (error) {
+    console.error('Error fetching my registrations:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Laden Ihrer Anmeldungen'
+    });
+  }
+});
+
+/**
+ * POST /api/portal/camps/:id/register
+ * Register for camp (ATOMIC TRANSACTION for capacity enforcement)
+ *
+ * Body:
+ * - familyMemberId: (optional) if parent registering child
+ * - firstName, lastName, birthdate, email, phone
+ * - skillLevel: required
+ * - emergencyContactName, emergencyContactPhone: required for children
+ * - medicalNotes: optional
+ */
+router.post('/:id/register', async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const {
+      familyMemberId,
+      firstName,
+      lastName,
+      birthdate,
+      email,
+      phone,
+      skillLevel,
+      emergencyContactName,
+      emergencyContactPhone,
+      medicalNotes
+    } = req.body;
+
+    // Validation
+    if (!firstName || !lastName || !birthdate || !email || !skillLevel) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Vorname, Nachname, Geburtsdatum, Email und Skill Level sind erforderlich'
+      });
+    }
+
+    if (!['beginner', 'intermediate', 'advanced'].includes(skillLevel)) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Ungültiger Skill Level'
+      });
+    }
+
+    // Calculate age for emergency contact validation
+    const age = Math.floor((new Date() - new Date(birthdate)) / 31557600000); // milliseconds in a year
+    if (age < 18 && (!emergencyContactName || !emergencyContactPhone)) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Notfallkontakt ist für Teilnehmer unter 18 Jahren erforderlich'
+      });
+    }
+
+    // 1. Lock camp document
+    let campId = req.params.id;
+    let camp = await Camp.findById(campId).session(session);
+    if (!camp) {
+      const { ObjectId } = require('mongodb');
+      campId = new ObjectId(req.params.id);
+      camp = await Camp.findById(campId).session(session);
+    }
+
+    if (!camp || camp.deletedAt) {
+      await session.abortTransaction();
+      return res.status(404).json({
+        success: false,
+        error: 'Camp nicht gefunden'
+      });
+    }
+
+    // Check if registration is open
+    const now = new Date();
+    if (camp.status !== 'open' && camp.status !== 'full') {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Die Anmeldung für dieses Camp ist nicht geöffnet'
+      });
+    }
+
+    if (camp.registrationCloseDate < now) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Die Anmeldefrist ist abgelaufen'
+      });
+    }
+
+    // Check age requirements
+    if (camp.minAge && age < camp.minAge) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: `Mindestalter: ${camp.minAge} Jahre`
+      });
+    }
+
+    if (camp.maxAge && age > camp.maxAge) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: `Höchstalter: ${camp.maxAge} Jahre`
+      });
+    }
+
+    // 2. Check duplicate registration
+    const existing = await CampRegistration.findOne({
+      campId: campId,
+      studentPortalUserId: req.user._id,
+      familyMemberId: familyMemberId || null,
+      status: { $in: ['confirmed', 'waitlist'] }
+    }).session(session);
+
+    if (existing) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Sie sind bereits für dieses Camp angemeldet'
+      });
+    }
+
+    // 3. Check capacity
+    let status = 'confirmed';
+    if (camp.currentParticipants >= camp.maxParticipants) {
+      if (!camp.waitlistEnabled) {
+        await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Das Camp ist ausgebucht'
+        });
+      }
+
+      // Check waitlist capacity
+      if (camp.maxWaitlist > 0) {
+        const waitlistCount = await CampRegistration.countDocuments({
+          campId: campId,
+          status: 'waitlist'
+        }).session(session);
+
+        if (waitlistCount >= camp.maxWaitlist) {
+          await session.abortTransaction();
+          return res.status(400).json({
+            success: false,
+            error: 'Die Warteliste ist voll'
+          });
+        }
+      }
+
+      status = 'waitlist';
+    }
+
+    // 4. Create registration
+    const registration = new CampRegistration({
+      campId: campId,
+      studentPortalUserId: req.user._id,
+      familyMemberId: familyMemberId || null,
+      firstName,
+      lastName,
+      birthdate,
+      email,
+      phone: phone || '',
+      skillLevel,
+      emergencyContactName: emergencyContactName || '',
+      emergencyContactPhone: emergencyContactPhone || '',
+      medicalNotes: medicalNotes || '',
+      status: status,
+      registeredAt: new Date()
+    });
+
+    await registration.save({ session });
+
+    // 5. Increment counter (only if confirmed)
+    if (status === 'confirmed') {
+      camp.currentParticipants += 1;
+      await camp.save({ session });
+    }
+
+    // 6. Commit transaction
+    await session.commitTransaction();
+
+    res.status(201).json({
+      success: true,
+      message: status === 'confirmed'
+        ? 'Anmeldung erfolgreich!'
+        : 'Sie wurden auf die Warteliste gesetzt',
+      registration: {
+        _id: registration._id,
+        status: registration.status
+      }
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error('Error registering for camp:', error);
+
+    if (error.message.includes('Notfallkontakt')) {
+      return res.status(400).json({
+        success: false,
+        error: error.message
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Anmelden für das Camp'
+    });
+  } finally {
+    session.endSession();
+  }
+});
+
+/**
+ * DELETE /api/portal/camps/registrations/:id
+ * Cancel my registration (with waitlist auto-promotion)
+ */
+router.delete('/registrations/:id', async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Find registration
+    let regId = req.params.id;
+    let registration = await CampRegistration.findById(regId).session(session);
+    if (!registration) {
+      const { ObjectId } = require('mongodb');
+      regId = new ObjectId(req.params.id);
+      registration = await CampRegistration.findById(regId).session(session);
+    }
+
+    if (!registration) {
+      await session.abortTransaction();
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    // Verify ownership
+    if (registration.studentPortalUserId.toString() !== req.user._id.toString()) {
+      await session.abortTransaction();
+      return res.status(403).json({
+        success: false,
+        error: 'Sie dürfen nur Ihre eigenen Anmeldungen stornieren'
+      });
+    }
+
+    // Check if already cancelled
+    if (registration.status === 'cancelled') {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Diese Anmeldung wurde bereits storniert'
+      });
+    }
+
+    // Get camp
+    const camp = await Camp.findById(registration.campId).session(session);
+    if (!camp) {
+      await session.abortTransaction();
+      return res.status(404).json({
+        success: false,
+        error: 'Camp nicht gefunden'
+      });
+    }
+
+    // Check cancellation deadline (7 days before start)
+    const daysUntilStart = Math.ceil((new Date(camp.startDate) - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysUntilStart < 7) {
+      await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Stornierung ist nur bis 7 Tage vor Beginn möglich'
+      });
+    }
+
+    const wasConfirmed = registration.status === 'confirmed';
+
+    // 1. Cancel registration
+    registration.status = 'cancelled';
+    registration.cancelledAt = new Date();
+    await registration.save({ session });
+
+    // 2. Decrement counter (only if was confirmed)
+    if (wasConfirmed) {
+      camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
+      await camp.save({ session });
+
+      // 3. Find first waitlist participant (FIFO)
+      const waitlistRegistration = await CampRegistration.findOne({
+        campId: camp._id,
+        status: 'waitlist'
+      })
+      .sort({ registeredAt: 1 }) // Oldest first
+      .session(session);
+
+      if (waitlistRegistration) {
+        // 4. Promote to confirmed
+        waitlistRegistration.status = 'confirmed';
+        await waitlistRegistration.save({ session });
+
+        // 5. Increment counter again
+        camp.currentParticipants += 1;
+        await camp.save({ session });
+
+        // TODO: Send email notification to promoted user
+        console.log(`Auto-promoted waitlist registration ${waitlistRegistration._id} to confirmed`);
+      }
+    }
+
+    await session.commitTransaction();
+
+    res.json({
+      success: true,
+      message: 'Anmeldung erfolgreich storniert'
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error('Error cancelling registration:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Stornieren der Anmeldung'
+    });
+  } finally {
+    session.endSession();
+  }
+});
+
+export default router;

@@ -52,6 +52,8 @@ import attendanceRoutes from "./routes/attendance.js";
 import registrationPeriodsRoutes from "./routes/registrationPeriods.js";
 import seasonalRegistrationsRoutes from "./routes/seasonalRegistrations.js";
 import portalUsersRoutes from "./routes/portalUsers.js";
+import campsRoutes from "./routes/camps.js";
+import portalCampsRoutes from "./routes/portalCamps.js";
 
 const app = express();
 
@@ -200,6 +202,7 @@ app.use("/api/portal/auth", portalAuthRoutes);
 app.use("/api/portal", portalScheduleRoutes);
 app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes);
 app.use("/api/portal/children", portalChildrenRoutes);
+app.use("/api/portal/camps", portalCampsRoutes);
 
 // Protected routes - require authentication
 // updateActivity middleware updates lastActivity timestamp every 5 minutes
@@ -233,6 +236,9 @@ app.use("/api/seasonal-registrations", requireAuth, updateActivity, requireRole(
 
 // Portal users management routes - admin only
 app.use("/api/portal-users", requireAuth, updateActivity, requireRole(["admin"]), portalUsersRoutes);
+
+// Camps routes - admin only (auth handled in route file)
+app.use("/api/camps", campsRoutes);
 
 // ========================================
 // Error Handler Middleware (MUST BE LAST)
