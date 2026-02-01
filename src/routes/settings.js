@@ -56,6 +56,10 @@ router.put("/", async (req, res) => {
       };
     }
 
+    if (req.body.portalRegistrationEnabled !== undefined) {
+      settings.portalRegistrationEnabled = req.body.portalRegistrationEnabled;
+    }
+
     await settings.save();
     res.json(settings);
   } catch (error) {

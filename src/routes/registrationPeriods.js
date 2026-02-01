@@ -367,28 +367,28 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    // Check for submissions
-    const submissionCount = await SeasonalRegistration.countDocuments({
+    // Delete all related seasonal registrations (cascade delete)
+    const deleteResult = await SeasonalRegistration.deleteMany({
       periodId: period._id
     });
 
-    if (submissionCount > 0) {
-      return res.status(400).json({
-        success: false,
-        error: `Anmeldezeitraum hat ${submissionCount} Anmeldungen und kann nicht gelöscht werden. Bitte archivieren Sie stattdessen.`
-      });
-    }
+    const deletedRegistrations = deleteResult.deletedCount || 0;
 
+    // Delete the period itself
     await period.deleteOne();
 
-    logger.info('Registration period deleted', {
+    logger.info('Registration period deleted with cascade', {
       periodId: period._id,
+      deletedRegistrations: deletedRegistrations,
       userId: req.user.id
     });
 
     res.json({
       success: true,
-      message: 'Anmeldezeitraum erfolgreich gelöscht'
+      message: deletedRegistrations > 0
+        ? `Anmeldezeitraum und ${deletedRegistrations} Anmeldung(en) erfolgreich gelöscht`
+        : 'Anmeldezeitraum erfolgreich gelöscht',
+      deletedRegistrations: deletedRegistrations
     });
   } catch (error) {
     logger.error('Error deleting registration period:', error);

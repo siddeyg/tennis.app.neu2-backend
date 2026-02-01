@@ -68,6 +68,38 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * GET /api/portal/camps/my-registrations
+ * Get my camp registrations (as student or parent)
+ * IMPORTANT: Must be defined BEFORE /:id route to avoid route collision
+ */
+router.get('/my-registrations', async (req, res) => {
+  try {
+    // Find all registrations for this user
+    const registrations = await CampRegistration.find({
+      studentPortalUserId: req.user._id,
+      status: { $in: ['confirmed', 'waitlist'] } // Exclude cancelled
+    })
+    .populate('campId')
+    .sort({ 'campId.startDate': 1 }); // Upcoming first
+
+    // Filter out registrations for deleted camps
+    const validRegistrations = registrations.filter(r => r.campId && !r.campId.deletedAt);
+
+    res.json({
+      success: true,
+      count: validRegistrations.length,
+      registrations: validRegistrations
+    });
+  } catch (error) {
+    console.error('Error fetching my registrations:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Laden Ihrer Anmeldungen'
+    });
+  }
+});
+
+/**
  * GET /api/portal/camps/:id
  * Get camp details (any status - for viewing own registrations)
  */
@@ -104,37 +136,6 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
- * GET /api/portal/camps/my-registrations
- * Get my camp registrations (as student or parent)
- */
-router.get('/my-registrations', async (req, res) => {
-  try {
-    // Find all registrations for this user
-    const registrations = await CampRegistration.find({
-      studentPortalUserId: req.user._id,
-      status: { $in: ['confirmed', 'waitlist'] } // Exclude cancelled
-    })
-    .populate('campId')
-    .sort({ 'campId.startDate': 1 }); // Upcoming first
-
-    // Filter out registrations for deleted camps
-    const validRegistrations = registrations.filter(r => r.campId && !r.campId.deletedAt);
-
-    res.json({
-      success: true,
-      count: validRegistrations.length,
-      registrations: validRegistrations
-    });
-  } catch (error) {
-    console.error('Error fetching my registrations:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Fehler beim Laden Ihrer Anmeldungen'
-    });
-  }
-});
-
-/**
  * POST /api/portal/camps/:id/register
  * Register for camp (ATOMIC TRANSACTION for capacity enforcement)
  *
@@ -146,8 +147,14 @@ router.get('/my-registrations', async (req, res) => {
  * - medicalNotes: optional
  */
 router.post('/:id/register', async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // Check if transactions are supported (replica set/mongos only)
+  const useTransactions = process.env.NODE_ENV === 'production' || process.env.USE_TRANSACTIONS === 'true';
+
+  let session = null;
+  if (useTransactions) {
+    session = await mongoose.startSession();
+    await session.startTransaction();
+  }
 
   try {
     const {
@@ -165,7 +172,7 @@ router.post('/:id/register', async (req, res) => {
 
     // Validation
     if (!firstName || !lastName || !birthdate || !email || !skillLevel) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Vorname, Nachname, Geburtsdatum, Email und Skill Level sind erforderlich'
@@ -173,34 +180,24 @@ router.post('/:id/register', async (req, res) => {
     }
 
     if (!['beginner', 'intermediate', 'advanced'].includes(skillLevel)) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Ungültiger Skill Level'
       });
     }
 
-    // Calculate age for emergency contact validation
-    const age = Math.floor((new Date() - new Date(birthdate)) / 31557600000); // milliseconds in a year
-    if (age < 18 && (!emergencyContactName || !emergencyContactPhone)) {
-      await session.abortTransaction();
-      return res.status(400).json({
-        success: false,
-        error: 'Notfallkontakt ist für Teilnehmer unter 18 Jahren erforderlich'
-      });
-    }
-
     // 1. Lock camp document
     let campId = req.params.id;
-    let camp = await Camp.findById(campId).session(session);
+    let camp = await Camp.findById(campId);
     if (!camp) {
       const { ObjectId } = require('mongodb');
       campId = new ObjectId(req.params.id);
-      camp = await Camp.findById(campId).session(session);
+      camp = await Camp.findById(campId);
     }
 
     if (!camp || camp.deletedAt) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(404).json({
         success: false,
         error: 'Camp nicht gefunden'
@@ -210,7 +207,7 @@ router.post('/:id/register', async (req, res) => {
     // Check if registration is open
     const now = new Date();
     if (camp.status !== 'open' && camp.status !== 'full') {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Die Anmeldung für dieses Camp ist nicht geöffnet'
@@ -218,7 +215,7 @@ router.post('/:id/register', async (req, res) => {
     }
 
     if (camp.registrationCloseDate < now) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Die Anmeldefrist ist abgelaufen'
@@ -227,7 +224,7 @@ router.post('/:id/register', async (req, res) => {
 
     // Check age requirements
     if (camp.minAge && age < camp.minAge) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: `Mindestalter: ${camp.minAge} Jahre`
@@ -235,7 +232,7 @@ router.post('/:id/register', async (req, res) => {
     }
 
     if (camp.maxAge && age > camp.maxAge) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: `Höchstalter: ${camp.maxAge} Jahre`
@@ -248,10 +245,10 @@ router.post('/:id/register', async (req, res) => {
       studentPortalUserId: req.user._id,
       familyMemberId: familyMemberId || null,
       status: { $in: ['confirmed', 'waitlist'] }
-    }).session(session);
+    });
 
     if (existing) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Sie sind bereits für dieses Camp angemeldet'
@@ -262,7 +259,7 @@ router.post('/:id/register', async (req, res) => {
     let status = 'confirmed';
     if (camp.currentParticipants >= camp.maxParticipants) {
       if (!camp.waitlistEnabled) {
-        await session.abortTransaction();
+        if (session) await session.abortTransaction();
         return res.status(400).json({
           success: false,
           error: 'Das Camp ist ausgebucht'
@@ -274,10 +271,10 @@ router.post('/:id/register', async (req, res) => {
         const waitlistCount = await CampRegistration.countDocuments({
           campId: campId,
           status: 'waitlist'
-        }).session(session);
+        });
 
         if (waitlistCount >= camp.maxWaitlist) {
-          await session.abortTransaction();
+          if (session) await session.abortTransaction();
           return res.status(400).json({
             success: false,
             error: 'Die Warteliste ist voll'
@@ -306,16 +303,16 @@ router.post('/:id/register', async (req, res) => {
       registeredAt: new Date()
     });
 
-    await registration.save({ session });
+    await registration.save(session ? { session } : {});
 
     // 5. Increment counter (only if confirmed)
     if (status === 'confirmed') {
       camp.currentParticipants += 1;
-      await camp.save({ session });
+      await camp.save(session ? { session } : {});
     }
 
     // 6. Commit transaction
-    await session.commitTransaction();
+    if (session) await session.commitTransaction();
 
     res.status(201).json({
       success: true,
@@ -328,7 +325,7 @@ router.post('/:id/register', async (req, res) => {
       }
     });
   } catch (error) {
-    await session.abortTransaction();
+    if (session) await session.abortTransaction();
     console.error('Error registering for camp:', error);
 
     if (error.message.includes('Notfallkontakt')) {
@@ -343,7 +340,7 @@ router.post('/:id/register', async (req, res) => {
       error: 'Fehler beim Anmelden für das Camp'
     });
   } finally {
-    session.endSession();
+    if (session) session.endSession();
   }
 });
 
@@ -352,21 +349,27 @@ router.post('/:id/register', async (req, res) => {
  * Cancel my registration (with waitlist auto-promotion)
  */
 router.delete('/registrations/:id', async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // Check if transactions are supported (replica set/mongos only)
+  const useTransactions = process.env.NODE_ENV === 'production' || process.env.USE_TRANSACTIONS === 'true';
+
+  let session = null;
+  if (useTransactions) {
+    session = await mongoose.startSession();
+    await session.startTransaction();
+  }
 
   try {
     // Find registration
     let regId = req.params.id;
-    let registration = await CampRegistration.findById(regId).session(session);
+    let registration = await CampRegistration.findById(regId);
     if (!registration) {
       const { ObjectId } = require('mongodb');
       regId = new ObjectId(req.params.id);
-      registration = await CampRegistration.findById(regId).session(session);
+      registration = await CampRegistration.findById(regId);
     }
 
     if (!registration) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(404).json({
         success: false,
         error: 'Anmeldung nicht gefunden'
@@ -375,7 +378,7 @@ router.delete('/registrations/:id', async (req, res) => {
 
     // Verify ownership
     if (registration.studentPortalUserId.toString() !== req.user._id.toString()) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(403).json({
         success: false,
         error: 'Sie dürfen nur Ihre eigenen Anmeldungen stornieren'
@@ -384,7 +387,7 @@ router.delete('/registrations/:id', async (req, res) => {
 
     // Check if already cancelled
     if (registration.status === 'cancelled') {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Diese Anmeldung wurde bereits storniert'
@@ -392,9 +395,9 @@ router.delete('/registrations/:id', async (req, res) => {
     }
 
     // Get camp
-    const camp = await Camp.findById(registration.campId).session(session);
+    const camp = await Camp.findById(registration.campId);
     if (!camp) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(404).json({
         success: false,
         error: 'Camp nicht gefunden'
@@ -404,7 +407,7 @@ router.delete('/registrations/:id', async (req, res) => {
     // Check cancellation deadline (7 days before start)
     const daysUntilStart = Math.ceil((new Date(camp.startDate) - new Date()) / (1000 * 60 * 60 * 24));
     if (daysUntilStart < 7) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Stornierung ist nur bis 7 Tage vor Beginn möglich'
@@ -416,12 +419,12 @@ router.delete('/registrations/:id', async (req, res) => {
     // 1. Cancel registration
     registration.status = 'cancelled';
     registration.cancelledAt = new Date();
-    await registration.save({ session });
+    await registration.save(session ? { session } : {});
 
     // 2. Decrement counter (only if was confirmed)
     if (wasConfirmed) {
       camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
-      await camp.save({ session });
+      await camp.save(session ? { session } : {});
 
       // 3. Find first waitlist participant (FIFO)
       const waitlistRegistration = await CampRegistration.findOne({
@@ -429,37 +432,37 @@ router.delete('/registrations/:id', async (req, res) => {
         status: 'waitlist'
       })
       .sort({ registeredAt: 1 }) // Oldest first
-      .session(session);
+      ;
 
       if (waitlistRegistration) {
         // 4. Promote to confirmed
         waitlistRegistration.status = 'confirmed';
-        await waitlistRegistration.save({ session });
+        await waitlistRegistration.save(session ? { session } : {});
 
         // 5. Increment counter again
         camp.currentParticipants += 1;
-        await camp.save({ session });
+        await camp.save(session ? { session } : {});
 
         // TODO: Send email notification to promoted user
         console.log(`Auto-promoted waitlist registration ${waitlistRegistration._id} to confirmed`);
       }
     }
 
-    await session.commitTransaction();
+    if (session) await session.commitTransaction();
 
     res.json({
       success: true,
       message: 'Anmeldung erfolgreich storniert'
     });
   } catch (error) {
-    await session.abortTransaction();
+    if (session) await session.abortTransaction();
     console.error('Error cancelling registration:', error);
     res.status(500).json({
       success: false,
       error: 'Fehler beim Stornieren der Anmeldung'
     });
   } finally {
-    session.endSession();
+    if (session) session.endSession();
   }
 });
 
