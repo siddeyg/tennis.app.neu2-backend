@@ -11,7 +11,7 @@
 import express from 'express';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
-import { generateVerificationTokenWithExpiry } from '../utils/emailService.js';
+import { generateVerificationTokenWithExpiry, sendVerificationEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -147,6 +147,46 @@ router.post('/:id/force-verify', async (req, res) => {
   } catch (error) {
     console.error('Error force verifying email:', error);
     res.status(500).json({ error: 'Fehler beim Verifizieren der Email' });
+  }
+});
+
+/**
+ * POST /api/portal-users/:id/resend-verification
+ * Generate new verification token AND send verification email
+ */
+router.post('/:id/resend-verification', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const portalUser = await StudentPortalUser.findById(id);
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
+    }
+
+    // Check if already verified
+    if (portalUser.emailVerified) {
+      return res.status(400).json({ error: 'E-Mail bereits verifiziert' });
+    }
+
+    // Generate new verification token
+    const { token, expires } = generateVerificationTokenWithExpiry();
+
+    portalUser.verificationToken = token;
+    portalUser.verificationTokenExpires = expires;
+    await portalUser.save();
+
+    // Send verification email
+    const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
+    await sendVerificationEmail(portalUser.email, token, studentName);
+
+    res.json({
+      message: 'Verifizierungs-E-Mail erfolgreich gesendet',
+      email: portalUser.email,
+      expires: expires
+    });
+  } catch (error) {
+    console.error('Error resending verification email:', error);
+    res.status(500).json({ error: 'Fehler beim Senden der Verifizierungs-E-Mail' });
   }
 });
 
