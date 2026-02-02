@@ -13,7 +13,7 @@
  *   - SMTP_USER: SMTP username (e.g., noreply@tcgw.de)
  *   - SMTP_PASS: SMTP password
  *   - FROM_EMAIL: Sender email address (e.g., noreply@tcgw.de)
- *   - FROM_NAME: Sender name (e.g., TC GW Am Kreuzberg)
+ *   - FROM_NAME: Sender name (e.g., Mondo Tennisschule)
  *   - FRONTEND_URL: Frontend URL for links (e.g., https://mondo.suwar.de)
  *
  * Setup:
@@ -87,7 +87,7 @@ async function sendEmail({ to, subject, html }) {
   if (!isConfigured || !transporter) {
     logger.info(`📧 [DEV MODE] Would send email to: ${to}`);
     logger.info(`   Subject: ${subject}`);
-    logger.info(`   From: ${process.env.FROM_NAME || 'TC GW Am Kreuzberg'} <${process.env.FROM_EMAIL || 'noreply@tcgw.de'}>`);
+    logger.info(`   From: ${process.env.FROM_NAME || 'Mondo Tennisschule'} <${process.env.FROM_EMAIL || 'noreply@tcgw.de'}>`);
     logger.info(`   HTML content length: ${html.length} chars`);
     return;
   }
@@ -96,7 +96,7 @@ async function sendEmail({ to, subject, html }) {
   try {
     const mailOptions = {
       from: {
-        name: process.env.FROM_NAME || 'TC GW Am Kreuzberg',
+        name: process.env.FROM_NAME || 'Mondo Tennisschule',
         address: process.env.FROM_EMAIL || 'noreply@tcgw.de',
       },
       to,
@@ -138,7 +138,7 @@ export async function sendPasswordResetEmail(email, resetToken, studentName, por
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 TC GW Am Kreuzberg</h1>
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
@@ -167,7 +167,7 @@ export async function sendPasswordResetEmail(email, resetToken, studentName, por
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule TC GW Am Kreuzberg</p>
+        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
         <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
       </div>
     </body>
@@ -176,7 +176,7 @@ export async function sendPasswordResetEmail(email, resetToken, studentName, por
 
   await sendEmail({
     to: email,
-    subject: 'Passwort zurücksetzen - TC GW Am Kreuzberg',
+    subject: 'Passwort zurücksetzen - Mondo Tennisschule',
     html,
   });
 }
@@ -203,13 +203,13 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 TC GW Am Kreuzberg</h1>
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
         <h2 style="color: #333; margin-top: 0;">Willkommen ${studentName}!</h2>
 
-        <p>Vielen Dank für Ihre Registrierung beim Tennis-Portal des TC GW Am Kreuzberg.</p>
+        <p>Vielen Dank für Ihre Registrierung beim Tennis-Portal des Mondo Tennisschule.</p>
 
         <p>Um Ihre E-Mail-Adresse zu bestätigen und Ihr Konto zu aktivieren, klicken Sie bitte auf den folgenden Button:</p>
 
@@ -232,7 +232,7 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule TC GW Am Kreuzberg</p>
+        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
         <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
       </div>
     </body>
@@ -241,7 +241,7 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
 
   await sendEmail({
     to: email,
-    subject: 'Email-Adresse bestätigen - TC GW Am Kreuzberg',
+    subject: 'Email-Adresse bestätigen - Mondo Tennisschule',
     html,
   });
 }
@@ -261,11 +261,11 @@ export async function sendWelcomeEmail(email, studentName) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Willkommen beim TC GW Am Kreuzberg</title>
+      <title>Willkommen beim Mondo Tennisschule</title>
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 TC GW Am Kreuzberg</h1>
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
@@ -288,7 +288,7 @@ export async function sendWelcomeEmail(email, studentName) {
 
         <p style="color: #666; font-size: 14px; margin-top: 30px;">Bei Fragen oder Problemen wenden Sie sich bitte an unser Team.</p>
 
-        <p style="color: #666; font-size: 14px;">Wir freuen uns, Sie beim TC GW Am Kreuzberg begrüßen zu dürfen!</p>
+        <p style="color: #666; font-size: 14px;">Wir freuen uns, Sie beim Mondo Tennisschule begrüßen zu dürfen!</p>
 
         <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
 
@@ -296,7 +296,7 @@ export async function sendWelcomeEmail(email, studentName) {
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule TC GW Am Kreuzberg</p>
+        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
         <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
       </div>
     </body>
@@ -305,7 +305,7 @@ export async function sendWelcomeEmail(email, studentName) {
 
   await sendEmail({
     to: email,
-    subject: 'Willkommen beim TC GW Am Kreuzberg Tennis-Portal',
+    subject: 'Willkommen beim Mondo Tennisschule Tennis-Portal',
     html,
   });
 }
@@ -365,7 +365,7 @@ export async function sendParentInfoChangeNotification({ childName, childEmail, 
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 TC GW Am Kreuzberg</h1>
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
         <p style="color: white; margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">Admin Benachrichtigung</p>
       </div>
 
@@ -423,7 +423,7 @@ export async function sendParentInfoChangeNotification({ childName, childEmail, 
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule TC GW Am Kreuzberg</p>
+        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
         <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
       </div>
     </body>
