@@ -14,13 +14,13 @@
 import express from 'express';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
-import requireAuth from '../middleware/requireAuth.js';
+import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
 
 const router = express.Router();
 
-// All routes require authentication
-router.use(requireAuth);
+// All routes require portal authentication (student portal users)
+router.use(verifyPortalAuth);
 
 /**
  * GET /api/portal/camps
@@ -221,6 +221,10 @@ router.post('/:id/register', async (req, res) => {
         error: 'Die Anmeldefrist ist abgelaufen'
       });
     }
+
+    // Calculate age from birthdate
+    const birthDate = new Date(birthdate);
+    const age = Math.floor((now - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
 
     // Check age requirements
     if (camp.minAge && age < camp.minAge) {
