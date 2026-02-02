@@ -175,13 +175,14 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
         firstName: student.firstName,
         lastName: student.lastName,
         birthDate: student.birthDate,
+        sex: student.sex || '',
+        member: student.member || false,
         email: student.email || '',
         phone: student.phone || '',
         address: student.adress || '',  // Map Student.adress to response.address
         adult: student.adult,
         skillLevel: student.skillLevel || '',
         trainigGroup: student.trainigGroup || '',
-        member: student.member,
         team: student.team || '',
         frequence: student.frequence || '',
         availableTimes: student.availableTimes || [],
@@ -201,6 +202,8 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       firstName: portalUser.firstName,
       lastName: portalUser.lastName,
       birthDate: portalUser.birthdate,
+      sex: portalUser.sex || '',
+      member: portalUser.member || false,
       email: portalUser.email || '',
       phone: portalUser.phone || '',
       address: portalUser.address || '',  // Return address from StudentPortalUser
@@ -227,8 +230,24 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
     // Accept both 'address' (correct) and 'adress' (legacy) for backward compatibility
-    const { firstName, lastName, birthDate, email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
+    const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
     const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
+
+    console.error('===== PROFILE UPDATE REQUEST =====');
+    console.error('Request body received:', JSON.stringify({
+      firstName,
+      lastName,
+      birthDate,
+      sex,
+      member,
+      email,
+      phone,
+      address: addressValue
+    }, null, 2));
+    console.error('User info:', JSON.stringify({
+      studentId,
+      portalUserId
+    }, null, 2));
 
     // Validate required fields
     if (!firstName || firstName.trim() === '') {
@@ -241,6 +260,10 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
 
     if (!birthDate) {
       return res.status(400).json({ error: 'Geburtsdatum ist erforderlich' });
+    }
+
+    if (!sex || !['männlich', 'weiblich'].includes(sex)) {
+      return res.status(400).json({ error: 'Geschlecht ist erforderlich' });
     }
 
     // Validate birthDate format
@@ -280,31 +303,44 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         return res.status(404).json({ error: 'Schüler nicht gefunden' });
       }
 
-      console.log('BEFORE UPDATE:', {
+      console.error('BEFORE UPDATE:', {
         firstName: student.firstName,
         lastName: student.lastName,
-        birthDate: student.birthDate
+        birthDate: student.birthDate,
+        sex: student.sex,
+        member: student.member
       });
-      console.log('NEW VALUES:', {
+      console.error('NEW VALUES FROM REQUEST:', {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
-        birthDate: birthDateObj
+        birthDate: birthDateObj,
+        sex: sex,
+        member: member
       });
 
       // Update all editable fields including name and birthdate
       student.firstName = firstName.trim();
       student.lastName = lastName.trim();
       student.birthDate = birthDateObj;
+      student.sex = sex;
+      student.member = member === true || member === 'true';
       student.email = email?.trim() || '';
       student.phone = phone?.trim() || '';
       student.adress = addressValue?.trim() || '';  // Update Student.adress field (legacy)
 
+      console.error('AFTER ASSIGNMENT (before save):', {
+        sex: student.sex,
+        member: student.member
+      });
+
       await student.save();
 
-      console.log('AFTER SAVE:', {
+      console.error('AFTER SAVE:', {
         firstName: student.firstName,
         lastName: student.lastName,
-        birthDate: student.birthDate
+        birthDate: student.birthDate,
+        sex: student.sex,
+        member: student.member
       });
 
       console.log(`Profile updated for student: ${student.firstName} ${student.lastName}`);
@@ -315,6 +351,8 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         firstName: student.firstName,
         lastName: student.lastName,
         birthDate: student.birthDate,
+        sex: student.sex,
+        member: student.member,
         email: student.email,
         phone: student.phone,
         address: student.adress,  // Map Student.adress to response.address
@@ -335,10 +373,32 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
+    console.error('PORTAL USER BEFORE UPDATE:', {
+      firstName: portalUser.firstName,
+      lastName: portalUser.lastName,
+      birthdate: portalUser.birthdate,
+      sex: portalUser.sex,
+      member: portalUser.member
+    });
+    console.error('NEW VALUES FROM REQUEST:', {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      birthDate: birthDateObj,
+      sex: sex,
+      member: member
+    });
+
     // Update personal data in StudentPortalUser
     portalUser.firstName = firstName.trim();
     portalUser.lastName = lastName.trim();
     portalUser.birthdate = birthDateObj;
+    portalUser.sex = sex;
+    portalUser.member = member === true || member === 'true';
+
+    console.error('AFTER ASSIGNMENT (before save):', {
+      sex: portalUser.sex,
+      member: portalUser.member
+    });
 
     // Track old parent values for admin notification
     const oldParentValues = {
@@ -374,6 +434,14 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
 
     await portalUser.save();
 
+    console.error('PORTAL USER AFTER SAVE:', {
+      firstName: portalUser.firstName,
+      lastName: portalUser.lastName,
+      birthdate: portalUser.birthdate,
+      sex: portalUser.sex,
+      member: portalUser.member
+    });
+
     // Send admin notification if parent info changed (for children)
     if (parentInfoChanged && portalUser.isChild && portalUser.isChild()) {
       try {
@@ -403,6 +471,8 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       firstName: portalUser.firstName,
       lastName: portalUser.lastName,
       birthDate: portalUser.birthdate,
+      sex: portalUser.sex,
+      member: portalUser.member,
       email: portalUser.email,
       phone: portalUser.phone,
       address: portalUser.address || '',  // Return address from StudentPortalUser

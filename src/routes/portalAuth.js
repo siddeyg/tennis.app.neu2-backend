@@ -49,7 +49,7 @@ router.post('/register', registerLimiter, async (req, res) => {
       });
     }
 
-    const { email, password, firstName, lastName, birthdate, phone } = req.body;
+    const { email, password, firstName, lastName, birthdate, sex, member, phone } = req.body;
 
     // Validation
     if (!email || !password) {
@@ -58,6 +58,14 @@ router.post('/register', registerLimiter, async (req, res) => {
 
     if (!firstName || !lastName || !birthdate) {
       return res.status(400).json({ error: 'Vorname, Nachname und Geburtsdatum sind erforderlich' });
+    }
+
+    if (!sex || !['männlich', 'weiblich'].includes(sex)) {
+      return res.status(400).json({ error: 'Geschlecht ist erforderlich' });
+    }
+
+    if (member === undefined || member === null) {
+      return res.status(400).json({ error: 'Mitgliedsstatus ist erforderlich' });
     }
 
     if (password.length < 8) {
@@ -80,6 +88,8 @@ router.post('/register', registerLimiter, async (req, res) => {
       firstName,
       lastName,
       birthdate: new Date(birthdate),
+      sex,
+      member: member === true || member === 'true',
       phone: phone || null,
       studentId: null,  // Will be linked when first seasonal registration is submitted
       verificationToken,
@@ -342,6 +352,8 @@ router.post('/login', authLimiter, async (req, res) => {
       firstName: portalUser.firstName,
       lastName: portalUser.lastName,
       birthdate: portalUser.birthdate,
+      sex: portalUser.sex,
+      member: portalUser.member,
       phone: portalUser.phone,
       familyMembers,
       preferences: portalUser.preferences,
@@ -576,6 +588,12 @@ router.get('/me', async (req, res) => {
           : 'Unknown')
     }));
 
+    // Debug logging
+    console.log(`/me endpoint for ${portalUser.email}:`, {
+      sex: portalUser.sex,
+      member: portalUser.member
+    });
+
     // Prepare response object
     const response = {
       id: portalUser._id,
@@ -584,6 +602,8 @@ router.get('/me', async (req, res) => {
       firstName: portalUser.firstName,
       lastName: portalUser.lastName,
       birthdate: portalUser.birthdate,
+      sex: portalUser.sex,
+      member: portalUser.member,
       phone: portalUser.phone,
       familyMembers,
       preferences: portalUser.preferences,

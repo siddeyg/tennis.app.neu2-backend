@@ -165,8 +165,8 @@ router.post('/:id/register', async (req, res) => {
       email,
       phone,
       skillLevel,
-      emergencyContactName,
-      emergencyContactPhone,
+      additionalEmergencyContactName,
+      additionalEmergencyContactPhone,
       medicalNotes
     } = req.body;
 
@@ -225,6 +225,28 @@ router.post('/:id/register', async (req, res) => {
     // Calculate age from birthdate
     const birthDate = new Date(birthdate);
     const age = Math.floor((now - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
+
+    // Force parent's info as primary emergency contact for children
+    let emergencyContactName = '';
+    let emergencyContactPhone = '';
+
+    if (familyMemberId && age < 18) {
+      // Get parent's info
+      const StudentPortalUser = (await import('../models/StudentPortalUser.js')).default;
+      const parent = await StudentPortalUser.findById(req.user.id);
+
+      if (!parent || !parent.phone) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Bitte fügen Sie zuerst eine Telefonnummer zu Ihrem Profil hinzu. Bei Minderjährigen ist eine Notfallkontaktnummer erforderlich.'
+        });
+      }
+
+      // Force parent's info as primary emergency contact
+      emergencyContactName = `${parent.firstName} ${parent.lastName}`;
+      emergencyContactPhone = parent.phone;
+    }
 
     // Check age requirements
     if (camp.minAge && age < camp.minAge) {
@@ -292,7 +314,7 @@ router.post('/:id/register', async (req, res) => {
     // 4. Create registration
     const registration = new CampRegistration({
       campId: campId,
-      studentPortalUserId: req.user._id,
+      studentPortalUserId: req.user.id,
       familyMemberId: familyMemberId || null,
       firstName,
       lastName,
@@ -302,6 +324,8 @@ router.post('/:id/register', async (req, res) => {
       skillLevel,
       emergencyContactName: emergencyContactName || '',
       emergencyContactPhone: emergencyContactPhone || '',
+      additionalEmergencyContactName: additionalEmergencyContactName || '',
+      additionalEmergencyContactPhone: additionalEmergencyContactPhone || '',
       medicalNotes: medicalNotes || '',
       status: status,
       registeredAt: new Date()

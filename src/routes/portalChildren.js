@@ -36,6 +36,8 @@ router.get('/', verifyPortalAuth, async (req, res) => {
         firstName: child.firstName || '',
         lastName: child.lastName || '',
         birthdate: child.birthdate || null,
+        sex: child.sex || '',
+        member: child.member || false,
         phone: child.phone || '',
         age: child.birthdate ? calculateAge(child.birthdate) : null,
         studentId: child.studentId?._id || null,
@@ -55,12 +57,18 @@ router.get('/', verifyPortalAuth, async (req, res) => {
 // POST /api/portal/children - Add new child
 router.post('/', verifyPortalAuth, async (req, res) => {
   try {
-    const { firstName, lastName, birthdate, phone } = req.body;
+    const { firstName, lastName, birthdate, sex, member, phone } = req.body;
 
     // Validation
     if (!firstName || !lastName || !birthdate) {
       return res.status(400).json({
         error: 'Vorname, Nachname und Geburtsdatum sind erforderlich'
+      });
+    }
+
+    if (!sex || !['männlich', 'weiblich'].includes(sex)) {
+      return res.status(400).json({
+        error: 'Geschlecht ist erforderlich'
       });
     }
 
@@ -95,6 +103,13 @@ router.post('/', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Benutzer nicht gefunden' });
     }
 
+    // Require parent to have phone number before adding children
+    if (!user.phone) {
+      return res.status(400).json({
+        error: 'Bitte fügen Sie zuerst eine Telefonnummer zu Ihrem Profil hinzu. Bei Minderjährigen ist eine Notfallkontaktnummer erforderlich.'
+      });
+    }
+
     // Check maximum children limit
     const currentChildren = user.familyMembers.filter(m => m.relationship === 'child');
     if (currentChildren.length >= 10) {
@@ -120,6 +135,8 @@ router.post('/', verifyPortalAuth, async (req, res) => {
       firstName,
       lastName,
       birthdate: new Date(birthdate),
+      sex,
+      member: member === true || member === 'true',
       phone: phone || '',
       createdAt: new Date()
     };
@@ -135,6 +152,8 @@ router.post('/', verifyPortalAuth, async (req, res) => {
         _id: addedChild._id,
         firstName: addedChild.firstName,
         lastName: addedChild.lastName,
+        sex: addedChild.sex,
+        member: addedChild.member,
         birthdate: addedChild.birthdate,
         phone: addedChild.phone,
         age: calculateAge(addedChild.birthdate),
@@ -154,7 +173,7 @@ router.post('/', verifyPortalAuth, async (req, res) => {
 router.put('/:childId', verifyPortalAuth, async (req, res) => {
   try {
     const { childId } = req.params;
-    const { firstName, lastName, birthdate, phone } = req.body;
+    const { firstName, lastName, birthdate, sex, member, phone } = req.body;
 
     const user = await StudentPortalUser.findById(req.user.id);
     if (!user) {
@@ -206,6 +225,17 @@ router.put('/:childId', verifyPortalAuth, async (req, res) => {
       child.phone = phone || '';
     }
 
+    if (sex) {
+      if (!['männlich', 'weiblich'].includes(sex)) {
+        return res.status(400).json({ error: 'Ungültiges Geschlecht' });
+      }
+      child.sex = sex;
+    }
+
+    if (member !== undefined) {
+      child.member = member === true || member === 'true';
+    }
+
     await user.save();
 
     // Populate studentId if exists
@@ -218,6 +248,8 @@ router.put('/:childId', verifyPortalAuth, async (req, res) => {
         firstName: updatedChild.firstName,
         lastName: updatedChild.lastName,
         birthdate: updatedChild.birthdate,
+        sex: updatedChild.sex,
+        member: updatedChild.member,
         phone: updatedChild.phone,
         age: updatedChild.birthdate ? calculateAge(updatedChild.birthdate) : null,
         studentId: updatedChild.studentId?._id || null,

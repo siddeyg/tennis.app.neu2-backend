@@ -80,6 +80,18 @@ const campRegistrationSchema = new mongoose.Schema({
     default: ''
   },
 
+  // Additional Emergency Contact (optional)
+  additionalEmergencyContactName: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  additionalEmergencyContactPhone: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+
   // Medical Information (optional)
   medicalNotes: {
     type: String,
