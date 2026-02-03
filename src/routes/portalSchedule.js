@@ -161,6 +161,28 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
   try {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
+    const userRole = req.user.role;
+
+    // Handle admin users (from User table, not StudentPortalUser)
+    if (userRole === 'admin') {
+      const User = (await import('../models/User.js')).default;
+      const adminUser = await User.findById(portalUserId);
+
+      if (!adminUser) {
+        return res.status(404).json({ error: 'Admin-Benutzer nicht gefunden' });
+      }
+
+      // Return admin user data (minimal profile)
+      return res.json({
+        _id: adminUser._id,
+        firstName: adminUser.name?.split(' ')[0] || 'Admin',
+        lastName: adminUser.name?.split(' ').slice(1).join(' ') || '',
+        email: adminUser.email || '',
+        role: 'admin',
+        isAdmin: true,
+        hasStudentRecord: false
+      });
+    }
 
     // If user has a Student record, return Student data
     if (studentId) {
@@ -229,6 +251,15 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
   try {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
+    const userRole = req.user.role;
+
+    // Prevent admin users from editing profile via student portal
+    if (userRole === 'admin') {
+      return res.status(403).json({
+        error: 'Admin-Benutzer können ihr Profil nicht über das Schüler-Portal bearbeiten'
+      });
+    }
+
     // Accept both 'address' (correct) and 'adress' (legacy) for backward compatibility
     const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
     const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
@@ -497,7 +528,15 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
 router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
   try {
     const portalUserId = req.user.id;
+    const userRole = req.user.role;
     const { address, parentName, parentEmail, parentPhone } = req.body;
+
+    // Admin users don't need profile completion
+    if (userRole === 'admin') {
+      return res.status(400).json({
+        error: 'Admin-Benutzer benötigen keine Profil-Vervollständigung'
+      });
+    }
 
     // Validate address (required for all)
     if (!address || address.trim().length === 0) {
