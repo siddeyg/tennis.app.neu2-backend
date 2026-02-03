@@ -74,9 +74,9 @@ router.get('/', async (req, res) => {
  */
 router.get('/my-registrations', async (req, res) => {
   try {
-    // Find all registrations for this user
+    // Find all registrations for this user (JWT uses 'id' not '_id')
     const registrations = await CampRegistration.find({
-      studentPortalUserId: req.user._id,
+      studentPortalUserId: req.user.id,
       status: { $in: ['confirmed', 'waitlist'] } // Exclude cancelled
     })
     .populate('campId')
