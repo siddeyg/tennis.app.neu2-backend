@@ -476,8 +476,15 @@ router.get('/:id/registrations', async (req, res) => {
  * Cancel participant registration (admin action)
  */
 router.delete('/:id/registrations/:regId', async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // Check if transactions are supported (replica set/mongos only)
+  // Respect USE_TRANSACTIONS setting (false for standalone MongoDB)
+  const useTransactions = process.env.USE_TRANSACTIONS === 'true';
+
+  let session = null;
+  if (useTransactions) {
+    session = await mongoose.startSession();
+    await session.startTransaction();
+  }
 
   try {
     // Try string ID first, then ObjectId
@@ -490,7 +497,7 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
     }
 
     if (!camp || camp.deletedAt) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(404).json({
         success: false,
         error: 'Camp nicht gefunden'
@@ -507,7 +514,7 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
     }
 
     if (!registration) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(404).json({
         success: false,
         error: 'Anmeldung nicht gefunden'
@@ -516,7 +523,7 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
 
     // Verify registration belongs to this camp
     if (registration.campId.toString() !== campId.toString()) {
-      await session.abortTransaction();
+      if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Anmeldung gehört nicht zu diesem Camp'
@@ -556,21 +563,21 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
       }
     }
 
-    await session.commitTransaction();
+    if (session) await session.commitTransaction();
 
     res.json({
       success: true,
       message: 'Anmeldung erfolgreich storniert'
     });
   } catch (error) {
-    await session.abortTransaction();
+    if (session) await session.abortTransaction();
     console.error('Error cancelling registration:', error);
     res.status(500).json({
       success: false,
       error: 'Fehler beim Stornieren der Anmeldung'
     });
   } finally {
-    session.endSession();
+    if (session) session.endSession();
   }
 });
 
