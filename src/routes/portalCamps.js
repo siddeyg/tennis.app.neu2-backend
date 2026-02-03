@@ -266,10 +266,10 @@ router.post('/:id/register', async (req, res) => {
       });
     }
 
-    // 2. Check duplicate registration
+    // 2. Check duplicate registration (JWT uses 'id' not '_id')
     const existing = await CampRegistration.findOne({
       campId: campId,
-      studentPortalUserId: req.user._id,
+      studentPortalUserId: req.user.id,
       familyMemberId: familyMemberId || null,
       status: { $in: ['confirmed', 'waitlist'] }
     });
@@ -280,6 +280,18 @@ router.post('/:id/register', async (req, res) => {
         success: false,
         error: 'Sie sind bereits für dieses Camp angemeldet'
       });
+    }
+
+    // Clean up any cancelled registration (to avoid unique index conflict)
+    const cancelled = await CampRegistration.findOne({
+      campId: campId,
+      studentPortalUserId: req.user.id,
+      familyMemberId: familyMemberId || null,
+      status: 'cancelled'
+    });
+
+    if (cancelled) {
+      await CampRegistration.deleteOne({ _id: cancelled._id });
     }
 
     // 3. Check capacity
