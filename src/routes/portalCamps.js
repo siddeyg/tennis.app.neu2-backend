@@ -148,7 +148,8 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/:id/register', async (req, res) => {
   // Check if transactions are supported (replica set/mongos only)
-  const useTransactions = process.env.NODE_ENV === 'production' || process.env.USE_TRANSACTIONS === 'true';
+  // Respect USE_TRANSACTIONS setting (false for standalone MongoDB)
+  const useTransactions = process.env.USE_TRANSACTIONS === 'true';
 
   let session = null;
   if (useTransactions) {
@@ -378,7 +379,8 @@ router.post('/:id/register', async (req, res) => {
  */
 router.delete('/registrations/:id', async (req, res) => {
   // Check if transactions are supported (replica set/mongos only)
-  const useTransactions = process.env.NODE_ENV === 'production' || process.env.USE_TRANSACTIONS === 'true';
+  // Respect USE_TRANSACTIONS setting (false for standalone MongoDB)
+  const useTransactions = process.env.USE_TRANSACTIONS === 'true';
 
   let session = null;
   if (useTransactions) {
