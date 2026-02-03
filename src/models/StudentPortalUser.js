@@ -29,6 +29,16 @@ const StudentPortalUserSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  sex: {
+    type: String,
+    enum: ['männlich', 'weiblich'],
+    required: false  // Allow existing users without this field
+  },
+  member: {
+    type: Boolean,
+    required: false,  // Allow existing users without this field
+    default: false
+  },
   phone: {
     type: String,
     trim: true
@@ -88,6 +98,14 @@ const StudentPortalUserSchema = new mongoose.Schema({
       trim: true
     },
     birthdate: Date,
+    sex: {
+      type: String,
+      enum: ['männlich', 'weiblich']
+    },
+    member: {
+      type: Boolean,
+      default: false
+    },
     phone: {
       type: String,
       trim: true

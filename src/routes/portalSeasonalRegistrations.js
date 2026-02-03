@@ -456,6 +456,16 @@ router.post('/', async (req, res) => {
 
     if (!studentId) {
       // Create new Student record from registration data
+      // Get sex and member from portal user or family member
+      let userSex, userMember;
+      if (familyMemberId && childData) {
+        userSex = childData.sex;
+        userMember = childData.member;
+      } else {
+        userSex = portalUser.sex;
+        userMember = portalUser.member;
+      }
+
       const studentData = {
         firstName: firstName,
         lastName: lastName,
@@ -464,7 +474,8 @@ router.post('/', async (req, res) => {
         phone: phone || '',
         adress: address || '',
         comment: remarks || '',
-        member: formType === 'kids' ? (mitgliedsstatus === 'Mitglied') : false,
+        sex: userSex || '',
+        member: userMember || false,
         adult: formType === 'adults',
         frequence: formType === 'kids' ? (trainingshäufigkeit || '1') : '1',
         assignments: [] // Will be assigned during schedule planning

@@ -489,11 +489,11 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
   try {
     // Try string ID first, then ObjectId
     let campId = req.params.id;
-    let camp = await Camp.findById(campId).session(session);
+    let camp = await Camp.findById(campId);
     if (!camp) {
       const { ObjectId } = require('mongodb');
       campId = new ObjectId(req.params.id);
-      camp = await Camp.findById(campId).session(session);
+      camp = await Camp.findById(campId);
     }
 
     if (!camp || camp.deletedAt) {
@@ -506,11 +506,11 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
 
     // Find registration
     let regId = req.params.regId;
-    let registration = await CampRegistration.findById(regId).session(session);
+    let registration = await CampRegistration.findById(regId);
     if (!registration) {
       const { ObjectId } = require('mongodb');
       regId = new ObjectId(req.params.regId);
-      registration = await CampRegistration.findById(regId).session(session);
+      registration = await CampRegistration.findById(regId);
     }
 
     if (!registration) {
@@ -535,29 +535,28 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
     // Cancel registration
     registration.status = 'cancelled';
     registration.cancelledAt = new Date();
-    await registration.save({ session });
+    await registration.save(session ? { session } : {});
 
     // Decrement counter if was confirmed
     if (wasConfirmed) {
       camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
-      await camp.save({ session });
+      await camp.save(session ? { session } : {});
 
       // Auto-promote first waitlist participant (FIFO)
       const waitlistRegistration = await CampRegistration.findOne({
         campId: campId,
         status: 'waitlist'
       })
-      .sort({ registeredAt: 1 }) // Oldest first
-      .session(session);
+      .sort({ registeredAt: 1 }); // Oldest first
 
       if (waitlistRegistration) {
         // Promote to confirmed
         waitlistRegistration.status = 'confirmed';
-        await waitlistRegistration.save({ session });
+        await waitlistRegistration.save(session ? { session } : {});
 
         // Increment counter
         camp.currentParticipants += 1;
-        await camp.save({ session });
+        await camp.save(session ? { session } : {});
 
         // TODO: Send email notification to promoted user
       }

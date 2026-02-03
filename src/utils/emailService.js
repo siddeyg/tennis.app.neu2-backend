@@ -144,7 +144,7 @@ export async function sendPasswordResetEmail(email, resetToken, studentName, por
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
         <h2 style="color: #333; margin-top: 0;">Hallo ${studentName},</h2>
 
-        <p>Sie haben eine Passwort-Reset-Anfrage für Ihr Konto im Tennis-Portal gestellt.</p>
+        <p>Sie haben eine Passwort-Reset-Anfrage für Ihr Konto im Trainings-Portal gestellt.</p>
 
         <p>Klicken Sie auf den folgenden Button, um Ihr Passwort zurückzusetzen:</p>
 
@@ -167,8 +167,7 @@ export async function sendPasswordResetEmail(email, resetToken, studentName, por
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
-        <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
       </div>
     </body>
     </html>
@@ -209,7 +208,7 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
         <h2 style="color: #333; margin-top: 0;">Willkommen ${studentName}!</h2>
 
-        <p>Vielen Dank für Ihre Registrierung beim Tennis-Portal des Mondo Tennisschule.</p>
+        <p>Vielen Dank für Ihre Registrierung beim Trainings-Portal der Mondo Tennisschule.</p>
 
         <p>Um Ihre E-Mail-Adresse zu bestätigen und Ihr Konto zu aktivieren, klicken Sie bitte auf den folgenden Button:</p>
 
@@ -224,7 +223,7 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
           <p style="margin: 0; color: #1565c0; font-weight: 600;">⏰ Dieser Link ist 24 Stunden gültig.</p>
         </div>
 
-        <p style="color: #666; font-size: 14px; margin-top: 30px;">Nach der Bestätigung können Sie sich anmelden und sich für Trainingstermine registrieren.</p>
+        <p style="color: #666; font-size: 14px; margin-top: 30px;">Nach der Bestätigung können Sie sich für das Sommer-/Winter-Training und unsere Camps anmelden.</p>
 
         <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
 
@@ -232,8 +231,7 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
-        <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
       </div>
     </body>
     </html>
@@ -261,7 +259,7 @@ export async function sendWelcomeEmail(email, studentName) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Willkommen beim Mondo Tennisschule</title>
+      <title>Willkommen bei der Mondo Tennisschule</title>
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
@@ -288,7 +286,7 @@ export async function sendWelcomeEmail(email, studentName) {
 
         <p style="color: #666; font-size: 14px; margin-top: 30px;">Bei Fragen oder Problemen wenden Sie sich bitte an unser Team.</p>
 
-        <p style="color: #666; font-size: 14px;">Wir freuen uns, Sie beim Mondo Tennisschule begrüßen zu dürfen!</p>
+        <p style="color: #666; font-size: 14px;">Wir freuen uns, Sie bei der Mondo Tennisschule begrüßen zu dürfen!</p>
 
         <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
 
@@ -296,8 +294,7 @@ export async function sendWelcomeEmail(email, studentName) {
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
-        <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
       </div>
     </body>
     </html>
@@ -305,7 +302,7 @@ export async function sendWelcomeEmail(email, studentName) {
 
   await sendEmail({
     to: email,
-    subject: 'Willkommen beim Mondo Tennisschule Tennis-Portal',
+    subject: 'Willkommen bei der Mondo Tennisschule',
     html,
   });
 }
@@ -423,8 +420,7 @@ export async function sendParentInfoChangeNotification({ childName, childEmail, 
       </div>
 
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
-        <p style="margin: 5px 0;">Tennis-Schule Mondo Tennisschule</p>
-        <p style="margin: 5px 0;">© ${new Date().getFullYear()} - Alle Rechte vorbehalten</p>
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
       </div>
     </body>
     </html>
