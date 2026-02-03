@@ -18,10 +18,14 @@ const router = express.Router();
 // Rate limiting for authentication endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 5 : 100,
-  message: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.',
+  max: process.env.NODE_ENV === 'production' ? 10 : 100,
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Zu viele Anmeldeversuche. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.'
+    });
+  }
 });
 
 // Rate limiting for registration (stricter)
