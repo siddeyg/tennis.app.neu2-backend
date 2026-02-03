@@ -203,7 +203,7 @@ router.post('/login', authLimiter, async (req, res) => {
     // If no portal user found, reject login
     if (!portalUser) {
       return res.status(401).json({
-        error: 'E-Mail Adresse unbekannt. Hinweis: Verwenden Sie mondo2.suwar.de für Admin-Zugang.'
+        error: 'E-Mail Adresse unbekannt'
       });
     }
 
