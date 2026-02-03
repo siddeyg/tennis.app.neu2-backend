@@ -406,8 +406,8 @@ router.delete('/registrations/:id', async (req, res) => {
       });
     }
 
-    // Verify ownership
-    if (registration.studentPortalUserId.toString() !== req.user._id.toString()) {
+    // Verify ownership (JWT uses 'id' not '_id')
+    if (registration.studentPortalUserId.toString() !== req.user.id.toString()) {
       if (session) await session.abortTransaction();
       return res.status(403).json({
         success: false,
