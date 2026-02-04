@@ -154,6 +154,35 @@ export function maskIBAN(iban, isEncrypted = true) {
 }
 
 /**
+ * Get last 3 digits of IBAN for display
+ *
+ * Returns only the last 3 characters of the IBAN.
+ * Works with both encrypted and plain IBAN.
+ *
+ * @param {string} iban - IBAN (encrypted or plain)
+ * @param {boolean} isEncrypted - Whether IBAN is encrypted (default: true)
+ * @returns {string} - Last 3 characters (e.g., "890")
+ *
+ * Example:
+ *   Input:  "DE89370400440532013000" (plain)
+ *   Output: "000"
+ */
+export function getIBANLast3(iban, isEncrypted = true) {
+  if (!iban) return null;
+
+  try {
+    // Decrypt if encrypted
+    const plainIBAN = isEncrypted ? decryptIBAN(iban) : iban;
+
+    // Return last 3 characters
+    return plainIBAN.slice(-3);
+  } catch (error) {
+    logger.error(`Getting IBAN last 3 failed: ${error.message}`);
+    return null;
+  }
+}
+
+/**
  * Validate IBAN format (basic check)
  *
  * Checks:
@@ -202,6 +231,7 @@ export default {
   encryptIBAN,
   decryptIBAN,
   maskIBAN,
+  getIBANLast3,
   validateIBANFormat,
   generateEncryptionKey,
 };

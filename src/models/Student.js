@@ -14,6 +14,7 @@ const studentSchema = new mongoose.Schema({
   adress: String,                       // Adresse des Schülers
   email: String,                        // E-Mail-Adresse (optional, aber unique wenn gesetzt)
   phone: String,                        // Telefonnummer
+  iban: String,                         // IBAN (encrypted, AES-256-CBC) for SEPA payments
   birthDate: String,                    // Geburtsdatum im Format "YYYY-MM-DD"
   comment: String,                      // Notiz / Kommentar zum Schüler (allgemein)
   comment2: String,                     // Trainingsziel für Erwachsene (z.B. "Freizeit, Fitness, Turniere")

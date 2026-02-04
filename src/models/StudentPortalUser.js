@@ -47,6 +47,12 @@ const StudentPortalUserSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  iban: {
+    type: String,
+    // Stored encrypted (AES-256-CBC)
+    // Required for camp and seasonal training registrations
+    trim: true
+  },
   // Parent/guardian contact (required for children under 18)
   parentName: {
     type: String,

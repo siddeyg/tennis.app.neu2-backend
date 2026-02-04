@@ -7,6 +7,7 @@ import Absence from '../models/Absence.js';
 import Attendance from '../models/Attendance.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
+import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 
 const router = express.Router();
 
@@ -180,6 +181,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
         email: student.email || '',
         phone: student.phone || '',
         address: student.adress || '',  // Map Student.adress to response.address
+        ibanLast3: student.iban ? getIBANLast3(student.iban, true) : null,
         adult: student.adult,
         skillLevel: student.skillLevel || '',
         trainigGroup: student.trainigGroup || '',
@@ -207,6 +209,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       email: portalUser.email || '',
       phone: portalUser.phone || '',
       address: portalUser.address || '',  // Return address from StudentPortalUser
+      ibanLast3: portalUser.iban ? getIBANLast3(portalUser.iban, true) : null,
       // Parent contact info (for children)
       parentName: portalUser.parentName || '',
       parentEmail: portalUser.parentEmail || '',
@@ -230,7 +233,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
     // Accept both 'address' (correct) and 'adress' (legacy) for backward compatibility
-    const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, parentName, parentEmail, parentPhone } = req.body;
+    const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, iban, parentName, parentEmail, parentPhone } = req.body;
     const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
 
     console.error('===== PROFILE UPDATE REQUEST =====');
@@ -296,6 +299,16 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       }
     }
 
+    // Validate and encrypt IBAN if provided
+    let encryptedIBAN = null;
+    if (iban && iban.trim() !== '') {
+      const cleanIBAN = iban.replace(/\s/g, ''); // Remove spaces
+      if (!validateIBANFormat(cleanIBAN)) {
+        return res.status(400).json({ error: 'Ungültige IBAN' });
+      }
+      encryptedIBAN = encryptIBAN(cleanIBAN);
+    }
+
     // If user has a Student record, update Student model
     if (studentId) {
       const student = await Student.findById(studentId);
@@ -327,6 +340,9 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       student.email = email?.trim() || '';
       student.phone = phone?.trim() || '';
       student.adress = addressValue?.trim() || '';  // Update Student.adress field (legacy)
+      if (encryptedIBAN) {
+        student.iban = encryptedIBAN;
+      }
 
       console.error('AFTER ASSIGNMENT (before save):', {
         sex: student.sex,
@@ -356,6 +372,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         email: student.email,
         phone: student.phone,
         address: student.adress,  // Map Student.adress to response.address
+        ibanLast3: student.iban ? getIBANLast3(student.iban, true) : null,
         adult: student.adult,
         skillLevel: student.skillLevel || '',
         trainigGroup: student.trainigGroup || '',
@@ -407,11 +424,14 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       parentPhone: portalUser.parentPhone || ''
     };
 
-    // Update email, phone, and address
+    // Update email, phone, address, and IBAN
     portalUser.email = email?.trim() || portalUser.email;
     portalUser.phone = phone?.trim() || '';
     if (addressValue && addressValue.trim() !== '') {
       portalUser.address = addressValue.trim();
+    }
+    if (encryptedIBAN) {
+      portalUser.iban = encryptedIBAN;
     }
 
     // Update parent info if provided (for children)
@@ -476,6 +496,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       email: portalUser.email,
       phone: portalUser.phone,
       address: portalUser.address || '',  // Return address from StudentPortalUser
+      ibanLast3: portalUser.iban ? getIBANLast3(portalUser.iban, true) : null,
       // Parent contact info (for children)
       parentName: portalUser.parentName || '',
       parentEmail: portalUser.parentEmail || '',

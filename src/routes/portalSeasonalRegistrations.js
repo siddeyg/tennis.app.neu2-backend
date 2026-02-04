@@ -441,6 +441,12 @@ router.post('/', async (req, res) => {
     const registration = new SeasonalRegistration(registrationData);
     await registration.save();
 
+    // Save IBAN to portal user profile if provided
+    if (iban && validateIBANFormat(iban)) {
+      const encryptedIBAN = encryptIBAN(iban);
+      await StudentPortalUser.findByIdAndUpdate(req.user.id, { iban: encryptedIBAN });
+    }
+
     // Auto-create Student record
     // For child registrations: check if child already has studentId
     // For parent registrations: check if portalUser already has studentId

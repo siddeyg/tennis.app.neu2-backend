@@ -16,6 +16,7 @@ import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
+import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 
 const router = express.Router();
 
@@ -166,6 +167,7 @@ router.post('/:id/register', async (req, res) => {
       email,
       phone,
       skillLevel,
+      iban,
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
       medicalNotes
@@ -178,6 +180,20 @@ router.post('/:id/register', async (req, res) => {
         success: false,
         error: 'Vorname, Nachname, Geburtsdatum, Email und Skill Level sind erforderlich'
       });
+    }
+
+    // Validate and encrypt IBAN if provided
+    let encryptedIBAN = null;
+    if (iban && iban.trim() !== '') {
+      const cleanIBAN = iban.replace(/\s/g, ''); // Remove spaces
+      if (!validateIBANFormat(cleanIBAN)) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültige IBAN'
+        });
+      }
+      encryptedIBAN = encryptIBAN(cleanIBAN);
     }
 
     if (!['beginner', 'intermediate', 'advanced'].includes(skillLevel)) {
@@ -352,7 +368,17 @@ router.post('/:id/register', async (req, res) => {
       await camp.save(session ? { session } : {});
     }
 
-    // 6. Commit transaction
+    // 6. Save IBAN to portal user profile if provided
+    if (encryptedIBAN) {
+      const StudentPortalUser = (await import('../models/StudentPortalUser.js')).default;
+      await StudentPortalUser.findByIdAndUpdate(
+        req.user.id,
+        { iban: encryptedIBAN },
+        session ? { session } : {}
+      );
+    }
+
+    // 7. Commit transaction
     if (session) await session.commitTransaction();
 
     res.status(201).json({
