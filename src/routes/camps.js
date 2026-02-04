@@ -441,12 +441,25 @@ router.get('/:id/registrations', async (req, res) => {
       campId: campId,
       status: { $in: ['confirmed', 'waitlist'] }
     })
-    .populate('studentPortalUserId', 'firstName lastName email')
+    .populate('studentPortalUserId', 'firstName lastName email iban')
     .sort({ status: 1, registeredAt: 1 }); // Confirmed first, then waitlist (FIFO)
 
+    // Add IBAN last 3 digits to each registration
+    const { getIBANLast3 } = await import('../utils/encryption.js');
+    const enrichedRegistrations = registrations.map(reg => {
+      const regObj = reg.toObject();
+      // Get IBAN from populated user profile
+      if (regObj.studentPortalUserId && regObj.studentPortalUserId.iban) {
+        regObj.ibanLast3 = getIBANLast3(regObj.studentPortalUserId.iban, true);
+      } else {
+        regObj.ibanLast3 = null;
+      }
+      return regObj;
+    });
+
     // Separate confirmed and waitlist
-    const confirmed = registrations.filter(r => r.status === 'confirmed');
-    const waitlist = registrations.filter(r => r.status === 'waitlist');
+    const confirmed = enrichedRegistrations.filter(r => r.status === 'confirmed');
+    const waitlist = enrichedRegistrations.filter(r => r.status === 'waitlist');
 
     res.json({
       success: true,
@@ -459,7 +472,7 @@ router.get('/:id/registrations', async (req, res) => {
       registrations: {
         confirmed,
         waitlist,
-        total: registrations.length
+        total: enrichedRegistrations.length
       }
     });
   } catch (error) {
@@ -606,11 +619,16 @@ router.get('/:id/export/csv', async (req, res) => {
     const registrations = await CampRegistration.find({
       campId: campId,
       status: { $in: ['confirmed', 'waitlist'] }
-    }).sort({ status: 1, registeredAt: 1 });
+    })
+    .populate('studentPortalUserId', 'iban')
+    .sort({ status: 1, registeredAt: 1 });
+
+    // Get IBAN last 3 digits helper
+    const { getIBANLast3 } = await import('../utils/encryption.js');
 
     // Build CSV with UTF-8 BOM
     const BOM = '\uFEFF';
-    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,Skill Level,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
+    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
 
     const rows = registrations.map(reg => {
       const status = reg.status === 'confirmed' ? 'Bestätigt' : 'Warteliste';
@@ -619,13 +637,16 @@ router.get('/:id/export/csv', async (req, res) => {
       const age = reg.age;
       const email = reg.email;
       const phone = reg.phone || '';
+      const iban = reg.studentPortalUserId && reg.studentPortalUserId.iban
+        ? `***${getIBANLast3(reg.studentPortalUserId.iban, true)}`
+        : '';
       const skillLevel = reg.skillLevel;
       const emergencyName = reg.emergencyContactName || '';
       const emergencyPhone = reg.emergencyContactPhone || '';
       const medicalNotes = (reg.medicalNotes || '').replace(/,/g, ';').replace(/\n/g, ' ');
       const registeredAt = reg.registeredAt.toISOString().split('T')[0];
 
-      return `${status},"${name}",${birthdate},${age},"${email}","${phone}",${skillLevel},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
+      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}",${skillLevel},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
     }).join('\n');
 
     const csv = BOM + headers + rows;

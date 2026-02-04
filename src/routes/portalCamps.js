@@ -368,14 +368,26 @@ router.post('/:id/register', async (req, res) => {
       await camp.save(session ? { session } : {});
     }
 
-    // 6. Save IBAN to portal user profile if provided
+    // 6. Save IBAN to user profile (both StudentPortalUser and Student if exists)
     if (encryptedIBAN) {
       const StudentPortalUser = (await import('../models/StudentPortalUser.js')).default;
+
+      // Always save to StudentPortalUser
       await StudentPortalUser.findByIdAndUpdate(
         req.user.id,
         { iban: encryptedIBAN },
         session ? { session } : {}
       );
+
+      // Also save to Student if user has linked Student record
+      if (req.user.studentId) {
+        const Student = (await import('../models/Student.js')).default;
+        await Student.findByIdAndUpdate(
+          req.user.studentId,
+          { iban: encryptedIBAN },
+          session ? { session } : {}
+        );
+      }
     }
 
     // 7. Commit transaction

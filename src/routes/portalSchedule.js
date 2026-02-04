@@ -361,6 +361,15 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
 
       console.log(`Profile updated for student: ${student.firstName} ${student.lastName}`);
 
+      // Also update StudentPortalUser with IBAN if provided (keep both in sync)
+      if (encryptedIBAN) {
+        const portalUser = await StudentPortalUser.findById(portalUserId);
+        if (portalUser) {
+          portalUser.iban = encryptedIBAN;
+          await portalUser.save();
+        }
+      }
+
       // Return updated student data
       return res.json({
         _id: student._id,
