@@ -236,22 +236,6 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, iban, parentName, parentEmail, parentPhone } = req.body;
     const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
 
-    console.error('===== PROFILE UPDATE REQUEST =====');
-    console.error('Request body received:', JSON.stringify({
-      firstName,
-      lastName,
-      birthDate,
-      sex,
-      member,
-      email,
-      phone,
-      address: addressValue
-    }, null, 2));
-    console.error('User info:', JSON.stringify({
-      studentId,
-      portalUserId
-    }, null, 2));
-
     // Validate required fields
     if (!firstName || firstName.trim() === '') {
       return res.status(400).json({ error: 'Vorname ist erforderlich' });
@@ -316,21 +300,6 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         return res.status(404).json({ error: 'Schüler nicht gefunden' });
       }
 
-      console.error('BEFORE UPDATE:', {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        birthDate: student.birthDate,
-        sex: student.sex,
-        member: student.member
-      });
-      console.error('NEW VALUES FROM REQUEST:', {
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        birthDate: birthDateObj,
-        sex: sex,
-        member: member
-      });
-
       // Update all editable fields including name and birthdate
       student.firstName = firstName.trim();
       student.lastName = lastName.trim();
@@ -344,29 +313,49 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         student.iban = encryptedIBAN;
       }
 
-      console.error('AFTER ASSIGNMENT (before save):', {
-        sex: student.sex,
-        member: student.member
-      });
-
       await student.save();
 
-      console.error('AFTER SAVE:', {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        birthDate: student.birthDate,
-        sex: student.sex,
-        member: student.member
-      });
+      // Save IBAN separately via direct $set (bypasses Mongoose strict mode)
+      if (encryptedIBAN) {
+        await Student.updateOne(
+          { _id: student._id },
+          { $set: { iban: encryptedIBAN } }
+        );
+      }
 
       console.log(`Profile updated for student: ${student.firstName} ${student.lastName}`);
 
-      // Also update StudentPortalUser with IBAN if provided (keep both in sync)
-      if (encryptedIBAN) {
-        const portalUser = await StudentPortalUser.findById(portalUserId);
-        if (portalUser) {
-          portalUser.iban = encryptedIBAN;
-          await portalUser.save();
+      // Also update StudentPortalUser (keep both models in sync)
+      const portalUser = await StudentPortalUser.findById(portalUserId);
+      if (portalUser) {
+        portalUser.firstName = firstName.trim();
+        portalUser.lastName = lastName.trim();
+        portalUser.birthdate = birthDateObj;
+        portalUser.sex = sex;
+        portalUser.member = member === true || member === 'true';
+        portalUser.email = email?.trim() || portalUser.email;
+        portalUser.phone = phone?.trim() || '';
+        if (addressValue && addressValue.trim() !== '') {
+          portalUser.address = addressValue.trim();
+        }
+        // Update parent info if provided (for children)
+        if (parentName !== undefined) {
+          portalUser.parentName = parentName?.trim() || '';
+        }
+        if (parentEmail !== undefined) {
+          portalUser.parentEmail = parentEmail?.trim().toLowerCase() || '';
+        }
+        if (parentPhone !== undefined) {
+          portalUser.parentPhone = parentPhone?.trim() || '';
+        }
+        await portalUser.save();
+
+        // Save IBAN separately via direct $set (bypasses Mongoose strict mode)
+        if (encryptedIBAN) {
+          await StudentPortalUser.updateOne(
+            { _id: portalUserId },
+            { $set: { iban: encryptedIBAN } }
+          );
         }
       }
 
@@ -399,32 +388,12 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
-    console.error('PORTAL USER BEFORE UPDATE:', {
-      firstName: portalUser.firstName,
-      lastName: portalUser.lastName,
-      birthdate: portalUser.birthdate,
-      sex: portalUser.sex,
-      member: portalUser.member
-    });
-    console.error('NEW VALUES FROM REQUEST:', {
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      birthDate: birthDateObj,
-      sex: sex,
-      member: member
-    });
-
     // Update personal data in StudentPortalUser
     portalUser.firstName = firstName.trim();
     portalUser.lastName = lastName.trim();
     portalUser.birthdate = birthDateObj;
     portalUser.sex = sex;
     portalUser.member = member === true || member === 'true';
-
-    console.error('AFTER ASSIGNMENT (before save):', {
-      sex: portalUser.sex,
-      member: portalUser.member
-    });
 
     // Track old parent values for admin notification
     const oldParentValues = {
@@ -439,10 +408,6 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     if (addressValue && addressValue.trim() !== '') {
       portalUser.address = addressValue.trim();
     }
-    if (encryptedIBAN) {
-      portalUser.iban = encryptedIBAN;
-    }
-
     // Update parent info if provided (for children)
     let parentInfoChanged = false;
     if (parentName !== undefined) {
@@ -463,13 +428,14 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
 
     await portalUser.save();
 
-    console.error('PORTAL USER AFTER SAVE:', {
-      firstName: portalUser.firstName,
-      lastName: portalUser.lastName,
-      birthdate: portalUser.birthdate,
-      sex: portalUser.sex,
-      member: portalUser.member
-    });
+    // Save IBAN separately via direct $set (bypasses Mongoose strict mode)
+    if (encryptedIBAN) {
+      await StudentPortalUser.updateOne(
+        { _id: portalUserId },
+        { $set: { iban: encryptedIBAN } }
+      );
+      portalUser.iban = encryptedIBAN;
+    }
 
     // Send admin notification if parent info changed (for children)
     if (parentInfoChanged && portalUser.isChild && portalUser.isChild()) {

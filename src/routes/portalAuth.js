@@ -512,12 +512,6 @@ router.get('/me', async (req, res) => {
           : 'Unknown')
     }));
 
-    // Debug logging
-    console.log(`/me endpoint for ${portalUser.email}:`, {
-      sex: portalUser.sex,
-      member: portalUser.member
-    });
-
     // Prepare response object
     const response = {
       id: portalUser._id,
@@ -526,8 +520,8 @@ router.get('/me', async (req, res) => {
       firstName: portalUser.firstName,
       lastName: portalUser.lastName,
       birthdate: portalUser.birthdate,
-      sex: portalUser.sex,
-      member: portalUser.member,
+      sex: portalUser.sex || null,
+      member: portalUser.member !== undefined ? portalUser.member : null,
       phone: portalUser.phone,
       familyMembers,
       preferences: portalUser.preferences,
