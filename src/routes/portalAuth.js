@@ -28,13 +28,17 @@ const authLimiter = rateLimit({
   }
 });
 
-// Rate limiting for registration (stricter)
+// Rate limiting for registration
 const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: process.env.NODE_ENV === 'production' ? 3 : 50,
-  message: 'Zu viele Registrierungsversuche. Bitte versuchen Sie es später erneut.',
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 10 : 100,
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Zu viele Registrierungsversuche. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.'
+    });
+  }
 });
 
 /**
