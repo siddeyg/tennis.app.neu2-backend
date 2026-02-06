@@ -623,8 +623,8 @@ router.get('/:id/export/csv', async (req, res) => {
     .populate('studentPortalUserId', 'iban')
     .sort({ status: 1, registeredAt: 1 });
 
-    // Get IBAN last 3 digits helper
-    const { getIBANLast3 } = await import('../utils/encryption.js');
+    // Get IBAN decryption helper for CSV export (admin needs full IBAN for SEPA payments)
+    const { decryptIBAN } = await import('../utils/encryption.js');
 
     // Build CSV with UTF-8 BOM
     const BOM = '\uFEFF';
@@ -638,7 +638,7 @@ router.get('/:id/export/csv', async (req, res) => {
       const email = reg.email;
       const phone = reg.phone || '';
       const iban = reg.studentPortalUserId && reg.studentPortalUserId.iban
-        ? `***${getIBANLast3(reg.studentPortalUserId.iban, true)}`
+        ? decryptIBAN(reg.studentPortalUserId.iban)
         : '';
       const skillLevel = reg.skillLevel;
       const emergencyName = reg.emergencyContactName || '';
