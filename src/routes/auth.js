@@ -9,6 +9,17 @@ import UserSettings from "../models/UserSettings.js";
 
 const router = express.Router();
 
+// IP whitelist - these IPs bypass all rate limits
+const RATE_LIMIT_WHITELIST = [
+  '84.119.177.212', // Admin/Developer IP
+];
+
+// Helper function to check if IP is whitelisted
+const isWhitelisted = (req) => {
+  const clientIp = req.ip || req.connection.remoteAddress;
+  return RATE_LIMIT_WHITELIST.includes(clientIp);
+};
+
 // Rate limiter for login attempts
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -16,6 +27,7 @@ const loginLimiter = rateLimit({
   message: { error: "Zu viele Login-Versuche. Bitte versuchen Sie es in 15 Minuten erneut." },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
 });
 
 // Rate limiter for token refresh (more generous than login)
@@ -25,6 +37,7 @@ const refreshLimiter = rateLimit({
   message: { error: "Zu viele Token-Aktualisierungsversuche. Bitte versuchen Sie es später erneut." },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
 });
 
 /**
@@ -313,6 +326,7 @@ const forgotPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 3, // 3 requests per 15 minutes
   message: { error: "Zu viele Passwort-Reset-Anfragen. Bitte versuchen Sie es in 15 Minuten erneut." },
+  skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
 });
 
 router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
@@ -479,6 +493,7 @@ const resendVerificationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 3, // 3 requests per 15 minutes
   message: { error: "Zu viele Anfragen. Bitte versuchen Sie es in 15 Minuten erneut." },
+  skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
 });
 
 router.post("/resend-verification", resendVerificationLimiter, async (req, res) => {

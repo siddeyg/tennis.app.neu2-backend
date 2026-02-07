@@ -15,12 +15,24 @@ import {
 
 const router = express.Router();
 
+// IP whitelist - these IPs bypass all rate limits
+const RATE_LIMIT_WHITELIST = [
+  '84.119.177.212', // Admin/Developer IP
+];
+
+// Helper function to check if IP is whitelisted
+const isWhitelisted = (req) => {
+  const clientIp = req.ip || req.connection.remoteAddress;
+  return RATE_LIMIT_WHITELIST.includes(clientIp);
+};
+
 // Rate limiting for authentication endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: process.env.NODE_ENV === 'production' ? 10 : 100,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
   handler: (req, res) => {
     res.status(429).json({
       error: 'Zu viele Anmeldeversuche. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.'
@@ -34,6 +46,7 @@ const registerLimiter = rateLimit({
   max: process.env.NODE_ENV === 'production' ? 10 : 100,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
   handler: (req, res) => {
     res.status(429).json({
       error: 'Zu viele Registrierungsversuche. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.'
