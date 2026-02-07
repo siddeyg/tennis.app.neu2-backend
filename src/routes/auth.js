@@ -216,8 +216,21 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Alle Felder sind erforderlich" });
     }
 
+    // Password complexity validation
     if (password.length < 8) {
       return res.status(400).json({ error: "Passwort muss mindestens 8 Zeichen lang sein" });
+    }
+
+    if (!/[0-9]/.test(password)) {
+      return res.status(400).json({ error: 'Passwort muss mindestens eine Zahl enthalten' });
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      return res.status(400).json({ error: 'Passwort muss mindestens einen Großbuchstaben enthalten' });
+    }
+
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      return res.status(400).json({ error: 'Passwort muss mindestens ein Sonderzeichen enthalten' });
     }
 
     // Check if user already exists
