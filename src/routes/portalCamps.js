@@ -167,6 +167,7 @@ router.post('/:id/register', async (req, res) => {
       email,
       phone,
       skillLevel,
+      team,
       iban,
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
@@ -179,6 +180,14 @@ router.post('/:id/register', async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Vorname, Nachname, Geburtsdatum, Email und Skill Level sind erforderlich'
+      });
+    }
+
+    if (team === null || team === undefined) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Mannschaft (Team/Hobby) ist erforderlich'
       });
     }
 
@@ -351,6 +360,7 @@ router.post('/:id/register', async (req, res) => {
       email,
       phone: phone || '',
       skillLevel,
+      team: team === true || team === 'true', // Convert to boolean
       emergencyContactName: emergencyContactName || '',
       emergencyContactPhone: emergencyContactPhone || '',
       additionalEmergencyContactName: additionalEmergencyContactName || '',

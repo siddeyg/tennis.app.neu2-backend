@@ -67,6 +67,11 @@ const campRegistrationSchema = new mongoose.Schema({
     required: true,
     enum: ['beginner', 'intermediate', 'advanced']
   },
+  team: {
+    type: Boolean,
+    required: true,
+    // true = Mannschaftsspieler, false = Hobbyspieler
+  },
 
   // Emergency Contact (required for children under 18)
   emergencyContactName: {

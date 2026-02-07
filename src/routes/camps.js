@@ -628,7 +628,7 @@ router.get('/:id/export/csv', async (req, res) => {
 
     // Build CSV with UTF-8 BOM
     const BOM = '\uFEFF';
-    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
+    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
 
     const rows = registrations.map(reg => {
       const status = reg.status === 'confirmed' ? 'Bestätigt' : 'Warteliste';
@@ -641,12 +641,13 @@ router.get('/:id/export/csv', async (req, res) => {
         ? decryptIBAN(reg.studentPortalUserId.iban)
         : '';
       const skillLevel = reg.skillLevel;
+      const team = reg.team ? 'Mannschaft' : 'Hobby';
       const emergencyName = reg.emergencyContactName || '';
       const emergencyPhone = reg.emergencyContactPhone || '';
       const medicalNotes = (reg.medicalNotes || '').replace(/,/g, ';').replace(/\n/g, ' ');
       const registeredAt = reg.registeredAt.toISOString().split('T')[0];
 
-      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}",${skillLevel},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
+      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}",${skillLevel},${team},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
     }).join('\n');
 
     const csv = BOM + headers + rows;
