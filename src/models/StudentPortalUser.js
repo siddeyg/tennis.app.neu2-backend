@@ -134,6 +134,10 @@ const StudentPortalUserSchema = new mongoose.Schema({
   passwordResetToken: String,
   passwordResetExpires: Date,
   lastLogin: Date,
+  lastActivity: {
+    type: Date,
+    index: true  // Index for efficient queries in monitoring
+  },
   preferences: {
     emailNotifications: {
       type: Boolean,
