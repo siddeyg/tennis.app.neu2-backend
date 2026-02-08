@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
+import StudentPortalUser from '../models/StudentPortalUser.js';
 
 /**
  * Middleware to verify portal JWT token
  * Extracts user info from portal access token cookie
  * Used by Student Portal and Coach Portal routes
  * In test mode, allows mock authentication by checking if req.user is already set
+ * Also updates lastActivity timestamp every 5 minutes
  */
 export const verifyPortalAuth = async (req, res, next) => {
   try {
@@ -28,6 +30,30 @@ export const verifyPortalAuth = async (req, res, next) => {
 
     // Attach user info to request
     req.user = decoded;
+
+    // Update lastActivity timestamp (only for student portal users, not coaches)
+    // Update every 5 minutes to avoid excessive database writes
+    if (req.user.role === 'student' && req.user.id) {
+      try {
+        const now = new Date();
+        const portalUser = await StudentPortalUser.findById(req.user.id);
+
+        if (portalUser) {
+          const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+
+          if (!portalUser.lastActivity || portalUser.lastActivity < fiveMinutesAgo) {
+            await StudentPortalUser.updateOne(
+              { _id: portalUser._id },
+              { $set: { lastActivity: now } }
+            );
+          }
+        }
+      } catch (activityError) {
+        // Don't break the request if activity update fails
+        console.error('Error updating portal user activity:', activityError);
+      }
+    }
+
     next();
 
   } catch (error) {

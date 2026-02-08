@@ -208,6 +208,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/portal/auth", portalAuthRoutes);
 
 // Student portal routes (uses custom portal auth middleware in route file)
+// verifyPortalAuth middleware updates lastActivity timestamp every 5 minutes
 app.use("/api/portal", portalScheduleRoutes);
 app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes);
 app.use("/api/portal/children", portalChildrenRoutes);
