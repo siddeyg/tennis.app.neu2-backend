@@ -184,9 +184,13 @@ app.use(
 configurePassport();
 app.use(passport.initialize());
 
-// MongoDB connection
+// MongoDB connection with optimized pool size for production load
 mongoose
-  .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 30000 })
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 30000,
+    maxPoolSize: 50,  // Support up to 50 concurrent database operations
+    minPoolSize: 5    // Keep minimum 5 connections ready
+  })
   .then(() => logger.info("✅ MongoDB connected successfully"))
   .catch((err) => {
     logger.error(`❌ MongoDB connection error: ${err.message}`);

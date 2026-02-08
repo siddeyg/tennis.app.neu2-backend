@@ -31,29 +31,25 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
 
     // Check if student has new-format assignments array
     if (student.assignments && student.assignments.length > 0) {
-      // Use assignments array (new format)
-      schedule = await Promise.all(
-        student.assignments.map(async (assignment) => {
-          let coachName = 'Unbekannt';
+      // OPTIMIZED: Batch query all coaches at once (fixes N+1 query pattern)
+      const coachIds = student.assignments
+        .map(a => a.coach)
+        .filter(id => id && id.toString); // Filter out null/undefined and validate ObjectId
 
-          // Try to find coach by ID or name
-          if (assignment.coach) {
-            const coach = await Coach.findById(assignment.coach);
-            if (coach) {
-              coachName = `${coach.firstName} ${coach.lastName}`;
-            } else {
-              // If not found by ID, maybe it's stored as name (legacy)
-              coachName = assignment.coach;
-            }
-          }
-
-          return {
-            day: assignment.day,
-            hour: assignment.hour,
-            coach: coachName
-          };
-        })
+      // Fetch all coaches in a single query
+      const coaches = await Coach.find({ _id: { $in: coachIds } });
+      const coachMap = new Map(
+        coaches.map(c => [c._id.toString(), `${c.firstName} ${c.lastName}`])
       );
+
+      // Map assignments with coach names from the cache
+      schedule = student.assignments.map(assignment => ({
+        day: assignment.day,
+        hour: assignment.hour,
+        coach: assignment.coach
+          ? (coachMap.get(assignment.coach.toString()) || assignment.coach)
+          : 'Unbekannt'
+      }));
     } else if (student.day && student.hour) {
       // Fall back to legacy single assignment format
       let coachName = 'Unbekannt';

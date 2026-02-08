@@ -177,5 +177,8 @@ StudentPortalUserSchema.methods.isChild = function() {
   return age < 18;
 };
 
+// Performance index for login lookups (CRITICAL for load testing)
+StudentPortalUserSchema.index({ email: 1 });
+
 const StudentPortalUser = mongoose.model('StudentPortalUser', StudentPortalUserSchema);
 export default StudentPortalUser;
