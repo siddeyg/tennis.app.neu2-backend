@@ -54,6 +54,7 @@ import seasonalRegistrationsRoutes from "./routes/seasonalRegistrations.js";
 import portalUsersRoutes from "./routes/portalUsers.js";
 import campsRoutes from "./routes/camps.js";
 import portalCampsRoutes from "./routes/portalCamps.js";
+import metricsRoutes from "./routes/metrics.js";
 
 const app = express();
 
@@ -247,6 +248,9 @@ app.use("/api/portal-users", requireAuth, updateActivity, requireRole(["admin"])
 
 // Camps routes - admin only (auth handled in route file)
 app.use("/api/camps", campsRoutes);
+
+// Metrics routes - admin only
+app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), metricsRoutes);
 
 // ========================================
 // Error Handler Middleware (MUST BE LAST)
