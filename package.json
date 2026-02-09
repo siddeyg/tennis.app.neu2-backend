@@ -1,13 +1,9 @@
 {
-  "name": "tennis-app-neu2",
+  "name": "tennis-app-neu2-backend",
   "version": "0.1.0",
   "type": "module",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^13.5.0",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
@@ -26,44 +22,20 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
     "winston": "^3.18.3"
   },
   "scripts": {
     "start": "node src/server.js",
-    "build": "react-scripts build",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:log": "node run-tests-with-logging.js",
     "migrate:coaches": "node src/scripts/migrateCoachData.js",
-    "create-admin": "node src/scripts/createAdmin.js",
-    "eject": "react-scripts eject"
+    "create-admin": "node src/scripts/createAdmin.js"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.1.2",
     "supertest": "^7.0.0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
