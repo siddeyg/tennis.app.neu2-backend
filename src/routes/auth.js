@@ -299,8 +299,7 @@ router.post("/register", async (req, res) => {
     const verifyUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
 
     console.log("User registered:", user.email);
-    console.log("Verification token (plain):", verificationToken);
-    console.log("Verification URL:", verifyUrl);
+    // Security: Token is sent via email, NOT logged
 
     res.status(201).json({
       message: "Benutzer erfolgreich erstellt. Bitte überprüfen Sie Ihre E-Mail zur Verifizierung.",
@@ -368,8 +367,7 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
     const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     console.log("Password reset requested for:", user.email);
-    console.log("Reset token (plain):", resetToken);
-    console.log("Reset URL:", resetUrl);
+    // Security: Token is sent via email, NOT logged
 
     res.json({
       message: "Wenn die E-Mail-Adresse existiert, wurde eine Passwort-Reset-E-Mail gesendet.",
@@ -540,8 +538,7 @@ router.post("/resend-verification", resendVerificationLimiter, async (req, res) 
     const verifyUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
 
     console.log("Email verification resent for:", user.email);
-    console.log("Verification token (plain):", verificationToken);
-    console.log("Verification URL:", verifyUrl);
+    // Security: Token is sent via email, NOT logged
 
     res.json({
       message: "Wenn die E-Mail-Adresse existiert, wurde eine Verifizierungs-E-Mail gesendet.",
