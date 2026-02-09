@@ -72,8 +72,8 @@ router.post("/:id/assignments", async (req, res) => {
 
     // Try both string ID and ObjectId format for compatibility
     // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id }, // Try string first
+    const result = await Student.collection.findOneAndUpdate(
+      { _id: req.params.id },
       {
         $push: { assignments: { day, hour, coach: coach || null } },
         $set: { day, hour, coach: coach || null }
@@ -81,25 +81,7 @@ router.post("/:id/assignments", async (req, res) => {
       { returnDocument: 'after' }
     );
 
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      console.log(`[POST /assignments] String ID not found, trying ObjectId format`);
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Student.collection.findOneAndUpdate(
-          { _id: objectId },
-          {
-            $push: { assignments: { day, hour, coach: coach || null } },
-            $set: { day, hour, coach: coach || null }
-          },
-          { returnDocument: 'after' }
-        );
-      } catch (err) {
-        console.log(`[POST /assignments] ObjectId conversion failed:`, err.message);
-      }
-    }
-
-    const student = result?.value || result;
+    const student = result.value;
 
     if (!student) {
       console.log(`[POST /assignments] ERROR: Student ${req.params.id} NOT FOUND`);
@@ -129,34 +111,16 @@ router.delete("/:id/assignments", async (req, res) => {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
 
-    // Try both string ID and ObjectId format for compatibility
     // Step 1: Remove the assignment
     let result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id }, // Try string first
+      { _id: req.params.id },
       {
         $pull: { assignments: { day, hour } }
       },
       { returnDocument: 'after' }
     );
 
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      console.log(`[DELETE /assignments] String ID not found, trying ObjectId format`);
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Student.collection.findOneAndUpdate(
-          { _id: objectId },
-          {
-            $pull: { assignments: { day, hour } }
-          },
-          { returnDocument: 'after' }
-        );
-      } catch (err) {
-        console.log(`[DELETE /assignments] ObjectId conversion failed:`, err.message);
-      }
-    }
-
-    const student = result?.value || result;
+    const student = result.value;
 
     if (!student) {
       console.log(`[DELETE /assignments] ERROR: Student ${req.params.id} NOT FOUND`);
@@ -175,21 +139,12 @@ router.delete("/:id/assignments", async (req, res) => {
       updateLegacy.coach = null;
     }
 
-    // Update legacy fields with dual-format approach
-    result = await Student.collection.findOneAndUpdate(
+    // Update legacy fields
+    await Student.collection.findOneAndUpdate(
       { _id: req.params.id },
       { $set: updateLegacy },
       { returnDocument: 'after' }
     );
-
-    if (!result?.value && !result?._id) {
-      const objectId = new mongoose.Types.ObjectId(req.params.id);
-      result = await Student.collection.findOneAndUpdate(
-        { _id: objectId },
-        { $set: updateLegacy },
-        { returnDocument: 'after' }
-      );
-    }
 
     console.log(`[DELETE /assignments] SUCCESS: Removed assignment from ${student.firstName} ${student.lastName}`);
     res.json(student);
@@ -271,34 +226,19 @@ router.put("/:id/assignments/replace", async (req, res) => {
     if (fromDay && fromHour) {
       console.log(`[assignments/replace] Multi-assignment mode: updating specific assignment`);
 
-      // Step 1: Remove old assignment and add new one in single operation
+      // Step 1: Remove old assignment
       const updateOperation = {
         $pull: { assignments: { day: fromDay, hour: Number(fromHour) } }
       };
 
-      // Try both string ID and ObjectId format
       result = await Student.collection.findOneAndUpdate(
         { _id: req.params.id },
         updateOperation,
         { returnDocument: 'after' }
       );
 
-      if (!result?.value && !result?._id) {
-        console.log(`[assignments/replace] String ID not found, trying ObjectId format`);
-        try {
-          const objectId = new mongoose.Types.ObjectId(req.params.id);
-          result = await Student.collection.findOneAndUpdate(
-            { _id: objectId },
-            updateOperation,
-            { returnDocument: 'after' }
-          );
-        } catch (err) {
-          console.log(`[assignments/replace] ObjectId conversion failed:`, err.message);
-        }
-      }
-
       // Step 2: Add new assignment
-      if (result?.value || result?._id) {
+      if (result.value) {
         const addOperation = {
           $push: { assignments: { day, hour, coach: coach || null } },
           $set: { day, hour, coach: coach || null }
@@ -309,15 +249,6 @@ router.put("/:id/assignments/replace", async (req, res) => {
           addOperation,
           { returnDocument: 'after' }
         );
-
-        if (!result?.value && !result?._id) {
-          const objectId = new mongoose.Types.ObjectId(req.params.id);
-          result = await Student.collection.findOneAndUpdate(
-            { _id: objectId },
-            addOperation,
-            { returnDocument: 'after' }
-          );
-        }
       }
     } else {
       console.log(`[assignments/replace] Legacy mode: replacing all assignments`);
@@ -337,23 +268,9 @@ router.put("/:id/assignments/replace", async (req, res) => {
         updateOperation,
         { returnDocument: 'after' }
       );
-
-      if (!result?.value && !result?._id) {
-        console.log(`[assignments/replace] String ID not found, trying ObjectId format`);
-        try {
-          const objectId = new mongoose.Types.ObjectId(req.params.id);
-          result = await Student.collection.findOneAndUpdate(
-            { _id: objectId },
-            updateOperation,
-            { returnDocument: 'after' }
-          );
-        } catch (err) {
-          console.log(`[assignments/replace] ObjectId conversion failed:`, err.message);
-        }
-      }
     }
 
-    const student = result?.value || result;
+    const student = result.value;
 
     if (!student) {
       console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND in database`);
@@ -383,27 +300,11 @@ router.delete("/:id", async (req, res) => {
   try {
     console.log(`[DELETE /:id] Deleting student with ID: ${req.params.id}`);
 
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Student.collection.findOneAndDelete(
-      { _id: req.params.id } // Try string first
+    const result = await Student.collection.findOneAndDelete(
+      { _id: req.params.id }
     );
 
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      console.log(`[DELETE /:id] String ID not found, trying ObjectId format`);
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Student.collection.findOneAndDelete(
-          { _id: objectId }
-        );
-      } catch (err) {
-        console.log(`[DELETE /:id] ObjectId conversion failed:`, err.message);
-      }
-    }
-
-    // MongoDB native driver returns { value: document } not document directly
-    const student = result?.value || result;
+    const student = result.value;
 
     console.log(`[DELETE /:id] Student found: ${!!student}`);
 
@@ -483,30 +384,13 @@ router.put("/:id", async (req, res) => {
       }
     };
 
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id }, // Try string first
+    const result = await Student.collection.findOneAndUpdate(
+      { _id: req.params.id },
       updateData,
       { returnDocument: 'after' }
     );
 
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Student.collection.findOneAndUpdate(
-          { _id: objectId },
-          updateData,
-          { returnDocument: 'after' }
-        );
-      } catch (err) {
-        // ObjectId conversion failed, continue with original result
-      }
-    }
-
-    // MongoDB native driver returns { value: document } not document directly
-    const student = result?.value || result;
+    const student = result.value;
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });

@@ -75,17 +75,9 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    // Try string ID first (MongoDB 7), then ObjectId (MongoDB < 4.0)
-    let camp = await Camp.findById(req.params.id)
+    const camp = await Camp.findById(req.params.id)
       .populate('createdBy', 'firstName lastName email')
       .populate('trainerId', 'name');
-
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      camp = await Camp.findById(new ObjectId(req.params.id))
-        .populate('createdBy', 'firstName lastName email')
-        .populate('trainerId', 'name');
-    }
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({

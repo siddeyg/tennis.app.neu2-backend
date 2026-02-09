@@ -36,26 +36,11 @@ router.post("/", async (req, res) => {
 // Trainer löschen
 router.delete("/:id", async (req, res) => {
   try {
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Coach.collection.findOneAndDelete(
-      { _id: req.params.id } // Try string first
+    const result = await Coach.collection.findOneAndDelete(
+      { _id: req.params.id }
     );
 
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Coach.collection.findOneAndDelete(
-          { _id: objectId }
-        );
-      } catch (err) {
-        // ObjectId conversion failed, continue with original result
-      }
-    }
-
-    // MongoDB native driver returns { value: document } not document directly
-    const coach = result?.value || result;
+    const coach = result.value;
 
     if (!coach) {
       return res.status(404).json({ error: "Coach not found" });
@@ -108,30 +93,13 @@ router.put("/:id", async (req, res) => {
       }
     };
 
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    let result = await Coach.collection.findOneAndUpdate(
-      { _id: req.params.id }, // Try string first
+    const result = await Coach.collection.findOneAndUpdate(
+      { _id: req.params.id },
       updateData,
       { returnDocument: 'after' }
     );
 
-    // If not found with string, try ObjectId format
-    if (!result?.value && !result?._id) {
-      try {
-        const objectId = new mongoose.Types.ObjectId(req.params.id);
-        result = await Coach.collection.findOneAndUpdate(
-          { _id: objectId },
-          updateData,
-          { returnDocument: 'after' }
-        );
-      } catch (err) {
-        // ObjectId conversion failed, continue with original result
-      }
-    }
-
-    // MongoDB native driver returns { value: document } not document directly
-    const coach = result?.value || result;
+    const coach = result.value;
 
     if (!coach) {
       return res.status(404).json({ error: "Trainer nicht gefunden" });
