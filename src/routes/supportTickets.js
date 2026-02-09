@@ -1,0 +1,410 @@
+import express from 'express';
+import SupportTicket from '../models/SupportTicket.js';
+import User from '../models/User.js';
+import StudentPortalUser from '../models/StudentPortalUser.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { sendTicketReplyEmail, sendTicketStatusChangeEmail } from '../utils/emailService.js';
+
+const router = express.Router();
+
+// All routes require admin authentication
+router.use(requireAuth);
+
+// GET /api/support-tickets/stats
+// Dashboard statistics
+router.get('/stats', async (req, res) => {
+  try {
+    const [openCount, inProgressCount, resolvedCount, totalCount, unreadCount] = await Promise.all([
+      SupportTicket.countDocuments({ status: 'open', isDeleted: false }),
+      SupportTicket.countDocuments({ status: 'in-progress', isDeleted: false }),
+      SupportTicket.countDocuments({ status: 'resolved', isDeleted: false }),
+      SupportTicket.countDocuments({ isDeleted: false }),
+      SupportTicket.countDocuments({ unreadByAdmin: { $gt: 0 }, isDeleted: false })
+    ]);
+
+    res.json({
+      open: openCount,
+      inProgress: inProgressCount,
+      resolved: resolvedCount,
+      total: totalCount,
+      unread: unreadCount
+    });
+  } catch (error) {
+    console.error('Error fetching ticket stats:', error);
+    res.status(500).json({ error: 'Serverfehler beim Laden der Statistiken' });
+  }
+});
+
+// GET /api/support-tickets
+// List all tickets with filters
+router.get('/', async (req, res) => {
+  try {
+    const {
+      status,
+      priority,
+      assignedTo,
+      hasUnread,
+      search,
+      sortBy = 'updatedAt',
+      sortOrder = 'desc',
+      limit = 50,
+      skip = 0
+    } = req.query;
+
+    // Build filter query
+    const filter = { isDeleted: false };
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (priority) {
+      filter.priority = priority;
+    }
+
+    if (assignedTo) {
+      if (assignedTo === 'unassigned') {
+        filter.assignedTo = null;
+      } else {
+        filter.assignedTo = assignedTo;
+      }
+    }
+
+    if (hasUnread === 'true') {
+      filter.unreadByAdmin = { $gt: 0 };
+    }
+
+    if (search) {
+      filter.$or = [
+        { subject: { $regex: search, $options: 'i' } },
+        { 'createdBy.name': { $regex: search, $options: 'i' } },
+        { 'createdBy.email': { $regex: search, $options: 'i' } },
+        { ticketNumber: isNaN(search) ? -1 : parseInt(search) }
+      ];
+    }
+
+    // Build sort
+    const sort = {};
+    sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+    // Execute query
+    const tickets = await SupportTicket.find(filter)
+      .sort(sort)
+      .limit(parseInt(limit))
+      .skip(parseInt(skip))
+      .populate('assignedTo', 'username')
+      .lean();
+
+    const total = await SupportTicket.countDocuments(filter);
+
+    res.json({
+      tickets,
+      total,
+      limit: parseInt(limit),
+      skip: parseInt(skip)
+    });
+  } catch (error) {
+    console.error('Error fetching tickets:', error);
+    res.status(500).json({ error: 'Serverfehler beim Laden der Tickets' });
+  }
+});
+
+// GET /api/support-tickets/:id
+// Get single ticket with full message thread
+router.get('/:id', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    })
+      .populate('assignedTo', 'username')
+      .lean();
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    res.json(ticket);
+  } catch (error) {
+    console.error('Error fetching ticket:', error);
+    res.status(500).json({ error: 'Serverfehler beim Laden des Tickets' });
+  }
+});
+
+// POST /api/support-tickets/:id/messages
+// Admin adds reply to ticket
+router.post('/:id/messages', async (req, res) => {
+  try {
+    const { content } = req.body;
+
+    if (!content || content.trim().length === 0) {
+      return res.status(400).json({ error: 'Nachricht darf nicht leer sein' });
+    }
+
+    if (content.length > 5000) {
+      return res.status(400).json({ error: 'Nachricht zu lang (max 5000 Zeichen)' });
+    }
+
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    // Create message
+    const message = {
+      senderType: 'admin',
+      senderId: req.user.id,
+      senderName: req.user.username || 'Admin',
+      content: content.trim(),
+      isRead: false
+    };
+
+    // Update ticket
+    ticket.messages.push(message);
+    ticket.lastMessageAt = new Date();
+    ticket.lastMessageFrom = 'admin';
+    ticket.unreadByStudent += 1;
+
+    // Auto-change status from waiting-customer to in-progress
+    if (ticket.status === 'waiting-customer') {
+      ticket.status = 'in-progress';
+      ticket.statusHistory.push({
+        status: 'in-progress',
+        changedBy: req.user.id,
+        note: 'Auto-changed on admin reply'
+      });
+    }
+
+    await ticket.save();
+
+    // Send email notification to student
+    try {
+      const studentEmail = ticket.createdBy.email;
+      if (studentEmail) {
+        await sendTicketReplyEmail(ticket, message, studentEmail);
+      }
+    } catch (emailError) {
+      console.error('Error sending ticket reply email:', emailError);
+      // Don't fail the request if email fails
+    }
+
+    res.json({
+      success: true,
+      message: 'Antwort gesendet',
+      ticket: await SupportTicket.findById(ticket._id).populate('assignedTo', 'username').lean()
+    });
+  } catch (error) {
+    console.error('Error adding message:', error);
+    res.status(500).json({ error: 'Serverfehler beim Senden der Nachricht' });
+  }
+});
+
+// PUT /api/support-tickets/:id/status
+// Change ticket status
+router.put('/:id/status', async (req, res) => {
+  try {
+    const { status, note } = req.body;
+
+    const validStatuses = ['open', 'in-progress', 'waiting-customer', 'resolved', 'closed'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Ungültiger Status' });
+    }
+
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    const oldStatus = ticket.status;
+    ticket.status = status;
+
+    // Add to status history
+    ticket.statusHistory.push({
+      status,
+      changedBy: req.user.id,
+      note: note || ''
+    });
+
+    await ticket.save();
+
+    // Send email notification to student
+    try {
+      const studentEmail = ticket.createdBy.email;
+      if (studentEmail && oldStatus !== status) {
+        await sendTicketStatusChangeEmail(ticket, oldStatus, status, studentEmail);
+      }
+    } catch (emailError) {
+      console.error('Error sending status change email:', emailError);
+      // Don't fail the request if email fails
+    }
+
+    res.json({
+      success: true,
+      message: 'Status aktualisiert',
+      ticket: await SupportTicket.findById(ticket._id).populate('assignedTo', 'username').lean()
+    });
+  } catch (error) {
+    console.error('Error updating status:', error);
+    res.status(500).json({ error: 'Serverfehler beim Ändern des Status' });
+  }
+});
+
+// PUT /api/support-tickets/:id/assign
+// Assign ticket to admin
+router.put('/:id/assign', async (req, res) => {
+  try {
+    const { assignedTo } = req.body;
+
+    // Validate admin exists if assignedTo is provided
+    if (assignedTo) {
+      const admin = await User.findById(assignedTo);
+      if (!admin) {
+        return res.status(400).json({ error: 'Admin nicht gefunden' });
+      }
+    }
+
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    ticket.assignedTo = assignedTo || null;
+    ticket.assignedAt = assignedTo ? new Date() : null;
+
+    await ticket.save();
+
+    res.json({
+      success: true,
+      message: assignedTo ? 'Ticket zugewiesen' : 'Zuweisung entfernt',
+      ticket: await SupportTicket.findById(ticket._id).populate('assignedTo', 'username').lean()
+    });
+  } catch (error) {
+    console.error('Error assigning ticket:', error);
+    res.status(500).json({ error: 'Serverfehler beim Zuweisen des Tickets' });
+  }
+});
+
+// PUT /api/support-tickets/:id
+// Update ticket metadata
+router.put('/:id', async (req, res) => {
+  try {
+    const { subject, priority, category } = req.body;
+
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    if (subject !== undefined) {
+      if (subject.length < 5 || subject.length > 200) {
+        return res.status(400).json({ error: 'Betreff muss 5-200 Zeichen lang sein' });
+      }
+      ticket.subject = subject.trim();
+    }
+
+    if (priority !== undefined) {
+      const validPriorities = ['low', 'medium', 'high', 'urgent'];
+      if (!validPriorities.includes(priority)) {
+        return res.status(400).json({ error: 'Ungültige Priorität' });
+      }
+      ticket.priority = priority;
+    }
+
+    if (category !== undefined) {
+      const validCategories = ['bug', 'suggestion', 'question', 'technical', 'other'];
+      if (!validCategories.includes(category)) {
+        return res.status(400).json({ error: 'Ungültige Kategorie' });
+      }
+      ticket.category = category;
+    }
+
+    await ticket.save();
+
+    res.json({
+      success: true,
+      message: 'Ticket aktualisiert',
+      ticket: await SupportTicket.findById(ticket._id).populate('assignedTo', 'username').lean()
+    });
+  } catch (error) {
+    console.error('Error updating ticket:', error);
+    res.status(500).json({ error: 'Serverfehler beim Aktualisieren des Tickets' });
+  }
+});
+
+// DELETE /api/support-tickets/:id
+// Soft delete ticket
+router.delete('/:id', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    ticket.isDeleted = true;
+    ticket.deletedAt = new Date();
+    ticket.deletedBy = req.user.id;
+
+    await ticket.save();
+
+    res.json({
+      success: true,
+      message: 'Ticket gelöscht'
+    });
+  } catch (error) {
+    console.error('Error deleting ticket:', error);
+    res.status(500).json({ error: 'Serverfehler beim Löschen des Tickets' });
+  }
+});
+
+// POST /api/support-tickets/:id/messages/:messageId/read
+// Mark message as read
+router.post('/:id/messages/:messageId/read', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    const message = ticket.messages.id(req.params.messageId);
+    if (!message) {
+      return res.status(404).json({ error: 'Nachricht nicht gefunden' });
+    }
+
+    if (!message.isRead && message.senderType === 'student') {
+      message.isRead = true;
+      ticket.unreadByAdmin = Math.max(0, ticket.unreadByAdmin - 1);
+      await ticket.save();
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error marking message as read:', error);
+    res.status(500).json({ error: 'Serverfehler beim Markieren der Nachricht' });
+  }
+});
+
+export default router;

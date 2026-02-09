@@ -181,29 +181,13 @@ router.put("/:id/assignments/replace", async (req, res) => {
         }
       };
 
-      // Try string ID first
-      let result = await Student.collection.findOneAndUpdate(
+      const result = await Student.collection.findOneAndUpdate(
         { _id: req.params.id },
         updateOperation,
         { returnDocument: 'after' }
       );
 
-      // If not found with string, try ObjectId format
-      if (!result?.value && !result?._id) {
-        console.log(`[assignments/replace] String ID not found, trying ObjectId format`);
-        try {
-          const objectId = new mongoose.Types.ObjectId(req.params.id);
-          result = await Student.collection.findOneAndUpdate(
-            { _id: objectId },
-            updateOperation,
-            { returnDocument: 'after' }
-          );
-        } catch (err) {
-          console.log(`[assignments/replace] ObjectId conversion failed:`, err.message);
-        }
-      }
-
-      const student = result?.value || result;
+      const student = result.value;
 
       if (!student) {
         console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND`);

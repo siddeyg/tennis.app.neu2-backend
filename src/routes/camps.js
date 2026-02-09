@@ -204,12 +204,7 @@ router.post('/', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let camp = await Camp.findById(req.params.id);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      camp = await Camp.findById(new ObjectId(req.params.id));
-    }
+    const camp = await Camp.findById(req.params.id);
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -265,12 +260,7 @@ router.put('/:id', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let camp = await Camp.findById(req.params.id);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      camp = await Camp.findById(new ObjectId(req.params.id));
-    }
+    const camp = await Camp.findById(req.params.id);
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -315,12 +305,7 @@ router.delete('/:id', async (req, res) => {
  */
 router.post('/:id/open', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let camp = await Camp.findById(req.params.id);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      camp = await Camp.findById(new ObjectId(req.params.id));
-    }
+    const camp = await Camp.findById(req.params.id);
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -368,12 +353,7 @@ router.post('/:id/open', async (req, res) => {
  */
 router.post('/:id/close', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let camp = await Camp.findById(req.params.id);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      camp = await Camp.findById(new ObjectId(req.params.id));
-    }
+    const camp = await Camp.findById(req.params.id);
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -412,14 +392,8 @@ router.post('/:id/close', async (req, res) => {
  */
 router.get('/:id/registrations', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let campId = req.params.id;
-    let camp = await Camp.findById(campId);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      campId = new ObjectId(req.params.id);
-      camp = await Camp.findById(campId);
-    }
+    const campId = req.params.id;
+    const camp = await Camp.findById(campId);
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -492,14 +466,8 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
   }
 
   try {
-    // Try string ID first, then ObjectId
-    let campId = req.params.id;
-    let camp = await Camp.findById(campId);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      campId = new ObjectId(req.params.id);
-      camp = await Camp.findById(campId);
-    }
+    const campId = req.params.id;
+    const camp = await Camp.findById(campId);
 
     if (!camp || camp.deletedAt) {
       if (session) await session.abortTransaction();
@@ -510,13 +478,8 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
     }
 
     // Find registration
-    let regId = req.params.regId;
-    let registration = await CampRegistration.findById(regId);
-    if (!registration) {
-      const { ObjectId } = require('mongodb');
-      regId = new ObjectId(req.params.regId);
-      registration = await CampRegistration.findById(regId);
-    }
+    const regId = req.params.regId;
+    const registration = await CampRegistration.findById(regId);
 
     if (!registration) {
       if (session) await session.abortTransaction();
@@ -591,14 +554,8 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
  */
 router.get('/:id/export/csv', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let campId = req.params.id;
-    let camp = await Camp.findById(campId);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      campId = new ObjectId(req.params.id);
-      camp = await Camp.findById(campId);
-    }
+    const campId = req.params.id;
+    const camp = await Camp.findById(campId);
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({

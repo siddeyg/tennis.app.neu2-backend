@@ -51,7 +51,7 @@ router.get('/', async (req, res) => {
     }
 
     const camps = await Camp.find(filter)
-      .populate('trainerId', 'name')
+      .populate('trainerId', 'firstName lastName')
       .sort({ startDate: 1 }); // Upcoming first
 
     res.json({
@@ -106,15 +106,8 @@ router.get('/my-registrations', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    // Try string ID first, then ObjectId
-    let camp = await Camp.findById(req.params.id)
-      .populate('trainerId', 'name');
-
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      camp = await Camp.findById(new ObjectId(req.params.id))
-        .populate('trainerId', 'name');
-    }
+    const camp = await Camp.findById(req.params.id)
+      .populate('trainerId', 'firstName lastName');
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -214,13 +207,8 @@ router.post('/:id/register', async (req, res) => {
     }
 
     // 1. Lock camp document
-    let campId = req.params.id;
-    let camp = await Camp.findById(campId);
-    if (!camp) {
-      const { ObjectId } = require('mongodb');
-      campId = new ObjectId(req.params.id);
-      camp = await Camp.findById(campId);
-    }
+    const campId = req.params.id;
+    const camp = await Camp.findById(campId);
 
     if (!camp || camp.deletedAt) {
       if (session) await session.abortTransaction();
@@ -450,13 +438,8 @@ router.delete('/registrations/:id', async (req, res) => {
 
   try {
     // Find registration
-    let regId = req.params.id;
-    let registration = await CampRegistration.findById(regId);
-    if (!registration) {
-      const { ObjectId } = require('mongodb');
-      regId = new ObjectId(req.params.id);
-      registration = await CampRegistration.findById(regId);
-    }
+    const regId = req.params.id;
+    const registration = await CampRegistration.findById(regId);
 
     if (!registration) {
       if (session) await session.abortTransaction();
