@@ -3,6 +3,7 @@ import multer from "multer";
 import { parse } from "csv-parse/sync";
 import mongoose from "mongoose";
 import Student from "../models/Student.js";
+import logger from "../utils/logger.js";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -34,7 +35,7 @@ router.post("/", async (req, res) => {
     await student.save();
     res.status(201).json(student);
   } catch (error) {
-    console.error("Fehler beim Hinzufügen des Schülers:", error);
+    logger.error("Fehler beim Hinzufügen des Schülers", { error: error.message, stack: error.stack });
     if (error.name === 'ValidationError') {
       return res.status(400).json({ error: "Ungültige Eingabedaten", details: error.message });
     }
@@ -51,7 +52,7 @@ router.delete("/all", async (req, res) => {
       deletedCount: result.deletedCount
     });
   } catch (error) {
-    console.error("Fehler beim Löschen aller Schüler:", error);
+    logger.error("Fehler beim Löschen aller Schüler", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Löschen aller Schüler" });
   }
 });
@@ -62,9 +63,6 @@ router.delete("/all", async (req, res) => {
 router.post("/:id/assignments", async (req, res) => {
   try {
     const { day, hour, coach } = req.body;
-
-    console.log(`[POST /assignments] Adding assignment to student ${req.params.id}`);
-    console.log(`[POST /assignments] Assignment: ${day} ${hour}, Coach: ${coach}`);
 
     if (!day || !hour) {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
@@ -84,14 +82,16 @@ router.post("/:id/assignments", async (req, res) => {
     const student = result.value;
 
     if (!student) {
-      console.log(`[POST /assignments] ERROR: Student ${req.params.id} NOT FOUND`);
       return res.status(404).json({ error: "Schüler nicht gefunden" });
     }
 
-    console.log(`[POST /assignments] SUCCESS: Added assignment to ${student.firstName} ${student.lastName}`);
     res.json(student);
   } catch (error) {
-    console.error("[POST /assignments] EXCEPTION:", error);
+    logger.error("Fehler beim Hinzufügen der Zuweisung", {
+      error: error.message,
+      studentId: req.params.id,
+      stack: error.stack
+    });
     if (error.name === 'BSONError' || error.name === 'CastError') {
       return res.status(400).json({ error: "Ungültige Schüler-ID", details: error.message });
     }
@@ -103,9 +103,6 @@ router.post("/:id/assignments", async (req, res) => {
 router.delete("/:id/assignments", async (req, res) => {
   try {
     const { day, hour } = req.body;
-
-    console.log(`[DELETE /assignments] Removing assignment from student ${req.params.id}`);
-    console.log(`[DELETE /assignments] Assignment: ${day} ${hour}`);
 
     if (!day || !hour) {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
@@ -123,7 +120,6 @@ router.delete("/:id/assignments", async (req, res) => {
     const student = result.value;
 
     if (!student) {
-      console.log(`[DELETE /assignments] ERROR: Student ${req.params.id} NOT FOUND`);
       return res.status(404).json({ error: "Schüler nicht gefunden" });
     }
 
@@ -146,10 +142,13 @@ router.delete("/:id/assignments", async (req, res) => {
       { returnDocument: 'after' }
     );
 
-    console.log(`[DELETE /assignments] SUCCESS: Removed assignment from ${student.firstName} ${student.lastName}`);
     res.json(student);
   } catch (error) {
-    console.error("[DELETE /assignments] EXCEPTION:", error);
+    logger.error("Fehler beim Entfernen der Zuweisung", {
+      error: error.message,
+      studentId: req.params.id,
+      stack: error.stack
+    });
     if (error.name === 'BSONError' || error.name === 'CastError') {
       return res.status(400).json({ error: "Ungültige Schüler-ID", details: error.message });
     }
@@ -162,14 +161,9 @@ router.put("/:id/assignments/replace", async (req, res) => {
   try {
     const { day, hour, coach, fromDay, fromHour } = req.body;
 
-    console.log(`[assignments/replace] ===== DRAG AND DROP START =====`);
-    console.log(`[assignments/replace] Received student ID: ${req.params.id}`);
-    console.log(`[assignments/replace] Target: ${day} ${hour}, Coach: ${coach}`);
-    console.log(`[assignments/replace] From: ${fromDay} ${fromHour}`);
 
     // Allow null values for clearing assignments (algorithm reset)
     if (day === null && hour === null) {
-      console.log(`[assignments/replace] Clear mode: removing all assignments`);
 
       // Clear all assignments
       const updateOperation = {
@@ -190,12 +184,9 @@ router.put("/:id/assignments/replace", async (req, res) => {
       const student = result.value;
 
       if (!student) {
-        console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND`);
         return res.status(404).json({ error: "Schüler nicht gefunden" });
       }
 
-      console.log(`[assignments/replace] SUCCESS: Cleared assignments for ${student.firstName} ${student.lastName}`);
-      console.log(`[assignments/replace] ===== END =====`);
       return res.json(student);
     }
 
@@ -208,7 +199,6 @@ router.put("/:id/assignments/replace", async (req, res) => {
     let result;
 
     if (fromDay && fromHour) {
-      console.log(`[assignments/replace] Multi-assignment mode: updating specific assignment`);
 
       // Step 1: Remove old assignment
       const updateOperation = {
@@ -235,7 +225,6 @@ router.put("/:id/assignments/replace", async (req, res) => {
         );
       }
     } else {
-      console.log(`[assignments/replace] Legacy mode: replacing all assignments`);
 
       // Replace all assignments
       const updateOperation = {
@@ -257,19 +246,13 @@ router.put("/:id/assignments/replace", async (req, res) => {
     const student = result.value;
 
     if (!student) {
-      console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND in database`);
       const samples = await Student.find({}, { _id: 1, firstName: 1, lastName: 1 }).limit(3);
-      console.log(`[assignments/replace] First 3 IDs in database for comparison:`);
-      samples.forEach(s => console.log(`  ${s._id} - ${s.firstName} ${s.lastName}`));
       return res.status(404).json({ error: "Schüler nicht gefunden", searchedId: req.params.id });
     }
 
-    console.log(`[assignments/replace] SUCCESS: Updated ${student.firstName} ${student.lastName}`);
-    console.log(`[assignments/replace] Final assignments:`, student.assignments);
-    console.log(`[assignments/replace] ===== END =====`);
     res.json(student);
   } catch (error) {
-    console.error("[assignments/replace] EXCEPTION:", error);
+    logger.error("[assignments/replace] EXCEPTION", { error: error.message, stack: error.stack });
     if (error.name === 'CastError' || error.name === 'BSONError') {
       return res.status(400).json({ error: "Ungültige Schüler-ID", details: error.message });
     }
@@ -282,7 +265,6 @@ router.put("/:id/assignments/replace", async (req, res) => {
 // Schüler löschen
 router.delete("/:id", async (req, res) => {
   try {
-    console.log(`[DELETE /:id] Deleting student with ID: ${req.params.id}`);
 
     const result = await Student.collection.findOneAndDelete(
       { _id: req.params.id }
@@ -290,14 +272,13 @@ router.delete("/:id", async (req, res) => {
 
     const student = result.value;
 
-    console.log(`[DELETE /:id] Student found: ${!!student}`);
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
     res.json({ message: "Student deleted" });
   } catch (error) {
-    console.error("Fehler beim Löschen des Schülers:", error);
+    logger.error("Fehler beim Löschen des Schülers", { error: error.message, stack: error.stack });
     if (error.name === 'CastError') {
       return res.status(400).json({ error: "Ungültige Schüler-ID" });
     }
@@ -337,10 +318,7 @@ router.put("/:id", async (req, res) => {
     // Sanitize coach field: convert empty string to null (Mongoose expects ObjectId or null, not "")
     const sanitizedCoach = (coach === "" || coach === undefined) ? null : coach;
 
-    console.log(`[PUT /:id] Updating student ${req.params.id}`);
-    console.log(`[PUT /:id] Assignments to save: ${assignments ? assignments.length : 0}`);
     if (assignments && assignments.length > 0) {
-      console.log(`[PUT /:id] Assignments:`, JSON.stringify(assignments, null, 2));
     }
 
     const updateData = {
@@ -380,12 +358,10 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ error: "Schüler nicht gefunden" });
     }
 
-    console.log(`[PUT /:id] SUCCESS: Updated student ${student.firstName} ${student.lastName}`);
-    console.log(`[PUT /:id] Saved assignments count: ${student.assignments ? student.assignments.length : 0}`);
 
     res.json(student);
   } catch (error) {
-    console.error("Fehler beim Aktualisieren des Schülers:", error);
+    logger.error("Fehler beim Aktualisieren des Schülers", { error: error.message, stack: error.stack });
     if (error.name === 'ValidationError') {
       return res.status(400).json({ error: "Ungültige Eingabedaten", details: error.message });
     }
@@ -485,7 +461,7 @@ router.post("/import", upload.single('file'), async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Fehler beim CSV-Import:", error);
+    logger.error("Fehler beim CSV-Import", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim CSV-Import", details: error.message });
   }
 });
@@ -514,7 +490,7 @@ router.get("/gender-detection-results", async (req, res) => {
 
     res.json(results);
   } catch (error) {
-    console.error("Error loading gender detection results:", error);
+    logger.error("Error loading gender detection results", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });

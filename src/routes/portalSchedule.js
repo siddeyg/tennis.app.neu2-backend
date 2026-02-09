@@ -8,6 +8,7 @@ import Attendance from '../models/Attendance.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -92,7 +93,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching portal schedule:', error);
+    logger.error("Error fetching portal schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden des Trainingsplans' });
   }
 });
@@ -144,7 +145,7 @@ router.get('/announcements', verifyPortalAuth, async (req, res) => {
     res.json(announcements);
 
   } catch (error) {
-    console.error('Error fetching portal announcements:', error);
+    logger.error("Error fetching portal announcements", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Ankündigungen' });
   }
 });
@@ -214,7 +215,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching profile:', error);
+    logger.error("Error fetching profile", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden des Profils' });
   }
 });
@@ -319,7 +320,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
         );
       }
 
-      console.log(`Profile updated for student: ${student.firstName} ${student.lastName}`);
+      logger.info('Profile updated for student', { studentId: student._id, name: `${student.firstName} ${student.lastName}` });
 
       // Also update StudentPortalUser (keep both models in sync)
       const portalUser = await StudentPortalUser.findById(portalUserId);
@@ -447,14 +448,14 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
             parentPhone: portalUser.parentPhone || ''
           }
         });
-        console.log(`Admin notification sent for parent info change: ${portalUser.email}`);
+        logger.info('Admin notification sent for parent info change', { email: portalUser.email });
       } catch (emailError) {
         // Log but don't fail the request if email fails
-        console.error('Failed to send admin notification:', emailError.message);
+        logger.error('Failed to send admin notification', { error: emailError.message, stack: emailError.stack });
       }
     }
 
-    console.log(`Profile updated for portal user: ${portalUser.firstName} ${portalUser.lastName}`);
+    logger.info('Profile updated for portal user', { userId: portalUser._id, name: `${portalUser.firstName} ${portalUser.lastName}` });
 
     // Return updated portal user data
     res.json({
@@ -476,7 +477,7 @@ router.put('/profile', verifyPortalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating profile:', error);
+    logger.error("Error updating profile", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Aktualisieren des Profils' });
   }
 });
@@ -550,7 +551,7 @@ router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error completing profile:', error);
+    logger.error("Error completing profile", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Vervollständigen des Profils' });
   }
 });
@@ -619,7 +620,7 @@ router.post('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
 
     await changeRequest.save();
 
-    console.log(`Schedule change request created: ${requestType} by student ${student.firstName} ${student.lastName}`);
+    logger.info('Schedule change request created', { requestType, studentId: student._id, name: `${student.firstName} ${student.lastName}` });
 
     // Convert to plain object and return fields directly
     const savedRequest = changeRequest.toObject();
@@ -629,7 +630,7 @@ router.post('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error creating schedule change request:', error);
+    logger.error("Error creating schedule change request", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Erstellen der Anfrage' });
   }
 });
@@ -668,7 +669,7 @@ router.get('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
     res.json(formattedRequests);
 
   } catch (error) {
-    console.error('Error fetching schedule change requests:', error);
+    logger.error("Error fetching schedule change requests", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Anfragen' });
   }
 });
@@ -704,12 +705,12 @@ router.delete('/schedule-change-requests/:id', verifyPortalAuth, async (req, res
 
     await ScheduleChangeRequest.findByIdAndDelete(requestId);
 
-    console.log(`Schedule change request cancelled: ${requestId}`);
+    logger.info('Schedule change request cancelled', { requestId });
 
     res.json({ message: 'Anfrage erfolgreich storniert' });
 
   } catch (error) {
-    console.error('Error cancelling schedule change request:', error);
+    logger.error("Error cancelling schedule change request", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Stornieren der Anfrage' });
   }
 });
@@ -770,7 +771,7 @@ router.post('/absences', verifyPortalAuth, async (req, res) => {
 
     await absence.save();
 
-    console.log(`Absence reported: ${student.firstName} ${student.lastName} - ${day} ${hour}:00, ${absenceDate}`);
+    logger.info('Absence reported', { studentId: student._id, name: `${student.firstName} ${student.lastName}`, day, hour, absenceDate });
 
     // Convert to plain object and return fields directly
     const savedAbsence = absence.toObject();
@@ -780,7 +781,7 @@ router.post('/absences', verifyPortalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error creating absence:', error);
+    logger.error("Error creating absence", { error: error.message, stack: error.stack });
 
     // Handle validation errors
     if (error.name === 'ValidationError') {
@@ -811,7 +812,7 @@ router.get('/absences/upcoming', verifyPortalAuth, async (req, res) => {
     res.json(upcomingAbsences);
 
   } catch (error) {
-    console.error('Error fetching upcoming absences:', error);
+    logger.error("Error fetching upcoming absences", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Abwesenheiten' });
   }
 });
@@ -869,7 +870,7 @@ router.get('/absences', verifyPortalAuth, async (req, res) => {
     res.json(formattedAbsences);
 
   } catch (error) {
-    console.error('Error fetching absences:', error);
+    logger.error("Error fetching absences", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Abwesenheiten' });
   }
 });
@@ -918,12 +919,12 @@ router.delete('/absences/:id', verifyPortalAuth, async (req, res) => {
     // Delete the absence
     await Absence.findByIdAndDelete(absenceId);
 
-    console.log(`Absence deleted: ${absenceId}`);
+    logger.info('Absence deleted', { absenceId });
 
     res.json({ message: 'Abwesenheit erfolgreich gelöscht' });
 
   } catch (error) {
-    console.error('Error deleting absence:', error);
+    logger.error("Error deleting absence", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Löschen der Abwesenheit' });
   }
 });
@@ -946,7 +947,7 @@ router.get('/attendance/history', verifyPortalAuth, async (req, res) => {
     res.json(history);
 
   } catch (error) {
-    console.error('Error fetching attendance history:', error);
+    logger.error("Error fetching attendance history", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Anwesenheitshistorie' });
   }
 });
@@ -965,7 +966,7 @@ router.get('/attendance/statistics', verifyPortalAuth, async (req, res) => {
     res.json(statistics);
 
   } catch (error) {
-    console.error('Error fetching attendance statistics:', error);
+    logger.error("Error fetching attendance statistics", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Statistik' });
   }
 });
