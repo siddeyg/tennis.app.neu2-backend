@@ -127,6 +127,12 @@ export function configurePassport() {
           // Attach original payload for debugging
           user._jwtPayload = payload;
 
+          // Ensure role is set from JWT payload (critical for requireRole middleware)
+          // The JWT payload is the source of truth for the role
+          if (!user.role && payload.role) {
+            user.role = payload.role;
+          }
+
           return done(null, user);
         } catch (error) {
           return done(error, false);
