@@ -45,12 +45,6 @@ const campSchema = new mongoose.Schema({
       required: true,
       trim: true
       // Format: "13:00"
-    },
-    venue: {
-      type: String,
-      trim: true,
-      default: ''
-      // Example: "Platz 1-2"
     }
   }],
 
@@ -98,7 +92,7 @@ const campSchema = new mongoose.Schema({
   // Target Audience
   targetAudience: {
     type: String,
-    enum: ['all', 'adults', 'children'],
+    enum: ['all', 'adults', 'youth', 'children'],
     default: 'all'
   },
   minAge: {
@@ -115,12 +109,31 @@ const campSchema = new mongoose.Schema({
   },
   skillLevels: [{
     type: String,
-    enum: ['beginner', 'intermediate', 'advanced']
+    enum: ['beginner', 'intermediate']  // Removed 'advanced'
   }],
+
+  // Player Type (Team vs Hobby)
+  playerType: {
+    type: String,
+    enum: ['all', 'team-only'],
+    default: 'all'
+  },
+
+  // Pricing
+  memberPrice: {
+    type: Number,
+    min: 0,
+    default: null
+  },
+  nonMemberPrice: {
+    type: Number,
+    min: 0,
+    default: null
+  },
 
   // Trainer
   trainerId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,  // String to match Coach _id format
     ref: 'Coach',
     default: null
   },

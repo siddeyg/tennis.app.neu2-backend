@@ -55,6 +55,8 @@ import portalUsersRoutes from "./routes/portalUsers.js";
 import campsRoutes from "./routes/camps.js";
 import portalCampsRoutes from "./routes/portalCamps.js";
 import metricsRoutes from "./routes/metrics.js";
+import supportTicketsRoutes from "./routes/supportTickets.js";
+import portalSupportTicketsRoutes from "./routes/portalSupportTickets.js";
 
 const app = express();
 
@@ -252,6 +254,12 @@ app.use("/api/camps", campsRoutes);
 
 // Metrics routes - admin only
 app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), metricsRoutes);
+
+// Support tickets routes - admin only
+app.use("/api/support-tickets", supportTicketsRoutes);
+
+// Portal support tickets routes - student portal (auth handled in route file)
+app.use("/api/portal/support-tickets", portalSupportTicketsRoutes);
 
 // ========================================
 // Error Handler Middleware (MUST BE LAST)

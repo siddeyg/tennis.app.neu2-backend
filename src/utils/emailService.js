@@ -433,11 +433,287 @@ export async function sendParentInfoChangeNotification({ childName, childEmail, 
   });
 }
 
+/**
+ * Send new ticket notification to admin
+ *
+ * @param {Object} ticket - Support ticket document
+ */
+export async function sendNewTicketEmail(ticket) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'tennisapp-admin@diemachtderworte.de';
+  const adminPortalUrl = process.env.ADMIN_PORTAL_URL || 'https://mondo2.suwar.de';
+
+  const categoryLabels = {
+    bug: 'Fehler',
+    suggestion: 'Vorschlag',
+    question: 'Frage',
+    technical: 'Technisches Problem',
+    other: 'Sonstiges'
+  };
+
+  const priorityLabels = {
+    low: 'Niedrig',
+    medium: 'Mittel',
+    high: 'Hoch',
+    urgent: 'Dringend'
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Neues Support Ticket</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #009688 0%, #00796b 100%); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🎫 Neues Support Ticket</h1>
+        </div>
+
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin: 0 0 20px 0;">Ein neues Support Ticket wurde erstellt:</p>
+
+          <div style="background-color: #f9f9f9; border-left: 4px solid #009688; padding: 15px; margin-bottom: 20px;">
+            <h2 style="color: #009688; margin: 0 0 10px 0; font-size: 20px;">Ticket #${ticket.ticketNumber}</h2>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${ticket.subject}</p>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tbody>
+              <tr>
+                <td style="padding: 10px 0; font-weight: 500; color: #666; width: 30%;">Von:</td>
+                <td style="padding: 10px 0; color: #333;">${ticket.createdBy.name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-weight: 500; color: #666;">E-Mail:</td>
+                <td style="padding: 10px 0; color: #333;">${ticket.createdBy.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-weight: 500; color: #666;">Kategorie:</td>
+                <td style="padding: 10px 0; color: #333;">${categoryLabels[ticket.category] || ticket.category}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-weight: 500; color: #666;">Priorität:</td>
+                <td style="padding: 10px 0; color: #333;">${priorityLabels[ticket.priority] || ticket.priority}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; font-weight: 500; color: #666;">Status:</td>
+                <td style="padding: 10px 0; color: #333;">Offen</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="background-color: #fafafa; border-radius: 4px; padding: 15px; margin-bottom: 25px;">
+            <h3 style="color: #009688; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase;">Nachricht:</h3>
+            <p style="color: #333; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${ticket.messages[0].content}</p>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${adminPortalUrl}/support-tickets/${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-weight: 600; font-size: 16px;">Ticket anzeigen</a>
+          </div>
+
+          <p style="color: #666; font-size: 14px; margin-top: 25px;">Erstellt am: ${new Date(ticket.createdAt).toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })}</p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 0 30px;">
+
+        <div style="padding: 20px 30px;">
+          <p style="color: #999; font-size: 12px; margin: 0;">Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  await sendEmail({
+    to: adminEmail,
+    subject: `[Support #${ticket.ticketNumber}] ${ticket.subject}`,
+    html,
+  });
+}
+
+/**
+ * Send ticket reply notification
+ *
+ * @param {Object} ticket - Support ticket document
+ * @param {Object} message - Message document
+ * @param {string} recipientEmail - Recipient email address
+ */
+export async function sendTicketReplyEmail(ticket, message, recipientEmail) {
+  const isAdminRecipient = message.senderType === 'student';
+  const portalUrl = isAdminRecipient
+    ? process.env.ADMIN_PORTAL_URL || 'https://mondo2.suwar.de'
+    : process.env.STUDENT_PORTAL_URL || 'https://mondo-tennis.de';
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Neue Antwort auf Support Ticket</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #009688 0%, #00796b 100%); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">💬 Neue Antwort</h1>
+        </div>
+
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin: 0 0 20px 0;">Es gibt eine neue Antwort auf Ihr Support Ticket:</p>
+
+          <div style="background-color: #f9f9f9; border-left: 4px solid #009688; padding: 15px; margin-bottom: 20px;">
+            <h2 style="color: #009688; margin: 0 0 10px 0; font-size: 20px;">Ticket #${ticket.ticketNumber}</h2>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${ticket.subject}</p>
+          </div>
+
+          <div style="background-color: #fafafa; border-radius: 4px; padding: 15px; margin-bottom: 25px;">
+            <h3 style="color: #009688; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase;">Von ${message.senderName}:</h3>
+            <p style="color: #333; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${message.content}</p>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${portalUrl}/support-tickets/${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-weight: 600; font-size: 16px;">Ticket anzeigen</a>
+          </div>
+
+          <p style="color: #666; font-size: 14px; margin-top: 25px;">Antwort gesendet am: ${new Date(message.createdAt || Date.now()).toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })}</p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 0 30px;">
+
+        <div style="padding: 20px 30px;">
+          <p style="color: #999; font-size: 12px; margin: 0;">Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  await sendEmail({
+    to: recipientEmail,
+    subject: `Antwort auf Support Ticket #${ticket.ticketNumber}`,
+    html,
+  });
+}
+
+/**
+ * Send ticket status change notification to student
+ *
+ * @param {Object} ticket - Support ticket document
+ * @param {string} oldStatus - Previous status
+ * @param {string} newStatus - New status
+ * @param {string} recipientEmail - Student email
+ */
+export async function sendTicketStatusChangeEmail(ticket, oldStatus, newStatus, recipientEmail) {
+  const portalUrl = process.env.STUDENT_PORTAL_URL || 'https://mondo-tennis.de';
+
+  const statusLabels = {
+    open: 'Offen',
+    'in-progress': 'In Bearbeitung',
+    'waiting-customer': 'Warten auf Rückmeldung',
+    resolved: 'Gelöst',
+    closed: 'Geschlossen'
+  };
+
+  const statusColors = {
+    open: '#ff9800',
+    'in-progress': '#2196f3',
+    'waiting-customer': '#9c27b0',
+    resolved: '#4caf50',
+    closed: '#757575'
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Support Ticket Status Aktualisiert</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #009688 0%, #00796b 100%); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">📋 Status Aktualisiert</h1>
+        </div>
+
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin: 0 0 20px 0;">Der Status Ihres Support Tickets wurde aktualisiert:</p>
+
+          <div style="background-color: #f9f9f9; border-left: 4px solid #009688; padding: 15px; margin-bottom: 20px;">
+            <h2 style="color: #009688; margin: 0 0 10px 0; font-size: 20px;">Ticket #${ticket.ticketNumber}</h2>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${ticket.subject}</p>
+          </div>
+
+          <div style="background-color: #fafafa; border-radius: 4px; padding: 20px; margin-bottom: 25px; text-align: center;">
+            <div style="display: inline-block; margin: 0 15px;">
+              <div style="color: #666; font-size: 12px; text-transform: uppercase; margin-bottom: 8px;">Vorher</div>
+              <div style="background-color: ${statusColors[oldStatus]}; color: #ffffff; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 14px;">${statusLabels[oldStatus]}</div>
+            </div>
+            <div style="display: inline-block; color: #999; font-size: 24px; margin: 0 10px;">→</div>
+            <div style="display: inline-block; margin: 0 15px;">
+              <div style="color: #666; font-size: 12px; text-transform: uppercase; margin-bottom: 8px;">Jetzt</div>
+              <div style="background-color: ${statusColors[newStatus]}; color: #ffffff; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 14px;">${statusLabels[newStatus]}</div>
+            </div>
+          </div>
+
+          ${newStatus === 'resolved' ? `
+          <div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin-bottom: 20px;">
+            <p style="color: #2e7d32; font-size: 14px; margin: 0;">✅ Ihr Ticket wurde als gelöst markiert. Wenn Ihr Problem behoben ist, können Sie das Ticket schließen. Andernfalls antworten Sie einfach, um das Ticket wieder zu öffnen.</p>
+          </div>
+          ` : ''}
+
+          ${newStatus === 'waiting-customer' ? `
+          <div style="background-color: #f3e5f5; border-left: 4px solid #9c27b0; padding: 15px; margin-bottom: 20px;">
+            <p style="color: #6a1b9a; font-size: 14px; margin: 0;">💬 Wir warten auf Ihre Rückmeldung. Bitte antworten Sie auf das Ticket, wenn Sie weitere Informationen haben.</p>
+          </div>
+          ` : ''}
+
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${portalUrl}/support-tickets/${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-weight: 600; font-size: 16px;">Ticket anzeigen</a>
+          </div>
+
+          <p style="color: #666; font-size: 14px; margin-top: 25px;">Aktualisiert am: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })}</p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 0 30px;">
+
+        <div style="padding: 20px 30px;">
+          <p style="color: #999; font-size: 12px; margin: 0;">Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  await sendEmail({
+    to: recipientEmail,
+    subject: `Support Ticket #${ticket.ticketNumber} - Status: ${statusLabels[newStatus]}`,
+    html,
+  });
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
   sendParentInfoChangeNotification,
+  sendNewTicketEmail,
+  sendTicketReplyEmail,
+  sendTicketStatusChangeEmail,
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };

@@ -8,6 +8,11 @@ import mongoose from "mongoose";
  * verschiedene Altersgruppen und Leistungsniveaus.
  */
 const coachSchema = new mongoose.Schema({
+  // ===== ID =====
+  _id: {
+    type: String,                        // String ID (legacy from Clerk integration)
+  },
+
   // ===== Authentifizierung =====
   clerkUserId: {
     type: String,
