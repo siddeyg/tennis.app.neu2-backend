@@ -6,7 +6,93 @@ import Student from "../models/Student.js";
 import logger from "../utils/logger.js";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+
+// Validation helper for student data
+function validateStudentData(data) {
+  const errors = [];
+
+  // Name validation
+  if (data.firstName && data.firstName.length > 100) {
+    errors.push('Vorname zu lang (max 100 Zeichen)');
+  }
+  if (data.lastName && data.lastName.length > 100) {
+    errors.push('Nachname zu lang (max 100 Zeichen)');
+  }
+
+  // Email validation (if provided)
+  if (data.email && data.email.trim()) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      errors.push('Ungültige E-Mail-Adresse');
+    }
+  }
+
+  // Birthdate validation
+  if (data.birthdate || data.birthDate) {
+    const dateStr = data.birthdate || data.birthDate;
+    const birthDate = new Date(dateStr);
+    const today = new Date();
+    if (birthDate > today) {
+      errors.push('Geburtsdatum darf nicht in der Zukunft liegen');
+    }
+    if (birthDate < new Date('1900-01-01')) {
+      errors.push('Geburtsdatum zu weit in der Vergangenheit');
+    }
+    // Check for invalid date
+    if (isNaN(birthDate.getTime())) {
+      errors.push('Ungültiges Geburtsdatum-Format');
+    }
+  }
+
+  // Phone validation (if provided)
+  if (data.phone && data.phone.length > 20) {
+    errors.push('Telefonnummer zu lang (max 20 Zeichen)');
+  }
+
+  // Frequency validation
+  if (data.frequence && !['1', '2', '3'].includes(String(data.frequence))) {
+    errors.push('Frequenz muss 1, 2 oder 3 sein');
+  }
+
+  // Skill level validation
+  const validSkillLevels = ['Anfänger', 'Fortgeschritten', 'Turnierspieler'];
+  if (data.skillLevel && !validSkillLevels.includes(data.skillLevel)) {
+    errors.push('Ungültiges Spielniveau');
+  }
+
+  // Address validation (if provided)
+  if (data.adress && data.adress.length > 200) {
+    errors.push('Adresse zu lang (max 200 Zeichen)');
+  }
+
+  // Comment validation (if provided)
+  if (data.comment && data.comment.length > 500) {
+    errors.push('Kommentar zu lang (max 500 Zeichen)');
+  }
+
+  // Training group validation (if provided)
+  if (data.trainigGroup && data.trainigGroup.length > 50) {
+    errors.push('Trainingsgruppe zu lang (max 50 Zeichen)');
+  }
+
+  return errors;
+}
+
+// Multer configuration with file size and type validation
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max
+    files: 1 // Only 1 file at a time
+  },
+  fileFilter: (req, file, cb) => {
+    // Only allow CSV files
+    if (file.mimetype !== 'text/csv' && !file.originalname.endsWith('.csv')) {
+      return cb(new Error('Nur CSV-Dateien erlaubt'), false);
+    }
+    cb(null, true);
+  }
+});
 
 // Alle Schüler abrufen
 router.get("/", async (req, res) => {
@@ -20,6 +106,12 @@ router.post("/", async (req, res) => {
     // Validate required fields
     if (!req.body.firstName || !req.body.lastName) {
       return res.status(400).json({ error: "Vorname und Nachname sind erforderlich" });
+    }
+
+    // Validate input data
+    const validationErrors = validateStudentData(req.body);
+    if (validationErrors.length > 0) {
+      return res.status(400).json({ error: validationErrors.join(', ') });
     }
 
     // Note: Duplicate email check removed - families can share emails (parent email for multiple children)
@@ -312,6 +404,12 @@ router.put("/:id", async (req, res) => {
       assignments,
     } = req.body;
 
+    // Validate input data
+    const validationErrors = validateStudentData(req.body);
+    if (validationErrors.length > 0) {
+      return res.status(400).json({ error: validationErrors.join(', ') });
+    }
+
     // Note: Duplicate email check removed - families can share emails
     // Duplicate detection is handled on frontend
 
@@ -379,6 +477,11 @@ router.post("/import", upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: "Keine Datei hochgeladen" });
     }
 
+    // Validate file size (additional check beyond multer limits)
+    if (req.file.size > 5 * 1024 * 1024) {
+      return res.status(400).json({ error: "Datei zu groß (max 5MB)" });
+    }
+
     // Parse CSV with proper library
     let csvText = req.file.buffer.toString('utf-8');
 
@@ -403,30 +506,33 @@ router.post("/import", upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: "CSV-Datei ist leer" });
     }
 
-    // Convert CSV records to student objects
-    const students = records.map(row => {
+    // Convert CSV records to student objects with validation
+    const students = [];
+    const validationIssues = [];
+
+    records.forEach((row, index) => {
       const studentData = {};
 
       // Map CSV columns to student model fields
-      studentData.firstName = row['Vorname'] || '';
-      studentData.lastName = row['Nachname'] || '';
-      studentData.birthDate = row['Geburtsdatum'] || '';
-      studentData.email = row['Email'] || '';
-      studentData.phone = row['Telefon'] || '';
-      studentData.adress = row['Adresse'] || '';
+      studentData.firstName = (row['Vorname'] || '').trim();
+      studentData.lastName = (row['Nachname'] || '').trim();
+      studentData.birthDate = (row['Geburtsdatum'] || '').trim();
+      studentData.email = (row['Email'] || '').trim();
+      studentData.phone = (row['Telefon'] || '').trim();
+      studentData.adress = (row['Adresse'] || '').trim();
       studentData.adult = row['Erwachsen'] === 'Ja';
       studentData.member = row['Mitglied'] === 'Ja';
       studentData.team = row['Teamspieler'] === 'Ja';
-      studentData.skillLevel = row['Spielstärke'] || '';
-      studentData.trainigGroup = row['Trainingsgruppe'] || '';
-      studentData.sex = row['Geschlecht'] || '';
-      studentData.frequence = row['Häufigkeit'] || '';
-      studentData.day = row['Zugewiesener Tag'] || '';
-      studentData.hour = row['Zugewiesene Stunde'] ? parseInt(row['Zugewiesene Stunde']) : null;
+      studentData.skillLevel = (row['Spielstärke'] || '').trim();
+      studentData.trainigGroup = (row['Trainingsgruppe'] || '').trim();
+      studentData.sex = (row['Geschlecht'] || '').trim();
+      studentData.frequence = (row['Häufigkeit'] || '').trim();
+      studentData.day = (row['Zugewiesener Tag'] || '').trim();
+      studentData.hour = row['Zugewiesene Stunde'] ? parseInt(row['Zugewiesene Stunde'], 10) : null;
       // Coach field requires ObjectId, but CSV has names - set to null for now
       // TODO: Look up coach by name and store their ObjectId
       studentData.coach = null;
-      studentData.comment = row['Kommentar'] || '';
+      studentData.comment = (row['Kommentar'] || '').trim();
 
       // Parse available times from day columns
       studentData.availableTimes = [];
@@ -441,10 +547,38 @@ router.post("/import", upload.single('file'), async (req, res) => {
         }
       });
 
-      return studentData;
+      // Validate each student record
+      const errors = validateStudentData(studentData);
+      if (errors.length > 0) {
+        validationIssues.push({
+          row: index + 1,
+          student: `${studentData.firstName} ${studentData.lastName}`,
+          errors: errors
+        });
+      } else if (studentData.firstName && studentData.lastName) {
+        // Only add if first and last name are present
+        students.push(studentData);
+      } else {
+        validationIssues.push({
+          row: index + 1,
+          student: '<Unbekannt>',
+          errors: ['Vorname und Nachname sind erforderlich']
+        });
+      }
     });
 
-    console.log(`CSV Import - Converted to ${students.length} student objects`);
+    // If there are validation issues, report them instead of importing
+    if (validationIssues.length > 0) {
+      logger.warn("CSV Import - Validation issues detected", { issues: validationIssues });
+      return res.status(400).json({
+        error: "CSV-Datei enthält ungültige Einträge",
+        validationIssues: validationIssues,
+        validCount: students.length,
+        invalidCount: validationIssues.length
+      });
+    }
+
+    console.log(`CSV Import - Converted to ${students.length} valid student objects`);
     console.log("Sample student:", students[0]);
 
     // Delete all existing students
@@ -462,6 +596,15 @@ router.post("/import", upload.single('file'), async (req, res) => {
 
   } catch (error) {
     logger.error("Fehler beim CSV-Import", { error: error.message, stack: error.stack });
+
+    // Distinguish between multer file validation errors and other errors
+    if (error.message.includes('Nur CSV-Dateien erlaubt')) {
+      return res.status(400).json({ error: "Nur CSV-Dateien erlaubt" });
+    }
+    if (error.message.includes('File too large')) {
+      return res.status(400).json({ error: "Datei zu groß (max 5MB)" });
+    }
+
     res.status(500).json({ error: "Fehler beim CSV-Import", details: error.message });
   }
 });

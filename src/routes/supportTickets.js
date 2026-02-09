@@ -8,6 +8,11 @@ import logger from '../utils/logger.js';
 
 const router = express.Router();
 
+// Escape special regex characters to prevent ReDoS attacks
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // All routes require admin authentication
 router.use(requireAuth);
 
@@ -76,23 +81,42 @@ router.get('/', async (req, res) => {
     }
 
     if (search) {
+      // Validate search length to prevent extremely long searches
+      if (search.length > 50) {
+        return res.status(400).json({ error: 'Suchbegriff zu lang (max 50 Zeichen)' });
+      }
+
+      // Escape special regex characters to prevent ReDoS attacks
+      const escapedSearch = escapeRegex(search);
+
       filter.$or = [
-        { subject: { $regex: search, $options: 'i' } },
-        { 'createdBy.name': { $regex: search, $options: 'i' } },
-        { 'createdBy.email': { $regex: search, $options: 'i' } },
-        { ticketNumber: isNaN(search) ? -1 : parseInt(search) }
+        { subject: { $regex: escapedSearch, $options: 'i' } },
+        { 'createdBy.name': { $regex: escapedSearch, $options: 'i' } },
+        { 'createdBy.email': { $regex: escapedSearch, $options: 'i' } },
+        { ticketNumber: isNaN(search) ? -1 : parseInt(search, 10) }
       ];
     }
 
+    // Validate and sanitize query parameters
+    const validatedLimit = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 100); // Between 1 and 100
+    const validatedSkip = Math.max(parseInt(skip, 10) || 0, 0); // Minimum 0
+
+    // Whitelist allowed sort fields to prevent sorting by non-indexed fields
+    const allowedSortFields = ['createdAt', 'updatedAt', 'priority', 'status', 'ticketNumber', 'subject'];
+    const validatedSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'updatedAt';
+
+    // Validate sort order (only asc or desc)
+    const validatedSortOrder = sortOrder === 'asc' ? 'asc' : 'desc';
+
     // Build sort
     const sort = {};
-    sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    sort[validatedSortBy] = validatedSortOrder === 'asc' ? 1 : -1;
 
     // Execute query
     const tickets = await SupportTicket.find(filter)
       .sort(sort)
-      .limit(parseInt(limit))
-      .skip(parseInt(skip))
+      .limit(validatedLimit)
+      .skip(validatedSkip)
       .populate('assignedTo', 'username')
       .lean();
 
@@ -101,8 +125,8 @@ router.get('/', async (req, res) => {
     res.json({
       tickets,
       total,
-      limit: parseInt(limit),
-      skip: parseInt(skip)
+      limit: validatedLimit,
+      skip: validatedSkip
     });
   } catch (error) {
     logger.error('Error fetching tickets', { error: error.message, stack: error.stack });

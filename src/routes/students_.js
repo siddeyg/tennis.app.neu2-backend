@@ -318,7 +318,7 @@ router.post("/import", upload.single('file'), async (req, res) => {
       studentData.sex = row['Geschlecht'] || '';
       studentData.frequence = row['Häufigkeit'] || '';
       studentData.day = row['Zugewiesener Tag'] || '';
-      studentData.hour = row['Zugewiesene Stunde'] ? parseInt(row['Zugewiesene Stunde']) : null;
+      studentData.hour = row['Zugewiesene Stunde'] ? parseInt(row['Zugewiesene Stunde'], 10) : null;
       // Coach field requires ObjectId, but CSV has names - set to null for now
       // TODO: Look up coach by name and store their ObjectId
       studentData.coach = null;
