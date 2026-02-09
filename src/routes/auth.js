@@ -6,6 +6,7 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import LoginSession from "../models/LoginSession.js";
 import UserSettings from "../models/UserSettings.js";
+import logger from "../utils/logger.js";
 
 const router = express.Router();
 
@@ -48,7 +49,7 @@ const refreshLimiter = rateLimit({
 router.post("/login", loginLimiter, (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
-      console.error("Login error:", err);
+      logger.error("Login error", { error: err.message, stack: err.stack });
       return res.status(500).json({ error: "Server-Fehler beim Login" });
     }
 
@@ -116,12 +117,12 @@ router.post("/login", loginLimiter, (req, res, next) => {
           lastActivity: new Date()
         }
       }
-    ).catch(err => console.error("Error updating login time:", err));
+    ).catch(err => logger.error("Error updating login time", { error: err.message, userId: user._id }));
 
     // Create login session (keeps last 30 automatically)
     const userAgent = req.get('user-agent') || 'Unknown';
     LoginSession.createSession(user._id, userAgent)
-      .catch(err => console.error("Error creating login session:", err));
+      .catch(err => logger.error("Error creating login session", { error: err.message, userId: user._id }));
 
     // Return user data (password already excluded by toJSON method)
     res.json({
@@ -287,7 +288,7 @@ router.post("/register", async (req, res) => {
       allowResetSchedule: true, // Default: user CAN click "Plan generieren"
     }).catch(err => {
       // Non-blocking: If settings creation fails, don't fail the registration
-      console.error("Error creating user settings:", err);
+      logger.error("Error creating user settings", { error: err.message, userId: user._id });
     });
 
     // TODO: Send verification email
@@ -298,7 +299,7 @@ router.post("/register", async (req, res) => {
     const isDevelopment = process.env.NODE_ENV !== "production";
     const verifyUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
 
-    console.log("User registered:", user.email);
+    logger.info("User registered", { email: user.email });
     // Security: Token is sent via email, NOT logged
 
     res.status(201).json({
@@ -311,7 +312,7 @@ router.post("/register", async (req, res) => {
       }),
     });
   } catch (error) {
-    console.error("Registration error:", error);
+    logger.error("Registration error", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Erstellen des Benutzers" });
   }
 });
@@ -366,7 +367,7 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
     const isDevelopment = process.env.NODE_ENV !== "production";
     const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
-    console.log("Password reset requested for:", user.email);
+    logger.info("Password reset requested", { email: user.email });
     // Security: Token is sent via email, NOT logged
 
     res.json({
@@ -378,7 +379,7 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
       }),
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    logger.error("Forgot password error", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Verarbeiten der Anfrage" });
   }
 });
@@ -421,13 +422,13 @@ router.post("/reset-password", async (req, res) => {
     user.resetPasswordExpires = null;
     await user.save();
 
-    console.log("Password reset successful for:", user.email);
+    logger.info("Password reset successful", { email: user.email });
 
     res.json({
       message: "Passwort erfolgreich zurückgesetzt. Sie können sich jetzt anmelden.",
     });
   } catch (error) {
-    console.error("Reset password error:", error);
+    logger.error("Reset password error", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Zurücksetzen des Passworts" });
   }
 });
@@ -471,13 +472,13 @@ router.post("/verify-email", async (req, res) => {
     user.emailVerificationToken = null;
     await user.save();
 
-    console.log("Email verified successfully for:", user.email);
+    logger.info("Email verified successfully", { email: user.email });
 
     res.json({
       message: "E-Mail erfolgreich verifiziert. Sie können sich jetzt anmelden.",
     });
   } catch (error) {
-    console.error("Email verification error:", error);
+    logger.error("Email verification error", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler bei der E-Mail-Verifizierung" });
   }
 });
@@ -537,7 +538,7 @@ router.post("/resend-verification", resendVerificationLimiter, async (req, res) 
     const isDevelopment = process.env.NODE_ENV !== "production";
     const verifyUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
 
-    console.log("Email verification resent for:", user.email);
+    logger.info("Email verification resent", { email: user.email });
     // Security: Token is sent via email, NOT logged
 
     res.json({
@@ -549,7 +550,7 @@ router.post("/resend-verification", resendVerificationLimiter, async (req, res) 
       }),
     });
   } catch (error) {
-    console.error("Resend verification error:", error);
+    logger.error("Resend verification error", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Versenden der Verifizierungs-E-Mail" });
   }
 });

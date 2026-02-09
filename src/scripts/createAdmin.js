@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import User from "../models/User.js";
 import fs from "fs";
+import logger from "../utils/logger.js";
 
 // Load environment variables
 const activeEnvFile =
@@ -21,16 +22,17 @@ async function createAdmin() {
   try {
     // Connect to MongoDB
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ MongoDB verbunden");
+    logger.info("MongoDB verbunden");
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ email: "info@diemachtderworte.de" });
 
     if (existingAdmin) {
-      console.log("⚠️  Admin-Benutzer existiert bereits!");
-      console.log(`Email: ${existingAdmin.email}`);
-      console.log(`Name: ${existingAdmin.firstName} ${existingAdmin.lastName}`);
-      console.log(`Rolle: ${existingAdmin.role}`);
+      logger.warn("Admin-Benutzer existiert bereits!", {
+        email: existingAdmin.email,
+        name: `${existingAdmin.firstName} ${existingAdmin.lastName}`,
+        role: existingAdmin.role
+      });
       process.exit(0);
     }
 
@@ -48,19 +50,21 @@ async function createAdmin() {
 
     await admin.save();
 
-    console.log("\n🎉 Admin-Benutzer erfolgreich erstellt!");
-    console.log("=====================================");
-    console.log(`📧 Email: info@diemachtderworte.de`);
-    console.log(`🔑 Passwort: ${adminPassword}`);
-    console.log(`👤 Name: Markus Lawrenz`);
-    console.log(`🛡️  Rolle: admin`);
-    console.log("=====================================");
-    console.log("\n⚠️  WICHTIG: Bitte ändern Sie das Passwort nach dem ersten Login!");
-    console.log("📝 Sie können sich jetzt unter http://localhost:3000 anmelden\n");
+    logger.info("Admin-Benutzer erfolgreich erstellt", {
+      email: "info@diemachtderworte.de",
+      password: adminPassword, // Note: Acceptable for one-time setup script output
+      name: "Markus Lawrenz",
+      role: "admin",
+      message: "WICHTIG: Bitte ändern Sie das Passwort nach dem ersten Login!",
+      loginUrl: "http://localhost:3000"
+    });
 
     process.exit(0);
   } catch (error) {
-    console.error("❌ Fehler beim Erstellen des Admin-Benutzers:", error);
+    logger.error("Fehler beim Erstellen des Admin-Benutzers", {
+      error: error.message,
+      stack: error.stack
+    });
     process.exit(1);
   }
 }

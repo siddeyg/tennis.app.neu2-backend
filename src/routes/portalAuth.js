@@ -5,6 +5,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import User from '../models/User.js';
 import Settings from '../models/Settings.js';
+import logger from '../utils/logger.js';
 import {
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
@@ -144,7 +145,7 @@ router.post('/register', registerLimiter, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
+    logger.error('Registration error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler bei der Registrierung' });
   }
 });
@@ -164,7 +165,7 @@ router.get('/registration-status', async (req, res) => {
       message: enabled ? null : 'Registrierung vorübergehend geschlossen'
     });
   } catch (error) {
-    console.error('Error fetching registration status:', error);
+    logger.error('Error fetching registration status', { error: error.message, stack: error.stack });
     // Default to enabled if there's an error
     res.json({ enabled: true });
   }
@@ -209,7 +210,7 @@ router.post('/verify-email', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Email verification error:', error);
+    logger.error('Email verification error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler bei der Email-Verifizierung' });
   }
 });
@@ -344,7 +345,7 @@ router.post('/login', authLimiter, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Login error:', error);
+    logger.error('Login error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Login' });
   }
 });
@@ -397,7 +398,7 @@ router.post('/refresh', async (req, res) => {
     res.json({ message: 'Token erfolgreich erneuert' });
 
   } catch (error) {
-    console.error('Token refresh error:', error);
+    logger.error('Token refresh error', { error: error.message, stack: error.stack });
     res.status(401).json({ error: 'Ungültiger Refresh-Token' });
   }
 });
@@ -455,7 +456,7 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Forgot password error:', error);
+    logger.error('Forgot password error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Passwort-Reset' });
   }
 });
@@ -497,7 +498,7 @@ router.post('/reset-password', async (req, res) => {
     res.json({ message: 'Passwort erfolgreich zurückgesetzt' });
 
   } catch (error) {
-    console.error('Password reset error:', error);
+    logger.error('Password reset error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Passwort-Reset' });
   }
 });
@@ -569,7 +570,7 @@ router.get('/me', async (req, res) => {
     res.json(response);
 
   } catch (error) {
-    console.error('Get current user error:', error);
+    logger.error('Get current user error', { error: error.message, stack: error.stack });
     res.status(401).json({ error: 'Ungültiger Token' });
   }
 });

@@ -218,8 +218,7 @@ export function validateIBANFormat(iban) {
  *
  * Usage:
  *   const key = generateEncryptionKey();
- *   console.log(`IBAN_ENCRYPTION_KEY=${key}`);
- *   // Add to .env.development and .env.production
+ *   // Returns key string - add to .env.development and .env.production
  */
 export function generateEncryptionKey() {
   const key = crypto.randomBytes(32).toString('hex');

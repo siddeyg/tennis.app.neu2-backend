@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import StudentPortalUser from '../models/StudentPortalUser.js';
+import logger from '../utils/logger.js';
 
 /**
  * Middleware to verify portal JWT token
@@ -50,14 +51,14 @@ export const verifyPortalAuth = async (req, res, next) => {
         }
       } catch (activityError) {
         // Don't break the request if activity update fails
-        console.error('Error updating portal user activity:', activityError);
+        logger.error('Error updating portal user activity', { error: activityError.message, userId: req.user.id });
       }
     }
 
     next();
 
   } catch (error) {
-    console.error('Portal auth error:', error);
+    logger.error('Portal auth error', { error: error.message, stack: error.stack });
     res.status(401).json({ error: 'Ungültiger oder abgelaufener Token' });
   }
 };
