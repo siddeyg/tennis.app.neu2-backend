@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import Coach from "../models/Coach.js";
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.post("/", async (req, res) => {
     await coach.save();
     res.status(201).json(coach);
   } catch (error) {
-    console.error("Fehler beim Hinzufügen des Trainers:", error);
+    logger.error("Fehler beim Hinzufügen des Trainers", { error: error.message, stack: error.stack });
     if (error.name === 'ValidationError') {
       return res.status(400).json({ error: "Ungültige Eingabedaten", details: error.message });
     }
@@ -47,7 +48,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ message: "Coach deleted" });
   } catch (error) {
-    console.error("Fehler beim Löschen des Trainers:", error);
+    logger.error("Fehler beim Löschen des Trainers", { error: error.message, stack: error.stack });
     if (error.name === 'CastError') {
       return res.status(400).json({ error: "Ungültige Trainer-ID" });
     }
@@ -106,7 +107,7 @@ router.put("/:id", async (req, res) => {
     }
     res.json(coach);
   } catch (error) {
-    console.error("Fehler beim Aktualisieren des Trainers:", error);
+    logger.error("Fehler beim Aktualisieren des Trainers", { error: error.message, stack: error.stack });
     if (error.name === 'ValidationError') {
       return res.status(400).json({ error: "Ungültige Eingabedaten", details: error.message });
     }

@@ -22,6 +22,7 @@ import CampRegistration from '../models/CampRegistration.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import mongoose from 'mongoose';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -61,7 +62,7 @@ router.get('/', async (req, res) => {
       camps
     });
   } catch (error) {
-    console.error('Error listing camps:', error);
+    logger.error("Error listing camps", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Laden der Camps'
@@ -91,7 +92,7 @@ router.get('/:id', async (req, res) => {
       camp
     });
   } catch (error) {
-    console.error('Error fetching camp:', error);
+    logger.error("Error fetching camp", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Laden des Camps'
@@ -184,7 +185,7 @@ router.post('/', async (req, res) => {
       camp
     });
   } catch (error) {
-    console.error('Error creating camp:', error);
+    logger.error("Error creating camp", { error: error.message, stack: error.stack });
     if (error.message.includes('Datum')) {
       return res.status(400).json({
         success: false,
@@ -240,7 +241,7 @@ router.put('/:id', async (req, res) => {
       camp
     });
   } catch (error) {
-    console.error('Error updating camp:', error);
+    logger.error("Error updating camp", { error: error.message, stack: error.stack });
     if (error.message.includes('Datum')) {
       return res.status(400).json({
         success: false,
@@ -291,7 +292,7 @@ router.delete('/:id', async (req, res) => {
       message: 'Camp erfolgreich gelöscht'
     });
   } catch (error) {
-    console.error('Error deleting camp:', error);
+    logger.error("Error deleting camp", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Löschen des Camps'
@@ -339,7 +340,7 @@ router.post('/:id/open', async (req, res) => {
       camp
     });
   } catch (error) {
-    console.error('Error opening camp:', error);
+    logger.error("Error opening camp", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Öffnen der Anmeldung'
@@ -378,7 +379,7 @@ router.post('/:id/close', async (req, res) => {
       camp
     });
   } catch (error) {
-    console.error('Error closing camp:', error);
+    logger.error("Error closing camp", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Schließen der Anmeldung'
@@ -442,7 +443,7 @@ router.get('/:id/registrations', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching registrations:', error);
+    logger.error("Error fetching registrations", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Laden der Teilnehmer'
@@ -538,7 +539,7 @@ router.delete('/:id/registrations/:regId', async (req, res) => {
     });
   } catch (error) {
     if (session) await session.abortTransaction();
-    console.error('Error cancelling registration:', error);
+    logger.error("Error cancelling registration", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Stornieren der Anmeldung'
@@ -606,7 +607,7 @@ router.get('/:id/export/csv', async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="camp-${campId}-teilnehmer.csv"`);
     res.send(csv);
   } catch (error) {
-    console.error('Error exporting CSV:', error);
+    logger.error("Error exporting CSV", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Exportieren der CSV'

@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User.js";
 import LoginSession from "../models/LoginSession.js";
 import bcrypt from "bcryptjs";
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.get("/active", async (req, res) => {
 
     res.json(activeUsers);
   } catch (error) {
-    console.error("Error fetching active users:", error);
+    logger.error("Error fetching active users", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Abrufen der aktiven Benutzer" });
   }
 });
@@ -56,7 +57,7 @@ router.get("/:userId/login-history", async (req, res) => {
       sessions,
     });
   } catch (error) {
-    console.error("Error fetching login history:", error);
+    logger.error("Error fetching login history", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Abrufen der Login-Historie" });
   }
 });
@@ -70,7 +71,7 @@ router.get("/", async (req, res) => {
     const users = await User.find().select("-password").sort({ createdAt: -1 });
     res.json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
+    logger.error("Error fetching users", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Abrufen der Benutzer" });
   }
 });
@@ -89,7 +90,7 @@ router.get("/:id", async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error("Error fetching user:", error);
+    logger.error("Error fetching user", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Abrufen des Benutzers" });
   }
 });
@@ -131,7 +132,7 @@ router.put("/:id", async (req, res) => {
       user: user.toJSON(),
     });
   } catch (error) {
-    console.error("Error updating user:", error);
+    logger.error("Error updating user", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Aktualisieren des Benutzers" });
   }
 });
@@ -182,7 +183,7 @@ router.put("/:id/password", async (req, res) => {
 
     res.json({ message: "Passwort erfolgreich geändert" });
   } catch (error) {
-    console.error("Error changing password:", error);
+    logger.error("Error changing password", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Ändern des Passworts" });
   }
 });
@@ -210,7 +211,7 @@ router.delete("/:id", async (req, res) => {
 
     res.json({ message: "Benutzer erfolgreich deaktiviert" });
   } catch (error) {
-    console.error("Error deactivating user:", error);
+    logger.error("Error deactivating user", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Deaktivieren des Benutzers" });
   }
 });
@@ -235,7 +236,7 @@ router.post("/:id/activate", async (req, res) => {
       user: user.toJSON(),
     });
   } catch (error) {
-    console.error("Error activating user:", error);
+    logger.error("Error activating user", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Aktivieren des Benutzers" });
   }
 });

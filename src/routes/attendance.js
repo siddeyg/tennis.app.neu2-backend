@@ -15,6 +15,7 @@ import Absence from '../models/Absence.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireCoach } from '../middleware/requireRole.js';
 import { requireRole } from '../middleware/requireRole.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -79,7 +80,6 @@ router.post('/', requireAuth, requireCoach, async (req, res) => {
       });
     }
 
-    console.log(`[Attendance] Creating attendance record for coach ${coachId}, ${day} ${hour}:00, ${students.length} students`);
 
     // Get absence notifications for this date to auto-mark students
     const studentIds = students.map(s => s.studentId);
@@ -123,12 +123,11 @@ router.post('/', requireAuth, requireCoach, async (req, res) => {
 
     await attendance.save();
 
-    console.log(`[Attendance] Created attendance record ${attendance._id}`);
 
     res.status(201).json(attendance);
 
   } catch (error) {
-    console.error('[Attendance] Error creating attendance:', error);
+    logger.error("[Attendance] Error creating attendance", { error: error.message, stack: error.stack });
 
     if (error.code === 11000) {
       // Duplicate key error (unique index violation)
@@ -216,7 +215,6 @@ router.put('/:id', requireAuth, async (req, res) => {
       });
     }
 
-    console.log(`[Attendance] Updating attendance ${attendanceId} by ${userRole} ${userId}`);
 
     // Update students array
     attendance.students = students.map(s => ({
@@ -231,7 +229,6 @@ router.put('/:id', requireAuth, async (req, res) => {
 
     await attendance.save();
 
-    console.log(`[Attendance] Updated attendance ${attendanceId}`);
 
     // Populate for response
     await attendance.populate('students.studentId', 'firstName lastName');
@@ -239,7 +236,7 @@ router.put('/:id', requireAuth, async (req, res) => {
     res.json(attendance);
 
   } catch (error) {
-    console.error('[Attendance] Error updating attendance:', error);
+    logger.error("[Attendance] Error updating attendance", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Aktualisieren der Anwesenheit',
       message: error.message
@@ -294,7 +291,7 @@ router.get('/', requireAuth, async (req, res) => {
     res.json(records);
 
   } catch (error) {
-    console.error('[Attendance] Error fetching attendance records:', error);
+    logger.error("[Attendance] Error fetching attendance records", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Laden der Anwesenheitsdaten',
       message: error.message
@@ -338,7 +335,7 @@ router.get('/:id', requireAuth, async (req, res) => {
     res.json(attendance);
 
   } catch (error) {
-    console.error('[Attendance] Error fetching attendance:', error);
+    logger.error("[Attendance] Error fetching attendance", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Laden der Anwesenheit',
       message: error.message
@@ -364,7 +361,6 @@ router.delete('/:id', requireAuth, requireRole(['admin']), async (req, res) => {
       });
     }
 
-    console.log(`[Attendance] Deleted attendance ${attendanceId} by admin ${req.user._id}`);
 
     res.json({
       message: 'Anwesenheit erfolgreich gelöscht',
@@ -372,7 +368,7 @@ router.delete('/:id', requireAuth, requireRole(['admin']), async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Attendance] Error deleting attendance:', error);
+    logger.error("[Attendance] Error deleting attendance", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Löschen der Anwesenheit',
       message: error.message

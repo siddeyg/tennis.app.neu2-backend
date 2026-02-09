@@ -5,6 +5,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import { verifyPortalAuth } from '../middleware/verifyPortalAuth.js';
 import { sendNewTicketEmail, sendTicketReplyEmail } from '../utils/emailService.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -53,7 +54,7 @@ router.get('/', async (req, res) => {
 
     res.json({ tickets });
   } catch (error) {
-    console.error('Error fetching tickets:', error);
+    logger.error("Error fetching tickets", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Tickets' });
   }
 });
@@ -74,7 +75,7 @@ router.get('/:id', async (req, res) => {
 
     res.json(ticket);
   } catch (error) {
-    console.error('Error fetching ticket:', error);
+    logger.error("Error fetching ticket", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden des Tickets' });
   }
 });
@@ -156,7 +157,7 @@ router.post('/', createTicketLimiter, async (req, res) => {
     try {
       await sendNewTicketEmail(ticket);
     } catch (emailError) {
-      console.error('Error sending new ticket email:', emailError);
+      logger.error("Error sending new ticket email", { error: emailError.message, stack: emailError.stack });
       // Don't fail the request if email fails
     }
 
@@ -166,7 +167,7 @@ router.post('/', createTicketLimiter, async (req, res) => {
       ticket
     });
   } catch (error) {
-    console.error('Error creating ticket:', error);
+    logger.error("Error creating ticket", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Erstellen des Tickets' });
   }
 });
@@ -239,7 +240,7 @@ router.post('/:id/reply', async (req, res) => {
       const adminEmail = process.env.ADMIN_EMAIL || 'tennisapp-admin@diemachtderworte.de';
       await sendTicketReplyEmail(ticket, message, adminEmail);
     } catch (emailError) {
-      console.error('Error sending ticket reply email:', emailError);
+      logger.error("Error sending ticket reply email", { error: emailError.message, stack: emailError.stack });
       // Don't fail the request if email fails
     }
 
@@ -249,7 +250,7 @@ router.post('/:id/reply', async (req, res) => {
       ticket: await SupportTicket.findById(ticket._id).lean()
     });
   } catch (error) {
-    console.error('Error adding reply:', error);
+    logger.error("Error adding reply", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Senden der Antwort' });
   }
 });
@@ -287,7 +288,7 @@ router.post('/:id/close', async (req, res) => {
       ticket: await SupportTicket.findById(ticket._id).lean()
     });
   } catch (error) {
-    console.error('Error closing ticket:', error);
+    logger.error("Error closing ticket", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Schließen des Tickets' });
   }
 });
@@ -320,7 +321,7 @@ router.post('/:id/messages/:messageId/read', async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
-    console.error('Error marking message as read:', error);
+    logger.error("Error marking message as read", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Markieren der Nachricht' });
   }
 });

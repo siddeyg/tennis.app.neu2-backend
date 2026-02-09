@@ -12,6 +12,7 @@ import express from 'express';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import { generateVerificationTokenWithExpiry, sendVerificationEmail } from '../utils/emailService.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -46,7 +47,7 @@ router.get('/', async (req, res) => {
 
     res.json(formattedUsers);
   } catch (error) {
-    console.error('Error fetching portal users:', error);
+    logger.error("Error fetching portal users", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Laden der Portal-Benutzer' });
   }
 });
@@ -85,7 +86,7 @@ router.delete('/:id', async (req, res) => {
       deletedStudent: false
     });
   } catch (error) {
-    console.error('Error deleting portal user:', error);
+    logger.error("Error deleting portal user", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Löschen des Portal-Benutzers' });
   }
 });
@@ -117,7 +118,7 @@ router.post('/:id/reset-verification', async (req, res) => {
       expires: expires
     });
   } catch (error) {
-    console.error('Error resetting verification:', error);
+    logger.error("Error resetting verification", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Zurücksetzen der Verifizierung' });
   }
 });
@@ -145,7 +146,7 @@ router.post('/:id/force-verify', async (req, res) => {
       emailVerified: true
     });
   } catch (error) {
-    console.error('Error force verifying email:', error);
+    logger.error("Error force verifying email", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Verifizieren der Email' });
   }
 });
@@ -185,7 +186,7 @@ router.post('/:id/resend-verification', async (req, res) => {
       expires: expires
     });
   } catch (error) {
-    console.error('Error resending verification email:', error);
+    logger.error("Error resending verification email", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Senden der Verifizierungs-E-Mail' });
   }
 });
@@ -220,7 +221,7 @@ router.get('/:id', async (req, res) => {
       updatedAt: portalUser.updatedAt
     });
   } catch (error) {
-    console.error('Error fetching portal user:', error);
+    logger.error("Error fetching portal user", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Laden des Portal-Benutzers' });
   }
 });

@@ -14,6 +14,7 @@ import Coach from '../models/Coach.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import CampRegistration from '../models/CampRegistration.js';
+import logger from '../utils/logger.js';
 
 // Cache for expensive Docker stats (5 seconds)
 let dockerStatsCache = null;
@@ -74,7 +75,7 @@ async function getDockerStats() {
 
     return stats;
   } catch (error) {
-    console.error('Docker stats error:', error.message);
+    logger.error('Docker stats error', { error: error.message, stack: error.stack });
     return {
       error: 'Docker stats unavailable',
       message: 'Ensure Docker socket is mounted and containers are running'
@@ -131,7 +132,7 @@ router.get('/', async (req, res) => {
       }
     } catch (e) {
       // Gracefully handle if pool stats unavailable
-      console.log('Pool stats unavailable:', e.message);
+      logger.warn('Pool stats unavailable', { error: e.message });
     }
 
     // Collection counts (run in parallel)
@@ -198,7 +199,7 @@ router.get('/', async (req, res) => {
 
     res.json(metrics);
   } catch (error) {
-    console.error('Metrics collection error:', error);
+    logger.error("Metrics collection error", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Failed to collect metrics',
       message: error.message

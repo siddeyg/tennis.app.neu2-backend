@@ -1,5 +1,6 @@
 import express from "express";
 import Settings from "../models/Settings.js";
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get("/", async (req, res) => {
 
     res.json(settings);
   } catch (error) {
-    console.error("Error fetching settings:", error);
+    logger.error("Error fetching settings", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Failed to fetch settings" });
   }
 });
@@ -63,7 +64,7 @@ router.put("/", async (req, res) => {
     await settings.save();
     res.json(settings);
   } catch (error) {
-    console.error("Error updating settings:", error);
+    logger.error("Error updating settings", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Failed to update settings" });
   }
 });

@@ -1,5 +1,6 @@
 import express from 'express';
 import Announcement from '../models/Announcement.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get('/', async (req, res) => {
 
     res.json(announcements);
   } catch (error) {
-    console.error('Error fetching announcements:', error);
+    logger.error("Error fetching announcements", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Ankündigungen' });
   }
 });
@@ -39,7 +40,7 @@ router.get('/:id', async (req, res) => {
 
     res.json(announcement);
   } catch (error) {
-    console.error('Error fetching announcement:', error);
+    logger.error("Error fetching announcement", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Ankündigung' });
   }
 });
@@ -88,7 +89,7 @@ router.post('/', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error creating announcement:', error);
+    logger.error("Error creating announcement", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Erstellen der Ankündigung' });
   }
 });
@@ -140,7 +141,7 @@ router.put('/:id', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating announcement:', error);
+    logger.error("Error updating announcement", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Aktualisieren der Ankündigung' });
   }
 });
@@ -166,7 +167,7 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Ankündigung erfolgreich gelöscht' });
 
   } catch (error) {
-    console.error('Error deleting announcement:', error);
+    logger.error("Error deleting announcement", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Löschen der Ankündigung' });
   }
 });
@@ -191,7 +192,7 @@ router.post('/:id/activate', async (req, res) => {
     res.json({ message: 'Ankündigung erfolgreich aktiviert' });
 
   } catch (error) {
-    console.error('Error activating announcement:', error);
+    logger.error("Error activating announcement", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Aktivieren der Ankündigung' });
   }
 });

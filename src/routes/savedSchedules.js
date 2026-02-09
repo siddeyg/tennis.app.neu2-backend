@@ -4,6 +4,7 @@ import RegistrationPeriod from "../models/RegistrationPeriod.js";
 import Student from "../models/Student.js";
 import Coach from "../models/Coach.js";
 import Schedule from "../models/Schedule.js";
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
     const savedSchedules = await SavedSchedule.find().sort({ createdAt: -1 });
     res.json(savedSchedules);
   } catch (error) {
-    console.error("Error fetching saved schedules:", error);
+    logger.error("Error fetching saved schedules", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -27,7 +28,7 @@ router.get("/:id", async (req, res) => {
     }
     res.json(savedSchedule);
   } catch (error) {
-    console.error("Error fetching saved schedule:", error);
+    logger.error("Error fetching saved schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -119,11 +120,11 @@ router.post("/", async (req, res) => {
     period.currentPlanId = savedSchedule._id;
     await period.save();
 
-    console.log(`Saved schedule for period ${period.name}, version ${version}, set as currentPlanId`);
+    logger.info('Saved schedule for period', { periodName: period.name, version, scheduleId: savedSchedule._id });
 
     res.status(201).json(savedSchedule);
   } catch (error) {
-    console.error("Error saving schedule:", error);
+    logger.error("Error saving schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -185,7 +186,7 @@ router.post("/import", async (req, res) => {
 
     res.status(201).json(savedSchedule);
   } catch (error) {
-    console.error("Error importing schedule:", error);
+    logger.error("Error importing schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -207,7 +208,7 @@ router.put("/:id", async (req, res) => {
 
     res.json(savedSchedule);
   } catch (error) {
-    console.error("Error updating saved schedule:", error);
+    logger.error("Error updating saved schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -223,7 +224,7 @@ router.delete("/:id", async (req, res) => {
 
     res.json({ message: "Saved schedule deleted successfully" });
   } catch (error) {
-    console.error("Error deleting saved schedule:", error);
+    logger.error("Error deleting saved schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -384,7 +385,7 @@ router.post("/:id/load", async (req, res) => {
       coursesRestored: savedSchedule.schedule.length,
     });
   } catch (error) {
-    console.error("Error loading saved schedule:", error);
+    logger.error("Error loading saved schedule", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });

@@ -15,6 +15,7 @@ import Attendance from '../models/Attendance.js';
 import Absence from '../models/Absence.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireCoach } from '../middleware/requireRole.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -56,7 +57,6 @@ router.get('/schedule/today', async (req, res) => {
     const dayNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     const dayName = dayNames[today.getDay()];
 
-    console.log(`[Coach Portal] Getting today's schedule for coach ${coachId}, day: ${dayName}`);
 
     // Find all students assigned to this coach for today
     const students = await Student.find({
@@ -64,7 +64,6 @@ router.get('/schedule/today', async (req, res) => {
       'assignments.day': dayName
     }).lean();
 
-    console.log(`[Coach Portal] Found ${students.length} students with assignments for ${dayName}`);
 
     // Group students by hour
     const coursesByHour = {};
@@ -167,7 +166,7 @@ router.get('/schedule/today', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Coach Portal] Error getting today\'s schedule:', error);
+    logger.error('Coach Portal - Error getting today\'s schedule', { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Laden des Stundenplans',
       message: error.message
@@ -229,7 +228,7 @@ router.get('/students', async (req, res) => {
     res.json(studentsWithStats);
 
   } catch (error) {
-    console.error('[Coach Portal] Error getting students:', error);
+    logger.error("[Coach Portal] Error getting students", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Laden der Schülerliste',
       message: error.message
@@ -327,7 +326,6 @@ router.get('/stats', async (req, res) => {
       endDate = sunday;
     }
 
-    console.log(`[Coach Portal] Getting stats for coach ${coachId} from ${startDate.toISOString()} to ${endDate.toISOString()}`);
 
     // Get all attendance records for this coach in date range
     const records = await Attendance.find({
@@ -423,7 +421,7 @@ router.get('/stats', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Coach Portal] Error getting stats:', error);
+    logger.error("[Coach Portal] Error getting stats", { error: error.message, stack: error.stack });
     res.status(500).json({
       error: 'Fehler beim Laden der Statistiken',
       message: error.message

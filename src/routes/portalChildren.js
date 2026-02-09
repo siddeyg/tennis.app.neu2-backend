@@ -3,6 +3,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ router.get('/', verifyPortalAuth, async (req, res) => {
 
     res.json({ children });
   } catch (error) {
-    console.error('Error fetching children:', error);
+    logger.error("Error fetching children", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Laden der Kinder' });
   }
 });
@@ -164,7 +165,7 @@ router.post('/', verifyPortalAuth, async (req, res) => {
       message: `${firstName} erfolgreich hinzugefügt`
     });
   } catch (error) {
-    console.error('Error adding child:', error);
+    logger.error("Error adding child", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Hinzufügen des Kindes' });
   }
 });
@@ -261,7 +262,7 @@ router.put('/:childId', verifyPortalAuth, async (req, res) => {
       message: 'Kind erfolgreich aktualisiert'
     });
   } catch (error) {
-    console.error('Error updating child:', error);
+    logger.error("Error updating child", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Aktualisieren des Kindes' });
   }
 });
@@ -308,7 +309,7 @@ router.delete('/:childId', verifyPortalAuth, async (req, res) => {
       message: `${childName} erfolgreich entfernt`
     });
   } catch (error) {
-    console.error('Error deleting child:', error);
+    logger.error("Error deleting child", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Fehler beim Löschen des Kindes' });
   }
 });

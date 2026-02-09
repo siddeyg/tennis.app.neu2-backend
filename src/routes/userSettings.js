@@ -1,5 +1,6 @@
 import express from "express";
 import UserSettings from "../models/UserSettings.js";
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get("/", async (req, res) => {
 
     res.json(settings);
   } catch (error) {
-    console.error("Error fetching user settings:", error);
+    logger.error("Error fetching user settings", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Abrufen der Benutzereinstellungen" });
   }
 });
@@ -61,7 +62,7 @@ router.put("/", async (req, res) => {
       settings,
     });
   } catch (error) {
-    console.error("Error updating user settings:", error);
+    logger.error("Error updating user settings", { error: error.message, stack: error.stack });
     res.status(500).json({ error: "Fehler beim Speichern der Einstellungen" });
   }
 });

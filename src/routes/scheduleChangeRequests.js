@@ -3,6 +3,7 @@ import ScheduleChangeRequest from '../models/ScheduleChangeRequest.js';
 import Student from '../models/Student.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
     res.json(requests);
 
   } catch (error) {
-    console.error('Error fetching schedule change requests:', error);
+    logger.error("Error fetching schedule change requests", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Anfragen' });
   }
 });
@@ -60,7 +61,7 @@ router.get('/:id', async (req, res) => {
     res.json(request);
 
   } catch (error) {
-    console.error('Error fetching schedule change request:', error);
+    logger.error("Error fetching schedule change request", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Anfrage' });
   }
 });
@@ -157,7 +158,7 @@ router.post('/:id/approve', async (req, res) => {
     // Approve the request
     await changeRequest.approve(adminId, adminResponse || 'Anfrage genehmigt');
 
-    console.log(`Schedule change request approved: ${req.params.id} by admin ${req.user.firstName}`);
+    logger.info('Schedule change request approved', { requestId: req.params.id, admin: req.user.firstName });
 
     res.json({
       message: 'Anfrage genehmigt und Trainingsplan aktualisiert',
@@ -171,7 +172,7 @@ router.post('/:id/approve', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error approving schedule change request:', error);
+    logger.error("Error approving schedule change request", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Genehmigen der Anfrage' });
   }
 });
@@ -208,7 +209,7 @@ router.post('/:id/reject', async (req, res) => {
     // Reject the request
     await changeRequest.reject(adminId, adminResponse.trim());
 
-    console.log(`Schedule change request rejected: ${req.params.id} by admin ${req.user.firstName}`);
+    logger.info('Schedule change request rejected', { requestId: req.params.id, admin: req.user.firstName });
 
     res.json({
       message: 'Anfrage abgelehnt',
@@ -216,7 +217,7 @@ router.post('/:id/reject', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error rejecting schedule change request:', error);
+    logger.error("Error rejecting schedule change request", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Ablehnen der Anfrage' });
   }
 });
@@ -243,12 +244,12 @@ router.delete('/:id', async (req, res) => {
 
     await ScheduleChangeRequest.findByIdAndDelete(req.params.id);
 
-    console.log(`Schedule change request deleted: ${req.params.id} by admin ${req.user.firstName}`);
+    logger.info('Schedule change request deleted', { requestId: req.params.id, admin: req.user.firstName });
 
     res.json({ message: 'Anfrage erfolgreich gelöscht' });
 
   } catch (error) {
-    console.error('Error deleting schedule change request:', error);
+    logger.error("Error deleting schedule change request", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Löschen der Anfrage' });
   }
 });

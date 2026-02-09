@@ -17,6 +17,7 @@ import CampRegistration from '../models/CampRegistration.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -60,7 +61,7 @@ router.get('/', async (req, res) => {
       camps
     });
   } catch (error) {
-    console.error('Error listing camps:', error);
+    logger.error("Error listing camps", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Laden der Camps'
@@ -92,7 +93,7 @@ router.get('/my-registrations', async (req, res) => {
       registrations: validRegistrations
     });
   } catch (error) {
-    console.error('Error fetching my registrations:', error);
+    logger.error("Error fetching my registrations", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Laden Ihrer Anmeldungen'
@@ -121,7 +122,7 @@ router.get('/:id', async (req, res) => {
       camp
     });
   } catch (error) {
-    console.error('Error fetching camp:', error);
+    logger.error("Error fetching camp", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Laden des Camps'
@@ -403,7 +404,7 @@ router.post('/:id/register', async (req, res) => {
     });
   } catch (error) {
     if (session) await session.abortTransaction();
-    console.error('Error registering for camp:', error);
+    logger.error("Error registering for camp", { error: error.message, stack: error.stack });
 
     if (error.message.includes('Notfallkontakt')) {
       return res.status(400).json({
@@ -517,7 +518,7 @@ router.delete('/registrations/:id', async (req, res) => {
         await camp.save(session ? { session } : {});
 
         // TODO: Send email notification to promoted user
-        console.log(`Auto-promoted waitlist registration ${waitlistRegistration._id} to confirmed`);
+        logger.info('Auto-promoted waitlist registration to confirmed', { registrationId: waitlistRegistration._id });
       }
     }
 
@@ -529,7 +530,7 @@ router.delete('/registrations/:id', async (req, res) => {
     });
   } catch (error) {
     if (session) await session.abortTransaction();
-    console.error('Error cancelling registration:', error);
+    logger.error("Error cancelling registration", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       error: 'Fehler beim Stornieren der Anmeldung'
