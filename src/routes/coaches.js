@@ -6,6 +6,20 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 // Alle Trainer abrufen
 router.get("/", async (req, res) => {
   const coaches = await Coach.find();
@@ -60,6 +74,14 @@ router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Coach' }
 // Trainer-Daten aktualisieren
 router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), async (req, res) => {
   try {
+    const coachId = req.params.id;
+
+    // Capture BEFORE state
+    const beforeState = await Coach.findById(coachId).lean();
+    if (!beforeState) {
+      return res.status(404).json({ error: "Trainer nicht gefunden" });
+    }
+
     const {
       firstName,
       lastName,
@@ -96,7 +118,7 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), 
     };
 
     const result = await Coach.collection.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: coachId },
       updateData,
       { returnDocument: 'after' }
     );
@@ -106,6 +128,14 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), 
     if (!coach) {
       return res.status(404).json({ error: "Trainer nicht gefunden" });
     }
+
+    // Attach before/after to req for audit log
+    req.auditMetadata = {
+      before: beforeState,
+      after: coach,
+      changes: getChangedFields(beforeState, coach)
+    };
+
     res.json(coach);
   } catch (error) {
     logger.error("Fehler beim Aktualisieren des Trainers", { error: error.message, stack: error.stack });

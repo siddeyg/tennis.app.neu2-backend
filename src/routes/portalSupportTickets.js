@@ -10,6 +10,16 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Sanitize HTML/XSS from text content
+const sanitizeText = (text) => {
+  if (!text) return text;
+  // Strip all HTML tags
+  return text.replace(/<[^>]*>/g, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim();
+};
+
 // All routes require student portal authentication
 router.use(verifyPortalAuth);
 
@@ -123,7 +133,7 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
 
     // Create ticket with initial message
     const ticket = new SupportTicket({
-      subject: subject.trim(),
+      subject: sanitizeText(subject.trim()),
       category: category || 'question',
       priority: priority || 'medium',
       status: 'open',
@@ -137,7 +147,7 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
         senderType: 'student',
         senderId: portalUser._id,
         senderName: portalUser.name || portalUser.email,
-        content: description.trim(),
+        content: sanitizeText(description.trim()),
         isRead: false
       }],
       lastMessageAt: new Date(),
@@ -214,7 +224,7 @@ router.post('/:id/reply', auditLogMiddleware({ action: 'CREATE', resource: 'Tick
       senderType: 'student',
       senderId: portalUser._id,
       senderName: portalUser.name || portalUser.email,
-      content: content.trim(),
+      content: sanitizeText(content.trim()),
       isRead: false
     };
 
@@ -253,6 +263,76 @@ router.post('/:id/reply', auditLogMiddleware({ action: 'CREATE', resource: 'Tick
   } catch (error) {
     logger.error("Error adding reply", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Senden der Antwort' });
+  }
+});
+
+// GET /api/portal/support-tickets/:id/messages - Fetch messages with ownership check
+router.get('/:id/messages', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      'createdBy.studentPortalUserId': req.user.id,
+      isDeleted: false
+    }).lean();
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    const messages = ticket.messages.filter(m => !m.isDeleted);
+    res.json(messages);
+  } catch (error) {
+    logger.error('Error fetching ticket messages', {
+      error: error.message,
+      ticketId: req.params.id,
+      userId: req.user?.id
+    });
+    res.status(500).json({ error: 'Serverfehler beim Laden der Nachrichten' });
+  }
+});
+
+// POST /api/portal/support-tickets/:id/read - Mark all admin messages as read
+router.post('/:id/read', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      'createdBy.studentPortalUserId': req.user.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    let readCount = 0;
+    ticket.messages.forEach(msg => {
+      if (!msg.isRead && msg.senderType === 'admin') {
+        msg.isRead = true;
+        readCount++;
+      }
+    });
+
+    if (readCount > 0) {
+      // Safely decrement counter (prevent negative values)
+      if (ticket.unreadByStudent > 0) {
+        ticket.unreadByStudent = Math.max(0, ticket.unreadByStudent - readCount);
+      }
+      await ticket.save();
+      logger.info('Student marked messages as read', {
+        ticketId: req.params.id,
+        readCount,
+        studentId: req.user?.id
+      });
+    }
+
+    res.json({ success: true, readCount });
+  } catch (error) {
+    logger.error('Error marking messages as read', {
+      error: error.message,
+      ticketId: req.params.id,
+      userId: req.user?.id
+    });
+    res.status(500).json({ error: 'Serverfehler beim Markieren als gelesen' });
   }
 });
 
@@ -316,7 +396,10 @@ router.post('/:id/messages/:messageId/read', async (req, res) => {
 
     if (!message.isRead && message.senderType === 'admin') {
       message.isRead = true;
-      ticket.unreadByStudent = Math.max(0, ticket.unreadByStudent - 1);
+      // Safely decrement counter (prevent negative values)
+      if (ticket.unreadByStudent > 0) {
+        ticket.unreadByStudent -= 1;
+      }
       await ticket.save();
     }
 

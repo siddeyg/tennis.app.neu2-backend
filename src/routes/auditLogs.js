@@ -1,10 +1,57 @@
 import express from 'express';
+import Joi from 'joi';
+import rateLimit from 'express-rate-limit';
 import AuditLog from '../models/AuditLog.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 
 const router = express.Router();
+
+// Validation schemas
+const listQuerySchema = Joi.object({
+  startDate: Joi.date().iso().optional(),
+  endDate: Joi.date().iso().min(Joi.ref('startDate')).optional(),
+  action: Joi.string().valid('CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'EXPORT', 'IMPORT', 'BULK_DELETE', 'ALGORITHM_RUN', 'PASSWORD_RESET', 'EMAIL_VERIFY', 'DENIED').optional(),
+  resource: Joi.string().max(50).optional(),
+  status: Joi.string().valid('SUCCESS', 'ERROR', 'DENIED').optional(),
+  userId: Joi.string().pattern(/^[a-f\d]{24}$/i).optional(),
+  ip: Joi.string().ip({ version: ['ipv4', 'ipv6'] }).optional(),
+  search: Joi.string().max(100).optional(),
+  limit: Joi.number().integer().min(1).max(100).default(50),
+  page: Joi.number().integer().min(1).default(1)
+});
+
+const deleteOldLogsSchema = Joi.object({
+  days: Joi.number().integer().min(1).max(365).required()
+});
+
+// Rate limiter for list endpoint
+const listLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,  // 1 minute
+  max: 60,  // 60 requests per minute
+  message: { error: 'Zu viele Anfragen. Bitte warten Sie eine Minute.' },
+  keyGenerator: (req) => req.user.id,
+  skip: (req) => process.env.NODE_ENV === 'test'
+});
+
+// Rate limiter for export endpoint
+const exportLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,  // 5 minutes
+  max: 5,  // 5 exports per 5 minutes
+  message: { error: 'Zu viele Export-Anfragen. Bitte warten Sie.' },
+  keyGenerator: (req) => req.user.id,
+  skip: (req) => process.env.NODE_ENV === 'test'
+});
+
+// Rate limiter for delete operations
+const deleteLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 3,  // 3 deletes per 15 minutes
+  message: { error: 'Zu viele Lösch-Anfragen. Bitte warten Sie.' },
+  keyGenerator: (req) => req.user.id,
+  skip: (req) => process.env.NODE_ENV === 'test'
+});
 
 // Apply admin-only protection to all routes
 router.use(requireAuth);
@@ -14,8 +61,17 @@ router.use(requireRole(['admin']));
  * GET /api/audit-logs - List audit logs with filters and pagination
  * Query params: startDate, endDate, userId, action, resource, status, search, page, limit
  */
-router.get('/', async (req, res) => {
+router.get('/', listLimiter, async (req, res) => {
   try {
+    // Validate query parameters
+    const { error, value } = listQuerySchema.validate(req.query);
+    if (error) {
+      return res.status(400).json({
+        error: 'Ungültige Eingabe',
+        details: error.details.map(d => d.message)
+      });
+    }
+
     const {
       startDate,
       endDate,
@@ -26,7 +82,7 @@ router.get('/', async (req, res) => {
       search,
       page = 1,
       limit = 50
-    } = req.query;
+    } = value;
 
     // Build query
     const query = {};
@@ -71,7 +127,7 @@ router.get('/', async (req, res) => {
       query.$or = [
         { 'details.endpoint': { $regex: search, $options: 'i' } },
         { ipAddress: { $regex: search, $options: 'i' } },
-        { targetId: { $regex: search, $options: 'i' } }
+        { resourceId: { $regex: search, $options: 'i' } }
       ];
     }
 
@@ -132,9 +188,9 @@ router.get('/:id', async (req, res) => {
       ...log,
       userEmail: log.userId?.email || 'System',
       userName: log.userId ? `${log.userId.firstName} ${log.userId.lastName}` : 'System',
-      status: log.success ? 'SUCCESS' : 'ERROR',
-      endpoint: log.details?.endpoint || 'N/A',
-      resourceId: log.targetId || 'N/A'
+      // status already exists in log, no need to transform
+      endpoint: log.endpoint || 'N/A',
+      resourceId: log.resourceId || 'N/A'
     };
 
     res.json(formattedLog);
@@ -145,9 +201,9 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
- * POST /api/audit-logs/export - Export filtered logs to CSV
+ * POST /api/audit-logs/export - Export filtered logs to CSV (streaming for large datasets)
  */
-router.post('/export', async (req, res) => {
+router.post('/export', exportLimiter, async (req, res) => {
   try {
     const {
       startDate,
@@ -163,50 +219,44 @@ router.post('/export', async (req, res) => {
     const query = {};
 
     if (startDate || endDate) {
-      query.createdAt = {};
+      query.timestamp = {};
       if (startDate) {
         const start = new Date(startDate);
         start.setHours(0, 0, 0, 0);
-        query.createdAt.$gte = start;
+        query.timestamp.$gte = start;
       }
       if (endDate) {
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
-        query.createdAt.$lte = end;
+        query.timestamp.$lte = end;
       }
     }
 
     if (userId) query.userId = userId;
     if (action) query.action = action;
-    if (resource) query.targetType = resource;
+    if (resource) query.resource = resource;
 
     if (status) {
-      if (status === 'SUCCESS') {
-        query.success = true;
-      } else if (status === 'ERROR') {
-        query.success = false;
-      } else if (status === 'DENIED') {
-        query.action = 'ACCESS_DENIED';
-      }
+      query.status = status; // Direct string match: 'SUCCESS', 'ERROR', 'DENIED'
     }
 
     if (search) {
       query.$or = [
         { 'details.endpoint': { $regex: search, $options: 'i' } },
         { ipAddress: { $regex: search, $options: 'i' } },
-        { targetId: { $regex: search, $options: 'i' } }
+        { resourceId: { $regex: search, $options: 'i' } }
       ];
     }
 
-    // Fetch all matching logs (limit to 10,000 for safety)
-    const logs = await AuditLog.find(query)
-      .populate('userId', 'email firstName lastName role')
-      .sort({ createdAt: -1 })
-      .limit(10000)
-      .lean();
+    // Set response headers for streaming
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="audit-logs-${new Date().toISOString().split('T')[0]}.csv"`);
 
-    // Generate CSV
-    const csvHeaders = [
+    // Add UTF-8 BOM for Excel
+    res.write('\ufeff');
+
+    // Write CSV header
+    const headers = [
       'Zeitstempel',
       'Benutzer',
       'Rolle',
@@ -217,38 +267,65 @@ router.post('/export', async (req, res) => {
       'IP-Adresse',
       'Endpunkt',
       'Fehlermeldung'
-    ];
+    ].join(',') + '\n';
+    res.write(headers);
 
-    const csvRows = logs.map(log => {
-      const userEmail = log.userId?.email || 'System';
-      const userRole = log.userRole || (log.userId?.role || 'system');
-      const status = log.success ? 'SUCCESS' : 'ERROR';
-      const endpoint = log.details?.endpoint || '';
-      const errorMsg = log.errorMessage || '';
+    // Stream logs in batches to avoid memory issues
+    const BATCH_SIZE = 1000;
+    let offset = 0;
+    let hasMore = true;
 
-      return [
-        new Date(log.createdAt).toLocaleString('de-DE'),
-        userEmail,
-        userRole,
-        log.action,
-        log.targetType || '',
-        log.targetId || '',
-        status,
-        log.ipAddress,
-        endpoint,
-        errorMsg
-      ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',');
-    });
+    while (hasMore) {
+      const batch = await AuditLog.find(query)
+        .populate('userId', 'email firstName lastName role')
+        .sort({ timestamp: -1 })
+        .skip(offset)
+        .limit(BATCH_SIZE)
+        .lean();
 
-    const csv = [csvHeaders.join(','), ...csvRows].join('\n');
+      if (batch.length === 0) {
+        hasMore = false;
+        break;
+      }
 
-    // Set headers for CSV download
-    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="audit-logs-${new Date().toISOString().split('T')[0]}.csv"`);
-    res.send('\ufeff' + csv); // UTF-8 BOM for Excel compatibility
+      // Write batch to response
+      for (const log of batch) {
+        const userEmail = log.userId?.email || 'System';
+        const userRole = log.userRole || (log.userId?.role || 'system');
+        const status = log.status || 'UNKNOWN';
+        const endpoint = log.endpoint || '';
+        const errorMsg = (log.errorMessage || '').replace(/,/g, ';');
+
+        const row = [
+          new Date(log.timestamp).toLocaleString('de-DE'),
+          userEmail,
+          userRole,
+          log.action,
+          log.resource || '',
+          log.resourceId || '',
+          status,
+          log.ipAddress,
+          endpoint,
+          errorMsg
+        ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',') + '\n';
+
+        res.write(row);
+      }
+
+      offset += BATCH_SIZE;
+
+      if (batch.length < BATCH_SIZE) {
+        hasMore = false;
+      }
+    }
+
+    res.end();
+
   } catch (error) {
     logger.error('Failed to export audit logs:', error);
-    res.status(500).json({ error: error.message });
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
   }
 });
 
@@ -262,16 +339,16 @@ router.get('/stats/summary', async (req, res) => {
     // Build date range query
     const query = {};
     if (startDate || endDate) {
-      query.createdAt = {};
+      query.timestamp = {};
       if (startDate) {
         const start = new Date(startDate);
         start.setHours(0, 0, 0, 0);
-        query.createdAt.$gte = start;
+        query.timestamp.$gte = start;
       }
       if (endDate) {
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
-        query.createdAt.$lte = end;
+        query.timestamp.$lte = end;
       }
     }
 
@@ -284,8 +361,8 @@ router.get('/stats/summary', async (req, res) => {
       resourceStats
     ] = await Promise.all([
       AuditLog.countDocuments(query),
-      AuditLog.countDocuments({ ...query, success: true }),
-      AuditLog.countDocuments({ ...query, success: false }),
+      AuditLog.countDocuments({ ...query, status: 'SUCCESS' }),
+      AuditLog.countDocuments({ ...query, status: 'ERROR' }),
       AuditLog.aggregate([
         { $match: query },
         { $group: { _id: '$action', count: { $sum: 1 } } },
@@ -294,7 +371,7 @@ router.get('/stats/summary', async (req, res) => {
       ]),
       AuditLog.aggregate([
         { $match: query },
-        { $group: { _id: '$targetType', count: { $sum: 1 } } },
+        { $group: { _id: '$resource', count: { $sum: 1 } } },
         { $sort: { count: -1 } },
         { $limit: 10 }
       ])
@@ -317,7 +394,7 @@ router.get('/stats/summary', async (req, res) => {
  * DELETE /api/audit-logs/all - Delete all audit logs
  * Admin only - requires confirmation
  */
-router.delete('/all', async (req, res) => {
+router.delete('/all', deleteLimiter, async (req, res) => {
   try {
     const result = await AuditLog.deleteMany({});
 
@@ -339,9 +416,18 @@ router.delete('/all', async (req, res) => {
 /**
  * DELETE /api/audit-logs/old - Delete old audit logs (older than specified days)
  */
-router.delete('/old', async (req, res) => {
+router.delete('/old', deleteLimiter, async (req, res) => {
   try {
-    const { days = 30 } = req.query; // Default: delete logs older than 30 days
+    // Validate query parameter
+    const { error, value } = deleteOldLogsSchema.validate(req.query);
+    if (error) {
+      return res.status(400).json({
+        error: 'Ungültige Eingabe',
+        details: error.details[0].message
+      });
+    }
+
+    const { days } = value;
 
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - parseInt(days));

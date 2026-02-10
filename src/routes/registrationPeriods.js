@@ -30,6 +30,20 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 // All routes require admin authentication
 router.use(requireAuth);
 router.use(requireRole(['admin']));
@@ -307,6 +321,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
       });
     }
 
+    // Capture BEFORE state
+    const beforeState = period.toObject();
+
     const {
       name,
       season,
@@ -336,6 +353,14 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
       periodId: period._id,
       userId: req.user.id
     });
+
+    // Attach before/after to req for audit log
+    const afterState = period.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       success: true,

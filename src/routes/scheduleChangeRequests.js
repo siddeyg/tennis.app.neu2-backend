@@ -4,6 +4,7 @@ import Student from '../models/Student.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -71,7 +72,7 @@ router.get('/:id', async (req, res) => {
  * @desc    Approve a schedule change request and update student schedule
  * @access  Private (admin only)
  */
-router.post('/:id/approve', async (req, res) => {
+router.post('/:id/approve', auditLogMiddleware({ action: 'UPDATE', resource: 'ScheduleChangeRequest', metadata: { critical: true, action: 'approve_request' } }), async (req, res) => {
   try {
     const { adminResponse } = req.body;
     const adminId = req.user._id;
@@ -182,7 +183,7 @@ router.post('/:id/approve', async (req, res) => {
  * @desc    Reject a schedule change request
  * @access  Private (admin only)
  */
-router.post('/:id/reject', async (req, res) => {
+router.post('/:id/reject', auditLogMiddleware({ action: 'UPDATE', resource: 'ScheduleChangeRequest', metadata: { action: 'reject_request' } }), async (req, res) => {
   try {
     const { adminResponse } = req.body;
     const adminId = req.user._id;
@@ -227,7 +228,7 @@ router.post('/:id/reject', async (req, res) => {
  * @desc    Delete a schedule change request (admin cleanup)
  * @access  Private (admin only)
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'ScheduleChangeRequest' }), async (req, res) => {
   try {
     const changeRequest = await ScheduleChangeRequest.findById(req.params.id);
 

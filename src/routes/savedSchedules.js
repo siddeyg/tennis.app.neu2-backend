@@ -5,6 +5,7 @@ import Student from "../models/Student.js";
 import Coach from "../models/Coach.js";
 import Schedule from "../models/Schedule.js";
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST - Save current schedule state
-router.post("/", async (req, res) => {
+router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'SavedSchedule' }), async (req, res) => {
   try {
     const { name, description, periodId } = req.body;
 
@@ -130,7 +131,7 @@ router.post("/", async (req, res) => {
 });
 
 // POST /import - Create saved schedule from imported JSON data
-router.post("/import", async (req, res) => {
+router.post("/import", auditLogMiddleware({ action: 'IMPORT', resource: 'SavedSchedule', metadata: { critical: true } }), async (req, res) => {
   try {
     const { name, description, students, coaches, schedule } = req.body;
 
@@ -192,7 +193,7 @@ router.post("/import", async (req, res) => {
 });
 
 // PUT - Update saved schedule (rename/edit description)
-router.put("/:id", async (req, res) => {
+router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'SavedSchedule' }), async (req, res) => {
   try {
     const { name, description } = req.body;
 
@@ -214,7 +215,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE - Remove saved schedule
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'SavedSchedule', metadata: { critical: true } }), async (req, res) => {
   try {
     const savedSchedule = await SavedSchedule.findByIdAndDelete(req.params.id);
 
@@ -230,7 +231,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // POST - Load saved schedule (replace current DB state)
-router.post("/:id/load", async (req, res) => {
+router.post("/:id/load", auditLogMiddleware({ action: 'UPDATE', resource: 'Schedule', metadata: { critical: true, action: 'load_saved_schedule' } }), async (req, res) => {
   try {
     // User info (will be replaced by new auth system)
     const userId = "system-user";

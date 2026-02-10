@@ -20,6 +20,20 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 /**
  * POST /api/attendance
  *
@@ -187,6 +201,9 @@ router.put('/:id', requireAuth, auditLogMiddleware({ action: 'UPDATE', resource:
       });
     }
 
+    // Capture BEFORE state
+    const beforeState = attendance.toObject();
+
     // Authorization check
     const isCoach = userRole === 'trainer';
     const isAdmin = userRole === 'admin';
@@ -233,6 +250,14 @@ router.put('/:id', requireAuth, auditLogMiddleware({ action: 'UPDATE', resource:
 
     // Populate for response
     await attendance.populate('students.studentId', 'firstName lastName');
+
+    // Attach before/after to req for audit log
+    const afterState = attendance.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json(attendance);
 

@@ -5,6 +5,20 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 // GET settings
 router.get("/", async (req, res) => {
   try {
@@ -30,6 +44,9 @@ router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'Settings' }), 
     if (!settings) {
       settings = new Settings({ singleton: true });
     }
+
+    // Capture BEFORE state
+    const beforeState = settings.toObject();
 
     if (req.body.courseCapacity) {
       settings.courseCapacity = {
@@ -63,6 +80,15 @@ router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'Settings' }), 
     }
 
     await settings.save();
+
+    // Attach before/after to req for audit log
+    const afterState = settings.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
+
     res.json(settings);
   } catch (error) {
     logger.error("Error updating settings", { error: error.message, stack: error.stack });

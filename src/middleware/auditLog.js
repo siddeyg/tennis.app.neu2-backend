@@ -2,27 +2,54 @@ import AuditLog from '../models/AuditLog.js';
 import logger from '../utils/logger.js';
 
 /**
- * Sanitize request body - remove sensitive fields
+ * Sanitize request body - remove sensitive fields (recursive)
  */
 function sanitizeBody(body) {
   if (!body) return null;
 
-  const sanitized = { ...body };
+  const sensitiveFields = ['password', 'confirmPassword', 'token', 'refreshToken', 'resetToken', 'verificationToken', 'secret', 'apiKey'];
+  const ibanPattern = /\biban\b/i;
 
-  // Remove sensitive fields
-  delete sanitized.password;
-  delete sanitized.confirmPassword;
-  delete sanitized.token;
-  delete sanitized.refreshToken;
-  delete sanitized.resetToken;
-  delete sanitized.verificationToken;
+  // Recursive sanitization
+  const sanitize = (obj) => {
+    if (Array.isArray(obj)) {
+      return obj.map(item => sanitize(item));
+    }
 
-  // Partial IBAN masking (show last 4 digits only)
-  if (sanitized.iban) {
-    sanitized.iban = '****' + sanitized.iban.slice(-4);
-  }
+    if (obj && typeof obj === 'object') {
+      const sanitized = {};
 
-  return sanitized;
+      for (const [key, value] of Object.entries(obj)) {
+        const lowerKey = key.toLowerCase();
+
+        // Remove sensitive fields entirely
+        if (sensitiveFields.includes(lowerKey)) {
+          sanitized[key] = '[REDACTED]';
+        }
+        // Mask IBAN fields (recursive check)
+        else if (ibanPattern.test(key)) {
+          if (typeof value === 'string' && value.length > 4) {
+            sanitized[key] = value.substring(0, 4) + '***' + value.substring(value.length - 4);
+          } else {
+            sanitized[key] = '[MASKED]';
+          }
+        }
+        // Recursively sanitize nested objects/arrays
+        else if (typeof value === 'object' && value !== null) {
+          sanitized[key] = sanitize(value);
+        }
+        else {
+          sanitized[key] = value;
+        }
+      }
+
+      return sanitized;
+    }
+
+    return obj;
+  };
+
+  return sanitize(body);
 }
 
 /**
@@ -109,6 +136,11 @@ export function auditLogMiddleware(options = {}) {
       // Determine resource ID from URL params
       const resourceId = req.params.id || req.params.studentId || req.params.coachId;
 
+      // Merge options.metadata with req.auditMetadata if present
+      const combinedMetadata = req.auditMetadata
+        ? { ...options.metadata, ...req.auditMetadata }
+        : options.metadata;
+
       // Create audit log entry
       await createAuditLog({
         userId: req.user?.id || req.user?._id || req.portalUser?.id || req.portalUser?._id,
@@ -124,7 +156,7 @@ export function auditLogMiddleware(options = {}) {
         userAgent: req.get('user-agent'),
         status: responseStatus,
         errorMessage: responseStatus === 'ERROR' ? responseData?.error || responseData?.message : null,
-        metadata: options.metadata
+        metadata: combinedMetadata
       });
     });
 

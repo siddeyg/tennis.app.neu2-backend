@@ -7,6 +7,20 @@ import { auditLogMiddleware } from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 /**
  * GET /api/users/active
  * Get active users (logged in within last 60 minutes)
@@ -121,6 +135,9 @@ router.put("/:id",
       return res.status(404).json({ error: "Benutzer nicht gefunden" });
     }
 
+    // Capture BEFORE state
+    const beforeState = user.toObject();
+
     // Check if email is being changed and if it's already taken
     if (email && email.toLowerCase() !== user.email) {
       const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -137,6 +154,14 @@ router.put("/:id",
     if (typeof isActive === "boolean") user.isActive = isActive;
 
     await user.save();
+
+    // Attach before/after to req for audit log
+    const afterState = user.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       message: "Benutzer erfolgreich aktualisiert",

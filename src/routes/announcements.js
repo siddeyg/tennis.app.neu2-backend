@@ -5,6 +5,20 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 /**
  * @route   GET /api/announcements
  * @desc    Get all announcements (admin view)
@@ -110,6 +124,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Announcemen
       return res.status(404).json({ error: 'Ankündigung nicht gefunden' });
     }
 
+    // Capture BEFORE state
+    const beforeState = announcement.toObject();
+
     // Validation
     if (title && title.length > 200) {
       return res.status(400).json({ error: 'Titel darf maximal 200 Zeichen lang sein' });
@@ -135,6 +152,14 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Announcemen
     // Populate for response
     await announcement.populate('createdBy', 'firstName lastName email');
     await announcement.populate('lastModifiedBy', 'firstName lastName email');
+
+    // Attach before/after to req for audit log
+    const afterState = announcement.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       message: 'Ankündigung erfolgreich aktualisiert',

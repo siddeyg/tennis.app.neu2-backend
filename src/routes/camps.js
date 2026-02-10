@@ -27,6 +27,20 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 // All routes require admin authentication
 router.use(requireAuth);
 router.use(requireRole(['admin']));
@@ -215,6 +229,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       });
     }
 
+    // Capture BEFORE state
+    const beforeState = camp.toObject();
+
     // Update allowed fields
     const allowedFields = [
       'title', 'description', 'campType', 'schedule',
@@ -235,6 +252,14 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
     // Populate for response
     await camp.populate('createdBy', 'firstName lastName email');
     await camp.populate('trainerId', 'name');
+
+    // Attach before/after to req for audit log
+    const afterState = camp.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       success: true,

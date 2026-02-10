@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import SupportTicket from '../models/SupportTicket.js';
 import User from '../models/User.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
@@ -9,10 +10,52 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 // Escape special regex characters to prevent ReDoS attacks
 function escapeRegex(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+// Sanitize HTML/XSS from text content
+const sanitizeText = (text) => {
+  if (!text) return text;
+  // Strip all HTML tags
+  return text.replace(/<[^>]*>/g, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim();
+};
+
+// Admin message creation rate limiter
+const adminReplyLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,  // 1 minute
+  max: 30,  // 30 messages per minute
+  message: { error: 'Zu viele Nachrichten. Bitte warten Sie eine Minute.' },
+  keyGenerator: (req) => req.user.id,
+  skip: (req) => process.env.NODE_ENV === 'test'
+});
+
+// Ticket creation rate limiter (admin)
+const adminCreateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 50,  // 50 tickets per 15 minutes
+  message: { error: 'Zu viele Tickets erstellt. Bitte warten Sie.' },
+  keyGenerator: (req) => req.user.id,
+  skip: (req) => process.env.NODE_ENV === 'test'
+});
 
 // All routes require admin authentication
 router.use(requireAuth);
@@ -82,20 +125,19 @@ router.get('/', async (req, res) => {
     }
 
     if (search) {
-      // Validate search length to prevent extremely long searches
+      // Validate search length
       if (search.length > 50) {
         return res.status(400).json({ error: 'Suchbegriff zu lang (max 50 Zeichen)' });
       }
 
-      // Escape special regex characters to prevent ReDoS attacks
-      const escapedSearch = escapeRegex(search);
-
-      filter.$or = [
-        { subject: { $regex: escapedSearch, $options: 'i' } },
-        { 'createdBy.name': { $regex: escapedSearch, $options: 'i' } },
-        { 'createdBy.email': { $regex: escapedSearch, $options: 'i' } },
-        { ticketNumber: isNaN(search) ? -1 : parseInt(search, 10) }
-      ];
+      // Check if searching by ticket number
+      const ticketNumber = parseInt(search, 10);
+      if (!isNaN(ticketNumber)) {
+        filter.ticketNumber = ticketNumber;
+      } else {
+        // Use MongoDB text search
+        filter.$text = { $search: search };
+      }
     }
 
     // Validate and sanitize query parameters
@@ -159,7 +201,7 @@ router.get('/:id', async (req, res) => {
 
 // POST /api/support-tickets/:id/messages
 // Admin adds reply to ticket
-router.post('/:id/messages', auditLogMiddleware({ action: 'CREATE', resource: 'TicketMessage' }), async (req, res) => {
+router.post('/:id/messages', adminReplyLimiter, auditLogMiddleware({ action: 'CREATE', resource: 'TicketMessage' }), async (req, res) => {
   try {
     const { content } = req.body;
 
@@ -185,7 +227,7 @@ router.post('/:id/messages', auditLogMiddleware({ action: 'CREATE', resource: 'T
       senderType: 'admin',
       senderId: req.user.id,
       senderName: req.user.username || 'Admin',
-      content: content.trim(),
+      content: sanitizeText(content.trim()),
       isRead: false
     };
 
@@ -229,6 +271,74 @@ router.post('/:id/messages', auditLogMiddleware({ action: 'CREATE', resource: 'T
   }
 });
 
+// GET /api/support-tickets/:id/messages - Fetch all messages for a ticket
+router.get('/:id/messages', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    }).lean();
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    const messages = ticket.messages.filter(m => !m.isDeleted);
+    res.json(messages);
+  } catch (error) {
+    logger.error('Error fetching ticket messages', {
+      error: error.message,
+      ticketId: req.params.id,
+      userId: req.user?.id
+    });
+    res.status(500).json({ error: 'Serverfehler beim Laden der Nachrichten' });
+  }
+});
+
+// POST /api/support-tickets/:id/read - Mark all student messages as read
+router.post('/:id/read', async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    let readCount = 0;
+    ticket.messages.forEach(msg => {
+      if (!msg.isRead && msg.senderType === 'student') {
+        msg.isRead = true;
+        readCount++;
+      }
+    });
+
+    if (readCount > 0) {
+      // Safely decrement counter (prevent negative values)
+      if (ticket.unreadByAdmin > 0) {
+        ticket.unreadByAdmin = Math.max(0, ticket.unreadByAdmin - readCount);
+      }
+      await ticket.save();
+      logger.info('Marked ticket messages as read', {
+        ticketId: req.params.id,
+        readCount,
+        adminId: req.user?.id
+      });
+    }
+
+    res.json({ success: true, readCount });
+  } catch (error) {
+    logger.error('Error marking ticket as read', {
+      error: error.message,
+      ticketId: req.params.id,
+      userId: req.user?.id
+    });
+    res.status(500).json({ error: 'Serverfehler beim Markieren als gelesen' });
+  }
+});
+
 // PUT /api/support-tickets/:id/status
 // Change ticket status
 router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTicket', metadata: { operation: 'CHANGE_STATUS' } }), async (req, res) => {
@@ -249,7 +359,31 @@ router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
       return res.status(404).json({ error: 'Ticket nicht gefunden' });
     }
 
+    // Capture BEFORE state
+    const beforeState = ticket.toObject();
     const oldStatus = ticket.status;
+
+    // State machine validation
+    const ALLOWED_TRANSITIONS = {
+      'open': ['in-progress', 'waiting-customer', 'resolved', 'closed'],
+      'in-progress': ['waiting-customer', 'resolved', 'closed', 'open'],
+      'waiting-customer': ['in-progress', 'resolved', 'closed', 'open'],
+      'resolved': ['closed', 'open'],
+      'closed': [] // Cannot transition from closed
+    };
+
+    if (oldStatus === 'closed') {
+      return res.status(400).json({
+        error: 'Geschlossene Tickets können nicht wieder geöffnet werden'
+      });
+    }
+
+    if (!ALLOWED_TRANSITIONS[oldStatus].includes(status)) {
+      return res.status(400).json({
+        error: `Ungültiger Statusübergang von "${oldStatus}" zu "${status}"`
+      });
+    }
+
     ticket.status = status;
 
     // Add to status history
@@ -271,6 +405,14 @@ router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
       logger.error('Error sending status change email', { error: emailError.message, stack: emailError.stack });
       // Don't fail the request if email fails
     }
+
+    // Attach before/after to req for audit log
+    const afterState = ticket.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       success: true,
@@ -306,10 +448,21 @@ router.put('/:id/assign', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
       return res.status(404).json({ error: 'Ticket nicht gefunden' });
     }
 
+    // Capture BEFORE state
+    const beforeState = ticket.toObject();
+
     ticket.assignedTo = assignedTo || null;
     ticket.assignedAt = assignedTo ? new Date() : null;
 
     await ticket.save();
+
+    // Attach before/after to req for audit log
+    const afterState = ticket.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       success: true,
@@ -337,11 +490,14 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTick
       return res.status(404).json({ error: 'Ticket nicht gefunden' });
     }
 
+    // Capture BEFORE state
+    const beforeState = ticket.toObject();
+
     if (subject !== undefined) {
       if (subject.length < 5 || subject.length > 200) {
         return res.status(400).json({ error: 'Betreff muss 5-200 Zeichen lang sein' });
       }
-      ticket.subject = subject.trim();
+      ticket.subject = sanitizeText(subject.trim());
     }
 
     if (priority !== undefined) {
@@ -361,6 +517,14 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTick
     }
 
     await ticket.save();
+
+    // Attach before/after to req for audit log
+    const afterState = ticket.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: getChangedFields(beforeState, afterState)
+    };
 
     res.json({
       success: true,
@@ -422,7 +586,10 @@ router.post('/:id/messages/:messageId/read', async (req, res) => {
 
     if (!message.isRead && message.senderType === 'student') {
       message.isRead = true;
-      ticket.unreadByAdmin = Math.max(0, ticket.unreadByAdmin - 1);
+      // Safely decrement counter (prevent negative values)
+      if (ticket.unreadByAdmin > 0) {
+        ticket.unreadByAdmin -= 1;
+      }
       await ticket.save();
     }
 

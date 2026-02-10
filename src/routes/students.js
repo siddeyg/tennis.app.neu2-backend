@@ -8,6 +8,20 @@ import auditLogMiddleware from "../middleware/auditLog.js";
 
 const router = express.Router();
 
+// Helper function to identify changed fields
+function getChangedFields(before, after) {
+  const changes = {};
+  for (const key in after) {
+    if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
+      changes[key] = {
+        old: before[key],
+        new: after[key]
+      };
+    }
+  }
+  return changes;
+}
+
 // Validation helper for student data
 function validateStudentData(data) {
   const errors = [];
@@ -382,6 +396,14 @@ router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Student'
 // Schüler-Daten aktualisieren
 router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' }), async (req, res) => {
   try {
+    const studentId = req.params.id;
+
+    // Capture BEFORE state
+    const beforeState = await Student.findById(studentId).lean();
+    if (!beforeState) {
+      return res.status(404).json({ error: "Schüler nicht gefunden" });
+    }
+
     const {
       day,
       hour,
@@ -446,7 +468,7 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
     };
 
     const result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: studentId },
       updateData,
       { returnDocument: 'after' }
     );
@@ -457,6 +479,12 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
       return res.status(404).json({ error: "Schüler nicht gefunden" });
     }
 
+    // Attach before/after to req for audit log
+    req.auditMetadata = {
+      before: beforeState,
+      after: student,
+      changes: getChangedFields(beforeState, student)
+    };
 
     res.json(student);
   } catch (error) {

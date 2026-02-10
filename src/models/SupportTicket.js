@@ -158,6 +158,38 @@ supportTicketSchema.index({ updatedAt: -1 });
 supportTicketSchema.index({ priority: 1, status: 1 });
 supportTicketSchema.index({ ticketNumber: 1 });
 
+// Text index for search
+supportTicketSchema.index({
+  subject: 'text',
+  'createdBy.name': 'text',
+  'createdBy.email': 'text'
+}, {
+  name: 'ticket_search_text_index',
+  weights: {
+    subject: 10,
+    'createdBy.name': 5,
+    'createdBy.email': 5
+  }
+});
+
+// Unread count indexes
+supportTicketSchema.index({ unreadByAdmin: 1, isDeleted: 1 }, {
+  name: 'unread_admin_index'
+});
+
+supportTicketSchema.index({ unreadByStudent: 1, isDeleted: 1 }, {
+  name: 'unread_student_index'
+});
+
+// Compound index for student unread queries
+supportTicketSchema.index({
+  'createdBy.studentPortalUserId': 1,
+  unreadByStudent: 1,
+  isDeleted: 1
+}, {
+  name: 'student_unread_index'
+});
+
 // Auto-increment ticket number
 supportTicketSchema.pre('save', async function(next) {
   if (this.isNew) {
