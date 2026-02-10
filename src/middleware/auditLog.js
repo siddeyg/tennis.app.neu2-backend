@@ -120,7 +120,7 @@ export function auditLogMiddleware(options = {}) {
         method: req.method,
         endpoint: req.originalUrl,
         requestBody: req.body,
-        ipAddress: req.ip || req.connection.remoteAddress,
+        ipAddress: getClientIp(req),
         userAgent: req.get('user-agent'),
         status: responseStatus,
         errorMessage: responseStatus === 'ERROR' ? responseData?.error || responseData?.message : null,
@@ -130,6 +130,35 @@ export function auditLogMiddleware(options = {}) {
 
     next();
   };
+}
+
+/**
+ * Extract real client IP address from request
+ * Handles proxies (Caddy) and direct connections
+ */
+function getClientIp(req) {
+  // 1. Check X-Forwarded-For header (Caddy in production)
+  const forwardedFor = req.get('x-forwarded-for');
+  if (forwardedFor) {
+    // X-Forwarded-For can be comma-separated list, take first (real client)
+    return forwardedFor.split(',')[0].trim();
+  }
+
+  // 2. Check X-Real-IP header (alternative proxy header)
+  const realIp = req.get('x-real-ip');
+  if (realIp) {
+    return realIp;
+  }
+
+  // 3. Use Express parsed IP (with trust proxy)
+  if (req.ip) {
+    // Remove IPv6 prefix if present
+    return req.ip.replace('::ffff:', '');
+  }
+
+  // 4. Fallback to connection remote address
+  const remoteAddr = req.connection?.remoteAddress || req.socket?.remoteAddress;
+  return remoteAddr ? remoteAddr.replace('::ffff:', '') : 'unknown';
 }
 
 /**
