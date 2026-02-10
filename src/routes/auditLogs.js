@@ -313,4 +313,59 @@ router.get('/stats/summary', async (req, res) => {
   }
 });
 
+/**
+ * DELETE /api/audit-logs/all - Delete all audit logs
+ * Admin only - requires confirmation
+ */
+router.delete('/all', async (req, res) => {
+  try {
+    const result = await AuditLog.deleteMany({});
+
+    logger.info('Audit logs cleared', {
+      deletedCount: result.deletedCount,
+      clearedBy: req.user.email
+    });
+
+    res.json({
+      message: 'All audit logs deleted successfully',
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    logger.error('Failed to delete audit logs:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/audit-logs/old - Delete old audit logs (older than specified days)
+ */
+router.delete('/old', async (req, res) => {
+  try {
+    const { days = 30 } = req.query; // Default: delete logs older than 30 days
+
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - parseInt(days));
+
+    const result = await AuditLog.deleteMany({
+      timestamp: { $lt: cutoffDate }
+    });
+
+    logger.info('Old audit logs deleted', {
+      deletedCount: result.deletedCount,
+      olderThan: days + ' days',
+      cutoffDate: cutoffDate,
+      deletedBy: req.user.email
+    });
+
+    res.json({
+      message: `Deleted audit logs older than ${days} days`,
+      deletedCount: result.deletedCount,
+      cutoffDate: cutoffDate
+    });
+  } catch (error) {
+    logger.error('Failed to delete old audit logs:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
