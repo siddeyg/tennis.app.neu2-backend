@@ -26,6 +26,7 @@ import Coach from '../models/Coach.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -83,7 +84,7 @@ router.get('/', async (req, res) => {
  *
  * Body: RegistrationPeriod fields
  */
-router.post('/', async (req, res) => {
+router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationPeriod' }), async (req, res) => {
   try {
     const {
       name,
@@ -287,7 +288,7 @@ router.get('/:id', async (req, res) => {
  * PUT /api/registration-periods/:id
  * Update registration period
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod' }), async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
 
@@ -356,7 +357,7 @@ router.put('/:id', async (req, res) => {
  *
  * Only allows deletion if no submissions exist
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'RegistrationPeriod', metadata: { cascade: true } }), async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
 
@@ -411,7 +412,7 @@ router.delete('/:id', async (req, res) => {
  * Creates SavedSchedule linked to period and sets as currentPlanId.
  * Optionally copies coach records from another period's current plan.
  */
-router.post('/:id/create-plan', async (req, res) => {
+router.post('/:id/create-plan', auditLogMiddleware({ action: 'CREATE', resource: 'SavedSchedule' }), async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
 
@@ -546,7 +547,7 @@ router.post('/:id/create-plan', async (req, res) => {
  *
  * Sets status to 'open' and optionally isActive to true
  */
-router.post('/:id/open', async (req, res) => {
+router.post('/:id/open', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod', metadata: { operation: 'OPEN' } }), async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
 
@@ -594,7 +595,7 @@ router.post('/:id/open', async (req, res) => {
  *
  * Sets status to 'closed' and isActive to false
  */
-router.post('/:id/close', async (req, res) => {
+router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod', metadata: { operation: 'CLOSE' } }), async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
 
@@ -692,7 +693,7 @@ router.get('/:id/submissions', async (req, res) => {
  * Body: (optional)
  * - dryRun: boolean - if true, returns what would be created/updated without saving
  */
-router.post('/:id/process-all', async (req, res) => {
+router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'SeasonalRegistration', metadata: { critical: true, operation: 'BULK_PROCESS' } }), async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
 

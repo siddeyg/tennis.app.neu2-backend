@@ -1,6 +1,7 @@
 import express from "express";
 import UserSettings from "../models/UserSettings.js";
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
  * Update settings for currently logged-in user
  * Protected route - requires authentication
  */
-router.put("/", async (req, res) => {
+router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'UserSettings' }), async (req, res) => {
   try {
     const userId = req.user._id;
     const { allowResetSchedule } = req.body;

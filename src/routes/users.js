@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import LoginSession from "../models/LoginSession.js";
 import bcrypt from "bcryptjs";
 import logger from '../utils/logger.js';
+import { auditLogMiddleware } from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -11,7 +12,9 @@ const router = express.Router();
  * Get active users (logged in within last 60 minutes)
  * Admin only
  */
-router.get("/active", async (req, res) => {
+router.get("/active",
+  auditLogMiddleware({ action: 'ACCESS', resource: 'users', metadata: { operation: 'active_users' } }),
+  async (req, res) => {
   try {
     const sixtyMinutesAgo = new Date(Date.now() - 60 * 60 * 1000);
 
@@ -34,7 +37,9 @@ router.get("/active", async (req, res) => {
  * Get login history for specific user (last 30 logins)
  * Admin only
  */
-router.get("/:userId/login-history", async (req, res) => {
+router.get("/:userId/login-history",
+  auditLogMiddleware({ action: 'ACCESS', resource: 'users', metadata: { operation: 'login_history' } }),
+  async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -66,7 +71,9 @@ router.get("/:userId/login-history", async (req, res) => {
  * GET /api/users
  * Get all users (admin only - will be protected in server.js)
  */
-router.get("/", async (req, res) => {
+router.get("/",
+  auditLogMiddleware({ action: 'ACCESS', resource: 'users' }),
+  async (req, res) => {
   try {
     const users = await User.find().select("-password").sort({ createdAt: -1 });
     res.json(users);
@@ -80,7 +87,9 @@ router.get("/", async (req, res) => {
  * GET /api/users/:id
  * Get specific user (admin only)
  */
-router.get("/:id", async (req, res) => {
+router.get("/:id",
+  auditLogMiddleware({ action: 'ACCESS', resource: 'users' }),
+  async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
 
@@ -99,7 +108,9 @@ router.get("/:id", async (req, res) => {
  * PUT /api/users/:id
  * Update user details (admin only)
  */
-router.put("/:id", async (req, res) => {
+router.put("/:id",
+  auditLogMiddleware({ action: 'UPDATE', resource: 'users' }),
+  async (req, res) => {
   try {
     const { firstName, lastName, email, role, isActive } = req.body;
 
@@ -142,7 +153,9 @@ router.put("/:id", async (req, res) => {
  * Change user password
  * Admin can change any password, users can change their own
  */
-router.put("/:id/password", async (req, res) => {
+router.put("/:id/password",
+  auditLogMiddleware({ action: 'UPDATE', resource: 'users', metadata: { operation: 'password_change' } }),
+  async (req, res) => {
   try {
     const { newPassword, currentPassword } = req.body;
     const userId = req.params.id;
@@ -192,7 +205,9 @@ router.put("/:id/password", async (req, res) => {
  * DELETE /api/users/:id
  * Deactivate user (soft delete - admin only)
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",
+  auditLogMiddleware({ action: 'DELETE', resource: 'users' }),
+  async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -220,7 +235,9 @@ router.delete("/:id", async (req, res) => {
  * POST /api/users/:id/activate
  * Reactivate deactivated user (admin only)
  */
-router.post("/:id/activate", async (req, res) => {
+router.post("/:id/activate",
+  auditLogMiddleware({ action: 'UPDATE', resource: 'users', metadata: { operation: 'activate' } }),
+  async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 

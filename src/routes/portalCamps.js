@@ -18,6 +18,7 @@ import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -141,7 +142,7 @@ router.get('/:id', async (req, res) => {
  * - emergencyContactName, emergencyContactPhone: required for children
  * - medicalNotes: optional
  */
-router.post('/:id/register', async (req, res) => {
+router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'CampRegistration' }), async (req, res) => {
   // Check if transactions are supported (replica set/mongos only)
   // Respect USE_TRANSACTIONS setting (false for standalone MongoDB)
   const useTransactions = process.env.USE_TRANSACTIONS === 'true';
@@ -426,7 +427,7 @@ router.post('/:id/register', async (req, res) => {
  * DELETE /api/portal/camps/registrations/:id
  * Cancel my registration (with waitlist auto-promotion)
  */
-router.delete('/registrations/:id', async (req, res) => {
+router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resource: 'CampRegistration' }), async (req, res) => {
   // Check if transactions are supported (replica set/mongos only)
   // Respect USE_TRANSACTIONS setting (false for standalone MongoDB)
   const useTransactions = process.env.USE_TRANSACTIONS === 'true';

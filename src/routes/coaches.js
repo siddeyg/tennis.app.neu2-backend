@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import Coach from "../models/Coach.js";
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get("/", async (req, res) => {
 });
 
 // Trainer hinzufügen
-router.post("/", async (req, res) => {
+router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Coach' }), async (req, res) => {
   try {
     // Validate required fields
     if (!req.body.firstName || !req.body.lastName) {
@@ -35,7 +36,7 @@ router.post("/", async (req, res) => {
 });
 
 // Trainer löschen
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Coach' }), async (req, res) => {
   try {
     const result = await Coach.collection.findOneAndDelete(
       { _id: req.params.id }
@@ -57,7 +58,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Trainer-Daten aktualisieren
-router.put("/:id", async (req, res) => {
+router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), async (req, res) => {
   try {
     const {
       firstName,

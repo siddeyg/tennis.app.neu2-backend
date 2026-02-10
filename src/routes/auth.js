@@ -7,13 +7,15 @@ import User from "../models/User.js";
 import LoginSession from "../models/LoginSession.js";
 import UserSettings from "../models/UserSettings.js";
 import logger from "../utils/logger.js";
+import { createAuditLog, auditLogMiddleware } from "../middleware/auditLog.js";
 
 const router = express.Router();
 
 // IP whitelist - these IPs bypass all rate limits
-const RATE_LIMIT_WHITELIST = [
-  '84.119.177.212', // Admin/Developer IP
-];
+// Loaded from environment variable (comma-separated list)
+const RATE_LIMIT_WHITELIST = process.env.IP_WHITELIST
+  ? process.env.IP_WHITELIST.split(',').map(ip => ip.trim())
+  : [];
 
 // Helper function to check if IP is whitelisted
 const isWhitelisted = (req) => {
@@ -47,13 +49,43 @@ const refreshLimiter = rateLimit({
  * Rate limited: 5 attempts per 15 minutes
  */
 router.post("/login", loginLimiter, (req, res, next) => {
-  passport.authenticate("local", { session: false }, (err, user, info) => {
+  passport.authenticate("local", { session: false }, async (err, user, info) => {
     if (err) {
       logger.error("Login error", { error: err.message, stack: err.stack });
+      // Log failed login attempt due to server error
+      await createAuditLog({
+        userId: null,
+        userEmail: req.body.email,
+        userRole: 'system',
+        action: 'LOGIN',
+        resource: 'auth',
+        method: 'POST',
+        endpoint: req.originalUrl,
+        requestBody: req.body,
+        ipAddress: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        status: 'ERROR',
+        errorMessage: 'Server-Fehler beim Login'
+      });
       return res.status(500).json({ error: "Server-Fehler beim Login" });
     }
 
     if (!user) {
+      // Log failed login attempt
+      await createAuditLog({
+        userId: null,
+        userEmail: req.body.email,
+        userRole: 'system',
+        action: 'LOGIN',
+        resource: 'auth',
+        method: 'POST',
+        endpoint: req.originalUrl,
+        requestBody: req.body,
+        ipAddress: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        status: 'DENIED',
+        errorMessage: info.message || "Ungültige Anmeldedaten"
+      });
       return res.status(401).json({ error: info.message || "Ungültige Anmeldedaten" });
     }
 
@@ -124,6 +156,22 @@ router.post("/login", loginLimiter, (req, res, next) => {
     LoginSession.createSession(user._id, userAgent)
       .catch(err => logger.error("Error creating login session", { error: err.message, userId: user._id }));
 
+    // Log successful login
+    await createAuditLog({
+      userId: user._id,
+      userEmail: user.email,
+      userRole: user.role,
+      action: 'LOGIN',
+      resource: 'auth',
+      resourceId: user._id.toString(),
+      method: 'POST',
+      endpoint: req.originalUrl,
+      requestBody: req.body,
+      ipAddress: req.ip || req.connection.remoteAddress,
+      userAgent: req.get('user-agent'),
+      status: 'SUCCESS'
+    });
+
     // Return user data (password already excluded by toJSON method)
     res.json({
       message: "Login erfolgreich",
@@ -136,11 +184,14 @@ router.post("/login", loginLimiter, (req, res, next) => {
  * POST /api/auth/logout
  * Clear authentication cookies
  */
-router.post("/logout", (req, res) => {
-  res.clearCookie("authToken");
-  res.clearCookie("refreshToken");
-  res.json({ message: "Logout erfolgreich" });
-});
+router.post("/logout",
+  auditLogMiddleware({ action: 'LOGOUT', resource: 'auth' }),
+  (req, res) => {
+    res.clearCookie("authToken");
+    res.clearCookie("refreshToken");
+    res.json({ message: "Logout erfolgreich" });
+  }
+);
 
 /**
  * GET /api/auth/me
@@ -149,6 +200,7 @@ router.post("/logout", (req, res) => {
  */
 router.get("/me",
   passport.authenticate("jwt", { session: false }),
+  auditLogMiddleware({ action: 'ACCESS', resource: 'auth' }),
   (req, res) => {
     res.json({ user: req.user.toJSON() });
   }
@@ -158,7 +210,10 @@ router.get("/me",
  * POST /api/auth/refresh
  * Refresh access token using refresh token
  */
-router.post("/refresh", refreshLimiter, async (req, res) => {
+router.post("/refresh",
+  refreshLimiter,
+  auditLogMiddleware({ action: 'ACCESS', resource: 'auth', metadata: { operation: 'token_refresh' } }),
+  async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
@@ -221,7 +276,9 @@ router.post("/refresh", refreshLimiter, async (req, res) => {
  * Register new user (admin only)
  * This route will be protected in server.js with requireAuth + requireRole middleware
  */
-router.post("/register", async (req, res) => {
+router.post("/register",
+  auditLogMiddleware({ action: 'CREATE', resource: 'users' }),
+  async (req, res) => {
   try {
     const { email, password, firstName, lastName, role, studentId, coachId } = req.body;
 
@@ -329,7 +386,10 @@ const forgotPasswordLimiter = rateLimit({
   skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
 });
 
-router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
+router.post("/forgot-password",
+  forgotPasswordLimiter,
+  auditLogMiddleware({ action: 'ACCESS', resource: 'auth', metadata: { operation: 'password_reset_request' } }),
+  async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -388,7 +448,9 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
  * POST /api/auth/reset-password
  * Reset password with token
  */
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password",
+  auditLogMiddleware({ action: 'UPDATE', resource: 'auth', metadata: { operation: 'password_reset' } }),
+  async (req, res) => {
   try {
     const { token, newPassword } = req.body;
 
@@ -437,7 +499,9 @@ router.post("/reset-password", async (req, res) => {
  * POST /api/auth/verify-email
  * Verify email address with token
  */
-router.post("/verify-email", async (req, res) => {
+router.post("/verify-email",
+  auditLogMiddleware({ action: 'UPDATE', resource: 'auth', metadata: { operation: 'email_verification' } }),
+  async (req, res) => {
   try {
     const { token } = req.body;
 
@@ -495,7 +559,10 @@ const resendVerificationLimiter = rateLimit({
   skip: isWhitelisted, // Skip rate limiting for whitelisted IPs
 });
 
-router.post("/resend-verification", resendVerificationLimiter, async (req, res) => {
+router.post("/resend-verification",
+  resendVerificationLimiter,
+  auditLogMiddleware({ action: 'ACCESS', resource: 'auth', metadata: { operation: 'resend_verification' } }),
+  async (req, res) => {
   try {
     const { email } = req.body;
 

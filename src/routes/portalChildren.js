@@ -4,6 +4,7 @@ import Student from '../models/Student.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -56,7 +57,7 @@ router.get('/', verifyPortalAuth, async (req, res) => {
 });
 
 // POST /api/portal/children - Add new child
-router.post('/', verifyPortalAuth, async (req, res) => {
+router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resource: 'Child' }), async (req, res) => {
   try {
     const { firstName, lastName, birthdate, sex, member, phone } = req.body;
 
@@ -171,7 +172,7 @@ router.post('/', verifyPortalAuth, async (req, res) => {
 });
 
 // PUT /api/portal/children/:childId - Update child information
-router.put('/:childId', verifyPortalAuth, async (req, res) => {
+router.put('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', resource: 'Child' }), async (req, res) => {
   try {
     const { childId } = req.params;
     const { firstName, lastName, birthdate, sex, member, phone } = req.body;
@@ -268,7 +269,7 @@ router.put('/:childId', verifyPortalAuth, async (req, res) => {
 });
 
 // DELETE /api/portal/children/:childId - Remove child
-router.delete('/:childId', verifyPortalAuth, async (req, res) => {
+router.delete('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'DELETE', resource: 'Child' }), async (req, res) => {
   try {
     const { childId } = req.params;
 

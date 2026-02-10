@@ -23,6 +23,7 @@ import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -106,7 +107,7 @@ router.get('/:id', async (req, res) => {
  *
  * Body: Camp fields
  */
-router.post('/', async (req, res) => {
+router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), async (req, res) => {
   try {
     const {
       title,
@@ -203,7 +204,7 @@ router.post('/', async (req, res) => {
  * PUT /api/camps/:id
  * Update camp
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), async (req, res) => {
   try {
     const camp = await Camp.findById(req.params.id);
 
@@ -259,7 +260,7 @@ router.put('/:id', async (req, res) => {
  * DELETE /api/camps/:id
  * Soft delete camp
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Camp' }), async (req, res) => {
   try {
     const camp = await Camp.findById(req.params.id);
 
@@ -304,7 +305,7 @@ router.delete('/:id', async (req, res) => {
  * POST /api/camps/:id/open
  * Open registration (draft → open)
  */
-router.post('/:id/open', async (req, res) => {
+router.post('/:id/open', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp', metadata: { operation: 'OPEN_REGISTRATION' } }), async (req, res) => {
   try {
     const camp = await Camp.findById(req.params.id);
 
@@ -352,7 +353,7 @@ router.post('/:id/open', async (req, res) => {
  * POST /api/camps/:id/close
  * Close registration (open → closed)
  */
-router.post('/:id/close', async (req, res) => {
+router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp', metadata: { operation: 'CLOSE_REGISTRATION' } }), async (req, res) => {
   try {
     const camp = await Camp.findById(req.params.id);
 
@@ -455,7 +456,7 @@ router.get('/:id/registrations', async (req, res) => {
  * DELETE /api/camps/:id/registrations/:regId
  * Cancel participant registration (admin action)
  */
-router.delete('/:id/registrations/:regId', async (req, res) => {
+router.delete('/:id/registrations/:regId', auditLogMiddleware({ action: 'DELETE', resource: 'CampRegistration' }), async (req, res) => {
   // Check if transactions are supported (replica set/mongos only)
   // Respect USE_TRANSACTIONS setting (false for standalone MongoDB)
   const useTransactions = process.env.USE_TRANSACTIONS === 'true';

@@ -1,10 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { exec } from 'child_process';
-import util from 'util';
 
 const router = express.Router();
-const execPromise = util.promisify(exec);
 
 // Models for collection counts
 import Student from '../models/Student.js';
@@ -15,73 +12,6 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import CampRegistration from '../models/CampRegistration.js';
 import logger from '../utils/logger.js';
-
-// Cache for expensive Docker stats (5 seconds)
-let dockerStatsCache = null;
-let dockerStatsCacheTime = 0;
-const DOCKER_CACHE_DURATION = 5000; // 5 seconds
-
-/**
- * Parse Docker stats output
- * Format: "CPUPerc,MemUsage"
- * Example: "2.34%,150MiB / 2GiB"
- */
-function parseDockerStats(statsString) {
-  try {
-    const [cpuPercent, memUsage] = statsString.trim().split(',');
-    const [usedMem, totalMem] = memUsage.split('/').map(m => m.trim());
-
-    return {
-      cpu: parseFloat(cpuPercent.replace('%', '')),
-      memoryUsed: usedMem,
-      memoryTotal: totalMem
-    };
-  } catch (error) {
-    return { error: 'Failed to parse stats' };
-  }
-}
-
-/**
- * Get Docker container statistics
- * Cached for 5 seconds to avoid excessive Docker API calls
- */
-async function getDockerStats() {
-  const now = Date.now();
-
-  // Return cached stats if still valid
-  if (dockerStatsCache && (now - dockerStatsCacheTime) < DOCKER_CACHE_DURATION) {
-    return dockerStatsCache;
-  }
-
-  try {
-    // Get stats for backend container
-    const { stdout: backendStats } = await execPromise(
-      "docker stats mondo-backend --no-stream --format '{{.CPUPerc}},{{.MemUsage}}'"
-    );
-
-    // Get stats for mongo container
-    const { stdout: mongoStats } = await execPromise(
-      "docker stats mongo --no-stream --format '{{.CPUPerc}},{{.MemUsage}}'"
-    );
-
-    const stats = {
-      backend: parseDockerStats(backendStats),
-      mongo: parseDockerStats(mongoStats)
-    };
-
-    // Update cache
-    dockerStatsCache = stats;
-    dockerStatsCacheTime = now;
-
-    return stats;
-  } catch (error) {
-    logger.error('Docker stats error', { error: error.message, stack: error.stack });
-    return {
-      error: 'Docker stats unavailable',
-      message: 'Ensure Docker socket is mounted and containers are running'
-    };
-  }
-}
 
 /**
  * GET /api/metrics
@@ -185,16 +115,12 @@ router.get('/', async (req, res) => {
       note: 'Session tracking to be implemented'
     };
 
-    // 4. Docker Container Stats (cached)
-    const dockerStats = await getDockerStats();
-
     // Assemble complete metrics response
     const metrics = {
       timestamp: new Date(),
       server: serverHealth,
       database: databaseStatus,
-      users: userActivity,
-      docker: dockerStats
+      users: userActivity
     };
 
     res.json(metrics);

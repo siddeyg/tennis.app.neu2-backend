@@ -20,6 +20,7 @@ import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, decryptIBAN, maskIBAN, validateIBANFormat } from '../utils/encryption.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -128,7 +129,7 @@ router.get('/:id', async (req, res) => {
  *
  * Admins can edit submissions before processing
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration' }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 
@@ -237,7 +238,7 @@ router.put('/:id', async (req, res) => {
  *
  * Only allows deletion of pending submissions
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'SeasonalRegistration' }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 
@@ -282,7 +283,7 @@ router.delete('/:id', async (req, res) => {
  *
  * Creates or updates Student record and marks submission as processed
  */
-router.post('/:id/process', async (req, res) => {
+router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration', metadata: { operation: 'PROCESS' } }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 
@@ -384,7 +385,7 @@ router.post('/:id/process', async (req, res) => {
  * Body:
  * - reason: string - reason for rejection
  */
-router.post('/:id/reject', async (req, res) => {
+router.post('/:id/reject', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration', metadata: { operation: 'REJECT' } }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 

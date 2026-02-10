@@ -1,6 +1,7 @@
 import express from "express";
 import Settings from "../models/Settings.js";
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.get("/", async (req, res) => {
 });
 
 // PUT settings
-router.put("/", async (req, res) => {
+router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'Settings' }), async (req, res) => {
   try {
     let settings = await Settings.findOne({ singleton: true });
 

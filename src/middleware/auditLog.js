@@ -2,106 +2,145 @@ import AuditLog from '../models/AuditLog.js';
 import logger from '../utils/logger.js';
 
 /**
- * Create an audit log entry
- *
- * @param {Object} params
- * @param {String} params.action - Action type (see AuditLog schema enum)
- * @param {String} params.userId - User who performed the action
- * @param {String} params.userRole - User's role at time of action
- * @param {String} params.targetType - Type of target entity (optional)
- * @param {String} params.targetId - ID of target entity (optional)
- * @param {Object} params.details - Action-specific details (optional)
- * @param {String} params.ipAddress - Client IP address
- * @param {String} params.userAgent - Client user agent (optional)
- * @param {Boolean} params.success - Whether action succeeded (default: true)
- * @param {String} params.errorMessage - Error message if failed (optional)
+ * Sanitize request body - remove sensitive fields
  */
-export const createAuditLog = async (params) => {
+function sanitizeBody(body) {
+  if (!body) return null;
+
+  const sanitized = { ...body };
+
+  // Remove sensitive fields
+  delete sanitized.password;
+  delete sanitized.confirmPassword;
+  delete sanitized.token;
+  delete sanitized.refreshToken;
+  delete sanitized.resetToken;
+  delete sanitized.verificationToken;
+
+  // Partial IBAN masking (show last 4 digits only)
+  if (sanitized.iban) {
+    sanitized.iban = '****' + sanitized.iban.slice(-4);
+  }
+
+  return sanitized;
+}
+
+/**
+ * Create audit log entry
+ */
+export async function createAuditLog({
+  userId,
+  userEmail,
+  userRole,
+  action,
+  resource,
+  resourceId,
+  method,
+  endpoint,
+  requestBody,
+  changes,
+  ipAddress,
+  userAgent,
+  status = 'SUCCESS',
+  errorMessage,
+  metadata
+}) {
   try {
     const auditLog = new AuditLog({
-      action: params.action,
-      userId: params.userId,
-      userRole: params.userRole,
-      targetType: params.targetType || null,
-      targetId: params.targetId || null,
-      details: params.details || {},
-      ipAddress: params.ipAddress,
-      userAgent: params.userAgent || null,
-      success: params.success !== undefined ? params.success : true,
-      errorMessage: params.errorMessage || null,
+      userId,
+      userEmail,
+      userRole,
+      action,
+      resource,
+      resourceId,
+      method,
+      endpoint,
+      requestBody: sanitizeBody(requestBody),
+      changes,
+      ipAddress,
+      userAgent,
+      status,
+      errorMessage,
+      metadata
     });
 
     await auditLog.save();
-    logger.info(`Audit: ${params.action} by ${params.userId} (${params.userRole})`);
   } catch (error) {
-    // Don't fail the request if audit logging fails
-    logger.error(`Failed to create audit log: ${error.message}`);
+    // Never fail requests due to audit logging errors
+    logger.error('Audit log creation failed', { error: error.message });
   }
-};
+}
 
 /**
- * Express middleware to automatically log specific actions
- *
- * Usage:
- * app.post('/api/students', auditLogMiddleware('STUDENT_CREATED'), studentRoutes);
+ * Express middleware for automatic audit logging
  */
-export const auditLogMiddleware = (action, getTargetInfo) => {
+export function auditLogMiddleware(options = {}) {
+  const { action, resource } = options;
+
   return async (req, res, next) => {
-    // Store original json method
-    const originalJson = res.json.bind(res);
+    // Capture original response methods
+    const originalJson = res.json;
+    const originalSend = res.send;
 
-    // Override res.json to capture response and log after success
-    res.json = function (data) {
-      // Only log successful responses (2xx status codes)
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        // Get target info from response if provided
-        let targetType = null;
-        let targetId = null;
-        let details = {};
+    // Track if response was successful
+    let responseStatus = 'SUCCESS';
+    let responseData = null;
 
-        if (getTargetInfo && typeof getTargetInfo === 'function') {
-          const targetInfo = getTargetInfo(req, data);
-          targetType = targetInfo.targetType;
-          targetId = targetInfo.targetId;
-          details = targetInfo.details || {};
-        }
-
-        // Create audit log asynchronously (don't wait)
-        createAuditLog({
-          action,
-          userId: req.user?.id || req.user?._id,
-          userRole: req.user?.role || 'unknown',
-          targetType,
-          targetId,
-          details,
-          ipAddress: req.ip || req.connection.remoteAddress,
-          userAgent: req.get('user-agent'),
-          success: true,
-        }).catch((err) => {
-          logger.error(`Audit log middleware error: ${err.message}`);
-        });
+    // Override res.json to capture response
+    res.json = function(data) {
+      responseData = data;
+      if (res.statusCode >= 400) {
+        responseStatus = 'ERROR';
       }
-
-      // Call original json method
-      return originalJson(data);
+      return originalJson.call(this, data);
     };
+
+    // Override res.send to capture response
+    res.send = function(data) {
+      responseData = data;
+      if (res.statusCode >= 400) {
+        responseStatus = 'ERROR';
+      }
+      return originalSend.call(this, data);
+    };
+
+    // Wait for response to complete
+    res.on('finish', async () => {
+      // Determine resource ID from URL params
+      const resourceId = req.params.id || req.params.studentId || req.params.coachId;
+
+      // Create audit log entry
+      await createAuditLog({
+        userId: req.user?.id || req.user?._id || req.portalUser?.id || req.portalUser?._id,
+        userEmail: req.user?.email || req.portalUser?.email,
+        userRole: req.user?.role || (req.portalUser ? 'student' : 'system'),
+        action: action || req.method,
+        resource: resource || extractResourceFromPath(req.path),
+        resourceId,
+        method: req.method,
+        endpoint: req.originalUrl,
+        requestBody: req.body,
+        ipAddress: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        status: responseStatus,
+        errorMessage: responseStatus === 'ERROR' ? responseData?.error || responseData?.message : null,
+        metadata: options.metadata
+      });
+    });
 
     next();
   };
-};
+}
 
 /**
- * Helper function to log authentication events
+ * Extract resource name from API path
  */
-export const logAuthEvent = async (action, userId, userRole, ipAddress, success, errorMessage = null) => {
-  await createAuditLog({
-    action,
-    userId,
-    userRole,
-    ipAddress,
-    success,
-    errorMessage,
-  });
-};
+function extractResourceFromPath(path) {
+  const parts = path.split('/').filter(Boolean);
+  if (parts[0] === 'api') {
+    return parts[1]; // e.g., /api/students -> 'students'
+  }
+  return 'unknown';
+}
 
-export default createAuditLog;
+export default auditLogMiddleware;

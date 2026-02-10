@@ -4,6 +4,7 @@ import { parse } from "csv-parse/sync";
 import mongoose from "mongoose";
 import Student from "../models/Student.js";
 import logger from "../utils/logger.js";
+import auditLogMiddleware from "../middleware/auditLog.js";
 
 const router = express.Router();
 
@@ -101,7 +102,7 @@ router.get("/", async (req, res) => {
 });
 
 // Schüler hinzufügen
-router.post("/", async (req, res) => {
+router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), async (req, res) => {
   try {
     // Validate required fields
     if (!req.body.firstName || !req.body.lastName) {
@@ -136,7 +137,7 @@ router.post("/", async (req, res) => {
 });
 
 // Alle Schüler löschen (muss vor /:id Route sein!)
-router.delete("/all", async (req, res) => {
+router.delete("/all", auditLogMiddleware({ action: 'DELETE', resource: 'Student', metadata: { critical: true, operation: 'DELETE_ALL' } }), async (req, res) => {
   try {
     const result = await Student.deleteMany({});
     res.json({
@@ -152,7 +153,7 @@ router.delete("/all", async (req, res) => {
 // ===== ASSIGNMENT ROUTES - MUST COME BEFORE GENERIC /:id ROUTES =====
 
 // Add assignment to student (for multiple course assignments)
-router.post("/:id/assignments", async (req, res) => {
+router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
     const { day, hour, coach } = req.body;
 
@@ -192,7 +193,7 @@ router.post("/:id/assignments", async (req, res) => {
 });
 
 // Remove specific assignment from student
-router.delete("/:id/assignments", async (req, res) => {
+router.delete("/:id/assignments", auditLogMiddleware({ action: 'DELETE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
     const { day, hour } = req.body;
 
@@ -249,7 +250,7 @@ router.delete("/:id/assignments", async (req, res) => {
 });
 
 // Replace specific assignment (move student - update one assignment, preserve others)
-router.put("/:id/assignments/replace", async (req, res) => {
+router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
     const { day, hour, coach, fromDay, fromHour } = req.body;
 
@@ -355,7 +356,7 @@ router.put("/:id/assignments/replace", async (req, res) => {
 // ===== GENERIC /:id ROUTES - MUST COME AFTER SPECIFIC ROUTES =====
 
 // Schüler löschen
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Student' }), async (req, res) => {
   try {
 
     const result = await Student.collection.findOneAndDelete(
@@ -379,7 +380,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Schüler-Daten aktualisieren
-router.put("/:id", async (req, res) => {
+router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' }), async (req, res) => {
   try {
     const {
       day,
@@ -471,7 +472,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // CSV Import
-router.post("/import", upload.single('file'), async (req, res) => {
+router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREATE', resource: 'Student', metadata: { bulk: true, operation: 'CSV_IMPORT' } }), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "Keine Datei hochgeladen" });

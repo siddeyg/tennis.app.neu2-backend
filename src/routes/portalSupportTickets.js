@@ -6,6 +6,7 @@ import Student from '../models/Student.js';
 import { verifyPortalAuth } from '../middleware/verifyPortalAuth.js';
 import { sendNewTicketEmail, sendTicketReplyEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -82,7 +83,7 @@ router.get('/:id', async (req, res) => {
 
 // POST /api/portal/support-tickets
 // Create new ticket (rate limited)
-router.post('/', createTicketLimiter, async (req, res) => {
+router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', resource: 'SupportTicket' }), async (req, res) => {
   try {
     const { subject, category, priority, description, url, userAgent } = req.body;
 
@@ -174,7 +175,7 @@ router.post('/', createTicketLimiter, async (req, res) => {
 
 // POST /api/portal/support-tickets/:id/reply
 // Add student reply
-router.post('/:id/reply', async (req, res) => {
+router.post('/:id/reply', auditLogMiddleware({ action: 'CREATE', resource: 'TicketMessage' }), async (req, res) => {
   try {
     const { content } = req.body;
 
@@ -257,7 +258,7 @@ router.post('/:id/reply', async (req, res) => {
 
 // POST /api/portal/support-tickets/:id/close
 // Student closes own ticket (only if status is 'resolved')
-router.post('/:id/close', async (req, res) => {
+router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTicket', metadata: { operation: 'CLOSE' } }), async (req, res) => {
   try {
     // Verify ownership
     const ticket = await SupportTicket.findOne({

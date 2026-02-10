@@ -5,6 +5,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { sendTicketReplyEmail, sendTicketStatusChangeEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -158,7 +159,7 @@ router.get('/:id', async (req, res) => {
 
 // POST /api/support-tickets/:id/messages
 // Admin adds reply to ticket
-router.post('/:id/messages', async (req, res) => {
+router.post('/:id/messages', auditLogMiddleware({ action: 'CREATE', resource: 'TicketMessage' }), async (req, res) => {
   try {
     const { content } = req.body;
 
@@ -230,7 +231,7 @@ router.post('/:id/messages', async (req, res) => {
 
 // PUT /api/support-tickets/:id/status
 // Change ticket status
-router.put('/:id/status', async (req, res) => {
+router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTicket', metadata: { operation: 'CHANGE_STATUS' } }), async (req, res) => {
   try {
     const { status, note } = req.body;
 
@@ -284,7 +285,7 @@ router.put('/:id/status', async (req, res) => {
 
 // PUT /api/support-tickets/:id/assign
 // Assign ticket to admin
-router.put('/:id/assign', async (req, res) => {
+router.put('/:id/assign', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTicket', metadata: { operation: 'ASSIGN' } }), async (req, res) => {
   try {
     const { assignedTo } = req.body;
 
@@ -323,7 +324,7 @@ router.put('/:id/assign', async (req, res) => {
 
 // PUT /api/support-tickets/:id
 // Update ticket metadata
-router.put('/:id', async (req, res) => {
+router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTicket' }), async (req, res) => {
   try {
     const { subject, priority, category } = req.body;
 
@@ -374,7 +375,7 @@ router.put('/:id', async (req, res) => {
 
 // DELETE /api/support-tickets/:id
 // Soft delete ticket
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'SupportTicket' }), async (req, res) => {
   try {
     const ticket = await SupportTicket.findOne({
       _id: req.params.id,

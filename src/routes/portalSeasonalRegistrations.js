@@ -21,6 +21,7 @@ import Student from '../models/Student.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -215,7 +216,7 @@ router.get('/my-registration', async (req, res) => {
  *
  * Body: Registration fields (auto-filled + user-entered)
  */
-router.post('/', async (req, res) => {
+router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegistration' }), async (req, res) => {
   try {
     // Check if user has completed profile (CRITICAL SECURITY CHECK)
     const portalUser = await StudentPortalUser.findById(req.user.id);
@@ -588,7 +589,7 @@ router.post('/', async (req, res) => {
  *
  * Users can only update their own pending registrations
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration' }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 
@@ -717,7 +718,7 @@ router.put('/:id', async (req, res) => {
  *
  * Users can only delete their own pending registrations
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'SeasonalRegistration' }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 

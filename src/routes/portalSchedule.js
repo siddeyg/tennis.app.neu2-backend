@@ -9,6 +9,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -225,7 +226,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
  * @desc    Update student profile information (all editable fields)
  * @access  Private (student portal users only)
  */
-router.put('/profile', verifyPortalAuth, async (req, res) => {
+router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', resource: 'StudentProfile' }), async (req, res) => {
   try {
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
@@ -561,7 +562,7 @@ router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
  * @desc    Create a new schedule change request
  * @access  Private (student portal users only)
  */
-router.post('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
+router.post('/schedule-change-requests', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resource: 'ScheduleChangeRequest' }), async (req, res) => {
   try {
     const { requestType, currentSlot, requestedSlot, reason } = req.body;
     const studentId = req.user.studentId;
@@ -679,7 +680,7 @@ router.get('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
  * @desc    Cancel a pending schedule change request
  * @access  Private (student portal users only)
  */
-router.delete('/schedule-change-requests/:id', verifyPortalAuth, async (req, res) => {
+router.delete('/schedule-change-requests/:id', verifyPortalAuth, auditLogMiddleware({ action: 'DELETE', resource: 'ScheduleChangeRequest' }), async (req, res) => {
   try {
     const requestId = req.params.id;
     const studentId = req.user.studentId;
@@ -720,7 +721,7 @@ router.delete('/schedule-change-requests/:id', verifyPortalAuth, async (req, res
  * @desc    Report an absence for a training session
  * @access  Private (student portal users only)
  */
-router.post('/absences', verifyPortalAuth, async (req, res) => {
+router.post('/absences', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resource: 'Absence' }), async (req, res) => {
   try {
     const { absenceDate, day, hour, coach, absenceType, reason } = req.body;
     const studentId = req.user.studentId;
@@ -880,7 +881,7 @@ router.get('/absences', verifyPortalAuth, async (req, res) => {
  * @desc    Cancel an absence notification (if plans change)
  * @access  Private (student portal users only)
  */
-router.delete('/absences/:id', verifyPortalAuth, async (req, res) => {
+router.delete('/absences/:id', verifyPortalAuth, auditLogMiddleware({ action: 'DELETE', resource: 'Absence' }), async (req, res) => {
   try {
     const absenceId = req.params.id;
     const studentId = req.user.studentId;

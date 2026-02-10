@@ -1,125 +1,75 @@
 import mongoose from 'mongoose';
 
-/**
- * AuditLog Schema - GDPR Compliance
- *
- * Tracks sensitive operations for audit trail:
- * - User data access (view, edit, delete)
- * - Authentication events (login, logout, password change)
- * - Authorization changes (role changes, permission grants)
- * - Data exports (PDF, CSV)
- * - Admin actions
- */
-const auditLogSchema = new mongoose.Schema(
-  {
-    // Action type
-    action: {
-      type: String,
-      required: true,
-      enum: [
-        // Authentication
-        'LOGIN',
-        'LOGOUT',
-        'LOGIN_FAILED',
-        'PASSWORD_RESET',
-        'PASSWORD_CHANGED',
-        'EMAIL_VERIFIED',
-
-        // User Management
-        'USER_CREATED',
-        'USER_UPDATED',
-        'USER_DELETED',
-        'USER_ACTIVATED',
-        'USER_DEACTIVATED',
-        'ROLE_CHANGED',
-
-        // Data Access (GDPR)
-        'DATA_VIEWED',
-        'DATA_EXPORTED',
-        'DATA_DELETED',
-
-        // Student Portal
-        'STUDENT_REGISTERED',
-        'STUDENT_UPDATED',
-        'STUDENT_DELETED',
-        'SCHEDULE_CHANGED',
-        'ABSENCE_CREATED',
-
-        // Coach Portal
-        'ATTENDANCE_MARKED',
-        'ATTENDANCE_UPDATED',
-
-        // Admin Actions
-        'SETTINGS_CHANGED',
-        'ANNOUNCEMENT_CREATED',
-        'SCHEDULE_REQUEST_APPROVED',
-        'SCHEDULE_REQUEST_REJECTED',
-      ],
-    },
-
-    // Who performed the action
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-
-    // User role at time of action
-    userRole: {
-      type: String,
-      required: true,
-    },
-
-    // Target of the action (if applicable)
-    targetType: {
-      type: String,
-      enum: ['User', 'Student', 'Coach', 'Attendance', 'Announcement', 'Schedule', 'Settings', null],
-    },
-
-    targetId: {
-      type: mongoose.Schema.Types.ObjectId,
-    },
-
-    // Details of the action
-    details: {
-      type: mongoose.Schema.Types.Mixed, // Flexible object for action-specific data
-      default: {},
-    },
-
-    // Request metadata
-    ipAddress: {
-      type: String,
-      required: true,
-    },
-
-    userAgent: {
-      type: String,
-    },
-
-    // Result
-    success: {
-      type: Boolean,
-      default: true,
-    },
-
-    errorMessage: {
-      type: String,
-    },
+const auditLogSchema = new mongoose.Schema({
+  timestamp: {
+    type: Date,
+    default: Date.now,
+    required: true,
+    index: true  // For efficient queries
   },
-  {
-    timestamps: true, // Automatically adds createdAt and updatedAt
-  }
-);
 
-// Indexes for efficient querying
-auditLogSchema.index({ userId: 1, createdAt: -1 });
-auditLogSchema.index({ action: 1, createdAt: -1 });
-auditLogSchema.index({ targetType: 1, targetId: 1 });
-auditLogSchema.index({ createdAt: -1 }); // For date range queries
+  // User information
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    index: true
+  },
+  userEmail: String,
+  userRole: {
+    type: String,
+    enum: ['admin', 'trainer', 'viewer', 'student', 'system'],
+    index: true
+  },
 
-// Automatically delete audit logs older than 2 years (GDPR retention limit)
-auditLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 63072000 }); // 2 years in seconds
+  // Action details
+  action: {
+    type: String,
+    enum: ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'ACCESS', 'BULK_OPERATION'],
+    required: true,
+    index: true
+  },
+  resource: {
+    type: String,  // 'Student', 'Coach', 'Camp', etc.
+    index: true
+  },
+  resourceId: String,  // ID of affected record
 
-const AuditLog = mongoose.model('AuditLog', auditLogSchema);
+  // Request details
+  method: String,  // 'POST', 'PUT', 'DELETE'
+  endpoint: String,
+  requestBody: mongoose.Schema.Types.Mixed,  // Sanitized
 
-export default AuditLog;
+  // Change tracking
+  changes: {
+    before: mongoose.Schema.Types.Mixed,
+    after: mongoose.Schema.Types.Mixed
+  },
+
+  // Client info
+  ipAddress: String,
+  userAgent: String,
+
+  // Result
+  status: {
+    type: String,
+    enum: ['SUCCESS', 'ERROR', 'DENIED'],
+    default: 'SUCCESS',
+    index: true
+  },
+  errorMessage: String,
+
+  // Additional context
+  metadata: mongoose.Schema.Types.Mixed
+}, {
+  timestamps: false  // Using custom timestamp field
+});
+
+// Index for common queries
+auditLogSchema.index({ timestamp: -1, userId: 1 });
+auditLogSchema.index({ timestamp: -1, resource: 1 });
+auditLogSchema.index({ timestamp: -1, action: 1 });
+
+// TTL index - auto-delete logs after 2 years (GDPR compliance)
+auditLogSchema.index({ timestamp: 1 }, { expireAfterSeconds: 63072000 });
+
+export default mongoose.model('AuditLog', auditLogSchema);

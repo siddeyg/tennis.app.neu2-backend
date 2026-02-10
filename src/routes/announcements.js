@@ -1,6 +1,7 @@
 import express from 'express';
 import Announcement from '../models/Announcement.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -50,7 +51,7 @@ router.get('/:id', async (req, res) => {
  * @desc    Create new announcement
  * @access  Private (admin only)
  */
-router.post('/', async (req, res) => {
+router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Announcement' }), async (req, res) => {
   try {
     const { title, content, targetAudience, priority, publishDate, expiryDate } = req.body;
 
@@ -99,7 +100,7 @@ router.post('/', async (req, res) => {
  * @desc    Update announcement
  * @access  Private (admin only)
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Announcement' }), async (req, res) => {
   try {
     const { title, content, targetAudience, priority, isActive, publishDate, expiryDate } = req.body;
 
@@ -151,7 +152,7 @@ router.put('/:id', async (req, res) => {
  * @desc    Delete announcement (soft delete - sets isActive to false)
  * @access  Private (admin only)
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Announcement' }), async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
 
@@ -177,7 +178,7 @@ router.delete('/:id', async (req, res) => {
  * @desc    Reactivate deleted announcement
  * @access  Private (admin only)
  */
-router.post('/:id/activate', async (req, res) => {
+router.post('/:id/activate', auditLogMiddleware({ action: 'UPDATE', resource: 'Announcement', metadata: { operation: 'ACTIVATE' } }), async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
 

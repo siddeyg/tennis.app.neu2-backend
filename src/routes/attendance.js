@@ -16,6 +16,7 @@ import { requireAuth } from '../middleware/requireAuth.js';
 import { requireCoach } from '../middleware/requireRole.js';
 import { requireRole } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -45,7 +46,7 @@ const router = express.Router();
  *   markedBy, markedAt
  * }
  */
-router.post('/', requireAuth, requireCoach, async (req, res) => {
+router.post('/', requireAuth, requireCoach, auditLogMiddleware({ action: 'CREATE', resource: 'Attendance' }), async (req, res) => {
   try {
     const { courseDate, day, hour, students } = req.body;
     const coachId = req.user._id;
@@ -161,7 +162,7 @@ router.post('/', requireAuth, requireCoach, async (req, res) => {
  *
  * Response: Updated attendance record
  */
-router.put('/:id', requireAuth, async (req, res) => {
+router.put('/:id', requireAuth, auditLogMiddleware({ action: 'UPDATE', resource: 'Attendance' }), async (req, res) => {
   try {
     const attendanceId = req.params.id;
     const { students } = req.body;
@@ -349,7 +350,7 @@ router.get('/:id', requireAuth, async (req, res) => {
  * Delete an attendance record (admin only).
  * Coaches cannot delete attendance records.
  */
-router.delete('/:id', requireAuth, requireRole(['admin']), async (req, res) => {
+router.delete('/:id', requireAuth, requireRole(['admin']), auditLogMiddleware({ action: 'DELETE', resource: 'Attendance' }), async (req, res) => {
   try {
     const attendanceId = req.params.id;
 

@@ -13,6 +13,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import { generateVerificationTokenWithExpiry, sendVerificationEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
+import { auditLogMiddleware } from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -20,7 +21,9 @@ const router = express.Router();
  * GET /api/portal-users
  * Get all portal users with details
  */
-router.get('/', async (req, res) => {
+router.get('/',
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser' }),
+  async (req, res) => {
   try {
     const portalUsers = await StudentPortalUser.find({})
       .select('-password') // Exclude password
@@ -57,7 +60,9 @@ router.get('/', async (req, res) => {
  * Delete portal user account
  * Query param: deleteStudent=true to also delete linked Student
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',
+  auditLogMiddleware({ action: 'DELETE', resource: 'StudentPortalUser' }),
+  async (req, res) => {
   try {
     const { id } = req.params;
     const { deleteStudent } = req.query;
@@ -95,7 +100,9 @@ router.delete('/:id', async (req, res) => {
  * POST /api/portal-users/:id/reset-verification
  * Reset email verification status and generate new token
  */
-router.post('/:id/reset-verification', async (req, res) => {
+router.post('/:id/reset-verification',
+  auditLogMiddleware({ action: 'UPDATE', resource: 'StudentPortalUser', metadata: { operation: 'reset_verification' } }),
+  async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -127,7 +134,9 @@ router.post('/:id/reset-verification', async (req, res) => {
  * POST /api/portal-users/:id/force-verify
  * Manually mark email as verified (skip verification process)
  */
-router.post('/:id/force-verify', async (req, res) => {
+router.post('/:id/force-verify',
+  auditLogMiddleware({ action: 'UPDATE', resource: 'StudentPortalUser', metadata: { operation: 'force_verify' } }),
+  async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -155,7 +164,9 @@ router.post('/:id/force-verify', async (req, res) => {
  * POST /api/portal-users/:id/resend-verification
  * Generate new verification token AND send verification email
  */
-router.post('/:id/resend-verification', async (req, res) => {
+router.post('/:id/resend-verification',
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser', metadata: { operation: 'resend_verification' } }),
+  async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -195,7 +206,9 @@ router.post('/:id/resend-verification', async (req, res) => {
  * GET /api/portal-users/:id
  * Get single portal user details
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id',
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser' }),
+  async (req, res) => {
   try {
     const { id } = req.params;
 

@@ -13,13 +13,15 @@ import {
   sendPasswordResetEmail,
   sendWelcomeEmail
 } from '../utils/emailService.js';
+import { createAuditLog, auditLogMiddleware } from '../middleware/auditLog.js';
 
 const router = express.Router();
 
 // IP whitelist - these IPs bypass all rate limits
-const RATE_LIMIT_WHITELIST = [
-  '84.119.177.212', // Admin/Developer IP
-];
+// Loaded from environment variable (comma-separated list)
+const RATE_LIMIT_WHITELIST = process.env.IP_WHITELIST
+  ? process.env.IP_WHITELIST.split(',').map(ip => ip.trim())
+  : [];
 
 // Helper function to check if IP is whitelisted
 const isWhitelisted = (req) => {
@@ -60,7 +62,10 @@ const registerLimiter = rateLimit({
  * @desc    Register new student portal account (NO studentId required - GDPR compliant)
  * @access  Public
  */
-router.post('/register', registerLimiter, async (req, res) => {
+router.post('/register',
+  registerLimiter,
+  auditLogMiddleware({ action: 'CREATE', resource: 'StudentPortalUser' }),
+  async (req, res) => {
   try {
     // Check if portal registration is enabled
     const settings = await Settings.findOne({ singleton: true });
@@ -176,7 +181,9 @@ router.get('/registration-status', async (req, res) => {
  * @desc    Verify email with token
  * @access  Public
  */
-router.post('/verify-email', async (req, res) => {
+router.post('/verify-email',
+  auditLogMiddleware({ action: 'UPDATE', resource: 'StudentPortalUser', metadata: { operation: 'email_verification' } }),
+  async (req, res) => {
   try {
     const { token } = req.body;
 
@@ -237,6 +244,21 @@ router.post('/login', authLimiter, async (req, res) => {
 
     // If no portal user found, reject login
     if (!portalUser) {
+      // Log failed login attempt
+      await createAuditLog({
+        userId: null,
+        userEmail: email.toLowerCase(),
+        userRole: 'student',
+        action: 'LOGIN',
+        resource: 'StudentPortalUser',
+        method: 'POST',
+        endpoint: req.originalUrl,
+        requestBody: req.body,
+        ipAddress: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        status: 'DENIED',
+        errorMessage: 'E-Mail Adresse unbekannt'
+      });
       return res.status(401).json({
         error: 'E-Mail Adresse unbekannt'
       });
@@ -245,6 +267,22 @@ router.post('/login', authLimiter, async (req, res) => {
     // Continue with normal student portal user login
     // Check if email is verified
     if (!portalUser.emailVerified) {
+      // Log failed login attempt - email not verified
+      await createAuditLog({
+        userId: portalUser._id,
+        userEmail: portalUser.email,
+        userRole: 'student',
+        action: 'LOGIN',
+        resource: 'StudentPortalUser',
+        resourceId: portalUser._id.toString(),
+        method: 'POST',
+        endpoint: req.originalUrl,
+        requestBody: req.body,
+        ipAddress: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        status: 'DENIED',
+        errorMessage: 'Email noch nicht verifiziert'
+      });
       return res.status(403).json({
         error: 'Email noch nicht verifiziert. Bitte überprüfen Sie Ihre Email.',
         emailVerified: false
@@ -254,6 +292,22 @@ router.post('/login', authLimiter, async (req, res) => {
     // Verify password
     const isMatch = await portalUser.comparePassword(password);
     if (!isMatch) {
+      // Log failed login attempt - wrong password
+      await createAuditLog({
+        userId: portalUser._id,
+        userEmail: portalUser.email,
+        userRole: 'student',
+        action: 'LOGIN',
+        resource: 'StudentPortalUser',
+        resourceId: portalUser._id.toString(),
+        method: 'POST',
+        endpoint: req.originalUrl,
+        requestBody: req.body,
+        ipAddress: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        status: 'DENIED',
+        errorMessage: 'Ungültige Anmeldedaten'
+      });
       return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
     }
 
@@ -339,6 +393,22 @@ router.post('/login', authLimiter, async (req, res) => {
       userResponse.studentName = `${portalUser.studentId.firstName} ${portalUser.studentId.lastName}`;
     }
 
+    // Log successful login
+    await createAuditLog({
+      userId: portalUser._id,
+      userEmail: portalUser.email,
+      userRole: 'student',
+      action: 'LOGIN',
+      resource: 'StudentPortalUser',
+      resourceId: portalUser._id.toString(),
+      method: 'POST',
+      endpoint: req.originalUrl,
+      requestBody: req.body,
+      ipAddress: req.ip || req.connection.remoteAddress,
+      userAgent: req.get('user-agent'),
+      status: 'SUCCESS'
+    });
+
     res.json({
       message: 'Login erfolgreich',
       user: userResponse
@@ -355,7 +425,9 @@ router.post('/login', authLimiter, async (req, res) => {
  * @desc    Refresh access token
  * @access  Public (with refresh token)
  */
-router.post('/refresh', async (req, res) => {
+router.post('/refresh',
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser', metadata: { operation: 'token_refresh' } }),
+  async (req, res) => {
   try {
     const refreshToken = req.cookies.portalRefreshToken;
 
@@ -408,18 +480,24 @@ router.post('/refresh', async (req, res) => {
  * @desc    Logout student portal user
  * @access  Public
  */
-router.post('/logout', (req, res) => {
-  res.clearCookie('portalAccessToken');
-  res.clearCookie('portalRefreshToken');
-  res.json({ message: 'Logout erfolgreich' });
-});
+router.post('/logout',
+  auditLogMiddleware({ action: 'LOGOUT', resource: 'StudentPortalUser' }),
+  (req, res) => {
+    res.clearCookie('portalAccessToken');
+    res.clearCookie('portalRefreshToken');
+    res.json({ message: 'Logout erfolgreich' });
+  }
+);
 
 /**
  * @route   POST /api/portal/auth/forgot-password
  * @desc    Request password reset
  * @access  Public
  */
-router.post('/forgot-password', authLimiter, async (req, res) => {
+router.post('/forgot-password',
+  authLimiter,
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser', metadata: { operation: 'password_reset_request' } }),
+  async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -466,7 +544,9 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
  * @desc    Reset password with token
  * @access  Public
  */
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password',
+  auditLogMiddleware({ action: 'UPDATE', resource: 'StudentPortalUser', metadata: { operation: 'password_reset' } }),
+  async (req, res) => {
   try {
     const { token, newPassword } = req.body;
 
@@ -508,7 +588,9 @@ router.post('/reset-password', async (req, res) => {
  * @desc    Get current student portal user
  * @access  Private (requires portal auth middleware)
  */
-router.get('/me', async (req, res) => {
+router.get('/me',
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser' }),
+  async (req, res) => {
   try {
     // Extract token from cookie
     const token = req.cookies.portalAccessToken;
