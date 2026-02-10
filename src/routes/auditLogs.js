@@ -33,16 +33,16 @@ router.get('/', async (req, res) => {
 
     // Date range filter
     if (startDate || endDate) {
-      query.createdAt = {};
+      query.timestamp = {};
       if (startDate) {
         const start = new Date(startDate);
         start.setHours(0, 0, 0, 0); // Start of day
-        query.createdAt.$gte = start;
+        query.timestamp.$gte = start;
       }
       if (endDate) {
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999); // End of day
-        query.createdAt.$lte = end;
+        query.timestamp.$lte = end;
       }
     }
 
@@ -56,21 +56,14 @@ router.get('/', async (req, res) => {
       query.action = action;
     }
 
-    // Filter by resource (targetType in existing schema)
+    // Filter by resource
     if (resource) {
-      query.targetType = resource;
+      query.resource = resource;
     }
 
-    // Filter by status (success field in existing schema)
+    // Filter by status
     if (status) {
-      if (status === 'SUCCESS') {
-        query.success = true;
-      } else if (status === 'ERROR') {
-        query.success = false;
-      } else if (status === 'DENIED') {
-        // For future use - could track denied access attempts
-        query.action = 'ACCESS_DENIED';
-      }
+      query.status = status; // Direct string match: 'SUCCESS', 'ERROR', 'DENIED'
     }
 
     // General search (endpoint, email, resource ID, IP)
@@ -89,7 +82,7 @@ router.get('/', async (req, res) => {
     const [logs, total] = await Promise.all([
       AuditLog.find(query)
         .populate('userId', 'email firstName lastName role')
-        .sort({ createdAt: -1 })
+        .sort({ timestamp: -1 })
         .skip(skip)
         .limit(parseInt(limit))
         .lean(),
@@ -99,11 +92,11 @@ router.get('/', async (req, res) => {
     // Format logs for frontend
     const formattedLogs = logs.map(log => ({
       ...log,
-      userEmail: log.userId?.email || 'System',
+      userEmail: log.userEmail || log.userId?.email || 'System',
       userName: log.userId ? `${log.userId.firstName} ${log.userId.lastName}` : 'System',
-      status: log.success ? 'SUCCESS' : 'ERROR',
-      endpoint: log.details?.endpoint || 'N/A',
-      resourceId: log.targetId || 'N/A'
+      // status already exists in log, no need to transform
+      endpoint: log.endpoint || 'N/A',
+      resourceId: log.resourceId || 'N/A'
     }));
 
     res.json({
