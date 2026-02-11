@@ -162,15 +162,7 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
       url: url || ''
     });
 
-    // Debug logging
-    console.log('[Portal Tickets] About to save ticket...');
-    console.log('[Portal Tickets] ticket.isNew:', ticket.isNew);
-    console.log('[Portal Tickets] ticket.ticketNumber before save:', ticket.ticketNumber);
-    console.log('[Portal Tickets] Schema constructor:', ticket.schema.constructor.name);
-
     await ticket.save();
-
-    console.log('[Portal Tickets] ticket.ticketNumber after save:', ticket.ticketNumber);
 
     // Send email notification to admin
     try {
@@ -186,11 +178,6 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
       ticket
     });
   } catch (error) {
-    // Log full error details to console for debugging
-    console.error("=== ERROR CREATING TICKET ===");
-    console.error("Message:", error.message);
-    console.error("Stack:", error.stack);
-    console.error("Full error:", error);
     logger.error("Error creating ticket", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Erstellen des Tickets' });
   }
