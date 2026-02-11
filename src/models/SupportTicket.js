@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Counter from './Counter.js';
 
 const messageSchema = new mongoose.Schema({
   senderType: {
@@ -192,16 +193,35 @@ supportTicketSchema.index({
 
 // Auto-increment ticket number
 supportTicketSchema.pre('save', async function(next) {
-  if (this.isNew) {
-    const Counter = mongoose.model('Counter');
-    const counter = await Counter.findOneAndUpdate(
-      { _id: 'supportTicketNumber' },
-      { $inc: { seq: 1 } },
-      { new: true, upsert: true }
-    );
-    this.ticketNumber = counter.seq;
+  // Only generate ticket number for new documents
+  if (this.isNew && !this.ticketNumber) {
+    try {
+      console.log('[SupportTicket pre-save] Generating new ticket number...');
+
+      const counter = await Counter.findOneAndUpdate(
+        { _id: 'supportTicketNumber' },
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true, runValidators: false }
+      );
+
+      console.log('[SupportTicket pre-save] Counter result:', counter);
+
+      if (!counter || typeof counter.seq !== 'number') {
+        const error = new Error(`Counter returned invalid result: ${JSON.stringify(counter)}`);
+        console.error('[SupportTicket pre-save]', error);
+        return next(error);
+      }
+
+      this.ticketNumber = counter.seq;
+      console.log(`[SupportTicket pre-save] Successfully set ticketNumber to ${this.ticketNumber}`);
+      next();
+    } catch (error) {
+      console.error('[SupportTicket pre-save] Error generating ticket number:', error);
+      next(error);
+    }
+  } else {
+    next();
   }
-  next();
 });
 
 const SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
