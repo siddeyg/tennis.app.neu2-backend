@@ -162,7 +162,15 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
       url: url || ''
     });
 
+    // Debug logging
+    console.log('[Portal Tickets] About to save ticket...');
+    console.log('[Portal Tickets] ticket.isNew:', ticket.isNew);
+    console.log('[Portal Tickets] ticket.ticketNumber before save:', ticket.ticketNumber);
+    console.log('[Portal Tickets] SupportTicket schema hooks:', ticket.schema._pres.get('save')?.length || 'none');
+
     await ticket.save();
+
+    console.log('[Portal Tickets] ticket.ticketNumber after save:', ticket.ticketNumber);
 
     // Send email notification to admin
     try {
