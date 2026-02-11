@@ -42,7 +42,7 @@ const supportTicketSchema = new mongoose.Schema({
   ticketNumber: {
     type: Number,
     unique: true,
-    required: true
+    required: false  // Set by pre-save hook, not required at validation time
     // Auto-increment: use counter collection
   },
 
