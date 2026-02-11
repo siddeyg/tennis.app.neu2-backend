@@ -178,6 +178,11 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
       ticket
     });
   } catch (error) {
+    // Log full error details to console for debugging
+    console.error("=== ERROR CREATING TICKET ===");
+    console.error("Message:", error.message);
+    console.error("Stack:", error.stack);
+    console.error("Full error:", error);
     logger.error("Error creating ticket", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Erstellen des Tickets' });
   }
