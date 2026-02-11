@@ -59,6 +59,9 @@ import supportTicketsRoutes from "./routes/supportTickets.js";
 import portalSupportTicketsRoutes from "./routes/portalSupportTickets.js";
 import auditLogsRoutes from "./routes/auditLogs.js";
 
+// Import models that are referenced by other models (e.g., Counter used by SupportTicket pre-save hook)
+import Counter from "./models/Counter.js";
+
 const app = express();
 
 // Trust proxy - required when behind reverse proxy (Caddy/nginx)
