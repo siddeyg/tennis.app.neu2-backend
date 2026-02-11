@@ -166,7 +166,7 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
     console.log('[Portal Tickets] About to save ticket...');
     console.log('[Portal Tickets] ticket.isNew:', ticket.isNew);
     console.log('[Portal Tickets] ticket.ticketNumber before save:', ticket.ticketNumber);
-    console.log('[Portal Tickets] SupportTicket schema hooks:', ticket.schema._pres.get('save')?.length || 'none');
+    console.log('[Portal Tickets] Schema constructor:', ticket.schema.constructor.name);
 
     await ticket.save();
 
