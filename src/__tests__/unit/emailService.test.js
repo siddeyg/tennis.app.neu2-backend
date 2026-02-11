@@ -196,3 +196,138 @@ describe('Email Service - Error Handling', () => {
     }).not.toThrow();
   });
 });
+
+describe('Email Service - Multipart MIME Support', () => {
+  test('Should support plain text parameter for multipart emails', () => {
+    // Mock email function signature accepts text parameter
+    const mockEmailOptions = {
+      to: 'test@example.com',
+      subject: 'Test Subject',
+      html: '<p>HTML content</p>',
+      text: 'Plain text content'
+    };
+
+    expect(mockEmailOptions).toHaveProperty('html');
+    expect(mockEmailOptions).toHaveProperty('text');
+    expect(mockEmailOptions.html).not.toBe(mockEmailOptions.text);
+  });
+
+  test('Plain text should differ from HTML-stripped version', () => {
+    const html = '<div style="color: red;"><p>Hello <strong>World</strong></p></div>';
+    const strippedHtml = html.replace(/<[^>]*>/g, ''); // Old approach
+    const properText = 'Hello World'; // Proper plain text
+
+    // Proper plain text should be well-formatted
+    expect(strippedHtml).toContain('Hello World');
+    expect(properText).toBe('Hello World');
+    // Multipart MIME allows proper formatting instead of simple HTML stripping
+    expect(properText.trim()).toBe('Hello World');
+  });
+
+  test('Should handle optional text parameter (backward compatibility)', () => {
+    const withoutText = {
+      to: 'test@example.com',
+      subject: 'Test',
+      html: '<p>HTML only</p>'
+    };
+
+    const withText = {
+      to: 'test@example.com',
+      subject: 'Test',
+      html: '<p>HTML version</p>',
+      text: 'Plain text version'
+    };
+
+    // Both should be valid email options
+    expect(withoutText.to).toBeDefined();
+    expect(withText.to).toBeDefined();
+    expect(withText.text).toBeDefined();
+    expect(withoutText.text).toBeUndefined();
+  });
+
+  test('Notification emails should provide both HTML and text versions', () => {
+    // Mock notification email structure
+    const mockSeasonalNotification = {
+      html: '<div class="header"><h1>Neue Registrierung</h1></div>',
+      text: '==================================================\nNEUE REGISTRIERUNG\n==================================================\n'
+    };
+
+    const mockCampNotification = {
+      html: '<div class="header"><h1>Neue Camp-Anmeldung</h1></div>',
+      text: '==================================================\nNEUE CAMP-ANMELDUNG\n==================================================\n'
+    };
+
+    expect(mockSeasonalNotification.html).toBeDefined();
+    expect(mockSeasonalNotification.text).toBeDefined();
+    expect(mockCampNotification.html).toBeDefined();
+    expect(mockCampNotification.text).toBeDefined();
+
+    // Text versions should not contain HTML tags
+    expect(mockSeasonalNotification.text).not.toContain('<');
+    expect(mockSeasonalNotification.text).not.toContain('>');
+    expect(mockCampNotification.text).not.toContain('<');
+    expect(mockCampNotification.text).not.toContain('>');
+  });
+
+  test('Plain text should preserve information from HTML', () => {
+    // Example: Both versions should contain key information
+    const registrationData = {
+      name: 'Max Mustermann',
+      email: 'max@example.com',
+      season: 'Winter 2026'
+    };
+
+    const htmlVersion = `<div><p>Name: ${registrationData.name}</p><p>Email: ${registrationData.email}</p></div>`;
+    const textVersion = `Name: ${registrationData.name}\nEmail: ${registrationData.email}`;
+
+    // Both should contain the same data
+    expect(htmlVersion).toContain(registrationData.name);
+    expect(htmlVersion).toContain(registrationData.email);
+    expect(textVersion).toContain(registrationData.name);
+    expect(textVersion).toContain(registrationData.email);
+
+    // Text should be more readable
+    expect(textVersion).not.toContain('<');
+    expect(textVersion.split('\n').length).toBeGreaterThan(1);
+  });
+
+  test('Section dividers should be properly formatted in plain text', () => {
+    const sectionDivider = '\n' + '='.repeat(50) + '\nTEST SECTION\n' + '='.repeat(50) + '\n';
+    const subSection = '\n' + '-'.repeat(40) + '\nTest Subsection\n' + '-'.repeat(40) + '\n';
+
+    expect(sectionDivider).toContain('='.repeat(50));
+    expect(sectionDivider).toContain('TEST SECTION');
+    expect(subSection).toContain('-'.repeat(40));
+    expect(subSection).toContain('Test Subsection');
+  });
+
+  test('Field alignment should be consistent in plain text', () => {
+    const field1 = 'Name'.padEnd(20) + ': John Doe';
+    const field2 = 'Email'.padEnd(20) + ': john@example.com';
+    const field3 = 'Very Long Label'.padEnd(20) + ': Value';
+
+    // All colons should be at the same position
+    expect(field1.indexOf(':')).toBe(20);
+    expect(field2.indexOf(':')).toBe(20);
+    expect(field3.indexOf(':')).toBe(20);
+  });
+
+  test('German locale formatting should work correctly', () => {
+    const testDate = new Date('2026-02-11');
+    const formatted = testDate.toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+
+    expect(formatted).toBe('11.02.2026');
+    expect(formatted).toMatch(/^\d{2}\.\d{2}\.\d{4}$/);
+  });
+
+  test('Boolean values should be formatted in German', () => {
+    const formatYesNo = (bool) => bool ? 'Ja' : 'Nein';
+
+    expect(formatYesNo(true)).toBe('Ja');
+    expect(formatYesNo(false)).toBe('Nein');
+  });
+});

@@ -27,6 +27,47 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import logger from './logger.js';
 
+/**
+ * Text formatting utilities for plain text emails
+ * Ensures consistent formatting across all plain text templates
+ */
+const textFormatters = {
+  // Format date in German locale (DD.MM.YYYY)
+  date: (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  },
+
+  // Format boolean as Ja/Nein
+  yesNo: (bool) => bool ? 'Ja' : 'Nein',
+
+  // Format optional field with fallback
+  optional: (value, fallback = 'Keine Angabe') => value || fallback,
+
+  // Format available times for plain text
+  availableTimes: (times) => {
+    if (!times || times.length === 0) return 'Keine Angabe';
+    const dayNames = {
+      Mo: 'Montag', Di: 'Dienstag', Mi: 'Mittwoch',
+      Do: 'Donnerstag', Fr: 'Freitag', Sa: 'Samstag', So: 'Sonntag'
+    };
+    return times.map(t => `  - ${dayNames[t.day] || t.day}: ${t.hour} Uhr`).join('\n');
+  },
+
+  // Create section divider with title
+  sectionDivider: (title) => `\n${'='.repeat(50)}\n${title.toUpperCase()}\n${'='.repeat(50)}\n`,
+
+  // Create subsection divider
+  subSection: (title) => `\n${'-'.repeat(40)}\n${title}\n${'-'.repeat(40)}\n`,
+
+  // Format field with label and value (aligned)
+  field: (label, value, labelWidth = 20) => `${label.padEnd(labelWidth)}: ${value}`
+};
+
 // Check if SMTP is configured
 const isConfigured =
   process.env.SMTP_HOST &&
@@ -81,14 +122,18 @@ if (isConfigured) {
  * @param {string} options.to - Recipient email
  * @param {string} options.subject - Email subject
  * @param {string} options.html - HTML content
+ * @param {string} [options.text] - Plain text content (optional, for multipart MIME)
  */
-async function sendEmail({ to, subject, html }) {
+async function sendEmail({ to, subject, html, text = null }) {
   // Development mode - log instead of sending
   if (!isConfigured || !transporter) {
     logger.info(`📧 [DEV MODE] Would send email to: ${to}`);
     logger.info(`   Subject: ${subject}`);
     logger.info(`   From: ${process.env.FROM_NAME || 'Mondo Tennisschule'} <${process.env.FROM_EMAIL || 'noreply@tcgw.de'}>`);
     logger.info(`   HTML content length: ${html.length} chars`);
+    if (text) {
+      logger.info(`   Plain text content length: ${text.length} chars (multipart MIME)`);
+    }
     return;
   }
 
@@ -102,13 +147,16 @@ async function sendEmail({ to, subject, html }) {
       to,
       subject,
       html,
-      // Plain text fallback (auto-generated from HTML)
-      text: html.replace(/<[^>]*>/g, ''), // Strip HTML tags for plain text
+      // Include plain text only if explicitly provided (multipart MIME)
+      ...(text && { text }),
     };
 
     const info = await transporter.sendMail(mailOptions);
     logger.info(`✅ Email sent successfully to: ${to}`);
     logger.info(`   Message ID: ${info.messageId}`);
+    if (text) {
+      logger.info(`   Format: Multipart MIME (HTML + plain text)`);
+    }
     return info;
   } catch (error) {
     logger.error(`❌ Error sending email to ${to}:`, error.message);
@@ -707,6 +755,69 @@ export async function sendTicketStatusChangeEmail(ticket, oldStatus, newStatus, 
 }
 
 /**
+ * Generate plain text content for seasonal registration notification
+ * Mirrors HTML email content but formatted for text-only clients
+ *
+ * @param {Object} registration - Registration data
+ * @returns {string} Plain text email content
+ */
+function generateSeasonalRegistrationTextContent(registration) {
+  const { date, yesNo, optional, availableTimes, sectionDivider, subSection, field } = textFormatters;
+
+  let text = sectionDivider('NEUE SAISONREGISTRIERUNG');
+  text += 'Mondo Tennisschule\n\n';
+  text += field('Eingang', date(registration.createdAt || new Date())) + '\n';
+
+  // Personal data section
+  text += subSection('PERSÖNLICHE DATEN');
+  text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
+  text += field('E-Mail', registration.email) + '\n';
+  text += field('Telefon', optional(registration.phone)) + '\n';
+  text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
+  text += field('Geschlecht', optional(registration.sex)) + '\n';
+  text += field('Adresse', optional(registration.address)) + '\n';
+  text += field('Mitglied', yesNo(registration.member)) + '\n';
+
+  // Registration details section
+  text += subSection('REGISTRIERUNGSDETAILS');
+  text += field('Saison', optional(registration.periodId?.name, 'Unbekannt')) + '\n';
+  text += field('Erwachsener', registration.adult ? 'Ja' : 'Nein (Kind)') + '\n';
+
+  if (!registration.adult) {
+    text += field('Trainingsgruppe', optional(registration.trainigGroup)) + '\n';
+  } else {
+    text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
+  }
+
+  text += field('Häufigkeit', registration.frequence ? `${registration.frequence}x pro Woche` : 'Keine Angabe') + '\n';
+  text += '\nVerfügbare Zeiten:\n' + availableTimes(registration.availableTimes) + '\n';
+
+  // Payment info (if provided)
+  if (registration.iban) {
+    text += subSection('ZAHLUNGSINFORMATIONEN');
+    text += field('IBAN', 'Bereitgestellt (vorhanden)') + '\n';
+  }
+
+  // Parent info (if provided)
+  if (registration.parentEmail) {
+    text += subSection('ELTERNINFORMATIONEN');
+    text += field('Eltern-E-Mail', registration.parentEmail) + '\n';
+    text += field('Eltern-Telefon', optional(registration.parentPhone)) + '\n';
+  }
+
+  // Notes
+  text += subSection('BEMERKUNGEN');
+  text += optional(registration.notes, 'Keine Bemerkungen') + '\n';
+
+  // Footer
+  text += '\n' + '='.repeat(50) + '\n';
+  text += 'Diese E-Mail wurde automatisch generiert.\n';
+  text += 'Mondo Tennisschule - Kesselsfeldweg 7B - 53343 Wachtberg\n';
+
+  return text;
+}
+
+/**
  * Send notification email to admins for new seasonal registration
  * @param {Object} registration - Registration data
  * @param {Array} notificationEmails - Array of email addresses to notify
@@ -870,15 +981,86 @@ export async function sendSeasonalRegistrationNotification(registration, notific
     </html>
   `;
 
+  // Generate plain text version
+  const text = generateSeasonalRegistrationTextContent(registration);
+
   // Send to all notification emails
   for (const email of notificationEmails) {
     try {
-      await sendEmail({ to: email, subject, html });
+      await sendEmail({ to: email, subject, html, text });
     } catch (error) {
       logger.error(`Failed to send seasonal registration notification to ${email}:`, error);
       // Continue with other emails even if one fails
     }
   }
+}
+
+/**
+ * Generate plain text content for camp registration notification
+ * Mirrors HTML email content but formatted for text-only clients
+ *
+ * @param {Object} registration - Camp registration data
+ * @param {Object} camp - Camp details
+ * @returns {string} Plain text email content
+ */
+function generateCampRegistrationTextContent(registration, camp) {
+  const { date, optional, sectionDivider, subSection, field } = textFormatters;
+
+  let text = sectionDivider('NEUE CAMP-ANMELDUNG');
+  text += 'Mondo Tennisschule\n\n';
+  text += field('Eingang', date(registration.createdAt || new Date())) + '\n';
+
+  // Camp details section
+  text += subSection('CAMP-DETAILS');
+  text += field('Camp-Name', camp.title) + '\n';
+  text += field('Zeitraum', `${date(camp.startDate)} - ${date(camp.endDate)}`) + '\n';
+  text += field('Ort', optional(camp.location)) + '\n';
+  text += field('Preis', camp.price ? `${camp.price}€` : 'Keine Angabe') + '\n';
+
+  // Participant data section
+  text += subSection('TEILNEHMER-DATEN');
+  text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
+  text += field('E-Mail', registration.email) + '\n';
+  text += field('Telefon', optional(registration.phone)) + '\n';
+  text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
+  text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
+  text += field('Mannschaft', registration.team ? 'Mannschaftsspieler' : 'Hobbyspieler') + '\n';
+
+  // Emergency contact (if provided)
+  if (registration.emergencyContact) {
+    text += subSection('NOTFALLKONTAKT');
+    text += field('Name', optional(registration.emergencyContact.name)) + '\n';
+    text += field('Beziehung', optional(registration.emergencyContact.relationship)) + '\n';
+    text += field('Telefon', optional(registration.emergencyContact.phone)) + '\n';
+  }
+
+  // Additional emergency contact (if provided)
+  if (registration.additionalEmergencyContact) {
+    text += subSection('ZUSÄTZLICHER NOTFALLKONTAKT');
+    text += field('Name', optional(registration.additionalEmergencyContact.name)) + '\n';
+    text += field('Beziehung', optional(registration.additionalEmergencyContact.relationship)) + '\n';
+    text += field('Telefon', optional(registration.additionalEmergencyContact.phone)) + '\n';
+  }
+
+  // Status section
+  text += subSection('STATUS');
+  let statusText = registration.status === 'confirmed' ? 'Bestätigt' :
+                   registration.status === 'waitlist' ? 'Warteliste' :
+                   'Angemeldet';
+  text += field('Registrierungsstatus', statusText) + '\n';
+
+  // Notes (if provided)
+  if (registration.notes) {
+    text += subSection('BEMERKUNGEN');
+    text += registration.notes + '\n';
+  }
+
+  // Footer
+  text += '\n' + '='.repeat(50) + '\n';
+  text += 'Diese E-Mail wurde automatisch generiert.\n';
+  text += 'Mondo Tennisschule - Kesselsfeldweg 7B - 53343 Wachtberg\n';
+
+  return text;
 }
 
 /**
@@ -1045,10 +1227,13 @@ export async function sendCampRegistrationNotification(registration, camp, notif
     </html>
   `;
 
+  // Generate plain text version
+  const text = generateCampRegistrationTextContent(registration, camp);
+
   // Send to all notification emails
   for (const email of notificationEmails) {
     try {
-      await sendEmail({ to: email, subject, html });
+      await sendEmail({ to: email, subject, html, text });
     } catch (error) {
       logger.error(`Failed to send camp registration notification to ${email}:`, error);
       // Continue with other emails even if one fails
