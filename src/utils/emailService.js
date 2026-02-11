@@ -892,7 +892,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
     return; // No emails to send to
   }
 
-  const subject = `Neue Camp-Anmeldung: ${camp.name} - ${registration.firstName} ${registration.lastName}`;
+  const subject = `Neue Camp-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
 
   // Format date
   const formatDate = (date) => {
@@ -932,14 +932,14 @@ export async function sendCampRegistrationNotification(registration, camp, notif
       <div class="content">
         <div class="highlight">
           <strong>Eingang:</strong> ${formatDate(registration.createdAt || new Date())}<br>
-          <strong>Camp:</strong> <span class="camp-badge">${camp.name}</span>
+          <strong>Camp:</strong> <span class="camp-badge">${camp.title}</span>
         </div>
 
         <div class="section">
           <h2>Camp-Details</h2>
           <div class="field">
             <span class="field-label">Camp-Name:</span>
-            <span class="field-value">${camp.name}</span>
+            <span class="field-value">${camp.title}</span>
           </div>
           <div class="field">
             <span class="field-label">Zeitraum:</span>
