@@ -79,6 +79,14 @@ router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'Settings' }), 
       settings.portalRegistrationEnabled = req.body.portalRegistrationEnabled;
     }
 
+    if (req.body.notificationEmails) {
+      settings.notificationEmails = {
+        email1: req.body.notificationEmails.email1?.trim() || '',
+        email2: req.body.notificationEmails.email2?.trim() || '',
+        email3: req.body.notificationEmails.email3?.trim() || ''
+      };
+    }
+
     await settings.save();
 
     // Attach before/after to req for audit log
