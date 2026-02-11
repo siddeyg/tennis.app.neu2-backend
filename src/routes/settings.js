@@ -80,10 +80,15 @@ router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'Settings' }), 
     }
 
     if (req.body.notificationEmails) {
+      // Only set emails that are non-empty (Mongoose validation requires valid email format)
+      const email1 = req.body.notificationEmails.email1?.trim();
+      const email2 = req.body.notificationEmails.email2?.trim();
+      const email3 = req.body.notificationEmails.email3?.trim();
+
       settings.notificationEmails = {
-        email1: req.body.notificationEmails.email1?.trim() || '',
-        email2: req.body.notificationEmails.email2?.trim() || '',
-        email3: req.body.notificationEmails.email3?.trim() || ''
+        email1: email1 || undefined,
+        email2: email2 || undefined,
+        email3: email3 || undefined
       };
     }
 
