@@ -706,6 +706,356 @@ export async function sendTicketStatusChangeEmail(ticket, oldStatus, newStatus, 
   });
 }
 
+/**
+ * Send notification email to admins for new seasonal registration
+ * @param {Object} registration - Registration data
+ * @param {Array} notificationEmails - Array of email addresses to notify
+ */
+export async function sendSeasonalRegistrationNotification(registration, notificationEmails) {
+  if (!notificationEmails || notificationEmails.length === 0) {
+    return; // No emails to send to
+  }
+
+  const subject = `Neue Saisonregistrierung: ${registration.firstName} ${registration.lastName}`;
+
+  // Format available times
+  const formatAvailableTimes = (times) => {
+    if (!times || times.length === 0) return 'Keine Angabe';
+    const dayNames = {
+      Mo: 'Montag', Di: 'Dienstag', Mi: 'Mittwoch',
+      Do: 'Donnerstag', Fr: 'Freitag', Sa: 'Samstag', So: 'Sonntag'
+    };
+    return times.map(t => `${dayNames[t.day] || t.day}: ${t.hour} Uhr`).join('<br>');
+  };
+
+  // Format date
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #00838f 0%, #00acc1 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .section { margin-bottom: 25px; }
+        .section h2 { color: #00838f; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #00838f; padding-bottom: 5px; }
+        .field { margin-bottom: 12px; }
+        .field-label { font-weight: bold; color: #555; min-width: 150px; display: inline-block; }
+        .field-value { color: #333; }
+        .highlight { background-color: #e0f7fa; padding: 15px; border-left: 4px solid #00acc1; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>🎾 Neue Saisonregistrierung</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+
+      <div class="content">
+        <div class="highlight">
+          <strong>Eingang:</strong> ${formatDate(registration.createdAt || new Date())}
+        </div>
+
+        <div class="section">
+          <h2>Persönliche Daten</h2>
+          <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">${registration.firstName} ${registration.lastName}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">E-Mail:</span>
+            <span class="field-value">${registration.email}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefon:</span>
+            <span class="field-value">${registration.phone || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Geburtsdatum:</span>
+            <span class="field-value">${formatDate(registration.birthdate)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Geschlecht:</span>
+            <span class="field-value">${registration.sex || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Adresse:</span>
+            <span class="field-value">${registration.address || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Mitglied:</span>
+            <span class="field-value">${registration.member ? 'Ja' : 'Nein'}</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Registrierungsdetails</h2>
+          <div class="field">
+            <span class="field-label">Saison:</span>
+            <span class="field-value">${registration.periodId?.name || 'Unbekannt'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Erwachsener:</span>
+            <span class="field-value">${registration.adult ? 'Ja' : 'Nein (Kind)'}</span>
+          </div>
+          ${!registration.adult ? `
+          <div class="field">
+            <span class="field-label">Trainingsgruppe:</span>
+            <span class="field-value">${registration.trainigGroup || 'Keine Angabe'}</span>
+          </div>
+          ` : `
+          <div class="field">
+            <span class="field-label">Spielstärke:</span>
+            <span class="field-value">${registration.skillLevel || 'Keine Angabe'}</span>
+          </div>
+          `}
+          <div class="field">
+            <span class="field-label">Häufigkeit:</span>
+            <span class="field-value">${registration.frequence ? `${registration.frequence}x pro Woche` : 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Verfügbare Zeiten:</span>
+            <div style="margin-left: 150px; margin-top: 8px;">${formatAvailableTimes(registration.availableTimes)}</div>
+          </div>
+        </div>
+
+        ${registration.iban ? `
+        <div class="section">
+          <h2>Zahlungsinformationen</h2>
+          <div class="field">
+            <span class="field-label">IBAN:</span>
+            <span class="field-value">Bereitgestellt ✓</span>
+          </div>
+        </div>
+        ` : ''}
+
+        ${registration.parentEmail ? `
+        <div class="section">
+          <h2>Elterninformationen</h2>
+          <div class="field">
+            <span class="field-label">Eltern-E-Mail:</span>
+            <span class="field-value">${registration.parentEmail}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Eltern-Telefon:</span>
+            <span class="field-value">${registration.parentPhone || 'Keine Angabe'}</span>
+          </div>
+        </div>
+        ` : ''}
+
+        <div class="section">
+          <h2>Bemerkungen</h2>
+          <div class="field">
+            <span class="field-value">${registration.notes || 'Keine Bemerkungen'}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Diese E-Mail wurde automatisch generiert von der Mondo Tennisschule Plattform.</p>
+        <p>Mondo Tennisschule • Kesselsfeldweg 7B • 53343 Wachtberg</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  // Send to all notification emails
+  for (const email of notificationEmails) {
+    try {
+      await sendEmail({ to: email, subject, html });
+    } catch (error) {
+      logger.error(`Failed to send seasonal registration notification to ${email}:`, error);
+      // Continue with other emails even if one fails
+    }
+  }
+}
+
+/**
+ * Send notification email to admins for new camp registration
+ * @param {Object} registration - Camp registration data
+ * @param {Object} camp - Camp details
+ * @param {Array} notificationEmails - Array of email addresses to notify
+ */
+export async function sendCampRegistrationNotification(registration, camp, notificationEmails) {
+  if (!notificationEmails || notificationEmails.length === 0) {
+    return; // No emails to send to
+  }
+
+  const subject = `Neue Camp-Anmeldung: ${camp.name} - ${registration.firstName} ${registration.lastName}`;
+
+  // Format date
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #00838f 0%, #00acc1 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .section { margin-bottom: 25px; }
+        .section h2 { color: #00838f; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #00838f; padding-bottom: 5px; }
+        .field { margin-bottom: 12px; }
+        .field-label { font-weight: bold; color: #555; min-width: 150px; display: inline-block; }
+        .field-value { color: #333; }
+        .highlight { background-color: #e0f7fa; padding: 15px; border-left: 4px solid #00acc1; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        .camp-badge { display: inline-block; background: #00acc1; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>⛺ Neue Camp-Anmeldung</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+
+      <div class="content">
+        <div class="highlight">
+          <strong>Eingang:</strong> ${formatDate(registration.createdAt || new Date())}<br>
+          <strong>Camp:</strong> <span class="camp-badge">${camp.name}</span>
+        </div>
+
+        <div class="section">
+          <h2>Camp-Details</h2>
+          <div class="field">
+            <span class="field-label">Camp-Name:</span>
+            <span class="field-value">${camp.name}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Zeitraum:</span>
+            <span class="field-value">${formatDate(camp.startDate)} - ${formatDate(camp.endDate)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Ort:</span>
+            <span class="field-value">${camp.location || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Preis:</span>
+            <span class="field-value">${camp.price ? `${camp.price}€` : 'Keine Angabe'}</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Teilnehmer-Daten</h2>
+          <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">${registration.firstName} ${registration.lastName}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">E-Mail:</span>
+            <span class="field-value">${registration.email}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefon:</span>
+            <span class="field-value">${registration.phone || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Geburtsdatum:</span>
+            <span class="field-value">${formatDate(registration.birthdate)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Spielstärke:</span>
+            <span class="field-value">${registration.skillLevel || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Mannschaft:</span>
+            <span class="field-value">${registration.team ? '⚽ Mannschaftsspieler' : '🎾 Hobbyspieler'}</span>
+          </div>
+        </div>
+
+        ${registration.emergencyContact ? `
+        <div class="section">
+          <h2>Notfallkontakt</h2>
+          <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">${registration.emergencyContact.name || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Beziehung:</span>
+            <span class="field-value">${registration.emergencyContact.relationship || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefon:</span>
+            <span class="field-value">${registration.emergencyContact.phone || 'Keine Angabe'}</span>
+          </div>
+        </div>
+        ` : ''}
+
+        ${registration.additionalEmergencyContact ? `
+        <div class="section">
+          <h2>Zusätzlicher Notfallkontakt</h2>
+          <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">${registration.additionalEmergencyContact.name || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Beziehung:</span>
+            <span class="field-value">${registration.additionalEmergencyContact.relationship || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefon:</span>
+            <span class="field-value">${registration.additionalEmergencyContact.phone || 'Keine Angabe'}</span>
+          </div>
+        </div>
+        ` : ''}
+
+        <div class="section">
+          <h2>Status</h2>
+          <div class="field">
+            <span class="field-label">Registrierungsstatus:</span>
+            <span class="field-value">${registration.status === 'confirmed' ? '✓ Bestätigt' : registration.status === 'waitlist' ? '⏳ Warteliste' : '📝 Angemeldet'}</span>
+          </div>
+        </div>
+
+        ${registration.notes ? `
+        <div class="section">
+          <h2>Bemerkungen</h2>
+          <div class="field">
+            <span class="field-value">${registration.notes}</span>
+          </div>
+        </div>
+        ` : ''}
+      </div>
+
+      <div class="footer">
+        <p>Diese E-Mail wurde automatisch generiert von der Mondo Tennisschule Plattform.</p>
+        <p>Mondo Tennisschule • Kesselsfeldweg 7B • 53343 Wachtberg</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  // Send to all notification emails
+  for (const email of notificationEmails) {
+    try {
+      await sendEmail({ to: email, subject, html });
+    } catch (error) {
+      logger.error(`Failed to send camp registration notification to ${email}:`, error);
+      // Continue with other emails even if one fails
+    }
+  }
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
@@ -714,6 +1064,8 @@ export default {
   sendNewTicketEmail,
   sendTicketReplyEmail,
   sendTicketStatusChangeEmail,
+  sendSeasonalRegistrationNotification,
+  sendCampRegistrationNotification,
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };

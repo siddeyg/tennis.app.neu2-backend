@@ -71,6 +71,28 @@ const settingsSchema = new mongoose.Schema({
     default: true
   },
 
+  // Registration Notification Emails (optional)
+  notificationEmails: {
+    email1: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, 'Bitte geben Sie eine gültige E-Mail-Adresse ein']
+    },
+    email2: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, 'Bitte geben Sie eine gültige E-Mail-Adresse ein']
+    },
+    email3: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, 'Bitte geben Sie eine gültige E-Mail-Adresse ein']
+    }
+  },
+
   lastModified: {
     type: Date,
     default: Date.now

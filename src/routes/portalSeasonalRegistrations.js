@@ -18,9 +18,11 @@ import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
+import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
+import { sendSeasonalRegistrationNotification } from '../utils/emailService.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
@@ -555,6 +557,30 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       periodId: period._id,
       formType
     });
+
+    // Send notification emails to admins
+    try {
+      const settings = await Settings.findOne({ singleton: true });
+      if (settings && settings.notificationEmails) {
+        const emails = [
+          settings.notificationEmails.email1,
+          settings.notificationEmails.email2,
+          settings.notificationEmails.email3
+        ].filter(email => email && email.trim()); // Filter out empty emails
+
+        if (emails.length > 0) {
+          // Populate registration with period data for email
+          const populatedRegistration = await SeasonalRegistration.findById(registration._id)
+            .populate('periodId', 'name season trainingStartDate trainingEndDate');
+
+          await sendSeasonalRegistrationNotification(populatedRegistration, emails);
+          logger.info(`Seasonal registration notification emails sent to ${emails.length} recipient(s)`);
+        }
+      }
+    } catch (emailError) {
+      // Log error but don't fail the registration
+      logger.error('Error sending seasonal registration notification email:', emailError);
+    }
 
     // Don't send encrypted IBAN back
     const responseObj = registration.toObject();

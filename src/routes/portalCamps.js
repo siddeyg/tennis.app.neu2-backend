@@ -14,11 +14,13 @@
 import express from 'express';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
+import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { sendCampRegistrationNotification } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -392,6 +394,29 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
 
     // 7. Commit transaction
     if (session) await session.commitTransaction();
+
+    // 8. Send notification emails to admins (non-blocking)
+    try {
+      const settings = await Settings.findOne({ singleton: true });
+      if (settings && settings.notificationEmails) {
+        const emails = [
+          settings.notificationEmails.email1,
+          settings.notificationEmails.email2,
+          settings.notificationEmails.email3
+        ].filter(email => email && email.trim());
+
+        if (emails.length > 0) {
+          // Populate camp data for email
+          const populatedRegistration = await CampRegistration.findById(registration._id)
+            .populate('campId', 'name startDate endDate location targetAudience ageMin ageMax skillLevels');
+          await sendCampRegistrationNotification(populatedRegistration, populatedRegistration.campId, emails);
+          logger.info(`Camp registration notification emails sent to ${emails.length} recipient(s)`);
+        }
+      }
+    } catch (emailError) {
+      // Log error but don't fail the registration
+      logger.error('Error sending camp registration notification email:', emailError);
+    }
 
     res.status(201).json({
       success: true,
