@@ -58,6 +58,20 @@ const registerLimiter = rateLimit({
   }
 });
 
+// Rate limiting for resend verification
+const resendVerificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 3 : 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: isWhitelisted,
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Zu viele Anfragen. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.'
+    });
+  }
+});
+
 /**
  * @route   POST /api/portal/auth/register
  * @desc    Register new student portal account (NO studentId required - GDPR compliant)
@@ -196,21 +210,23 @@ router.post('/verify-email',
     // Hash incoming token to compare against stored hash
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-    // Find user with valid token
-    const portalUser = await StudentPortalUser.findOne({
-      verificationToken: hashedToken,
-      verificationTokenExpires: { $gt: Date.now() }
-    });
+    // Atomically claim the token: only one concurrent request can succeed
+    const portalUser = await StudentPortalUser.findOneAndUpdate(
+      {
+        verificationToken: hashedToken,
+        verificationTokenExpires: { $gt: Date.now() },
+        emailVerified: false
+      },
+      {
+        $set: { emailVerified: true },
+        $unset: { verificationToken: '', verificationTokenExpires: '' }
+      },
+      { new: true }
+    );
 
     if (!portalUser) {
       return res.status(400).json({ error: 'Ungültiger oder abgelaufener Verifizierungs-Token' });
     }
-
-    // Mark email as verified
-    portalUser.emailVerified = true;
-    portalUser.verificationToken = undefined;
-    portalUser.verificationTokenExpires = undefined;
-    await portalUser.save();
 
     // Send welcome email
     const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
@@ -663,6 +679,48 @@ router.get('/me',
   } catch (error) {
     logger.error('Get current user error', { error: error.message, stack: error.stack });
     res.status(401).json({ error: 'Ungültiger Token' });
+  }
+});
+
+/**
+ * @route   POST /api/portal/auth/resend-verification
+ * @desc    Resend email verification link for unverified portal users
+ * @access  Public (rate limited)
+ */
+router.post('/resend-verification',
+  resendVerificationLimiter,
+  auditLogMiddleware({ action: 'ACCESS', resource: 'StudentPortalUser', metadata: { operation: 'resend_verification' } }),
+  async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'E-Mail-Adresse erforderlich' });
+    }
+
+    const portalUser = await StudentPortalUser.findOne({ email: email.toLowerCase().trim() });
+
+    // Always return success to prevent email enumeration
+    if (!portalUser || portalUser.emailVerified) {
+      return res.json({ message: 'Falls ein Konto mit dieser E-Mail existiert und noch nicht verifiziert ist, wurde eine neue Bestätigungs-E-Mail versendet.' });
+    }
+
+    // Generate new verification token
+    const { token: verificationToken, expires } = generateVerificationTokenWithExpiry();
+    const hashedToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+
+    portalUser.verificationToken = hashedToken;
+    portalUser.verificationTokenExpires = expires;
+    await portalUser.save();
+
+    const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
+    await sendVerificationEmail(portalUser.email, verificationToken, studentName);
+
+    res.json({ message: 'Falls ein Konto mit dieser E-Mail existiert und noch nicht verifiziert ist, wurde eine neue Bestätigungs-E-Mail versendet.' });
+
+  } catch (error) {
+    logger.error('Resend verification error', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler beim Senden der Bestätigungs-E-Mail' });
   }
 });
 
