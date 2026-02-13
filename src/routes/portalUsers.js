@@ -8,6 +8,7 @@
  * - Force verify email
  */
 
+import crypto from 'crypto';
 import express from 'express';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
@@ -111,11 +112,12 @@ router.post('/:id/reset-verification',
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
-    // Generate new verification token
+    // Generate new verification token (store hash, return raw for admin display)
     const { token, expires } = generateVerificationTokenWithExpiry();
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     portalUser.emailVerified = false;
-    portalUser.verificationToken = token;
+    portalUser.verificationToken = hashedToken;
     portalUser.verificationTokenExpires = expires;
     await portalUser.save();
 
@@ -180,14 +182,15 @@ router.post('/:id/resend-verification',
       return res.status(400).json({ error: 'E-Mail bereits verifiziert' });
     }
 
-    // Generate new verification token
+    // Generate new verification token (store hash, send raw token in email)
     const { token, expires } = generateVerificationTokenWithExpiry();
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-    portalUser.verificationToken = token;
+    portalUser.verificationToken = hashedToken;
     portalUser.verificationTokenExpires = expires;
     await portalUser.save();
 
-    // Send verification email
+    // Send verification email (raw token goes in link)
     const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
     await sendVerificationEmail(portalUser.email, token, studentName);
 

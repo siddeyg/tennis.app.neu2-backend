@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
@@ -120,6 +121,7 @@ router.post('/register',
 
     // Generate verification token
     const { token: verificationToken, expires: verificationTokenExpires } = generateVerificationTokenWithExpiry();
+    const hashedVerificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
 
     // Create new portal user (WITHOUT studentId - will be linked during seasonal registration)
     const portalUser = new StudentPortalUser({
@@ -132,14 +134,14 @@ router.post('/register',
       member: member === true || member === 'true',
       phone: phone || null,
       studentId: null,  // Will be linked when first seasonal registration is submitted
-      verificationToken,
+      verificationToken: hashedVerificationToken,
       verificationTokenExpires,
       emailVerified: false
     });
 
     await portalUser.save();
 
-    // Send verification email
+    // Send verification email (raw token goes in link, hash stored in DB)
     const studentName = `${firstName} ${lastName}`;
     await sendVerificationEmail(email, verificationToken, studentName);
 
@@ -191,9 +193,12 @@ router.post('/verify-email',
       return res.status(400).json({ error: 'Verifizierungs-Token erforderlich' });
     }
 
+    // Hash incoming token to compare against stored hash
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
     // Find user with valid token
     const portalUser = await StudentPortalUser.findOne({
-      verificationToken: token,
+      verificationToken: hashedToken,
       verificationTokenExpires: { $gt: Date.now() }
     });
 
@@ -517,10 +522,11 @@ router.post('/forgot-password',
       });
     }
 
-    // Generate reset token
+    // Generate reset token (store hash in DB, send raw token in email)
     const { token: resetToken, expires: resetExpires } = generatePasswordResetToken();
+    const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-    portalUser.passwordResetToken = resetToken;
+    portalUser.passwordResetToken = hashedResetToken;
     portalUser.passwordResetExpires = resetExpires;
     await portalUser.save();
 
@@ -559,9 +565,12 @@ router.post('/reset-password',
       return res.status(400).json({ error: 'Passwort muss mindestens 8 Zeichen lang sein' });
     }
 
+    // Hash incoming token to compare against stored hash
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
     // Find user with valid reset token
     const portalUser = await StudentPortalUser.findOne({
-      passwordResetToken: token,
+      passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() }
     });
 
