@@ -28,6 +28,19 @@ import nodemailer from 'nodemailer';
 import logger from './logger.js';
 
 /**
+ * Escape HTML special characters to prevent injection in email templates
+ */
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Text formatting utilities for plain text emails
  * Ensures consistent formatting across all plain text templates
  */
@@ -190,7 +203,7 @@ export async function sendPasswordResetEmail(email, resetToken, studentName, por
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
-        <h2 style="color: #333; margin-top: 0;">Hallo ${studentName},</h2>
+        <h2 style="color: #333; margin-top: 0;">Hallo ${escapeHtml(studentName)},</h2>
 
         <p>Sie haben eine Passwort-Reset-Anfrage für Ihr Konto im Trainings-Portal gestellt.</p>
 
@@ -254,7 +267,7 @@ export async function sendVerificationEmail(email, verificationToken, studentNam
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
-        <h2 style="color: #333; margin-top: 0;">Willkommen ${studentName}!</h2>
+        <h2 style="color: #333; margin-top: 0;">Willkommen ${escapeHtml(studentName)}!</h2>
 
         <p>Vielen Dank für Ihre Registrierung beim Trainings-Portal der Mondo Tennisschule.</p>
 
@@ -315,7 +328,7 @@ export async function sendWelcomeEmail(email, studentName) {
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
-        <h2 style="color: #333; margin-top: 0;">Herzlich Willkommen ${studentName}!</h2>
+        <h2 style="color: #333; margin-top: 0;">Herzlich Willkommen ${escapeHtml(studentName)}!</h2>
 
         <p>Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Ihr Konto ist jetzt aktiv!</p>
 
@@ -524,26 +537,26 @@ export async function sendNewTicketEmail(ticket) {
 
           <div style="background-color: #f9f9f9; border-left: 4px solid #009688; padding: 15px; margin-bottom: 20px;">
             <h2 style="color: #009688; margin: 0 0 10px 0; font-size: 20px;">Ticket #${ticket.ticketNumber}</h2>
-            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${ticket.subject}</p>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${escapeHtml(ticket.subject)}</p>
           </div>
 
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tbody>
               <tr>
                 <td style="padding: 10px 0; font-weight: 500; color: #666; width: 30%;">Von:</td>
-                <td style="padding: 10px 0; color: #333;">${ticket.createdBy.name}</td>
+                <td style="padding: 10px 0; color: #333;">${escapeHtml(ticket.createdBy.name)}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; font-weight: 500; color: #666;">E-Mail:</td>
-                <td style="padding: 10px 0; color: #333;">${ticket.createdBy.email}</td>
+                <td style="padding: 10px 0; color: #333;">${escapeHtml(ticket.createdBy.email)}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; font-weight: 500; color: #666;">Kategorie:</td>
-                <td style="padding: 10px 0; color: #333;">${categoryLabels[ticket.category] || ticket.category}</td>
+                <td style="padding: 10px 0; color: #333;">${escapeHtml(categoryLabels[ticket.category] || ticket.category)}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; font-weight: 500; color: #666;">Priorität:</td>
-                <td style="padding: 10px 0; color: #333;">${priorityLabels[ticket.priority] || ticket.priority}</td>
+                <td style="padding: 10px 0; color: #333;">${escapeHtml(priorityLabels[ticket.priority] || ticket.priority)}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; font-weight: 500; color: #666;">Status:</td>
@@ -554,7 +567,7 @@ export async function sendNewTicketEmail(ticket) {
 
           <div style="background-color: #fafafa; border-radius: 4px; padding: 15px; margin-bottom: 25px;">
             <h3 style="color: #009688; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase;">Nachricht:</h3>
-            <p style="color: #333; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${ticket.messages[0].content}</p>
+            <p style="color: #333; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(ticket.messages[0].content)}</p>
           </div>
 
           <div style="text-align: center; margin-top: 30px;">
@@ -617,12 +630,12 @@ export async function sendTicketReplyEmail(ticket, message, recipientEmail) {
 
           <div style="background-color: #f9f9f9; border-left: 4px solid #009688; padding: 15px; margin-bottom: 20px;">
             <h2 style="color: #009688; margin: 0 0 10px 0; font-size: 20px;">Ticket #${ticket.ticketNumber}</h2>
-            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${ticket.subject}</p>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${escapeHtml(ticket.subject)}</p>
           </div>
 
           <div style="background-color: #fafafa; border-radius: 4px; padding: 15px; margin-bottom: 25px;">
-            <h3 style="color: #009688; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase;">Von ${message.senderName}:</h3>
-            <p style="color: #333; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${message.content}</p>
+            <h3 style="color: #009688; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase;">Von ${escapeHtml(message.senderName)}:</h3>
+            <p style="color: #333; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(message.content)}</p>
           </div>
 
           <div style="text-align: center; margin-top: 30px;">
@@ -699,7 +712,7 @@ export async function sendTicketStatusChangeEmail(ticket, oldStatus, newStatus, 
 
           <div style="background-color: #f9f9f9; border-left: 4px solid #009688; padding: 15px; margin-bottom: 20px;">
             <h2 style="color: #009688; margin: 0 0 10px 0; font-size: 20px;">Ticket #${ticket.ticketNumber}</h2>
-            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${ticket.subject}</p>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: 600;">${escapeHtml(ticket.subject)}</p>
           </div>
 
           <div style="background-color: #fafafa; border-radius: 4px; padding: 20px; margin-bottom: 25px; text-align: center;">
