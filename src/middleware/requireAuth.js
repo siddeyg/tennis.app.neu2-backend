@@ -7,9 +7,8 @@ import passport from "passport";
  * Usage: app.use('/api/protected-route', requireAuth, yourRouteHandler)
  */
 export const requireAuth = (req, res, next) => {
-  // Allow test mocks to bypass JWT verification
-  // If req.user is already set (by test middleware), skip JWT verification
-  if (req.user && (req.user.role === 'student' || req.user.role === 'admin' || req.user.role === 'trainer')) {
+  // Allow test mocks to bypass JWT verification (test environment only)
+  if (process.env.NODE_ENV === 'test' && req.user && (req.user.role === 'student' || req.user.role === 'admin' || req.user.role === 'trainer')) {
     return next();
   }
 

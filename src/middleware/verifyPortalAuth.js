@@ -11,9 +11,8 @@ import logger from '../utils/logger.js';
  */
 export const verifyPortalAuth = async (req, res, next) => {
   try {
-    // Allow test mocks to bypass JWT verification
-    // If req.user is already set (by test middleware), skip JWT verification
-    if (req.user && (req.user.role === 'student' || req.user.role === 'coach')) {
+    // Allow test mocks to bypass JWT verification (test environment only)
+    if (process.env.NODE_ENV === 'test' && req.user && (req.user.role === 'student' || req.user.role === 'coach')) {
       return next();
     }
 
