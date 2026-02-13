@@ -181,6 +181,17 @@ StudentPortalUserSchema.methods.isChild = function() {
   return age < 18;
 };
 
+// Strip sensitive fields from JSON responses
+StudentPortalUserSchema.methods.toJSON = function() {
+  const user = this.toObject();
+  delete user.password;
+  delete user.verificationToken;
+  delete user.verificationTokenExpires;
+  delete user.passwordResetToken;
+  delete user.passwordResetExpires;
+  return user;
+};
+
 // Performance index for login lookups (CRITICAL for load testing)
 StudentPortalUserSchema.index({ email: 1 });
 
