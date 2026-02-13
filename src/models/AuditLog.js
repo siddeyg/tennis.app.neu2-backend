@@ -24,7 +24,7 @@ const auditLogSchema = new mongoose.Schema({
   // Action details
   action: {
     type: String,
-    enum: ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'ACCESS', 'BULK_OPERATION'],
+    enum: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'ACCESS', 'BULK_OPERATION', 'IMPORT'],
     required: true,
     index: true
   },
