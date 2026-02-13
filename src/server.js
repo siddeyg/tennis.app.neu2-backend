@@ -260,7 +260,7 @@ app.use("/api/camps", campsRoutes);
 app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), metricsRoutes);
 
 // Support tickets routes - admin only
-app.use("/api/support-tickets", supportTicketsRoutes);
+app.use("/api/support-tickets", requireAuth, updateActivity, requireRole(["admin"]), supportTicketsRoutes);
 
 // Portal support tickets routes - student portal (auth handled in route file)
 app.use("/api/portal/support-tickets", portalSupportTicketsRoutes);
