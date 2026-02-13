@@ -635,6 +635,9 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       // Rollback transaction - restore all deleted students
       await session.abortTransaction();
       console.error("CSV Import - Transaction aborted, all changes rolled back");
+
+      // Mark this as a transaction failure for better error message
+      transactionError.isTransactionRollback = true;
       throw transactionError; // Re-throw to outer catch block
     } finally {
       session.endSession();
@@ -649,6 +652,16 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
     }
     if (error.message.includes('File too large')) {
       return res.status(400).json({ error: "Datei zu groß (max 5MB)" });
+    }
+
+    // If transaction rollback occurred, reassure user their data is safe
+    if (error.isTransactionRollback) {
+      return res.status(500).json({
+        error: "CSV-Import fehlgeschlagen",
+        details: error.message,
+        dataSafe: true,
+        message: "Alle bestehenden Daten wurden wiederhergestellt. Keine Daten verloren."
+      });
     }
 
     res.status(500).json({ error: "Fehler beim CSV-Import", details: error.message });
