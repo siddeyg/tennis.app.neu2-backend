@@ -610,18 +610,35 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
     console.log(`CSV Import - Converted to ${students.length} valid student objects`);
     console.log("Sample student:", students[0]);
 
-    // Delete all existing students
-    await Student.deleteMany({});
-    console.log("CSV Import - Deleted existing students");
+    // Use transaction to ensure atomic delete+insert (all-or-nothing)
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    // Insert new students
-    const insertedStudents = await Student.insertMany(students);
-    console.log(`CSV Import - Inserted ${insertedStudents.length} students`);
+    try {
+      // Delete all existing students (within transaction)
+      await Student.deleteMany({}, { session });
+      console.log("CSV Import - Deleted existing students");
 
-    res.json({
-      message: "Import erfolgreich",
-      imported: insertedStudents.length
-    });
+      // Insert new students (within transaction)
+      const insertedStudents = await Student.insertMany(students, { session });
+      console.log(`CSV Import - Inserted ${insertedStudents.length} students`);
+
+      // Commit transaction - both operations succeed
+      await session.commitTransaction();
+      console.log("CSV Import - Transaction committed successfully");
+
+      res.json({
+        message: "Import erfolgreich",
+        imported: insertedStudents.length
+      });
+    } catch (transactionError) {
+      // Rollback transaction - restore all deleted students
+      await session.abortTransaction();
+      console.error("CSV Import - Transaction aborted, all changes rolled back");
+      throw transactionError; // Re-throw to outer catch block
+    } finally {
+      session.endSession();
+    }
 
   } catch (error) {
     logger.error("Fehler beim CSV-Import", { error: error.message, stack: error.stack });
