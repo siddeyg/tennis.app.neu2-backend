@@ -260,7 +260,7 @@ router.post('/login', authLimiter, async (req, res) => {
         errorMessage: 'E-Mail Adresse unbekannt'
       });
       return res.status(401).json({
-        error: 'E-Mail Adresse unbekannt'
+        error: 'Ungültige Anmeldedaten'
       });
     }
 
