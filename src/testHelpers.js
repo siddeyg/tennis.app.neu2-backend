@@ -48,7 +48,10 @@ export const createTestStudent = (overrides = {}) => ({
   member: true,
   team: false,
   trainigGroup: 'Rot',
-  availableTimes: ['Montag 14', 'Mittwoch 14'],
+  availableTimes: [
+    { day: 'Montag', hour: 14, venue: '' },
+    { day: 'Mittwoch', hour: 14, venue: '' }
+  ],
   frequence: '2',
   ...overrides
 });
