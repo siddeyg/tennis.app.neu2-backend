@@ -157,6 +157,53 @@ router.get('/my-registrations', async (req, res) => {
 });
 
 /**
+ * GET /api/portal/seasonal-registrations/history
+ * Get ALL seasonal registrations for current user across ALL periods
+ *
+ * Returns full history (not just active period)
+ */
+router.get('/history', async (req, res) => {
+  try {
+    // Find all registrations for this user (all periods)
+    const registrations = await SeasonalRegistration.find({
+      studentPortalUserId: req.user.id,
+      status: { $ne: 'rejected' }
+    })
+      .populate('periodId', 'name season year trainingStartDate trainingEndDate')
+      .sort({ createdAt: -1 }); // Newest first
+
+    // Get portal user to fetch child names
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+
+    // Format with child names
+    const formatted = registrations.map(reg => {
+      const obj = reg.toObject();
+      delete obj.iban; // Security: never send encrypted IBAN to frontend
+
+      if (reg.familyMemberId && portalUser) {
+        const child = portalUser.familyMembers.id(reg.familyMemberId);
+        obj.childName = child ? `${child.firstName} ${child.lastName}`.trim() : 'Unbekannt';
+      } else {
+        obj.childName = null;
+      }
+
+      return obj;
+    });
+
+    res.json({
+      success: true,
+      registrations: formatted
+    });
+  } catch (error) {
+    logger.error('Error fetching registration history:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Abrufen der Anmeldungen'
+    });
+  }
+});
+
+/**
  * GET /api/portal/seasonal-registrations/my-registration
  * Get current user's registration for active period
  *
