@@ -9,10 +9,10 @@
  * - PUT    /api/seasonal-registrations/:id       - Update submission
  * - DELETE /api/seasonal-registrations/:id       - Delete submission
  * - POST   /api/seasonal-registrations/:id/process - Process single submission
- * - POST   /api/seasonal-registrations/:id/reject  - Reject submission
  */
 
 import express from 'express';
+import mongoose from 'mongoose';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import Student from '../models/Student.js';
@@ -48,7 +48,7 @@ router.use(requireRole(['admin']));
  *
  * Query params:
  * - periodId: filter by period
- * - status: filter by status (pending, processed, rejected)
+ * - status: filter by status (pending, processed)
  * - formType: filter by form type (kids, adults)
  */
 router.get('/', async (req, res) => {
@@ -154,11 +154,11 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       });
     }
 
-    // Don't allow editing processed/rejected submissions
+    // Don't allow editing processed submissions
     if (registration.status !== 'pending') {
       return res.status(400).json({
         success: false,
-        error: 'Verarbeitete oder abgelehnte Anmeldungen können nicht bearbeitet werden'
+        error: 'Verarbeitete Anmeldungen können nicht bearbeitet werden'
       });
     }
 
@@ -335,10 +335,32 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       student = await Student.findOne({ email: registration.email });
     }
 
+    // If this is a family member registration, fetch child's data
+    let firstName = registration.firstName;
+    let lastName = registration.lastName;
+    let birthDate = registration.birthdate;
+
+    if (registration.familyMemberId) {
+      const StudentPortalUser = mongoose.model('StudentPortalUser');
+      const parentUser = await StudentPortalUser.findById(registration.studentPortalUserId);
+
+      if (parentUser && parentUser.familyMembers) {
+        const familyMember = parentUser.familyMembers.find(
+          fm => fm._id.toString() === registration.familyMemberId.toString()
+        );
+
+        if (familyMember) {
+          firstName = familyMember.firstName;
+          lastName = familyMember.lastName;
+          birthDate = familyMember.birthdate;
+        }
+      }
+    }
+
     const studentData = {
-      firstName: registration.firstName,
-      lastName: registration.lastName,
-      birthDate: registration.birthdate,
+      firstName,
+      lastName,
+      birthDate,
       email: registration.email,
       phone: registration.phone,
       address: registration.address,
@@ -351,18 +373,22 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       studentData.member = registration.mitgliedsstatus === 'Mitglied';
       studentData.team = registration.teamParticipation ? 'Team' : '';
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-      studentData.availableTimes = registration.availableTimesKids.map(
-        t => `${t.day} ${t.hour}`
-      );
+      studentData.availableTimes = (registration.availableTimesKids || []).map(t => ({
+        day: t.day,
+        hour: t.hour,
+        venue: t.venue || ''
+      }));
     } else {
       // Adults
       studentData.skillLevel = registration.spielstärke;
       studentData.member = true; // Assume adults are members
       studentData.sex = ''; // Will be filled by admin or gender detection
-      studentData.frequence = '1'; // Default
-      studentData.availableTimes = registration.availableTimesAdults.map(
-        t => `${t.day} ${t.hour}`
-      );
+      studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
+      studentData.availableTimes = (registration.availableTimesAdults || []).map(t => ({
+        day: t.day,
+        hour: t.hour,
+        venue: t.venue || ''
+      }));
     }
 
     if (student) {
@@ -399,62 +425,6 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
     res.status(500).json({
       success: false,
       error: 'Fehler beim Verarbeiten der Anmeldung'
-    });
-  }
-});
-
-/**
- * POST /api/seasonal-registrations/:id/reject
- * Reject seasonal registration
- *
- * Body:
- * - reason: string - reason for rejection
- */
-router.post('/:id/reject', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration', metadata: { operation: 'REJECT' } }), async (req, res) => {
-  try {
-    const registration = await SeasonalRegistration.findById(req.params.id);
-
-    if (!registration) {
-      return res.status(404).json({
-        success: false,
-        error: 'Anmeldung nicht gefunden'
-      });
-    }
-
-    if (registration.status !== 'pending') {
-      return res.status(400).json({
-        success: false,
-        error: 'Anmeldung wurde bereits verarbeitet'
-      });
-    }
-
-    const { reason } = req.body;
-
-    registration.status = 'rejected';
-    registration.processedAt = new Date();
-    registration.processedBy = req.user.id;
-    if (reason) {
-      registration.remarks = `ABGELEHNT: ${reason}\n\n${registration.remarks || ''}`;
-    }
-
-    await registration.save();
-
-    logger.info('Seasonal registration rejected', {
-      registrationId: registration._id,
-      userId: req.user.id,
-      reason
-    });
-
-    res.json({
-      success: true,
-      message: 'Anmeldung abgelehnt',
-      registration
-    });
-  } catch (error) {
-    logger.error('Error rejecting seasonal registration:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Fehler beim Ablehnen der Anmeldung'
     });
   }
 });

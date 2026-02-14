@@ -132,13 +132,7 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), 
     // Note: Duplicate email check removed - families can share emails (parent email for multiple children)
     // Duplicate detection is handled on frontend with firstName + lastName + birthDate matching
 
-    // Sanitize coach field: convert empty string to null (Mongoose expects ObjectId or null, not "")
-    const studentData = { ...req.body };
-    if (studentData.coach === "" || studentData.coach === undefined) {
-      studentData.coach = null;
-    }
-
-    const student = new Student(studentData);
+    const student = new Student(req.body);
     await student.save();
     res.status(201).json(student);
   } catch (error) {
@@ -169,24 +163,18 @@ router.delete("/all", auditLogMiddleware({ action: 'DELETE', resource: 'Student'
 // Add assignment to student (for multiple course assignments)
 router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
-    const { day, hour, coach } = req.body;
+    const { day, coach } = req.body;
+    const hour = Number(req.body.hour); // Always store hour as Number for consistent $pull matching
 
-    if (!day || !hour) {
+    if (!day || isNaN(hour)) {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
 
-    // Try both string ID and ObjectId format for compatibility
-    // Local DB may use ObjectId, server DB may use string IDs
-    const result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        $push: { assignments: { day, hour, coach: coach || null } },
-        $set: { day, hour, coach: coach || null }
-      },
-      { returnDocument: 'after' }
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      { $push: { assignments: { day, hour, coach: coach || null } } },
+      { new: true, lean: true }
     );
-
-    const student = result.value;
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });
@@ -210,44 +198,24 @@ router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource:
 router.delete("/:id/assignments", auditLogMiddleware({ action: 'DELETE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
     const { day, hour } = req.body;
+    // Coerce hour to Number — MongoDB $pull is type-strict, and hour may be stored as Number
+    const numericHour = Number(hour);
 
-    if (!day || !hour) {
+    if (!day || isNaN(numericHour)) {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
 
-    // Step 1: Remove the assignment
-    let result = await Student.collection.findOneAndUpdate(
-      { _id: req.params.id },
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
       {
-        $pull: { assignments: { day, hour } }
+        $pull: { assignments: { day, hour: numericHour } }
       },
-      { returnDocument: 'after' }
+      { new: true, lean: true }
     );
-
-    const student = result.value;
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });
     }
-
-    // Step 2: Update legacy fields based on remaining assignments
-    const updateLegacy = {};
-    if (student.assignments && student.assignments.length > 0) {
-      updateLegacy.day = student.assignments[0].day;
-      updateLegacy.hour = student.assignments[0].hour;
-      updateLegacy.coach = student.assignments[0].coach;
-    } else {
-      updateLegacy.day = null;
-      updateLegacy.hour = null;
-      updateLegacy.coach = null;
-    }
-
-    // Update legacy fields
-    await Student.collection.findOneAndUpdate(
-      { _id: req.params.id },
-      { $set: updateLegacy },
-      { returnDocument: 'after' }
-    );
 
     res.json(student);
   } catch (error) {
@@ -266,29 +234,18 @@ router.delete("/:id/assignments", auditLogMiddleware({ action: 'DELETE', resourc
 // Replace specific assignment (move student - update one assignment, preserve others)
 router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
-    const { day, hour, coach, fromDay, fromHour } = req.body;
-
+    const { day, coach, fromDay } = req.body;
+    // Coerce hours to Number for consistent storage and $pull matching
+    const hour = req.body.hour !== null && req.body.hour !== undefined ? Number(req.body.hour) : req.body.hour;
+    const fromHour = req.body.fromHour !== null && req.body.fromHour !== undefined ? Number(req.body.fromHour) : req.body.fromHour;
 
     // Allow null values for clearing assignments (algorithm reset)
     if (day === null && hour === null) {
-
-      // Clear all assignments
-      const updateOperation = {
-        $set: {
-          assignments: [],
-          day: null,
-          hour: null,
-          coach: null
-        }
-      };
-
-      const result = await Student.collection.findOneAndUpdate(
-        { _id: req.params.id },
-        updateOperation,
-        { returnDocument: 'after' }
+      const student = await Student.findByIdAndUpdate(
+        req.params.id,
+        { assignments: [] },
+        { new: true, lean: true }
       );
-
-      const student = result.value;
 
       if (!student) {
         return res.status(404).json({ error: "Schüler nicht gefunden" });
@@ -303,57 +260,46 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
 
     // If fromDay/fromHour provided, update specific assignment (multi-assignment mode)
     // Otherwise, replace all assignments (legacy single-assignment mode)
-    let result;
+    let student;
 
     if (fromDay && fromHour) {
+      // Atomic replace: fetch → splice old → push new → save within transaction
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        const doc = await Student.findById(req.params.id).session(session);
+        if (!doc) {
+          await session.abortTransaction();
+          return res.status(404).json({ error: "Schüler nicht gefunden", searchedId: req.params.id });
+        }
 
-      // Step 1: Remove old assignment
-      const updateOperation = {
-        $pull: { assignments: { day: fromDay, hour: Number(fromHour) } }
-      };
-
-      result = await Student.collection.findOneAndUpdate(
-        { _id: req.params.id },
-        updateOperation,
-        { returnDocument: 'after' }
-      );
-
-      // Step 2: Add new assignment
-      if (result.value) {
-        const addOperation = {
-          $push: { assignments: { day, hour, coach: coach || null } },
-          $set: { day, hour, coach: coach || null }
-        };
-
-        result = await Student.collection.findOneAndUpdate(
-          { _id: req.params.id },
-          addOperation,
-          { returnDocument: 'after' }
+        const oldIndex = doc.assignments.findIndex(
+          a => a.day === fromDay && Number(a.hour) === Number(fromHour)
         );
+        if (oldIndex !== -1) {
+          doc.assignments.splice(oldIndex, 1);
+        }
+
+        doc.assignments.push({ day, hour, coach: coach || null });
+        await doc.save({ session });
+        await session.commitTransaction();
+        student = doc.toObject();
+      } catch (txError) {
+        await session.abortTransaction();
+        throw txError;
+      } finally {
+        session.endSession();
       }
     } else {
-
       // Replace all assignments
-      const updateOperation = {
-        $set: {
-          assignments: [{ day, hour, coach: coach || null }],
-          day,
-          hour,
-          coach: coach || null
-        }
-      };
-
-      result = await Student.collection.findOneAndUpdate(
-        { _id: req.params.id },
-        updateOperation,
-        { returnDocument: 'after' }
+      student = await Student.findByIdAndUpdate(
+        req.params.id,
+        { assignments: [{ day, hour, coach: coach || null }] },
+        { new: true, lean: true }
       );
     }
 
-    const student = result.value;
-
     if (!student) {
-      const samples = await Student.find({}, { _id: 1, firstName: 1, lastName: 1 }).limit(3);
       return res.status(404).json({ error: "Schüler nicht gefunden", searchedId: req.params.id });
     }
 
@@ -372,18 +318,75 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
 // Schüler löschen
 router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Student' }), async (req, res) => {
   try {
+    const studentId = req.params.id;
 
-    const result = await Student.collection.findOneAndDelete(
-      { _id: req.params.id }
-    );
+    // 1. Reset linked seasonal registrations back to pending (orphan prevention)
+    const SeasonalRegistration = mongoose.model('SeasonalRegistration');
+    const linkedRegistrations = await SeasonalRegistration.find({ studentId });
 
-    const student = result.value;
+    if (linkedRegistrations.length > 0) {
+      await SeasonalRegistration.updateMany(
+        { studentId },
+        {
+          $set: {
+            status: 'pending',
+            processedAt: null,
+            processedBy: null
+          },
+          $unset: { studentId: "" }
+        }
+      );
+      logger.info(`Reset ${linkedRegistrations.length} seasonal registration(s) to pending after student deletion`, {
+        studentId,
+        registrationIds: linkedRegistrations.map(r => r._id)
+      });
+    }
 
+    // 2. Nullify StudentPortalUser.studentId (prevents broken portal logins)
+    const StudentPortalUser = mongoose.model('StudentPortalUser');
+    const portalUsers = await StudentPortalUser.find({ studentId });
+    if (portalUsers.length > 0) {
+      await StudentPortalUser.updateMany(
+        { studentId },
+        { $unset: { studentId: "" } }
+      );
+      logger.info(`Unlinked studentId from ${portalUsers.length} portal user(s)`, {
+        studentId,
+        portalUserIds: portalUsers.map(u => u._id)
+      });
+    }
+
+    // 3. Nullify familyMembers[].studentId references (prevents broken family management)
+    const usersWithFamilyLink = await StudentPortalUser.find({ 'familyMembers.studentId': studentId });
+    for (const user of usersWithFamilyLink) {
+      user.familyMembers.forEach(member => {
+        if (member.studentId && member.studentId.toString() === studentId.toString()) {
+          member.studentId = null;
+        }
+      });
+      await user.save();
+    }
+    if (usersWithFamilyLink.length > 0) {
+      logger.info(`Unlinked familyMember.studentId in ${usersWithFamilyLink.length} portal user(s)`, { studentId });
+    }
+
+    // 4. Delete student
+    const student = await Student.findByIdAndDelete(studentId);
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
-    res.json({ message: "Student deleted" });
+
+    const message = linkedRegistrations.length > 0
+      ? `Student deleted and ${linkedRegistrations.length} registration(s) reset to pending`
+      : "Student deleted";
+
+    res.json({
+      message,
+      resetRegistrations: linkedRegistrations.length,
+      portalUsersUnlinked: portalUsers.length,
+      familyMembersUnlinked: usersWithFamilyLink.length
+    });
   } catch (error) {
     logger.error("Fehler beim Löschen des Schülers", { error: error.message, stack: error.stack });
     if (error.name === 'CastError') {
@@ -405,8 +408,6 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
     }
 
     const {
-      day,
-      hour,
       firstName,
       lastName,
       birthDate,
@@ -422,7 +423,6 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
       skillLevel,
       availableTimes,
       comment,
-      coach,
       frequence,
       assignments,
     } = req.body;
@@ -436,44 +436,36 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
     // Note: Duplicate email check removed - families can share emails
     // Duplicate detection is handled on frontend
 
-    // Sanitize coach field: convert empty string to null (Mongoose expects ObjectId or null, not "")
-    const sanitizedCoach = (coach === "" || coach === undefined) ? null : coach;
-
-    if (assignments && assignments.length > 0) {
-    }
-
     const updateData = {
-      $set: {
-        day,
-        hour,
-        adress,
-        email,
-        phone,
-        member,
-        adult,
-        sex,
-        team,
-        trainigGroup,
-        groupSize,
-        firstName,
-        lastName,
-        birthDate,
-        skillLevel,
-        availableTimes,
-        comment,
-        coach: sanitizedCoach,
-        frequence,
-        assignments: assignments || [],
-      }
+      adress,
+      email,
+      phone,
+      member,
+      adult,
+      sex,
+      team,
+      trainigGroup,
+      groupSize,
+      firstName,
+      lastName,
+      birthDate,
+      skillLevel,
+      availableTimes,
+      comment,
+      frequence,
     };
 
-    const result = await Student.collection.findOneAndUpdate(
-      { _id: studentId },
-      updateData,
-      { returnDocument: 'after' }
-    );
+    // Only update assignments if explicitly provided in request body
+    // Omitting the field must never clear existing assignments
+    if (req.body.assignments !== undefined) {
+      updateData.assignments = Array.isArray(assignments) ? assignments : [];
+    }
 
-    const student = result.value;
+    const student = await Student.findByIdAndUpdate(
+      studentId,
+      updateData,
+      { new: true, lean: true }
+    );
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });
@@ -556,11 +548,6 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       studentData.trainigGroup = (row['Trainingsgruppe'] || '').trim();
       studentData.sex = (row['Geschlecht'] || '').trim();
       studentData.frequence = (row['Häufigkeit'] || '').trim();
-      studentData.day = (row['Zugewiesener Tag'] || '').trim();
-      studentData.hour = row['Zugewiesene Stunde'] ? parseInt(row['Zugewiesene Stunde'], 10) : null;
-      // Coach field requires ObjectId, but CSV has names - set to null for now
-      // TODO: Look up coach by name and store their ObjectId
-      studentData.coach = null;
       studentData.comment = (row['Kommentar'] || '').trim();
 
       // Parse available times from day columns
@@ -571,7 +558,7 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
         if (hoursString && hoursString.trim()) {
           const hours = hoursString.split(',').map(h => h.trim()).filter(h => h);
           hours.forEach(hour => {
-            studentData.availableTimes.push(`${day} ${hour}`);
+            studentData.availableTimes.push({ day, hour, venue: '' });
           });
         }
       });

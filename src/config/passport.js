@@ -59,8 +59,9 @@ export function configurePassport() {
   const cookieExtractor = (req) => {
     let token = null;
     if (req && req.cookies) {
-      // Try portal token first, then admin token
-      token = req.cookies['portalAccessToken'] || req.cookies['authToken'];
+      // Prefer admin token over portal token to avoid cross-contamination in dev
+      // (both cookies exist on localhost since cookies are domain-scoped, not port-scoped)
+      token = req.cookies['authToken'] || req.cookies['portalAccessToken'];
     }
     return token;
   };
@@ -68,12 +69,12 @@ export function configurePassport() {
   // Secret resolver - use correct secret based on which cookie is present
   const secretOrKeyProvider = (req, rawJwtToken, done) => {
     if (req && req.cookies) {
-      if (req.cookies['portalAccessToken']) {
-        // Student portal token - use PORTAL_JWT_SECRET
-        return done(null, process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET);
-      } else if (req.cookies['authToken']) {
+      if (req.cookies['authToken']) {
         // Admin portal token - use JWT_SECRET
         return done(null, process.env.JWT_SECRET);
+      } else if (req.cookies['portalAccessToken']) {
+        // Student portal token - use PORTAL_JWT_SECRET
+        return done(null, process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET);
       }
     }
     // Fallback

@@ -111,9 +111,11 @@ router.get('/my-registrations', async (req, res) => {
     }
 
     // Find all registrations for this user and period (parent + children)
+    // Exclude rejected registrations (rejected status is deprecated, but filter anyway)
     const registrations = await SeasonalRegistration.find({
       studentPortalUserId: req.user.id,
-      periodId: period._id
+      periodId: period._id,
+      status: { $ne: 'rejected' } // Don't show rejected registrations
     })
       .populate('periodId', 'name season trainingStartDate trainingEndDate')
       .sort({ createdAt: 1 });
@@ -484,8 +486,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       }
 
       const studentData = {
-        firstName: firstName,
-        lastName: lastName,
+        firstName: (familyMemberId && childData) ? childData.firstName : firstName,
+        lastName: (familyMemberId && childData) ? childData.lastName : lastName,
         birthDate: new Date(birthdate).toISOString().split('T')[0], // Format: YYYY-MM-DD
         email: email,
         phone: phone || '',
@@ -494,7 +496,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         sex: userSex || '',
         member: userMember || false,
         adult: formType === 'adults',
-        frequence: formType === 'kids' ? (trainingshäufigkeit || '1') : '1',
+        frequence: trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
         assignments: [] // Will be assigned during schedule planning
       };
 
@@ -502,16 +504,21 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       if (formType === 'kids') {
         studentData.team = teamParticipation || false;
         studentData.trainigGroup = trainingsart || ''; // e.g. "Rot", "Orange", "Gelb Team"
-        // Transform availableTimesKids from [{day, hour, venue}] to ["Tag Stunde"] format
-        studentData.availableTimes = (availableTimesKids || []).map(time => `${time.day} ${time.hour}`);
+        studentData.availableTimes = (availableTimesKids || []).map(t => ({
+          day: t.day,
+          hour: t.hour,
+          venue: t.venue || ''
+        }));
       } else {
         // Adults
         studentData.skillLevel = spielstärke || '';
         studentData.comment2 = trainingGoals ? trainingGoals.join(', ') : ''; // Trainingsziele
         studentData.groupSize = groupSize ? groupSize.join(', ') : ''; // Gruppengröße preferences
-        // Transform availableTimesAdults from [{day, hour, venue}] to ["Tag Stunde"] format
-        // Note: Adults hour can be string like "10:00" or "15:00 - 16:30 (Duisdorf)"
-        studentData.availableTimes = (availableTimesAdults || []).map(time => `${time.day} ${time.hour}`);
+        studentData.availableTimes = (availableTimesAdults || []).map(t => ({
+          day: t.day,
+          hour: t.hour,
+          venue: t.venue || ''
+        }));
       }
 
       const student = new Student(studentData);
@@ -545,7 +552,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       }
     }
 
-    // Update registration status to 'processed' (auto-approved)
+    // Link registration to student and mark as processed (auto-approved)
+    registration.studentId = studentId;
     registration.status = 'processed';
     registration.processedAt = new Date();
     await registration.save();

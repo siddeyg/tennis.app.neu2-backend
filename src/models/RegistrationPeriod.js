@@ -64,6 +64,25 @@ const registrationPeriodSchema = new mongoose.Schema(
       index: true,
     },
 
+    // Training schedule: which hours/venues are offered each day
+    // Used by the student portal registration form (AvailableTimesSelector)
+    trainingSlots: [
+      {
+        day: {
+          type: String,
+          enum: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+        },
+        hour: {
+          type: Number, // integer, e.g. 10, 14, 15, 16
+        },
+        venues: [
+          {
+            type: String, // e.g. 'BTHV', 'Brüser Berg', 'Röttgen' — empty array for summer
+          },
+        ],
+      },
+    ],
+
     // Form configuration for kids
     kidsFormConfig: {
       enabledFields: {

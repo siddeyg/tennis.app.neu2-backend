@@ -52,11 +52,7 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Coach' }), as
 // Trainer löschen
 router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Coach' }), async (req, res) => {
   try {
-    const result = await Coach.collection.findOneAndDelete(
-      { _id: req.params.id }
-    );
-
-    const coach = result.value;
+    const coach = await Coach.findByIdAndDelete(req.params.id);
 
     if (!coach) {
       return res.status(404).json({ error: "Coach not found" });
@@ -101,29 +97,25 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), 
     // Multiple coaches might use the same club email address
 
     const updateData = {
-      $set: {
-        firstName,
-        lastName,
-        birthday,
-        adress,
-        email,
-        phone,
-        availableTimes,
-        isCoachingAdult,
-        isCoachingChildren,
-        CoachingAdultLevels,
-        CoachingChildrenLevels,
-        comment,
-      }
+      firstName,
+      lastName,
+      birthday,
+      adress,
+      email,
+      phone,
+      availableTimes,
+      isCoachingAdult,
+      isCoachingChildren,
+      CoachingAdultLevels,
+      CoachingChildrenLevels,
+      comment,
     };
 
-    const result = await Coach.collection.findOneAndUpdate(
-      { _id: coachId },
+    const coach = await Coach.findByIdAndUpdate(
+      coachId,
       updateData,
-      { returnDocument: 'after' }
+      { new: true, lean: true }
     );
-
-    const coach = result.value;
 
     if (!coach) {
       return res.status(404).json({ error: "Trainer nicht gefunden" });

@@ -68,7 +68,6 @@ router.get('/', async (req, res) => {
 
     const camps = await Camp.find(filter)
       .populate('createdBy', 'firstName lastName email')
-      .populate('trainerId', 'name')
       .sort({ startDate: -1 }); // Newest first
 
     res.json({
@@ -92,8 +91,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const camp = await Camp.findById(req.params.id)
-      .populate('createdBy', 'firstName lastName email')
-      .populate('trainerId', 'name');
+      .populate('createdBy', 'firstName lastName email');
 
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
@@ -192,7 +190,6 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
 
     // Populate for response
     await camp.populate('createdBy', 'firstName lastName email');
-    await camp.populate('trainerId', 'name');
 
     res.status(201).json({
       success: true,
@@ -251,7 +248,6 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
 
     // Populate for response
     await camp.populate('createdBy', 'firstName lastName email');
-    await camp.populate('trainerId', 'name');
 
     // Attach before/after to req for audit log
     const afterState = camp.toObject();

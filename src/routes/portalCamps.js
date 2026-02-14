@@ -515,11 +515,14 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
     }
 
     const wasConfirmed = registration.status === 'confirmed';
+    const now = new Date();
 
-    // 1. Cancel registration
-    registration.status = 'cancelled';
-    registration.cancelledAt = new Date();
-    await registration.save(session ? { session } : {});
+    // 1. Cancel registration (use updateOne to avoid re-validating old documents
+    //    that may be missing fields added to the schema after their creation)
+    await CampRegistration.updateOne(
+      { _id: regId },
+      { $set: { status: 'cancelled', cancelledAt: now } }
+    );
 
     // 2. Decrement counter (only if was confirmed)
     if (wasConfirmed) {
@@ -531,13 +534,14 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
         campId: camp._id,
         status: 'waitlist'
       })
-      .sort({ registeredAt: 1 }) // Oldest first
-      ;
+      .sort({ registeredAt: 1 }); // Oldest first
 
       if (waitlistRegistration) {
-        // 4. Promote to confirmed
-        waitlistRegistration.status = 'confirmed';
-        await waitlistRegistration.save(session ? { session } : {});
+        // 4. Promote to confirmed (also use updateOne for same reason)
+        await CampRegistration.updateOne(
+          { _id: waitlistRegistration._id },
+          { $set: { status: 'confirmed' } }
+        );
 
         // 5. Increment counter again
         camp.currentParticipants += 1;

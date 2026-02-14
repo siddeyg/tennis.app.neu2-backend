@@ -220,13 +220,12 @@ app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes)
 app.use("/api/portal/children", portalChildrenRoutes);
 app.use("/api/portal/camps", portalCampsRoutes);
 
-// Protected routes - require authentication
-// updateActivity middleware updates lastActivity timestamp every 5 minutes
-app.use("/api/students", requireAuth, updateActivity, studentRoutes);
-app.use("/api/schedule", requireAuth, updateActivity, scheduleRoutes);
-app.use("/api/coaches", requireAuth, updateActivity, coachRoutes);
-app.use("/api/saved-schedules", requireAuth, updateActivity, savedScheduleRoutes);
-app.use("/api/settings", requireAuth, updateActivity, settingsRoutes);
+// Admin-only routes
+app.use("/api/students", requireAuth, updateActivity, requireRole(["admin"]), studentRoutes);
+app.use("/api/schedule", requireAuth, updateActivity, requireRole(["admin"]), scheduleRoutes);
+app.use("/api/coaches", requireAuth, updateActivity, requireRole(["admin"]), coachRoutes);
+app.use("/api/saved-schedules", requireAuth, updateActivity, requireRole(["admin"]), savedScheduleRoutes);
+app.use("/api/settings", requireAuth, updateActivity, requireRole(["admin"]), settingsRoutes);
 app.use("/api/user-settings", requireAuth, updateActivity, userSettingsRoutes);
 
 // Coach portal routes - trainer role required (handled in route file)
@@ -253,8 +252,8 @@ app.use("/api/seasonal-registrations", requireAuth, updateActivity, requireRole(
 // Portal users management routes - admin only
 app.use("/api/portal-users", requireAuth, updateActivity, requireRole(["admin"]), portalUsersRoutes);
 
-// Camps routes - admin only (auth handled in route file)
-app.use("/api/camps", campsRoutes);
+// Camps routes - admin only
+app.use("/api/camps", requireAuth, updateActivity, requireRole(["admin"]), campsRoutes);
 
 // Metrics routes - admin only
 app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), metricsRoutes);
