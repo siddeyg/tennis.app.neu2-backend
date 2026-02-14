@@ -813,18 +813,26 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
         }
 
         if (!dryRun) {
-          // Each submission gets its own transaction so Student creation and
-          // registration status update are atomic. If submission.save() fails
+          // Each submission gets its own transaction (if supported) so Student creation
+          // and registration status update are atomic. If submission.save() fails
           // after student.save(), the transaction rolls back both — preventing
           // orphaned Student records. One submission's failure doesn't stop
           // processing of the others.
-          const session = await mongoose.startSession();
-          await session.startTransaction();
+          const useTransactions = process.env.USE_TRANSACTIONS === 'true';
+
+          let session = null;
+          if (useTransactions) {
+            session = await mongoose.startSession();
+            await session.startTransaction();
+          }
+
           try {
             if (student) {
               // Update existing student
               Object.assign(student, studentData);
-              await student.save({ session });
+              await (useTransactions && session
+                ? student.save({ session })
+                : student.save());
               results.updated.push({
                 studentId: student._id,
                 name: `${student.firstName} ${student.lastName}`
@@ -832,7 +840,9 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
             } else {
               // Create new student
               student = new Student(studentData);
-              await student.save({ session });
+              await (useTransactions && session
+                ? student.save({ session })
+                : student.save());
               results.created.push({
                 studentId: student._id,
                 name: `${student.firstName} ${student.lastName}`
@@ -844,14 +854,22 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
             submission.status = 'processed';
             submission.processedAt = new Date();
             submission.processedBy = req.user.id;
-            await submission.save({ session });
+            await (useTransactions && session
+              ? submission.save({ session })
+              : submission.save());
 
-            await session.commitTransaction();
+            if (useTransactions && session) {
+              await session.commitTransaction();
+            }
           } catch (txError) {
-            await session.abortTransaction();
+            if (useTransactions && session) {
+              await session.abortTransaction();
+            }
             throw txError; // Re-throw so outer per-submission catch records the error
           } finally {
-            session.endSession();
+            if (useTransactions && session) {
+              session.endSession();
+            }
           }
         } else {
           // Dry run - just report what would happen

@@ -274,13 +274,22 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
     let student;
 
     if (fromDay && fromHour) {
-      // Atomic replace: fetch → splice old → push new → save within transaction
-      const session = await mongoose.startSession();
-      session.startTransaction();
+      // Atomic replace: fetch → splice old → push new → save within transaction (if supported)
+      const useTransactions = process.env.USE_TRANSACTIONS === 'true';
+
+      let session = null;
+      if (useTransactions) {
+        session = await mongoose.startSession();
+        await session.startTransaction();
+      }
+
       try {
-        const doc = await Student.findById(req.params.id).session(session);
+        const doc = useTransactions && session
+          ? await Student.findById(req.params.id).session(session)
+          : await Student.findById(req.params.id);
+
         if (!doc) {
-          await session.abortTransaction();
+          if (useTransactions && session) await session.abortTransaction();
           return res.status(404).json({ error: "Schüler nicht gefunden", searchedId: req.params.id });
         }
 
@@ -292,14 +301,23 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
         }
 
         doc.assignments.push({ day, hour, coach: coach || null });
-        await doc.save({ session });
-        await session.commitTransaction();
+
+        await (useTransactions && session ? doc.save({ session }) : doc.save());
+
+        if (useTransactions && session) {
+          await session.commitTransaction();
+        }
+
         student = doc.toObject();
       } catch (txError) {
-        await session.abortTransaction();
+        if (useTransactions && session) {
+          await session.abortTransaction();
+        }
         throw txError;
       } finally {
-        session.endSession();
+        if (useTransactions && session) {
+          session.endSession();
+        }
       }
     } else {
       // Replace all assignments
@@ -601,35 +619,51 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       });
     }
 
-    // Use transaction to ensure atomic delete+insert (all-or-nothing)
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Use transaction to ensure atomic delete+insert (all-or-nothing, if supported)
+    const useTransactions = process.env.USE_TRANSACTIONS === 'true';
+
+    let session = null;
+    if (useTransactions) {
+      session = await mongoose.startSession();
+      await session.startTransaction();
+    }
 
     try {
-      // Delete all existing students (within transaction)
-      await Student.deleteMany({}, { session });
+      // Delete all existing students (within transaction if supported)
+      await Student.deleteMany({}, useTransactions ? { session } : {});
 
-      // Insert new students (within transaction)
-      const insertedStudents = await Student.insertMany(students, { session });
+      // Insert new students (within transaction if supported)
+      const insertedStudents = await Student.insertMany(
+        students,
+        useTransactions ? { session } : {}
+      );
 
       // Commit transaction - both operations succeed
-      await session.commitTransaction();
-      logger.info("CSV Import - Transaction committed successfully", { count: insertedStudents.length });
+      if (useTransactions && session) {
+        await session.commitTransaction();
+        logger.info("CSV Import - Transaction committed successfully", { count: insertedStudents.length });
+      } else {
+        logger.info("CSV Import - Completed (no transaction support)", { count: insertedStudents.length });
+      }
 
       res.json({
         message: "Import erfolgreich",
         imported: insertedStudents.length
       });
     } catch (transactionError) {
-      // Rollback transaction - restore all deleted students
-      await session.abortTransaction();
-      console.error("CSV Import - Transaction aborted, all changes rolled back");
-
-      // Mark this as a transaction failure for better error message
-      transactionError.isTransactionRollback = true;
+      // Rollback transaction - restore all deleted students (if transaction was used)
+      if (useTransactions && session) {
+        await session.abortTransaction();
+        console.error("CSV Import - Transaction aborted, all changes rolled back");
+        transactionError.isTransactionRollback = true;
+      } else {
+        console.error("CSV Import - Failed (no transaction, database may be inconsistent!)");
+      }
       throw transactionError; // Re-throw to outer catch block
     } finally {
-      session.endSession();
+      if (useTransactions && session) {
+        session.endSession();
+      }
     }
 
   } catch (error) {
