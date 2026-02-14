@@ -170,6 +170,17 @@ router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource:
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
 
+    // Capacity check: max 4 students per course slot (same day + hour + coach)
+    const studentsInSlot = await Student.countDocuments({
+      assignments: { $elemMatch: { day, hour, coach: coach || null } }
+    });
+    if (studentsInSlot >= 4) {
+      return res.status(400).json({
+        error: `Kurs ist voll (${studentsInSlot}/4 Schüler)`,
+        currentCount: studentsInSlot
+      });
+    }
+
     const student = await Student.findByIdAndUpdate(
       req.params.id,
       { $push: { assignments: { day, hour, coach: coach || null } } },
