@@ -36,25 +36,32 @@ const studentSchema = new mongoose.Schema({
   groupSize: String,                    // Gruppengröße (1er, 2er, 3er, 4er) - Legacy-Feld
 
   // ===== Zeitplanung =====
-  availableTimes: [String],             // Liste verfügbarer Trainingszeiten im Format "Tag Stunde" (z.B. ["Montag 14", "Mittwoch 16"])
-
-  // ===== DEPRECATED (Legacy fields for backward compatibility) =====
-  day: String,                          // DEPRECATED: Use assignments array instead
-  hour: Number,                         // DEPRECATED: Use assignments array instead
-  coach: {                              // DEPRECATED: Use assignments array instead
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Coach',
-    default: null,
-    validate: {
-      validator: function(value) {
-        if (!value) return true;
-        return mongoose.Types.ObjectId.isValid(value);
-      },
-      message: 'Coach must be a valid ObjectId or null'
+  /**
+   * availableTimes — OBJECT ARRAY format (Student model)
+   *
+   * ⚠️ FORMAT DIFFERS FROM Coach.availableTimes (which uses STRING array)!
+   *
+   * Structure: [{ day: String, hour: Number|String, venue: String }]
+   * Examples:
+   *   Kids:   { day: "Montag",  hour: 14,          venue: "BTHV" }
+   *   Adults: { day: "Montag",  hour: "10:00",      venue: "BTHV" }
+   *   Adults: { day: "Montag",  hour: "15:00 - 16:30 (Duisdorf)", venue: "" }
+   *
+   * hour type is Mixed (Number for kids, String for adults with time-range labels).
+   * assignments[].hour is ALWAYS Number — these two fields are independent.
+   *
+   * Set during seasonal registration processing. Code that reads this field
+   * must handle both Number and String hours. See StudentCell.js for reference.
+   */
+  availableTimes: [
+    {
+      day: { type: String },
+      hour: { type: mongoose.Schema.Types.Mixed }, // Number for kids, String for adults
+      venue: { type: String, default: '' },
     }
-  },
+  ],
 
-  // ===== NEUE Mehrfach-Zuweisung (Multiple Course Assignments) =====
+  // ===== Kurs-Zuweisungen (Course Assignments) =====
   assignments: [{
     day: {
       type: String,

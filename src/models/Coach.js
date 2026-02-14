@@ -8,11 +8,6 @@ import mongoose from "mongoose";
  * verschiedene Altersgruppen und Leistungsniveaus.
  */
 const coachSchema = new mongoose.Schema({
-  // ===== ID =====
-  _id: {
-    type: String,                        // String ID (legacy from Clerk integration)
-  },
-
   // ===== Authentifizierung =====
   clerkUserId: {
     type: String,
@@ -30,7 +25,19 @@ const coachSchema = new mongoose.Schema({
   comment: String,                      // Notiz / Kommentar zum Trainer
 
   // ===== Verfügbarkeit =====
-  availableTimes: [String],             // Liste verfügbarer Zeiten im Format "Tag Stunde" (z.B. ["Montag 14", "Mittwoch 16"])
+  /**
+   * availableTimes — STRING ARRAY format (Coach model)
+   *
+   * ⚠️ FORMAT DIFFERS FROM Student.availableTimes (which uses OBJECT array)!
+   *
+   * Structure: ["Tag Stunde", ...]
+   * Examples:  ["Montag 14", "Mittwoch 16", "Freitag 10"]
+   *
+   * Parsed in frontend with timeStr.split(' ') → [day, hour].
+   * Used by getSuitableCoaches() and schedule grid rendering.
+   * Do NOT confuse with Student.availableTimes which is [{day, hour, venue}].
+   */
+  availableTimes: [String],
 
   // ===== Qualifikationen & Training =====
   isCoachingAdult: Boolean,             // Kann Erwachsene trainieren (true/false)
