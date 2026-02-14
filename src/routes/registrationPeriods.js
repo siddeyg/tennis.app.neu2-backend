@@ -18,11 +18,13 @@
  */
 
 import express from 'express';
+import mongoose from 'mongoose';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import Student from '../models/Student.js';
 import SavedSchedule from '../models/SavedSchedule.js';
 import Coach from '../models/Coach.js';
+import StudentPortalUser from '../models/StudentPortalUser.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
@@ -109,7 +111,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
       status,
       isActive,
       kidsFormConfig,
-      adultsFormConfig
+      adultsFormConfig,
+      trainingSlots
     } = req.body;
 
     // Validate required fields
@@ -129,13 +132,6 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
       return res.status(400).json({
         success: false,
         error: 'Enddatum muss nach dem Startdatum liegen'
-      });
-    }
-
-    if (deadline >= startDate) {
-      return res.status(400).json({
-        success: false,
-        error: 'Anmeldefrist muss vor dem Trainingsbeginn liegen'
       });
     }
 
@@ -181,6 +177,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
           'availableTimesAdults'
         ]
       },
+      trainingSlots: trainingSlots || [],
       createdBy: req.user.id
     });
 
@@ -263,6 +260,12 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    // Get current plan (saved schedule) for this period
+    let currentPlan = null;
+    if (period.currentPlanId) {
+      currentPlan = await SavedSchedule.findById(period.currentPlanId);
+    }
+
     // Get submission counts
     const kidsCount = await SeasonalRegistration.countDocuments({
       periodId: period._id,
@@ -282,6 +285,7 @@ router.get('/:id', async (req, res) => {
     res.json({
       success: true,
       period,
+      currentPlan,
       stats: {
         totalSubmissions: kidsCount + adultsCount,
         kidsSubmissions: kidsCount,
@@ -333,7 +337,8 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
       status,
       isActive,
       kidsFormConfig,
-      adultsFormConfig
+      adultsFormConfig,
+      trainingSlots
     } = req.body;
 
     // Update fields
@@ -346,6 +351,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
     if (isActive !== undefined) period.isActive = isActive;
     if (kidsFormConfig) period.kidsFormConfig = kidsFormConfig;
     if (adultsFormConfig) period.adultsFormConfig = adultsFormConfig;
+    if (trainingSlots !== undefined) period.trainingSlots = trainingSlots;
 
     await period.save();
 
@@ -667,7 +673,7 @@ router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'Regi
  * List submissions for a period
  *
  * Query params:
- * - status: filter by status (pending, processed, rejected)
+ * - status: filter by status (pending, processed)
  * - formType: filter by form type (kids, adults)
  */
 router.get('/:id/submissions', async (req, res) => {
@@ -778,45 +784,75 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
           studentData.member = submission.mitgliedsstatus === 'Mitglied';
           studentData.team = submission.teamParticipation ? 'Team' : '';
           studentData.frequence = submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-          studentData.availableTimes = submission.availableTimesKids.map(
-            t => `${t.day} ${t.hour}`
-          );
+          studentData.availableTimes = (submission.availableTimesKids || []).map(t => ({
+            day: t.day,
+            hour: t.hour,
+            venue: t.venue || ''
+          }));
         } else {
           // Adults
           studentData.skillLevel = submission.spielstärke;
           studentData.member = true; // Assume adults are members
-          studentData.sex = ''; // Will be filled by admin or gender detection
-          studentData.frequence = '1'; // Default
-          studentData.availableTimes = submission.availableTimesAdults.map(
-            t => `${t.day} ${t.hour}`
-          );
+          // Look up sex from portal user (Gap 1)
+          const portalUser = await StudentPortalUser.findById(submission.studentPortalUserId);
+          let userSex = '';
+          if (submission.familyMemberId && portalUser) {
+            const child = portalUser.familyMembers.id(submission.familyMemberId);
+            userSex = child?.sex || '';
+          } else if (portalUser) {
+            userSex = portalUser.sex || '';
+          }
+          studentData.sex = userSex;
+          // Map trainingshäufigkeit to frequence (Gap 2)
+          studentData.frequence = submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
+          studentData.availableTimes = (submission.availableTimesAdults || []).map(t => ({
+            day: t.day,
+            hour: t.hour,
+            venue: t.venue || ''
+          }));
         }
 
         if (!dryRun) {
-          if (student) {
-            // Update existing student
-            Object.assign(student, studentData);
-            await student.save();
-            results.updated.push({
-              studentId: student._id,
-              name: `${student.firstName} ${student.lastName}`
-            });
-          } else {
-            // Create new student
-            student = new Student(studentData);
-            await student.save();
-            results.created.push({
-              studentId: student._id,
-              name: `${student.firstName} ${student.lastName}`
-            });
-          }
+          // Each submission gets its own transaction so Student creation and
+          // registration status update are atomic. If submission.save() fails
+          // after student.save(), the transaction rolls back both — preventing
+          // orphaned Student records. One submission's failure doesn't stop
+          // processing of the others.
+          const session = await mongoose.startSession();
+          await session.startTransaction();
+          try {
+            if (student) {
+              // Update existing student
+              Object.assign(student, studentData);
+              await student.save({ session });
+              results.updated.push({
+                studentId: student._id,
+                name: `${student.firstName} ${student.lastName}`
+              });
+            } else {
+              // Create new student
+              student = new Student(studentData);
+              await student.save({ session });
+              results.created.push({
+                studentId: student._id,
+                name: `${student.firstName} ${student.lastName}`
+              });
+            }
 
-          // Link submission to student
-          submission.studentId = student._id;
-          submission.status = 'processed';
-          submission.processedAt = new Date();
-          submission.processedBy = req.user.id;
-          await submission.save();
+            // Link submission to student
+            submission.studentId = student._id;
+            submission.status = 'processed';
+            submission.processedAt = new Date();
+            submission.processedBy = req.user.id;
+            await submission.save({ session });
+
+            await session.commitTransaction();
+          } catch (txError) {
+            await session.abortTransaction();
+            throw txError; // Re-throw so outer per-submission catch records the error
+          } finally {
+            session.endSession();
+          }
         } else {
           // Dry run - just report what would happen
           if (student) {
