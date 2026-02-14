@@ -522,8 +522,6 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       csvText = csvText.substring(1);
     }
 
-    console.log("CSV Import - Parsing with csv-parse library...");
-
     // Parse CSV using csv-parse library (properly handles quoted fields with commas)
     const records = parse(csvText, {
       columns: true,
@@ -531,8 +529,6 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       trim: true,
       bom: true
     });
-
-    console.log(`CSV Import - Parsed ${records.length} records`);
 
     if (records.length === 0) {
       return res.status(400).json({ error: "CSV-Datei ist leer" });
@@ -605,9 +601,6 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       });
     }
 
-    console.log(`CSV Import - Converted to ${students.length} valid student objects`);
-    console.log("Sample student:", students[0]);
-
     // Use transaction to ensure atomic delete+insert (all-or-nothing)
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -615,15 +608,13 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
     try {
       // Delete all existing students (within transaction)
       await Student.deleteMany({}, { session });
-      console.log("CSV Import - Deleted existing students");
 
       // Insert new students (within transaction)
       const insertedStudents = await Student.insertMany(students, { session });
-      console.log(`CSV Import - Inserted ${insertedStudents.length} students`);
 
       // Commit transaction - both operations succeed
       await session.commitTransaction();
-      console.log("CSV Import - Transaction committed successfully");
+      logger.info("CSV Import - Transaction committed successfully", { count: insertedStudents.length });
 
       res.json({
         message: "Import erfolgreich",

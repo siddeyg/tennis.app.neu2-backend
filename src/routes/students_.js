@@ -135,10 +135,6 @@ router.put("/:id/assignments/replace", async (req, res) => {
   try {
     const { day, hour, coach } = req.body;
 
-    console.log(`[assignments/replace] ===== DRAG AND DROP START =====`);
-    console.log(`[assignments/replace] Received student ID: ${req.params.id}`);
-    console.log(`[assignments/replace] Target: ${day} ${hour}, Coach: ${coach}`);
-
     if (!day || !hour) {
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
@@ -158,15 +154,9 @@ router.put("/:id/assignments/replace", async (req, res) => {
     );
 
     if (!student) {
-      console.log(`[assignments/replace] ERROR: Student ${req.params.id} NOT FOUND in database`);
-      const samples = await Student.find({}, { _id: 1, firstName: 1, lastName: 1 }).limit(3);
-      console.log(`[assignments/replace] First 3 IDs in database for comparison:`);
-      samples.forEach(s => console.log(`  ${s._id} - ${s.firstName} ${s.lastName}`));
       return res.status(404).json({ error: "Schüler nicht gefunden", searchedId: req.params.id });
     }
 
-    console.log(`[assignments/replace] SUCCESS: Updated ${student.firstName} ${student.lastName}`);
-    console.log(`[assignments/replace] ===== END =====`);
     res.json(student);
   } catch (error) {
     console.error("[assignments/replace] EXCEPTION:", error);
@@ -283,8 +273,6 @@ router.post("/import", upload.single('file'), async (req, res) => {
       csvText = csvText.substring(1);
     }
 
-    console.log("CSV Import - Parsing with csv-parse library...");
-
     // Parse CSV using csv-parse library (properly handles quoted fields with commas)
     const records = parse(csvText, {
       columns: true,
@@ -292,8 +280,6 @@ router.post("/import", upload.single('file'), async (req, res) => {
       trim: true,
       bom: true
     });
-
-    console.log(`CSV Import - Parsed ${records.length} records`);
 
     if (records.length === 0) {
       return res.status(400).json({ error: "CSV-Datei ist leer" });
@@ -340,16 +326,11 @@ router.post("/import", upload.single('file'), async (req, res) => {
       return studentData;
     });
 
-    console.log(`CSV Import - Converted to ${students.length} student objects`);
-    console.log("Sample student:", students[0]);
-
     // Delete all existing students
     await Student.deleteMany({});
-    console.log("CSV Import - Deleted existing students");
 
     // Insert new students
     const insertedStudents = await Student.insertMany(students);
-    console.log(`CSV Import - Inserted ${insertedStudents.length} students`);
 
     res.json({
       message: "Import erfolgreich",
