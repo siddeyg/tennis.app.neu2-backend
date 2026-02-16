@@ -17,17 +17,21 @@ console.log('╚═════════════════════�
 const adultsWithDonnerstag1819 = students.filter(s =>
   s.adult === true &&
   s.availableTimes &&
-  (s.availableTimes.includes('Donnerstag 18') || s.availableTimes.includes('Donnerstag 19'))
+  (s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 18) ||
+   s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 19))
 );
 
 console.log(`📊 STUDENTS TO MODIFY:\n`);
 console.log(`   Adults with Donnerstag 18 OR 19: ${adultsWithDonnerstag1819.length}\n`);
 
 // Break down by which time they have
-const hasDo18 = adultsWithDonnerstag1819.filter(s => s.availableTimes.includes('Donnerstag 18'));
-const hasDo19 = adultsWithDonnerstag1819.filter(s => s.availableTimes.includes('Donnerstag 19'));
+const hasDo18 = adultsWithDonnerstag1819.filter(s =>
+  s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 18));
+const hasDo19 = adultsWithDonnerstag1819.filter(s =>
+  s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 19));
 const hasBoth = adultsWithDonnerstag1819.filter(s =>
-  s.availableTimes.includes('Donnerstag 18') && s.availableTimes.includes('Donnerstag 19')
+  s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 18) &&
+  s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 19)
 );
 
 console.log(`   Breakdown:`);
@@ -87,12 +91,13 @@ console.log('🔮 SIMULATION: After Adding Donnerstag 20 to These Students\n');
 // Create modified student data
 const modifiedStudents = students.map(s => {
   if (s.adult && s.availableTimes &&
-      (s.availableTimes.includes('Donnerstag 18') || s.availableTimes.includes('Donnerstag 19'))) {
+      (s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 18) ||
+       s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 19))) {
 
     // Add Donnerstag 20 if not already present
     const newAvailableTimes = [...s.availableTimes];
-    if (!newAvailableTimes.includes('Donnerstag 20')) {
-      newAvailableTimes.push('Donnerstag 20');
+    if (!newAvailableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 20)) {
+      newAvailableTimes.push({ day: 'Donnerstag', hour: 20, venue: '' });
     }
 
     return { ...s, availableTimes: newAvailableTimes };
@@ -104,7 +109,7 @@ const modifiedStudents = students.map(s => {
 const adultsAtDo20AfterChange = modifiedStudents.filter(s =>
   s.adult === true &&
   s.availableTimes &&
-  s.availableTimes.includes('Donnerstag 20')
+  s.availableTimes.some(t => t.day === 'Donnerstag' && Number(t.hour) === 20)
 );
 
 console.log(`   Adults NOW available at Donnerstag 20: ${adultsAtDo20AfterChange.length}\n`);

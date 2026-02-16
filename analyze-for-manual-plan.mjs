@@ -50,8 +50,9 @@ async function analyzeForManualPlan() {
       }
 
       slots.forEach(slot => {
-        if (!coachAvailability.has(slot)) coachAvailability.set(slot, []);
-        coachAvailability.get(slot).push(coach);
+        const key = `${slot.day} ${slot.hour}`;
+        if (!coachAvailability.has(key)) coachAvailability.set(key, []);
+        coachAvailability.get(key).push(coach);
       });
     });
 
@@ -94,7 +95,7 @@ async function analyzeForManualPlan() {
       if (constrained.length > 0) {
         console.log(`  ⚠️  CONSTRAINED (≤2 slots): ${constrained.length} students`);
         constrained.forEach(s => {
-          console.log(`    - ${s.firstName} ${s.lastName}: ${s.availableTimes.join(', ')}`);
+          console.log(`    - ${s.firstName} ${s.lastName}: ${s.availableTimes.map(t => `${t.day} ${t.hour}`).join(', ')}`);
         });
       }
     });
@@ -111,9 +112,10 @@ async function analyzeForManualPlan() {
       const timeSlotCounts = new Map();
 
       groupStudents.forEach(s => {
-        (s.availableTimes || []).forEach(time => {
-          if (!timeSlotCounts.has(time)) timeSlotCounts.set(time, []);
-          timeSlotCounts.get(time).push(s);
+        (s.availableTimes || []).forEach(slot => {
+          const timeToken = `${slot.day} ${slot.hour}`;
+          if (!timeSlotCounts.has(timeToken)) timeSlotCounts.set(timeToken, []);
+          timeSlotCounts.get(timeToken).push(s);
         });
       });
 
@@ -133,7 +135,7 @@ async function analyzeForManualPlan() {
             groupKey,
             timeToken,
             day,
-            hour: parseInt(hourStr),
+            hour: Number(hourStr),
             numStudents: studentsAtTime.length,
             numFullCourses,
             numCoaches: qualifiedCoaches.length,
@@ -194,7 +196,7 @@ async function analyzeForManualPlan() {
 
         // Count students available at this time
         const studentsHere = students.filter(s =>
-          s.availableTimes?.includes(timeToken)
+          s.availableTimes?.some(slot => slot.day === day && Number(slot.hour) === Number(hour))
         );
         const adultsHere = studentsHere.filter(s => s.adult).length;
         const childrenHere = studentsHere.filter(s => !s.adult).length;

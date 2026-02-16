@@ -24,7 +24,8 @@ students.forEach(s => studentById.set(String(s._id), s));
 // Build coach availability map
 const coachByTimeSlot = new Map();
 coaches.forEach(coach => {
-  (coach.availableTimes || []).forEach(time => {
+  (coach.availableTimes || []).forEach(slot => {
+    const time = `${slot.day} ${slot.hour}`;
     if (!coachByTimeSlot.has(time)) coachByTimeSlot.set(time, []);
     coachByTimeSlot.get(time).push(coach);
   });
@@ -55,10 +56,10 @@ for (const course of smallCourses) {
     if (!student) continue;
 
     // Find other courses at student's available times with same level/group
-    for (const timeToken of (student.availableTimes || [])) {
+    for (const timeSlot of (student.availableTimes || [])) {
       // Skip current assignment
-      const [day, hourStr] = timeToken.split(' ');
-      const hour = parseInt(hourStr);
+      const day = timeSlot.day;
+      const hour = Number(timeSlot.hour);
       if (day === course.day && hour === course.hour) continue;
 
       // Find courses at this time
@@ -176,7 +177,8 @@ for (const course of manualPlan.courses) {
 
     const timeSlotPopularity = new Map();
     sameGroupStudents.forEach(s => {
-      (s.availableTimes || []).forEach(time => {
+      (s.availableTimes || []).forEach(slot => {
+        const time = `${slot.day} ${slot.hour}`;
         if (!timeSlotPopularity.has(time)) timeSlotPopularity.set(time, 0);
         timeSlotPopularity.set(time, timeSlotPopularity.get(time) + 1);
       });
@@ -187,7 +189,7 @@ for (const course of manualPlan.courses) {
       .sort((a, b) => b[1] - a[1])[0];
 
     if (bestTime && bestTime[1] > currentPopularity + 2 &&
-        student.availableTimes.includes(bestTime[0])) {
+        student.availableTimes.some(t => `${t.day} ${t.hour}` === bestTime[0])) {
       suboptimalPlacements.push({
         student: `${student.firstName} ${student.lastName}`,
         group: groupKey,
@@ -220,7 +222,8 @@ const timeSlotAnalysis = new Map();
 students.forEach(s => {
   const groupKey = s.adult ? `adult-${s.sex}-${s.skillLevel}` : `child-${s.trainigGroup}`;
 
-  (s.availableTimes || []).forEach(time => {
+  (s.availableTimes || []).forEach(slot => {
+    const time = `${slot.day} ${slot.hour}`;
     const key = `${time}|${groupKey}`;
     if (!timeSlotAnalysis.has(key)) {
       timeSlotAnalysis.set(key, { time, groupKey, students: [] });

@@ -140,7 +140,7 @@ async function createManualOptimalPlan() {
 
     for (const placement of criticalPlacements) {
       const [day, hourStr] = placement.time.split(' ');
-      const hour = parseInt(hourStr);
+      const hour = Number(hourStr);
 
       const student = students.find(s =>
         s.firstName === placement.name.split(' ')[0] &&
@@ -293,7 +293,7 @@ async function createManualOptimalPlan() {
 
     for (const opp of opportunities) {
       const [day, hourStr] = opp.time.split(' ');
-      const hour = parseInt(hourStr);
+      const hour = Number(hourStr);
 
       for (const group of opp.groups) {
         if (!isCoachAvailable(day, hour, group.coach)) {
@@ -310,13 +310,13 @@ async function createManualOptimalPlan() {
             s.adult &&
             s.sex === gender &&
             s.skillLevel === skillLevel &&
-            s.availableTimes?.includes(opp.time);
+            s.availableTimes?.some(t => `${t.day} ${t.hour}` === opp.time);
         } else {
           const trainigGroup = group.key.split('-')[1];
           filter = (s) =>
             !s.adult &&
             s.trainigGroup === trainigGroup &&
-            s.availableTimes?.includes(opp.time);
+            s.availableTimes?.some(t => `${t.day} ${t.hour}` === opp.time);
         }
 
         const candidates = findStudents(filter);
@@ -367,11 +367,11 @@ async function createManualOptimalPlan() {
       let placed = false;
 
       // Try to find a compatible existing course
-      for (const time of student.availableTimes) {
+      for (const timeSlot of student.availableTimes) {
         if (placed) break;
 
-        const [day, hourStr] = time.split(' ');
-        const hour = parseInt(hourStr);
+        const day = timeSlot.day;
+        const hour = Number(timeSlot.hour);
 
         // Find compatible existing courses
         const compatibleCourses = courses.filter(c => {
@@ -421,13 +421,13 @@ async function createManualOptimalPlan() {
 
       // If still not placed, create new single course
       if (!placed && student.availableTimes.length > 0) {
-        const time = student.availableTimes[0];
-        const [day, hourStr] = time.split(' ');
-        const hour = parseInt(hourStr);
+        const timeSlot = student.availableTimes[0];
+        const day = timeSlot.day;
+        const hour = Number(timeSlot.hour);
 
         // Find available coach
         const qualifiedCoaches = coaches.filter(c => {
-          if (!c.availableTimes?.includes(time)) return false;
+          if (!c.availableTimes?.some(t => t.day === day && Number(t.hour) === Number(hour))) return false;
           if (student.adult && !c.isCoachingAdult) return false;
           if (!student.adult && !c.isCoachingChildren) return false;
           return isCoachAvailable(day, hour, c);

@@ -63,14 +63,14 @@ for (const course of [...courseSizes[1], ...courseSizes[2]]) {
     const flex = student.availableTimes?.length || 0;
 
     console.log(`\n${student.firstName} ${student.lastName} (${level}, ${gender}, ${flex} available times)`);
-    console.log(`Available times: ${student.availableTimes?.join(', ') || 'None'}`);
+    console.log(`Available times: ${student.availableTimes?.map(t => `${t.day} ${t.hour}`).join(', ') || 'None'}`);
 
     // Find other courses this student could join
     const compatibleCourses = [];
 
-    for (const timeToken of (student.availableTimes || [])) {
-      const [day, hourStr] = timeToken.split(' ');
-      const hour = parseInt(hourStr);
+    for (const timeSlot of (student.availableTimes || [])) {
+      const day = timeSlot.day;
+      const hour = Number(timeSlot.hour);
 
       // Skip current assignment
       if (day === course.day && hour === course.hour) continue;
@@ -131,9 +131,9 @@ for (const course of [...courseSizes[1], ...courseSizes[2]]) {
   for (const student of course.students) {
     let hasCompatibleCourse = false;
 
-    for (const timeToken of (student.availableTimes || [])) {
-      const [day, hourStr] = timeToken.split(' ');
-      const hour = parseInt(hourStr);
+    for (const timeSlot of (student.availableTimes || [])) {
+      const day = timeSlot.day;
+      const hour = Number(timeSlot.hour);
 
       if (day === course.day && hour === course.hour) continue;
 

@@ -20,9 +20,10 @@ console.log(`📊 Loaded: ${students.length} students, ${coaches.length} coaches
 // Build coach lookup
 const coachByTimeSlot = new Map();
 coaches.forEach(coach => {
-  (coach.availableTimes || []).forEach(time => {
-    if (!coachByTimeSlot.has(time)) coachByTimeSlot.set(time, []);
-    coachByTimeSlot.get(time).push(coach);
+  (coach.availableTimes || []).forEach(slot => {
+    const key = `${slot.day} ${slot.hour}`;
+    if (!coachByTimeSlot.has(key)) coachByTimeSlot.set(key, []);
+    coachByTimeSlot.get(key).push(coach);
   });
 });
 
@@ -60,7 +61,8 @@ students.forEach(s => {
     groupKey = `child-${s.trainigGroup}`;
   }
 
-  (s.availableTimes || []).forEach(time => {
+  (s.availableTimes || []).forEach(slot => {
+    const time = `${slot.day} ${slot.hour}`;
     const key = `${time}|${groupKey}`;
     if (!timeSlotGroups.has(key)) {
       timeSlotGroups.set(key, { time, groupKey, students: [] });
@@ -111,7 +113,7 @@ for (const opp of opportunities) {
   if (coachList.length === 0) continue;
 
   const [day, hourStr] = opp.time.split(' ');
-  const hour = parseInt(hourStr);
+  const hour = Number(hourStr);
 
   // Create as many full courses as possible at this slot
   const numFullCourses = Math.floor(unassigned.length / 4);
@@ -157,9 +159,10 @@ let phase2Count = 0;
 for (const student of unassigned2) {
   let bestMatch = null;
 
-  for (const timeToken of (student.availableTimes || [])) {
-    const [day, hourStr] = timeToken.split(' ');
-    const hour = parseInt(hourStr);
+  for (const timeSlot of (student.availableTimes || [])) {
+    const day = timeSlot.day;
+    const hour = Number(timeSlot.hour);
+    const timeToken = `${day} ${hour}`;
 
     // Find courses at this time with space
     const coursesAtTime = courses.filter(c =>
@@ -211,7 +214,8 @@ unassigned3.forEach(s => {
     groupKey = `child-${s.trainigGroup}`;
   }
 
-  (s.availableTimes || []).forEach(time => {
+  (s.availableTimes || []).forEach(slot => {
+    const time = `${slot.day} ${slot.hour}`;
     const key = `${time}|${groupKey}`;
     if (!groups3.has(key)) {
       groups3.set(key, { time, groupKey, students: [] });
@@ -233,7 +237,7 @@ for (const opp of opportunities3) {
   if (coachList.length === 0) continue;
 
   const [day, hourStr] = opp.time.split(' ');
-  const hour = parseInt(hourStr);
+  const hour = Number(hourStr);
 
   const courseStudents = unassigned.slice(0, 3);
 
@@ -277,9 +281,10 @@ for (const student of unassigned4) {
   let partner = null;
   let bestTime = null;
 
-  for (const timeToken of (student.availableTimes || [])) {
+  for (const timeSlot of (student.availableTimes || [])) {
+    const timeToken = `${timeSlot.day} ${timeSlot.hour}`;
     const partnerAtTime = groupStudents.find(s =>
-      (s.availableTimes || []).includes(timeToken)
+      (s.availableTimes || []).some(t => `${t.day} ${t.hour}` === timeToken)
     );
 
     if (partnerAtTime) {
@@ -294,7 +299,7 @@ for (const student of unassigned4) {
 
   if (partner && bestTime) {
     const [day, hourStr] = bestTime.split(' ');
-    const hour = parseInt(hourStr);
+    const hour = Number(hourStr);
     const coaches = getSuitableCoaches(student, bestTime);
 
     const groupKey = student.adult ?
@@ -332,13 +337,14 @@ let phase5Count = 0;
 for (const student of unassigned5) {
   if (!student.availableTimes || student.availableTimes.length === 0) continue;
 
-  const timeToken = student.availableTimes[0];
+  const timeSlot = student.availableTimes[0];
+  const timeToken = `${timeSlot.day} ${timeSlot.hour}`;
   const coaches = getSuitableCoaches(student, timeToken);
 
   if (coaches.length === 0) continue;
 
-  const [day, hourStr] = timeToken.split(' ');
-  const hour = parseInt(hourStr);
+  const day = timeSlot.day;
+  const hour = Number(timeSlot.hour);
 
   const groupKey = student.adult ?
     `adult-${student.sex || 'unknown'}-${student.skillLevel}` :

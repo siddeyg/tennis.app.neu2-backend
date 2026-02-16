@@ -27,19 +27,20 @@ for (const student of constrainedStudents) {
   console.log(`${assigned ? '✅' : '❌'} ${student.firstName} ${student.lastName} (${level}, ${flex} slots)`);
 
   if (!assigned) {
-    console.log(`   Available times: ${student.availableTimes.join(', ')}`);
+    console.log(`   Available times: ${student.availableTimes.map(t => `${t.day} ${t.hour}`).join(', ')}`);
 
     // For each time, check how many OTHER students want it
-    for (const timeToken of student.availableTimes) {
-      const [day, hourStr] = timeToken.split(' ');
-      const hour = parseInt(hourStr);
+    for (const timeSlot of student.availableTimes) {
+      const day = timeSlot.day;
+      const hour = Number(timeSlot.hour);
+      const timeToken = `${day} ${hour}`;
 
       // Count students assigned there
       const assignedThere = await Student.countDocuments({ day, hour });
 
       // Count students who WANT that slot (have it in availableTimes)
       const wantThisSlot = allStudents.filter(s =>
-        s.availableTimes && s.availableTimes.includes(timeToken)
+        s.availableTimes && s.availableTimes.some(t => t.day === day && Number(t.hour) === Number(hour))
       );
 
       console.log(`   ${timeToken}: ${assignedThere}/4 filled, ${wantThisSlot.length} total want it`);

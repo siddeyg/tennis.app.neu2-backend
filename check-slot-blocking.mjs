@@ -37,13 +37,13 @@ limitedStudents.forEach(limitedStudent => {
 
   if (blockingStudents.length > 0) {
     console.log(`⚠️  ${limitedStudent.firstName} ${limitedStudent.lastName} (${limitedStudent.trainigGroup || limitedStudent.skillLevel})`);
-    console.log(`   Has ${limitedStudent.availableTimes.length} slots: ${limitedStudent.availableTimes.join(', ')}`);
+    console.log(`   Has ${limitedStudent.availableTimes.length} slots: ${limitedStudent.availableTimes.map(t => `${t.day} ${t.hour}`).join(', ')}`);
     console.log(`   Assigned to: ${assignedSlot}`);
     console.log(`   Sharing course with ${blockingStudents.length} students who have MORE options:`);
 
     blockingStudents.forEach(blocker => {
-      const otherSlots = blocker.availableTimes.filter(t => t !== assignedSlot);
-      console.log(`     • ${blocker.firstName} ${blocker.lastName}: ${blocker.availableTimes.length} slots (could use: ${otherSlots.join(', ')})`);
+      const otherSlots = blocker.availableTimes.filter(t => `${t.day} ${t.hour}` !== assignedSlot);
+      console.log(`     • ${blocker.firstName} ${blocker.lastName}: ${blocker.availableTimes.length} slots (could use: ${otherSlots.map(t => `${t.day} ${t.hour}`).join(', ')})`);
     });
     console.log('');
     blockingCases++;
@@ -63,19 +63,21 @@ console.log(`Count: ${unassignedLimited.length}\n`);
 
 unassignedLimited.forEach(student => {
   console.log(`❌ ${student.firstName} ${student.lastName} (${student.trainigGroup || student.skillLevel})`);
-  console.log(`   Available times (${student.availableTimes?.length || 0}): ${student.availableTimes?.join(', ') || 'NONE'}`);
+  console.log(`   Available times (${student.availableTimes?.length || 0}): ${student.availableTimes?.map(t => `${t.day} ${t.hour}`).join(', ') || 'NONE'}`);
 
   // Check each of their available slots
   student.availableTimes?.forEach(timeSlot => {
-    const [day, hour] = timeSlot.split(' ');
+    const day = timeSlot.day;
+    const hour = timeSlot.hour;
 
     // Who IS assigned at this time?
     const assignedAtSlot = students.filter(s =>
-      s.day === day && s.hour === parseInt(hour)
+      s.day === day && s.hour === Number(hour)
     );
 
+    const timeSlotStr = `${day} ${hour}`;
     if (assignedAtSlot.length > 0) {
-      console.log(`   ${timeSlot}:`);
+      console.log(`   ${timeSlotStr}:`);
 
       // Find students with more flexibility
       const flexibleStudents = assignedAtSlot.filter(s =>
@@ -85,14 +87,14 @@ unassignedLimited.forEach(student => {
       if (flexibleStudents.length > 0) {
         console.log(`     ⚠️  BLOCKED by ${flexibleStudents.length} students with MORE availability:`);
         flexibleStudents.forEach(blocker => {
-          const otherOptions = blocker.availableTimes.filter(t => t !== timeSlot);
-          console.log(`       • ${blocker.firstName} ${blocker.lastName} (${blocker.trainigGroup || blocker.skillLevel}): ${blocker.availableTimes.length} slots, could use: ${otherOptions.join(', ')}`);
+          const otherOptions = blocker.availableTimes.filter(t => `${t.day} ${t.hour}` !== timeSlotStr);
+          console.log(`       • ${blocker.firstName} ${blocker.lastName} (${blocker.trainigGroup || blocker.skillLevel}): ${blocker.availableTimes.length} slots, could use: ${otherOptions.map(t => `${t.day} ${t.hour}`).join(', ')}`);
         });
       } else {
         console.log(`     Course full with similar-flexibility students`);
       }
     } else {
-      console.log(`   ${timeSlot}: No courses created (no coach?)`);
+      console.log(`   ${timeSlotStr}: No courses created (no coach?)`);
     }
   });
 

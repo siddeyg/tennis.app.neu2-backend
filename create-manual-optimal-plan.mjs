@@ -46,22 +46,21 @@ let courseId = 1;
 const findBestTimeSlot = (studentList) => {
   const timeSlots = {};
   studentList.forEach(s => {
-    (s.availableTimes || []).forEach(time => {
-      if (!timeSlots[time]) timeSlots[time] = [];
-      timeSlots[time].push(s);
+    (s.availableTimes || []).forEach(slot => {
+      const key = `${slot.day} ${slot.hour}`;
+      if (!timeSlots[key]) timeSlots[key] = { day: slot.day, hour: slot.hour, students: [] };
+      timeSlots[key].students.push(s);
     });
   });
 
-  return Object.entries(timeSlots)
-    .sort((a, b) => b[1].length - a[1].length)
-    .map(([time, students]) => ({ time, students }));
+  return Object.values(timeSlots)
+    .sort((a, b) => b.students.length - a.students.length);
 };
 
 // Helper to find suitable coach for time slot and student type
 const findCoach = (day, hour, isAdult) => {
-  const timeSlot = `${day} ${hour}`;
   return coaches.find(c =>
-    c.availableTimes.includes(timeSlot) &&
+    c.availableTimes.some(slot => slot.day === day && Number(slot.hour) === Number(hour)) &&
     (isAdult ? c.isCoachingAdult : c.isCoachingChildren)
   );
 };
@@ -105,7 +104,7 @@ Object.entries(groups).sort().forEach(([groupKey, studentList]) => {
 
   for (const slot of timeSlots) {
     const availableAtSlot = remainingStudents.filter(s =>
-      s.availableTimes && s.availableTimes.includes(slot.time)
+      s.availableTimes && s.availableTimes.some(t => t.day === slot.day && Number(t.hour) === Number(slot.hour))
     );
 
     if (availableAtSlot.length < 2) continue; // Skip if less than 2 students
@@ -113,9 +112,8 @@ Object.entries(groups).sort().forEach(([groupKey, studentList]) => {
     // Create courses of 4 students first
     while (availableAtSlot.length >= 4) {
       const batch = availableAtSlot.splice(0, 4);
-      const [day, hour] = slot.time.split(' ');
-      const course = createCourse(day, parseInt(hour), batch, groupKey);
-      console.log(`  ✅ Course ${course.id}: ${day} ${hour}:00 - 4 students`);
+      const course = createCourse(slot.day, slot.hour, batch, groupKey);
+      console.log(`  ✅ Course ${course.id}: ${slot.day} ${slot.hour}:00 - 4 students`);
       remainingStudents = remainingStudents.filter(s => !assigned.has(s._id.toString()));
     }
   }
@@ -125,14 +123,13 @@ Object.entries(groups).sort().forEach(([groupKey, studentList]) => {
   if (remainingStudents.length >= 3) {
     for (const slot of timeSlots) {
       const availableAtSlot = remainingStudents.filter(s =>
-        s.availableTimes && s.availableTimes.includes(slot.time)
+        s.availableTimes && s.availableTimes.some(t => t.day === slot.day && Number(t.hour) === Number(slot.hour))
       );
 
       if (availableAtSlot.length >= 3) {
         const batch = availableAtSlot.splice(0, 3);
-        const [day, hour] = slot.time.split(' ');
-        const course = createCourse(day, parseInt(hour), batch, groupKey);
-        console.log(`  ⚠️  Course ${course.id}: ${day} ${hour}:00 - 3 students`);
+        const course = createCourse(slot.day, slot.hour, batch, groupKey);
+        console.log(`  ⚠️  Course ${course.id}: ${slot.day} ${slot.hour}:00 - 3 students`);
         remainingStudents = remainingStudents.filter(s => !assigned.has(s._id.toString()));
         break;
       }
@@ -144,14 +141,13 @@ Object.entries(groups).sort().forEach(([groupKey, studentList]) => {
   if (remainingStudents.length >= 2) {
     for (const slot of timeSlots) {
       const availableAtSlot = remainingStudents.filter(s =>
-        s.availableTimes && s.availableTimes.includes(slot.time)
+        s.availableTimes && s.availableTimes.some(t => t.day === slot.day && Number(t.hour) === Number(slot.hour))
       );
 
       if (availableAtSlot.length >= 2) {
         const batch = availableAtSlot.splice(0, 2);
-        const [day, hour] = slot.time.split(' ');
-        const course = createCourse(day, parseInt(hour), batch, groupKey);
-        console.log(`  ⚠️  Course ${course.id}: ${day} ${hour}:00 - 2 students`);
+        const course = createCourse(slot.day, slot.hour, batch, groupKey);
+        console.log(`  ⚠️  Course ${course.id}: ${slot.day} ${slot.hour}:00 - 2 students`);
         remainingStudents = remainingStudents.filter(s => !assigned.has(s._id.toString()));
         break;
       }
@@ -162,9 +158,9 @@ Object.entries(groups).sort().forEach(([groupKey, studentList]) => {
   remainingStudents = unassigned.filter(s => !assigned.has(s._id.toString()));
   remainingStudents.forEach(student => {
     if (student.availableTimes && student.availableTimes.length > 0) {
-      const [day, hour] = student.availableTimes[0].split(' ');
-      const course = createCourse(day, parseInt(hour), [student], groupKey);
-      console.log(`  ❌ Course ${course.id}: ${day} ${hour}:00 - 1 student (single)`);
+      const firstSlot = student.availableTimes[0];
+      const course = createCourse(firstSlot.day, firstSlot.hour, [student], groupKey);
+      console.log(`  ❌ Course ${course.id}: ${firstSlot.day} ${firstSlot.hour}:00 - 1 student (single)`);
     }
   });
 });
