@@ -89,7 +89,7 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
     }
     if (age >= 18) {
       return res.status(400).json({
-        error: 'Kinder müssen unter 18 Jahre alt sein'
+        error: 'Kind muss unter 18 Jahre alt sein. Familienmitglieder ab 18 Jahren sollten ein eigenes Portal-Konto anlegen.'
       });
     }
 
@@ -212,7 +212,7 @@ router.put('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE',
       }
       if (age >= 18) {
         return res.status(400).json({
-          error: 'Kinder müssen unter 18 Jahre alt sein'
+          error: 'Kind muss unter 18 Jahre alt sein. Familienmitglieder ab 18 Jahren sollten ein eigenes Portal-Konto anlegen.'
         });
       }
       child.birthdate = new Date(birthdate);

@@ -58,6 +58,8 @@ import metricsRoutes from "./routes/metrics.js";
 import supportTicketsRoutes from "./routes/supportTickets.js";
 import portalSupportTicketsRoutes from "./routes/portalSupportTickets.js";
 import auditLogsRoutes from "./routes/auditLogs.js";
+import documentRoutes from "./routes/documents.js";
+import portalDocumentsRoutes from "./routes/portalDocuments.js";
 
 // Import models that are referenced by other models (e.g., Counter used by SupportTicket pre-save hook)
 import Counter from "./models/Counter.js";
@@ -266,6 +268,12 @@ app.use("/api/portal/support-tickets", portalSupportTicketsRoutes);
 
 // Audit logs routes - admin only
 app.use("/api/audit-logs", requireAuth, updateActivity, requireRole(["admin"]), auditLogsRoutes);
+
+// Documents routes - admin + coach (auth handled in route file)
+app.use("/api/documents", documentRoutes);
+
+// Portal documents routes - student portal (auth handled in route file)
+app.use("/api/portal/documents", portalDocumentsRoutes);
 
 // ========================================
 // Error Handler Middleware (MUST BE LAST)
