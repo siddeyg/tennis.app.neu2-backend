@@ -26,18 +26,15 @@ const coachSchema = new mongoose.Schema({
 
   // ===== Verfügbarkeit =====
   /**
-   * availableTimes — STRING ARRAY format (Coach model)
+   * availableTimes — OBJECT ARRAY format (Coach model)
    *
-   * ⚠️ FORMAT DIFFERS FROM Student.availableTimes (which uses OBJECT array)!
+   * Structure: [{day: String, hour: Number}, ...]
+   * Examples:  [{day: "Montag", hour: 14}, {day: "Mittwoch", hour: 16}]
    *
-   * Structure: ["Tag Stunde", ...]
-   * Examples:  ["Montag 14", "Mittwoch 16", "Freitag 10"]
-   *
-   * Parsed in frontend with timeStr.split(' ') → [day, hour].
+   * Same format as Student.availableTimes (without venue field).
    * Used by getSuitableCoaches() and schedule grid rendering.
-   * Do NOT confuse with Student.availableTimes which is [{day, hour, venue}].
    */
-  availableTimes: [String],
+  availableTimes: [{ day: String, hour: Number }],
 
   // ===== Qualifikationen & Training =====
   isCoachingAdult: Boolean,             // Kann Erwachsene trainieren (true/false)

@@ -70,7 +70,7 @@ export const createTestCoach = (overrides = {}) => ({
   isCoachingChildren: true,
   CoachingAdultLevels: ['Anfänger', 'wenig Fortgeschritten', 'Fortgeschritten', 'gute:r Spieler:in'],
   CoachingChildrenLevels: ['Kinderland', 'Rot', 'Orange', 'Grün', 'Gelb Team', 'Gelb Hobby'],
-  availableTimes: ['Montag 14', 'Dienstag 15', 'Mittwoch 14'],
+  availableTimes: [{ day: 'Montag', hour: 14 }, { day: 'Dienstag', hour: 15 }, { day: 'Mittwoch', hour: 14 }],
   ...overrides
 });
 
