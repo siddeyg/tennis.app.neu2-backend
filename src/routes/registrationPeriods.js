@@ -29,6 +29,7 @@ import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
@@ -860,6 +861,38 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
 
             if (useTransactions && session) {
               await session.commitTransaction();
+            }
+
+            // Send notification to student about registration approval
+            try {
+              if (submission.studentPortalUserId) {
+                const isNewStudent = results.created.some(r => r.studentId?.toString() === student._id.toString());
+                await createNotification(
+                  submission.studentPortalUserId,
+                  'registration_approved',
+                  `Anmeldung für ${period.name} bestätigt`,
+                  isNewStudent
+                    ? 'Ihre Anmeldung wurde erfolgreich verarbeitet. Sie wurden als neuer Schüler hinzugefügt.'
+                    : 'Ihre Anmeldung wurde erfolgreich verarbeitet und Ihr Profil aktualisiert.',
+                  {
+                    priority: 'high',
+                    actionUrl: '/dashboard',
+                    metadata: {
+                      registrationId: submission._id,
+                      periodId: period._id,
+                      studentId: student._id,
+                      isNewStudent
+                    }
+                  }
+                );
+              }
+            } catch (notificationError) {
+              logger.error('Error creating notification for registration approval', {
+                error: notificationError.message,
+                submissionId: submission._id,
+                stack: notificationError.stack
+              });
+              // Don't fail the request if notification fails
             }
           } catch (txError) {
             if (useTransactions && session) {

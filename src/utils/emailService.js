@@ -571,7 +571,7 @@ export async function sendNewTicketEmail(ticket) {
           </div>
 
           <div style="text-align: center; margin-top: 30px;">
-            <a href="${adminPortalUrl}/support-tickets/${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-weight: 600; font-size: 16px;">Ticket anzeigen</a>
+            <a href="${adminPortalUrl}/trainer/frontend?ticket=${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-weight: 600; font-size: 16px;">Ticket anzeigen</a>
           </div>
 
           <p style="color: #666; font-size: 14px; margin-top: 25px;">Erstellt am: ${new Date(ticket.createdAt).toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })}</p>

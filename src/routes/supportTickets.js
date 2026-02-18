@@ -7,6 +7,7 @@ import { requireAuth } from '../middleware/requireAuth.js';
 import { sendTicketReplyEmail, sendTicketStatusChangeEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
@@ -260,6 +261,29 @@ router.post('/:id/messages', adminReplyLimiter, auditLogMiddleware({ action: 'CR
       // Don't fail the request if email fails
     }
 
+    // Send notification to student
+    try {
+      if (ticket.createdBy.studentPortalUserId) {
+        await createNotification(
+          ticket.createdBy.studentPortalUserId,
+          'support_ticket_reply',
+          `Neue Antwort auf Ticket #${ticket.ticketNumber}`,
+          message.content.substring(0, 200) + (message.content.length > 200 ? '...' : ''),
+          {
+            priority: 'high',
+            actionUrl: `/support-tickets/${ticket._id}`,
+            metadata: {
+              ticketId: ticket._id,
+              ticketNumber: ticket.ticketNumber
+            }
+          }
+        );
+      }
+    } catch (notificationError) {
+      logger.error('Error creating notification for ticket reply', { error: notificationError.message, stack: notificationError.stack });
+      // Don't fail the request if notification fails
+    }
+
     res.json({
       success: true,
       message: 'Antwort gesendet',
@@ -406,6 +430,39 @@ router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
       // Don't fail the request if email fails
     }
 
+    // Send notification to student about status change
+    try {
+      if (ticket.createdBy.studentPortalUserId && oldStatus !== status) {
+        const statusLabels = {
+          'open': 'Offen',
+          'in-progress': 'In Bearbeitung',
+          'waiting-customer': 'Wartet auf Antwort',
+          'resolved': 'Gelöst',
+          'closed': 'Geschlossen'
+        };
+
+        await createNotification(
+          ticket.createdBy.studentPortalUserId,
+          'support_ticket_status',
+          `Status von Ticket #${ticket.ticketNumber} geändert`,
+          `Ihr Ticket wurde von "${statusLabels[oldStatus]}" auf "${statusLabels[status]}" gesetzt.`,
+          {
+            priority: status === 'resolved' || status === 'closed' ? 'normal' : 'high',
+            actionUrl: `/support-tickets/${ticket._id}`,
+            metadata: {
+              ticketId: ticket._id,
+              ticketNumber: ticket.ticketNumber,
+              oldStatus,
+              newStatus: status
+            }
+          }
+        );
+      }
+    } catch (notificationError) {
+      logger.error('Error creating notification for status change', { error: notificationError.message, stack: notificationError.stack });
+      // Don't fail the request if notification fails
+    }
+
     // Attach before/after to req for audit log
     const afterState = ticket.toObject();
     req.auditMetadata = {
@@ -451,10 +508,34 @@ router.put('/:id/assign', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
     // Capture BEFORE state
     const beforeState = ticket.toObject();
 
+    const oldAssignedTo = ticket.assignedTo;
     ticket.assignedTo = assignedTo || null;
     ticket.assignedAt = assignedTo ? new Date() : null;
 
     await ticket.save();
+
+    // Send notification to student if ticket is assigned for the first time
+    try {
+      if (ticket.createdBy.studentPortalUserId && assignedTo && !oldAssignedTo) {
+        await createNotification(
+          ticket.createdBy.studentPortalUserId,
+          'support_ticket_assigned',
+          `Ticket #${ticket.ticketNumber} wurde zugewiesen`,
+          'Ihr Support-Ticket wurde einem Administrator zugewiesen und wird bearbeitet.',
+          {
+            priority: 'normal',
+            actionUrl: `/support-tickets/${ticket._id}`,
+            metadata: {
+              ticketId: ticket._id,
+              ticketNumber: ticket.ticketNumber
+            }
+          }
+        );
+      }
+    } catch (notificationError) {
+      logger.error('Error creating notification for ticket assignment', { error: notificationError.message, stack: notificationError.stack });
+      // Don't fail the request if notification fails
+    }
 
     // Attach before/after to req for audit log
     const afterState = ticket.toObject();

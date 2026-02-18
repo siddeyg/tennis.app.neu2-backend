@@ -93,6 +93,13 @@ const settingsSchema = new mongoose.Schema({
     }
   },
 
+  // Schedule Notification Tracking
+  lastBulkScheduleNotification: {
+    sentAt: { type: Date, default: null },
+    sentCount: { type: Number, default: 0 },
+    sentBy: { type: String, default: null }
+  },
+
   lastModified: {
     type: Date,
     default: Date.now

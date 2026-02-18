@@ -3,6 +3,7 @@
 import { envInfo } from "./loadEnv.js";
 
 import express from "express";
+import { createServer } from "http";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -60,11 +61,17 @@ import portalSupportTicketsRoutes from "./routes/portalSupportTickets.js";
 import auditLogsRoutes from "./routes/auditLogs.js";
 import documentRoutes from "./routes/documents.js";
 import portalDocumentsRoutes from "./routes/portalDocuments.js";
+import portalNotificationsRoutes from "./routes/portalNotifications.js";
+import scheduleNotificationsRouter from "./routes/scheduleNotifications.js";
+
+// Import Socket.io notification setup
+import { initializeNotificationSocket } from "./socket/notificationSocket.js";
 
 // Import models that are referenced by other models (e.g., Counter used by SupportTicket pre-save hook)
 import Counter from "./models/Counter.js";
 
 const app = express();
+const httpServer = createServer(app);
 
 // Trust proxy - required when behind reverse proxy (Caddy/nginx)
 // Set to 1 to trust the first proxy (Caddy in production, none in development)
@@ -275,10 +282,22 @@ app.use("/api/documents", documentRoutes);
 // Portal documents routes - student portal (auth handled in route file)
 app.use("/api/portal/documents", portalDocumentsRoutes);
 
+// Portal notifications routes - student portal (auth handled in route file)
+app.use("/api/portal/notifications", portalNotificationsRoutes);
+
+// Schedule notifications routes - admin only (auth handled in route file)
+app.use("/api/schedule-notifications", scheduleNotificationsRouter);
+
 // ========================================
 // Error Handler Middleware (MUST BE LAST)
 // ========================================
 app.use(errorHandler);
 
+// ========================================
+// Initialize Socket.io for Real-time Notifications
+// ========================================
+// Pass corsOptions to Socket.io for consistent CORS configuration
+initializeNotificationSocket(httpServer, corsOptions);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => logger.info(`🚀 Server running on port ${PORT} (${process.env.NODE_ENV} mode)`));
+httpServer.listen(PORT, () => logger.info(`🚀 Server running on port ${PORT} (${process.env.NODE_ENV} mode)`));

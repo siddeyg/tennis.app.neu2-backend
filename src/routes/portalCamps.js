@@ -21,6 +21,7 @@ import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { sendCampRegistrationNotification } from '../utils/emailService.js';
+import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
@@ -418,6 +419,36 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       logger.error('Error sending camp registration notification email:', emailError);
     }
 
+    // 9. Send notification to student about camp registration
+    try {
+      const campData = await Camp.findById(campId);
+      if (campData) {
+        const startDateStr = new Date(campData.startDate).toLocaleDateString('de-DE');
+        const endDateStr = new Date(campData.endDate).toLocaleDateString('de-DE');
+
+        await createNotification(
+          req.user.id,
+          'registration_approved',
+          status === 'confirmed' ? `Camp-Anmeldung bestätigt: ${campData.title}` : `Auf Warteliste: ${campData.title}`,
+          status === 'confirmed'
+            ? `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) wurde bestätigt.`
+            : `Sie wurden auf die Warteliste für ${campData.title} (${startDateStr} - ${endDateStr}) gesetzt. Sie werden benachrichtigt, falls ein Platz frei wird.`,
+          {
+            priority: status === 'confirmed' ? 'high' : 'normal',
+            actionUrl: '/camps/meine-anmeldungen',
+            metadata: {
+              campId: campId,
+              registrationId: registration._id,
+              status
+            }
+          }
+        );
+      }
+    } catch (notificationError) {
+      logger.error('Error creating notification for camp registration', { error: notificationError.message, stack: notificationError.stack });
+      // Don't fail the request if notification fails
+    }
+
     res.status(201).json({
       success: true,
       message: status === 'confirmed'
@@ -547,12 +578,61 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
         camp.currentParticipants += 1;
         await camp.save(session ? { session } : {});
 
-        // TODO: Send email notification to promoted user
         logger.info('Auto-promoted waitlist registration to confirmed', { registrationId: waitlistRegistration._id });
+
+        // Send notification to promoted user
+        try {
+          const startDateStr = new Date(camp.startDate).toLocaleDateString('de-DE');
+          const endDateStr = new Date(camp.endDate).toLocaleDateString('de-DE');
+
+          await createNotification(
+            waitlistRegistration.studentPortalUserId,
+            'registration_approved',
+            `Platz frei: ${camp.title}`,
+            `Ein Platz für ${camp.title} (${startDateStr} - ${endDateStr}) ist frei geworden! Ihre Anmeldung wurde automatisch bestätigt.`,
+            {
+              priority: 'urgent',
+              actionUrl: '/camps/meine-anmeldungen',
+              metadata: {
+                campId: camp._id,
+                registrationId: waitlistRegistration._id,
+                promotedFromWaitlist: true
+              }
+            }
+          );
+        } catch (notificationError) {
+          logger.error('Error creating notification for waitlist promotion', { error: notificationError.message, stack: notificationError.stack });
+          // Don't fail the request if notification fails
+        }
       }
     }
 
     if (session) await session.commitTransaction();
+
+    // Send notification about cancellation
+    try {
+      const startDateStr = new Date(camp.startDate).toLocaleDateString('de-DE');
+      const endDateStr = new Date(camp.endDate).toLocaleDateString('de-DE');
+
+      await createNotification(
+        req.user.id,
+        'announcement',
+        `Camp-Anmeldung storniert: ${camp.title}`,
+        `Ihre Anmeldung für ${camp.title} (${startDateStr} - ${endDateStr}) wurde erfolgreich storniert.`,
+        {
+          priority: 'normal',
+          actionUrl: '/camps',
+          metadata: {
+            campId: camp._id,
+            registrationId: regId,
+            cancelled: true
+          }
+        }
+      );
+    } catch (notificationError) {
+      logger.error('Error creating notification for camp cancellation', { error: notificationError.message, stack: notificationError.stack });
+      // Don't fail the request if notification fails
+    }
 
     res.json({
       success: true,

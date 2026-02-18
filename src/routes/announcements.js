@@ -1,7 +1,9 @@
 import express from 'express';
 import Announcement from '../models/Announcement.js';
+import StudentPortalUser from '../models/StudentPortalUser.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
@@ -17,6 +19,95 @@ function getChangedFields(before, after) {
     }
   }
   return changes;
+}
+
+// Helper function to send announcement notifications to all relevant students
+async function sendAnnouncementNotifications(announcement) {
+  try {
+    // Only send notifications for urgent or important announcements that are active
+    if (!announcement.isActive || announcement.priority === 'normal') {
+      logger.info('Skipping announcement notifications (not urgent/important or inactive)', {
+        announcementId: announcement._id,
+        priority: announcement.priority,
+        isActive: announcement.isActive
+      });
+      return;
+    }
+
+    // Get all active portal users
+    const filter = {
+      isActive: true,
+      emailVerified: true,
+      profileCompleted: true
+    };
+
+    // Filter by target audience if not "all"
+    if (announcement.targetAudience !== 'all') {
+      // For adults: check if user has no familyMembers or has adult flag
+      // For children: check if user has familyMembers
+      if (announcement.targetAudience === 'adults') {
+        filter.$or = [
+          { familyMembers: { $size: 0 } },
+          { isAdult: true }
+        ];
+      } else if (announcement.targetAudience === 'children') {
+        filter['familyMembers.0'] = { $exists: true };
+      }
+    }
+
+    const users = await StudentPortalUser.find(filter).select('_id').lean();
+
+    logger.info(`Sending announcement notifications to ${users.length} users`, {
+      announcementId: announcement._id,
+      targetAudience: announcement.targetAudience,
+      priority: announcement.priority
+    });
+
+    // Send notification to each user
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const user of users) {
+      try {
+        await createNotification(
+          user._id,
+          'announcement',
+          announcement.title,
+          announcement.content.substring(0, 200) + (announcement.content.length > 200 ? '...' : ''),
+          {
+            priority: announcement.priority === 'urgent' ? 'urgent' : 'high',
+            actionUrl: '/dashboard',
+            metadata: {
+              announcementId: announcement._id
+            }
+          }
+        );
+        successCount++;
+      } catch (notificationError) {
+        logger.error('Error creating notification for user', {
+          error: notificationError.message,
+          userId: user._id,
+          announcementId: announcement._id
+        });
+        errorCount++;
+      }
+    }
+
+    logger.info(`Announcement notifications completed`, {
+      announcementId: announcement._id,
+      successCount,
+      errorCount,
+      totalUsers: users.length
+    });
+
+  } catch (error) {
+    logger.error('Error sending announcement notifications', {
+      error: error.message,
+      stack: error.stack,
+      announcementId: announcement._id
+    });
+    // Don't throw - this is a background task
+  }
 }
 
 /**
@@ -98,6 +189,11 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Announcement'
     // Populate creator info for response
     await announcement.populate('createdBy', 'firstName lastName email');
 
+    // Send notifications for urgent/important announcements (non-blocking)
+    setImmediate(() => {
+      sendAnnouncementNotifications(announcement);
+    });
+
     res.status(201).json({
       message: 'Ankündigung erfolgreich erstellt',
       announcement
@@ -152,6 +248,16 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Announcemen
     // Populate for response
     await announcement.populate('createdBy', 'firstName lastName email');
     await announcement.populate('lastModifiedBy', 'firstName lastName email');
+
+    // Send notifications if announcement was just activated or priority changed to urgent/important
+    const wasActivated = beforeState.isActive === false && announcement.isActive === true;
+    const priorityIncreased = (beforeState.priority === 'normal') && (announcement.priority === 'urgent' || announcement.priority === 'important');
+
+    if (wasActivated || priorityIncreased) {
+      setImmediate(() => {
+        sendAnnouncementNotifications(announcement);
+      });
+    }
 
     // Attach before/after to req for audit log
     const afterState = announcement.toObject();
@@ -214,6 +320,11 @@ router.post('/:id/activate', auditLogMiddleware({ action: 'UPDATE', resource: 'A
     announcement.isActive = true;
     announcement.lastModifiedBy = req.user._id;
     await announcement.save();
+
+    // Send notifications for urgent/important announcements when activated
+    setImmediate(() => {
+      sendAnnouncementNotifications(announcement);
+    });
 
     res.json({ message: 'Ankündigung erfolgreich aktiviert' });
 
