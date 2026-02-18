@@ -1,4 +1,5 @@
 import express from 'express';
+import crypto from 'crypto';
 import Student from '../models/Student.js';
 import Coach from '../models/Coach.js';
 import Announcement from '../models/Announcement.js';
@@ -169,6 +170,8 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       }
 
       // Return full student data with flag indicating Student record exists
+      // Also fetch pendingEmail from portalUser
+      const portalUserForPending = await StudentPortalUser.findById(portalUserId).select('pendingEmail');
       return res.json({
         _id: student._id,
         firstName: student.firstName,
@@ -186,6 +189,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
         team: student.team || '',
         frequence: student.frequence || '',
         availableTimes: student.availableTimes || [],
+        pendingEmail: portalUserForPending?.pendingEmail || null,
         hasStudentRecord: true
       });
     }
@@ -206,12 +210,12 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       member: portalUser.member || false,
       email: portalUser.email || '',
       phone: portalUser.phone || '',
-      address: portalUser.address || '',  // Return address from StudentPortalUser
+      address: portalUser.address || '',
       ibanLast3: portalUser.iban ? getIBANLast3(portalUser.iban, true) : null,
-      // Parent contact info (for children)
       parentName: portalUser.parentName || '',
       parentEmail: portalUser.parentEmail || '',
       parentPhone: portalUser.parentPhone || '',
+      pendingEmail: portalUser.pendingEmail || null,
       hasStudentRecord: false
     });
 
@@ -263,6 +267,14 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       if (!emailRegex.test(email.trim())) {
         return res.status(400).json({ error: 'Ungültige Email-Adresse' });
       }
+      // Check for duplicate email (only if it differs from current email)
+      const portalUserForCheck = await StudentPortalUser.findById(portalUserId).select('email');
+      if (portalUserForCheck && email.trim().toLowerCase() !== portalUserForCheck.email) {
+        const existing = await StudentPortalUser.findOne({ email: email.trim().toLowerCase(), _id: { $ne: portalUserId } });
+        if (existing) {
+          return res.status(400).json({ error: 'Diese E-Mail-Adresse wird bereits verwendet' });
+        }
+      }
     }
 
     // Validate phone format if provided (basic validation, test trimmed value)
@@ -304,7 +316,6 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       student.birthDate = birthDateObj;
       student.sex = sex;
       student.member = member === true || member === 'true';
-      student.email = email?.trim() || '';
       student.phone = phone?.trim() || '';
       student.adress = addressValue?.trim() || '';  // Update Student.adress field (legacy)
       if (encryptedIBAN) {
@@ -331,7 +342,6 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
         portalUser.birthdate = birthDateObj;
         portalUser.sex = sex;
         portalUser.member = member === true || member === 'true';
-        portalUser.email = email?.trim() || portalUser.email;
         portalUser.phone = phone?.trim() || '';
         if (addressValue && addressValue.trim() !== '') {
           portalUser.address = addressValue.trim();
@@ -355,9 +365,32 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
             { $set: { iban: encryptedIBAN } }
           );
         }
+
+        // Handle email change: pending flow (verify before activating)
+        let pendingEmailResult = null;
+        const newEmail = email?.trim().toLowerCase();
+        if (newEmail && newEmail !== portalUser.email) {
+          const token = crypto.randomBytes(32).toString('hex');
+          const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+          await StudentPortalUser.updateOne(
+            { _id: portalUserId },
+            { $set: { pendingEmail: newEmail, emailChangeToken: token, emailChangeTokenExpires: expires } }
+          );
+          const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
+          try {
+            const { sendEmailChangeVerification, sendEmailChangeWarning } = await import('../utils/emailService.js');
+            await sendEmailChangeVerification(newEmail, token, studentName);
+            await sendEmailChangeWarning(portalUser.email, newEmail, studentName);
+          } catch (emailError) {
+            logger.error('Failed to send email change emails', { error: emailError.message });
+          }
+          pendingEmailResult = newEmail;
+          logger.info('Email change requested', { userId: portalUserId, oldEmail: portalUser.email, newEmail });
+        }
       }
 
       // Return updated student data
+      const updatedPortalUser = await StudentPortalUser.findById(portalUserId).select('pendingEmail');
       return res.json({
         _id: student._id,
         firstName: student.firstName,
@@ -372,10 +405,10 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
         adult: student.adult,
         skillLevel: student.skillLevel || '',
         trainigGroup: student.trainigGroup || '',
-        member: student.member,
         team: student.team || '',
         frequence: student.frequence || '',
         availableTimes: student.availableTimes || [],
+        pendingEmail: updatedPortalUser?.pendingEmail || null,
         hasStudentRecord: true
       });
     }
@@ -400,8 +433,7 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       parentPhone: portalUser.parentPhone || ''
     };
 
-    // Update email, phone, address, and IBAN
-    portalUser.email = email?.trim() || portalUser.email;
+    // Update phone and address (email handled separately via pending flow)
     portalUser.phone = phone?.trim() || '';
     if (addressValue && addressValue.trim() !== '') {
       portalUser.address = addressValue.trim();
@@ -456,9 +488,30 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       }
     }
 
+    // Handle email change: pending flow (verify before activating)
+    const newEmail = email?.trim().toLowerCase();
+    if (newEmail && newEmail !== portalUser.email) {
+      const token = crypto.randomBytes(32).toString('hex');
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+      await StudentPortalUser.updateOne(
+        { _id: portalUserId },
+        { $set: { pendingEmail: newEmail, emailChangeToken: token, emailChangeTokenExpires: expires } }
+      );
+      const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
+      try {
+        const { sendEmailChangeVerification, sendEmailChangeWarning } = await import('../utils/emailService.js');
+        await sendEmailChangeVerification(newEmail, token, studentName);
+        await sendEmailChangeWarning(portalUser.email, newEmail, studentName);
+      } catch (emailError) {
+        logger.error('Failed to send email change emails', { error: emailError.message });
+      }
+      logger.info('Email change requested', { userId: portalUserId, oldEmail: portalUser.email, newEmail });
+    }
+
     logger.info('Profile updated for portal user', { userId: portalUser._id, name: `${portalUser.firstName} ${portalUser.lastName}` });
 
     // Return updated portal user data
+    const refreshedUser = await StudentPortalUser.findById(portalUserId).select('pendingEmail iban');
     res.json({
       _id: portalUser._id,
       firstName: portalUser.firstName,
@@ -468,12 +521,12 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       member: portalUser.member,
       email: portalUser.email,
       phone: portalUser.phone,
-      address: portalUser.address || '',  // Return address from StudentPortalUser
-      ibanLast3: portalUser.iban ? getIBANLast3(portalUser.iban, true) : null,
-      // Parent contact info (for children)
+      address: portalUser.address || '',
+      ibanLast3: refreshedUser?.iban ? getIBANLast3(refreshedUser.iban, true) : null,
       parentName: portalUser.parentName || '',
       parentEmail: portalUser.parentEmail || '',
       parentPhone: portalUser.parentPhone || '',
+      pendingEmail: refreshedUser?.pendingEmail || null,
       hasStudentRecord: false
     });
 

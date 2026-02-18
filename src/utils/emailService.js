@@ -1254,6 +1254,71 @@ export async function sendCampRegistrationNotification(registration, camp, notif
   }
 }
 
+/**
+ * Send email change verification to the NEW email address
+ */
+export async function sendEmailChangeVerification(newEmail, token, studentName, portalUrl = null) {
+  const url = portalUrl || process.env.PORTAL_URL || process.env.FRONTEND_URL || 'http://localhost:3001';
+  const verifyUrl = `${url}/verify-email-change?token=${token}`;
+
+  const subject = 'E-Mail-Adresse bestätigen – Mondo Tennisschule';
+  const html = `
+    <!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+    <body style="margin:0;padding:0;font-family:'Segoe UI',sans-serif;background:#f5f5f5;">
+      <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#009688 0%,#00796b 100%);padding:30px;text-align:center;">
+          <h1 style="color:#fff;margin:0;font-size:24px;">E-Mail-Adresse bestätigen</h1>
+        </div>
+        <div style="padding:30px;">
+          <p style="color:#333;font-size:16px;">Hallo ${escapeHtml(studentName)},</p>
+          <p style="color:#333;font-size:16px;">Du hast eine Änderung deiner E-Mail-Adresse beantragt. Klicke auf den Button, um die neue Adresse zu bestätigen:</p>
+          <div style="text-align:center;margin:30px 0;">
+            <a href="${verifyUrl}" style="display:inline-block;background:#009688;color:#fff;text-decoration:none;padding:14px 32px;border-radius:4px;font-weight:600;font-size:16px;">E-Mail-Adresse bestätigen</a>
+          </div>
+          <p style="color:#666;font-size:14px;">Dieser Link ist 24 Stunden gültig.</p>
+          <p style="color:#666;font-size:14px;">Falls du keine Änderung beantragt hast, kannst du diese E-Mail ignorieren.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
+          <p style="color:#999;font-size:12px;">Mondo Tennisschule – TC GW Am Kreuzberg</p>
+        </div>
+      </div>
+    </body></html>`;
+
+  const text = `Hallo ${studentName},\n\nDu hast eine Änderung deiner E-Mail-Adresse beantragt.\n\nBestätigungslink (gültig 24 Stunden):\n${verifyUrl}\n\nFalls du keine Änderung beantragt hast, ignoriere diese E-Mail.\n\nMondo Tennisschule`;
+
+  return sendEmail({ to: newEmail, subject, html, text });
+}
+
+/**
+ * Send warning to the OLD email address when an email change is requested
+ */
+export async function sendEmailChangeWarning(oldEmail, newEmail, studentName) {
+  const subject = 'E-Mail-Änderung beantragt – Mondo Tennisschule';
+  const html = `
+    <!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+    <body style="margin:0;padding:0;font-family:'Segoe UI',sans-serif;background:#f5f5f5;">
+      <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#ff9800 0%,#f57c00 100%);padding:30px;text-align:center;">
+          <h1 style="color:#fff;margin:0;font-size:24px;">⚠️ E-Mail-Änderung beantragt</h1>
+        </div>
+        <div style="padding:30px;">
+          <p style="color:#333;font-size:16px;">Hallo ${escapeHtml(studentName)},</p>
+          <p style="color:#333;font-size:16px;">Für dein Konto wurde eine Änderung der E-Mail-Adresse beantragt:</p>
+          <div style="background:#fff3e0;border-left:4px solid #ff9800;padding:15px;margin:20px 0;border-radius:4px;">
+            <p style="margin:0;color:#333;"><strong>Neue E-Mail:</strong> ${escapeHtml(newEmail)}</p>
+            <p style="margin:8px 0 0;color:#666;font-size:14px;">Die Änderung wird aktiv, sobald die neue Adresse bestätigt wurde.</p>
+          </div>
+          <p style="color:#333;font-size:16px;">Falls du diese Änderung <strong>nicht</strong> beantragt hast, melde dich bitte sofort bei uns.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
+          <p style="color:#999;font-size:12px;">Mondo Tennisschule – TC GW Am Kreuzberg</p>
+        </div>
+      </div>
+    </body></html>`;
+
+  const text = `Hallo ${studentName},\n\nFür dein Konto wurde eine Änderung der E-Mail-Adresse beantragt.\nNeue E-Mail: ${newEmail}\n\nDie Änderung wird aktiv, sobald die neue Adresse bestätigt wurde.\n\nFalls du diese Änderung nicht beantragt hast, melde dich bitte sofort bei uns.\n\nMondo Tennisschule`;
+
+  return sendEmail({ to: oldEmail, subject, html, text });
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
@@ -1264,6 +1329,8 @@ export default {
   sendTicketStatusChangeEmail,
   sendSeasonalRegistrationNotification,
   sendCampRegistrationNotification,
+  sendEmailChangeVerification,
+  sendEmailChangeWarning,
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };

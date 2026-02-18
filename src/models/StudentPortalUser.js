@@ -133,6 +133,15 @@ const StudentPortalUserSchema = new mongoose.Schema({
   verificationTokenExpires: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  // Pending email change (Option A: verify before activating)
+  pendingEmail: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    default: null
+  },
+  emailChangeToken: String,
+  emailChangeTokenExpires: Date,
   lastLogin: Date,
   lastActivity: {
     type: Date,
@@ -189,6 +198,7 @@ StudentPortalUserSchema.methods.toJSON = function() {
   delete user.verificationTokenExpires;
   delete user.passwordResetToken;
   delete user.passwordResetExpires;
+  delete user.emailChangeToken;
   return user;
 };
 

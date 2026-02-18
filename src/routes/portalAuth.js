@@ -15,6 +15,7 @@ import {
   sendWelcomeEmail
 } from '../utils/emailService.js';
 import { createAuditLog, auditLogMiddleware } from '../middleware/auditLog.js';
+import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 
 const router = express.Router();
 
@@ -721,6 +722,103 @@ router.post('/resend-verification',
   } catch (error) {
     logger.error('Resend verification error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Senden der Bestätigungs-E-Mail' });
+  }
+});
+
+/**
+ * @route   GET /api/portal/auth/verify-email-change
+ * @desc    Confirm pending email change via token link in email
+ * @access  Public (token-based)
+ */
+router.get('/verify-email-change', async (req, res) => {
+  const portalUrl = process.env.PORTAL_URL || process.env.FRONTEND_URL || 'http://localhost:3001';
+  try {
+    const { token } = req.query;
+    if (!token) {
+      return res.redirect(`${portalUrl}/verify-email-change?error=missing-token`);
+    }
+
+    const portalUser = await StudentPortalUser.findOne({
+      emailChangeToken: token,
+      emailChangeTokenExpires: { $gt: new Date() }
+    });
+
+    if (!portalUser) {
+      return res.redirect(`${portalUrl}/verify-email-change?error=invalid-or-expired`);
+    }
+
+    const newEmail = portalUser.pendingEmail;
+    if (!newEmail) {
+      return res.redirect(`${portalUrl}/verify-email-change?error=no-pending-email`);
+    }
+
+    // Check no one else grabbed the email in the meantime
+    const conflict = await StudentPortalUser.findOne({ email: newEmail, _id: { $ne: portalUser._id } });
+    if (conflict) {
+      await StudentPortalUser.updateOne(
+        { _id: portalUser._id },
+        { $unset: { pendingEmail: 1, emailChangeToken: 1, emailChangeTokenExpires: 1 } }
+      );
+      return res.redirect(`${portalUrl}/verify-email-change?error=email-taken`);
+    }
+
+    const oldEmail = portalUser.email;
+
+    // Activate new email
+    await StudentPortalUser.updateOne(
+      { _id: portalUser._id },
+      {
+        $set: { email: newEmail },
+        $unset: { pendingEmail: 1, emailChangeToken: 1, emailChangeTokenExpires: 1 }
+      }
+    );
+
+    // Also update linked Student record if exists
+    if (portalUser.studentId) {
+      try {
+        await Student.updateOne({ _id: portalUser.studentId }, { $set: { email: newEmail } });
+      } catch (studentErr) {
+        logger.error('Failed to update Student email after email change confirmation', { error: studentErr.message });
+        // Non-fatal — portal user email is the source of truth for login
+      }
+    }
+
+    logger.info('Email change confirmed', { userId: portalUser._id, oldEmail, newEmail });
+    return res.redirect(`${portalUrl}/verify-email-change?success=true`);
+
+  } catch (error) {
+    logger.error('Email change verification error', { error: error.message, stack: error.stack });
+    const portalUrl = process.env.PORTAL_URL || process.env.FRONTEND_URL || 'http://localhost:3001';
+    return res.redirect(`${portalUrl}/verify-email-change?error=server-error`);
+  }
+});
+
+/**
+ * @route   POST /api/portal/auth/cancel-email-change
+ * @desc    Cancel a pending email change request
+ * @access  Private (student)
+ */
+router.post('/cancel-email-change', verifyPortalAuth, async (req, res) => {
+  try {
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+    }
+    if (!portalUser.pendingEmail) {
+      return res.status(400).json({ error: 'Keine ausstehende E-Mail-Änderung' });
+    }
+
+    await StudentPortalUser.updateOne(
+      { _id: portalUser._id },
+      { $unset: { pendingEmail: 1, emailChangeToken: 1, emailChangeTokenExpires: 1 } }
+    );
+
+    logger.info('Email change cancelled', { userId: portalUser._id, cancelledEmail: portalUser.pendingEmail });
+    res.json({ message: 'E-Mail-Änderung abgebrochen' });
+
+  } catch (error) {
+    logger.error('Cancel email change error', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler' });
   }
 });
 
