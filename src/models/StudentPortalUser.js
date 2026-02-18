@@ -205,5 +205,10 @@ StudentPortalUserSchema.methods.toJSON = function() {
 // Performance index for login lookups (CRITICAL for load testing)
 StudentPortalUserSchema.index({ email: 1 });
 
+// Token lookup indexes (queried on every verification/reset/email-change link click)
+StudentPortalUserSchema.index({ verificationToken: 1 });
+StudentPortalUserSchema.index({ passwordResetToken: 1 });
+StudentPortalUserSchema.index({ emailChangeToken: 1 });
+
 const StudentPortalUser = mongoose.model('StudentPortalUser', StudentPortalUserSchema);
 export default StudentPortalUser;
