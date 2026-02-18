@@ -268,14 +268,6 @@ seasonalRegistrationSchema.methods.hasMinimumAvailableTimes = function () {
   return this.availableTimesCount >= 5;
 };
 
-// Method: Get masked IBAN (show last 4 digits only)
-seasonalRegistrationSchema.methods.getMaskedIBAN = function () {
-  if (!this.iban) return null;
-  // Decrypt first (in actual implementation)
-  const lastFour = this.iban.slice(-4);
-  return `DE****${lastFour}`;
-};
-
 const SeasonalRegistration = mongoose.model('SeasonalRegistration', seasonalRegistrationSchema);
 
 export default SeasonalRegistration;
