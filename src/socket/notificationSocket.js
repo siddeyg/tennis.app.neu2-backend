@@ -35,15 +35,25 @@ export function initializeNotificationSocket(httpServer, corsOptions) {
   // JWT authentication middleware for Socket.io
   io.use((socket, next) => {
     try {
-      const token = socket.handshake.auth.token;
+      // Try auth.token first (explicit), then fall back to httpOnly cookie
+      let token = socket.handshake.auth.token;
+
+      if (!token) {
+        // Parse portalAccessToken from cookie header (same as verifyPortalAuth)
+        const cookieHeader = socket.handshake.headers.cookie || '';
+        const match = cookieHeader.match(/portalAccessToken=([^;]+)/);
+        if (match) {
+          token = decodeURIComponent(match[1]);
+        }
+      }
 
       if (!token) {
         logger.warn(`Socket connection rejected: No token provided (socket ID: ${socket.id})`);
         return next(new Error('Authentication error: No token provided'));
       }
 
-      // Verify JWT token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // Verify JWT token (same secret as verifyPortalAuth)
+      const decoded = jwt.verify(token, process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET);
 
       // Check if this is a student portal user (not admin/coach)
       if (decoded.role !== 'student') {
