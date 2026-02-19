@@ -4,8 +4,8 @@ const auditLogSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now,
-    required: true,
-    index: true  // For efficient queries
+    required: true
+    // Index created via compound indexes below (no field-level index needed)
   },
 
   // User information

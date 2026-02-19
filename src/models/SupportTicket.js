@@ -157,7 +157,7 @@ supportTicketSchema.index({ 'createdBy.studentPortalUserId': 1, status: 1 });
 supportTicketSchema.index({ assignedTo: 1, status: 1 });
 supportTicketSchema.index({ updatedAt: -1 });
 supportTicketSchema.index({ priority: 1, status: 1 });
-supportTicketSchema.index({ ticketNumber: 1 });
+// ticketNumber index created by `unique: true` constraint (no explicit index needed)
 
 // Text index for search
 supportTicketSchema.index({

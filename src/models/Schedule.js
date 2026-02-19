@@ -7,8 +7,16 @@ import mongoose from "mongoose";
  * Jedes Dokument ist ein einzelner Kurs zu einer bestimmten Zeit.
  */
 const ScheduleSchema = new mongoose.Schema({
-  day: String,                          // Wochentag: "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"
-  hour: String,                         // Stunde als String (z.B. "10", "14", "18")
+  day: {
+    type: String,
+    required: true,
+    enum: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+  },
+  hour: {
+    type: String,
+    required: true
+    // String format for flexibility (e.g., "10", "14", "18")
+  },
   students: [{                          // Array von Schülern die diesem Kurs zugeordnet sind
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student"

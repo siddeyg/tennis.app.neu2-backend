@@ -9,31 +9,111 @@ import mongoose from "mongoose";
  */
 const studentSchema = new mongoose.Schema({
   // ===== Stammdaten =====
-  firstName: String,                    // Vorname des Schülers
-  lastName: String,                     // Nachname des Schülers
-  adress: String,                       // Adresse des Schülers
-  email: String,                        // E-Mail-Adresse (optional, aber unique wenn gesetzt)
-  phone: String,                        // Telefonnummer
-  iban: String,                         // IBAN (encrypted, AES-256-CBC) for SEPA payments
-  birthDate: String,                    // Geburtsdatum im Format "YYYY-MM-DD"
-  comment: String,                      // Notiz / Kommentar zum Schüler (allgemein)
-  comment2: String,                     // Trainingsziel für Erwachsene (z.B. "Freizeit, Fitness, Turniere")
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 1
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 1
+  },
+  adress: {
+    type: String,
+    trim: true
+  },
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    sparse: true  // Allow multiple nulls, but unique if set
+  },
+  phone: {
+    type: String,
+    trim: true
+  },
+  iban: {
+    type: String,
+    trim: true
+    // Encrypted AES-256-CBC for SEPA payments
+  },
+  birthDate: {
+    type: String,
+    trim: true
+    // Format: "YYYY-MM-DD"
+  },
+  comment: {
+    type: String,
+    trim: true
+  },
+  comment2: {
+    type: String,
+    trim: true
+    // Trainingsziel für Erwachsene (z.B. "Freizeit, Fitness, Turniere")
+  },
 
   // ===== Mitgliedschaft & Training =====
-  member: Boolean,                      // Mitglied im Verein (true) oder Gastspieler (false)
-  adult: Boolean,                       // Erwachsenen-Training (true) oder Kinder-Training (false)
-  frequence: String,                    // Trainingshäufigkeit pro Woche ("1", "2", "3")
+  member: {
+    type: Boolean,
+    default: false
+  },
+  adult: {
+    type: Boolean,
+    default: false
+  },
+  frequence: {
+    type: String,
+    enum: ['1', '2', '3', null],
+    default: null
+  },
 
   // ===== Geschlecht (für alle Schüler) =====
-  sex: String,                          // Geschlecht: "männlich" oder "weiblich" (für Erwachsene UND Kinder)
+  sex: {
+    type: String,
+    enum: ['männlich', 'weiblich', null],
+    default: null
+  },
 
   // ===== Erwachsenen-spezifisch (nur wenn adult = true) =====
-  skillLevel: String,                   // Spielstärke: "Anfänger", "wenig Fortgeschritten", "Fortgeschritten", "gute:r Spieler:in", "Leistungsspieler:in"
+  skillLevel: {
+    type: String,
+    enum: [
+      'Anfänger',
+      'wenig Fortgeschritten',
+      'Fortgeschritten',
+      'gute:r Spieler:in',
+      'Leistungsspieler:in',
+      null
+    ],
+    default: null
+  },
 
   // ===== Kinder-spezifisch (nur wenn adult = false) =====
-  trainigGroup: String,                 // Trainingsgruppe: "Kinderland", "Rot", "Grün", "Orange", "Gelb Team", "Gelb Hobby"
-  team: Boolean,                        // Mannschaftsspieler (true) oder Hobby-Spieler (false)
-  groupSize: String,                    // Gruppengröße (1er, 2er, 3er, 4er) - Legacy-Feld
+  trainigGroup: {
+    type: String,
+    enum: [
+      'Kinderland',
+      'Rot',
+      'Grün',
+      'Orange',
+      'Gelb Team',
+      'Gelb Hobby',
+      null
+    ],
+    default: null
+  },
+  team: {
+    type: Boolean,
+    default: false
+  },
+  groupSize: {
+    type: String,
+    trim: true
+    // Legacy field: "1er", "2er", "3er", "4er"
+  },
 
   // ===== Zeitplanung =====
   /**

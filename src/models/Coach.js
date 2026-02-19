@@ -16,13 +16,40 @@ const coachSchema = new mongoose.Schema({
   },
 
   // ===== Stammdaten =====
-  firstName: String,                    // Vorname des Trainers
-  lastName: String,                     // Nachname des Trainers
-  email: String,                        // E-Mail-Adresse (optional, aber unique wenn gesetzt)
-  phone: String,                        // Telefonnummer
-  birthday: String,                     // Geburtsdatum
-  adress: String,                       // Adresse des Trainers
-  comment: String,                      // Notiz / Kommentar zum Trainer
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 1
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 1
+  },
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    sparse: true  // Allow multiple nulls, but unique if set
+  },
+  phone: {
+    type: String,
+    trim: true
+  },
+  birthday: {
+    type: String,
+    trim: true
+  },
+  adress: {
+    type: String,
+    trim: true
+  },
+  comment: {
+    type: String,
+    trim: true
+  },
 
   // ===== Verfügbarkeit =====
   /**

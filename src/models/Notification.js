@@ -57,8 +57,8 @@ const NotificationSchema = new mongoose.Schema({
     // Flexible field for additional context (e.g., ticketId, scheduleId, etc.)
   },
   expiresAt: {
-    type: Date,
-    index: true  // TTL index - auto-delete after expiry
+    type: Date
+    // TTL index created via schema-level .index() below
   }
 }, {
   timestamps: true  // Adds createdAt and updatedAt

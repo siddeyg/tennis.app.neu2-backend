@@ -202,8 +202,7 @@ StudentPortalUserSchema.methods.toJSON = function() {
   return user;
 };
 
-// Performance index for login lookups (CRITICAL for load testing)
-StudentPortalUserSchema.index({ email: 1 });
+// Email index created by `unique: true` constraint (no explicit index needed)
 
 // Token lookup indexes (queried on every verification/reset/email-change link click)
 StudentPortalUserSchema.index({ verificationToken: 1 });
