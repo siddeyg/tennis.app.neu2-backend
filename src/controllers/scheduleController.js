@@ -7,20 +7,6 @@ export const getSchedule = async (req, res) => {
     // This ensures consistent behavior across MongoDB versions
     const schedule = await Schedule.find().lean();
 
-    // Debug logging
-    console.log('[scheduleController] GET /api/schedule');
-    console.log('  - Total schedule entries:', schedule.length);
-
-    const withStudents = schedule.filter(s => s.students && s.students.length > 0);
-    console.log('  - Entries with students:', withStudents.length);
-
-    // Check a sample entry
-    if (withStudents.length > 0) {
-      const first = withStudents[0];
-      console.log(`  - Sample: ${first.day} ${first.hour} has ${first.students.length} students`);
-      console.log('    students[0]:', first.students[0]);
-    }
-
     // Return raw schedule data without populate
     // Frontend doesn't need full student objects for the count
     // This avoids MongoDB version issues with populate
