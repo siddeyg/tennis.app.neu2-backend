@@ -12,7 +12,7 @@ import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
-import { getHolidaysInRange, getHolidayName, getDatesInRangeForDay } from '../utils/nrwHolidays.js';
+import { getDatesInRangeForDay } from '../utils/nrwHolidays.js';
 
 const router = express.Router();
 
@@ -97,34 +97,61 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
         .lean();
     }
 
-    // Compute training session count excluding NRW holidays
+    // Compute training session count using pre-computed holidays + custom exclusions from DB
     const DAY_NAME_TO_NUM = { Montag: 1, Dienstag: 2, Mittwoch: 3, Donnerstag: 4, Freitag: 5, Samstag: 6 };
     let trainingCount = null;
     let holidayHits = [];
 
-    if (period && schedule.length > 0) {
-      try {
-        const holidays = await getHolidaysInRange(period.trainingStartDate, period.trainingEndDate);
+    function toDateKey(date) {
+      const d = new Date(date);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
 
-        trainingCount = 0;
-        for (const a of schedule) {
-          const dayNum = DAY_NAME_TO_NUM[a.day];
-          if (dayNum === undefined) continue;
-          const allDates = getDatesInRangeForDay(period.trainingStartDate, period.trainingEndDate, dayNum);
-          for (const d of allDates) {
-            const name = getHolidayName(d, holidays);
-            if (name) {
-              holidayHits.push({ date: d, name, day: a.day, hour: a.hour });
-            } else {
-              trainingCount++;
-            }
+    function buildExclusionMap(computedHolidays = [], trainingExclusions = []) {
+      const map = new Map(); // dateKey → { name, isWholeDay, slots[] }
+      for (const h of computedHolidays) {
+        map.set(toDateKey(h.date), { name: h.name, isWholeDay: true, slots: [] });
+      }
+      for (const e of trainingExclusions) {
+        const key = toDateKey(e.date);
+        const isWholeDay = !e.affectedSlots || e.affectedSlots.length === 0;
+        const existing = map.get(key);
+        if (isWholeDay) {
+          map.set(key, { name: e.reason, isWholeDay: true, slots: [] });
+        } else if (existing) {
+          existing.slots.push(...e.affectedSlots);
+        } else {
+          map.set(key, { name: e.reason, isWholeDay: false, slots: [...e.affectedSlots] });
+        }
+      }
+      return map;
+    }
+
+    // Only compute if admin has already run compute-holidays (computedHolidays is populated)
+    if (period && schedule.length > 0 && period.computedHolidays && period.computedHolidays.length > 0) {
+      const exclusionMap = buildExclusionMap(period.computedHolidays, period.trainingExclusions);
+      trainingCount = 0;
+
+      for (const a of schedule) {
+        const dayNum = DAY_NAME_TO_NUM[a.day];
+        if (dayNum === undefined) continue;
+        const allDates = getDatesInRangeForDay(period.trainingStartDate, period.trainingEndDate, dayNum);
+        for (const d of allDates) {
+          const key = toDateKey(d);
+          const excl = exclusionMap.get(key);
+          const isExcluded = excl && (
+            excl.isWholeDay ||
+            excl.slots.some(s => s.day === a.day && s.hour === a.hour)
+          );
+          if (isExcluded) {
+            holidayHits.push({ date: d, name: excl.name, day: a.day, hour: a.hour });
+          } else {
+            trainingCount++;
           }
         }
-      } catch (holidayErr) {
-        logger.error('Error computing training count', { error: holidayErr.message });
-        // trainingCount stays null — frontend will hide the stats card
       }
     }
+    // If computedHolidays is empty: trainingCount stays null → stats card hidden on frontend
 
     // Return student info + schedule + season stats
     res.json({
@@ -141,6 +168,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
         start: period.trainingStartDate,
         end:   period.trainingEndDate,
         name:  period.name,
+        holidaysComputed: !!period.holidaysComputedAt,
       } : null,
       trainingCount,
       holidays: holidayHits,

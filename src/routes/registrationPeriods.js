@@ -30,6 +30,7 @@ import requireRole from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { createNotification } from '../utils/notificationHelpers.js';
+import { getHolidaysInRange } from '../utils/nrwHolidays.js';
 
 const router = express.Router();
 
@@ -1000,6 +1001,153 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
       success: false,
       error: 'Fehler beim Verarbeiten der Anmeldungen'
     });
+  }
+});
+
+/**
+ * POST /api/registration-periods/:id/compute-holidays
+ * Compute and store NRW holidays for the period (calls ferien-api.de once).
+ * Replaces any previously stored holidays.
+ */
+router.post('/:id/compute-holidays', async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    let warning = null;
+    let holidays;
+    try {
+      holidays = await getHolidaysInRange(period.trainingStartDate, period.trainingEndDate);
+    } catch (err) {
+      // If getHolidaysInRange itself throws (shouldn't — it has internal graceful degradation)
+      logger.error('Error in getHolidaysInRange', { error: err.message });
+      return res.status(500).json({ success: false, error: 'Fehler beim Abrufen der Feiertage' });
+    }
+
+    // Detect if school holidays might be missing (heuristic: very few holidays for a full season)
+    // The util logs a warning internally; we surface it to the admin via the response
+    const hasSchoolHolidays = holidays.some(h =>
+      h.name.toLowerCase().includes('ferien') || h.name.toLowerCase().includes('ferien')
+    );
+    if (!hasSchoolHolidays && holidays.length < 11) {
+      warning = 'Schulferien konnten nicht von ferien-api.de abgerufen werden. Nur gesetzliche Feiertage wurden gespeichert.';
+    }
+
+    period.computedHolidays = holidays.map(h => ({ date: h.date, name: h.name }));
+    period.holidaysComputedAt = new Date();
+    await period.save();
+
+    logger.info('Holidays computed for period', {
+      periodId: period._id,
+      count: holidays.length,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      holidays: period.computedHolidays,
+      computedAt: period.holidaysComputedAt,
+      count: holidays.length,
+      warning,
+    });
+  } catch (error) {
+    logger.error('Error computing holidays:', error);
+    res.status(500).json({ success: false, error: 'Fehler beim Berechnen der Feiertage' });
+  }
+});
+
+/**
+ * POST /api/registration-periods/:id/exclusions
+ * Add a custom training exclusion (tournament, maintenance, etc.)
+ *
+ * Body:
+ * - date:          string (required) - ISO date string
+ * - reason:        string (required) - max 100 chars
+ * - affectedSlots: array (optional)  - [{day, hour}] — empty = whole day
+ */
+router.post('/:id/exclusions', async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    const { date, reason, affectedSlots } = req.body;
+
+    if (!date) {
+      return res.status(400).json({ success: false, error: 'Datum ist erforderlich' });
+    }
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ success: false, error: 'Ungültiges Datum' });
+    }
+    if (!reason || reason.trim().length === 0) {
+      return res.status(400).json({ success: false, error: 'Grund ist erforderlich' });
+    }
+    if (reason.trim().length > 100) {
+      return res.status(400).json({ success: false, error: 'Grund darf maximal 100 Zeichen haben' });
+    }
+
+    const exclusion = {
+      date: parsedDate,
+      reason: reason.trim(),
+      affectedSlots: Array.isArray(affectedSlots) ? affectedSlots : [],
+    };
+
+    period.trainingExclusions.push(exclusion);
+    await period.save();
+
+    logger.info('Training exclusion added', {
+      periodId: period._id,
+      date: parsedDate,
+      reason: exclusion.reason,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      trainingExclusions: period.trainingExclusions,
+    });
+  } catch (error) {
+    logger.error('Error adding training exclusion:', error);
+    res.status(500).json({ success: false, error: 'Fehler beim Hinzufügen des Ausschlusstags' });
+  }
+});
+
+/**
+ * DELETE /api/registration-periods/:id/exclusions/:exclusionId
+ * Remove a custom training exclusion.
+ */
+router.delete('/:id/exclusions/:exclusionId', async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    const exclusion = period.trainingExclusions.id(req.params.exclusionId);
+    if (!exclusion) {
+      return res.status(404).json({ success: false, error: 'Ausschlusstag nicht gefunden' });
+    }
+
+    period.trainingExclusions.pull({ _id: req.params.exclusionId });
+    await period.save();
+
+    logger.info('Training exclusion removed', {
+      periodId: period._id,
+      exclusionId: req.params.exclusionId,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      trainingExclusions: period.trainingExclusions,
+    });
+  } catch (error) {
+    logger.error('Error removing training exclusion:', error);
+    res.status(500).json({ success: false, error: 'Fehler beim Entfernen des Ausschlusstags' });
   }
 });
 

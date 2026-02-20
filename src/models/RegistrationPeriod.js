@@ -83,6 +83,23 @@ const registrationPeriodSchema = new mongoose.Schema(
       },
     ],
 
+    // Pre-computed holidays (set once by admin via POST /:id/compute-holidays)
+    computedHolidays: [{
+      date: { type: Date, required: true },
+      name: { type: String, required: true },
+    }],
+    holidaysComputedAt: { type: Date, default: null },
+
+    // Admin-defined custom non-training days (tournaments, court maintenance, etc.)
+    trainingExclusions: [{
+      date:   { type: Date,   required: true },
+      reason: { type: String, required: true, trim: true, maxlength: 100 },
+      affectedSlots: [{
+        day:  { type: String, enum: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'] },
+        hour: { type: Number },
+      }],
+    }],
+
     // Form configuration for kids
     kidsFormConfig: {
       enabledFields: {
