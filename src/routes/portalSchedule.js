@@ -7,10 +7,12 @@ import ScheduleChangeRequest from '../models/ScheduleChangeRequest.js';
 import Absence from '../models/Absence.js';
 import Attendance from '../models/Attendance.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
+import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { getHolidaysInRange, getHolidayName, getDatesInRangeForDay } from '../utils/nrwHolidays.js';
 
 const router = express.Router();
 
@@ -81,7 +83,50 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       return a.hour - b.hour;
     });
 
-    // Return student info + schedule
+    // Find the RegistrationPeriod that covers today (training dates bracket today)
+    const today = new Date();
+    let period = await RegistrationPeriod.findOne({
+      trainingStartDate: { $lte: today },
+      trainingEndDate:   { $gte: today }
+    }).sort({ trainingStartDate: -1 }).lean();
+
+    // Fallback: most recent period by end date (even if season already ended)
+    if (!period) {
+      period = await RegistrationPeriod.findOne({})
+        .sort({ trainingEndDate: -1 })
+        .lean();
+    }
+
+    // Compute training session count excluding NRW holidays
+    const DAY_NAME_TO_NUM = { Montag: 1, Dienstag: 2, Mittwoch: 3, Donnerstag: 4, Freitag: 5, Samstag: 6 };
+    let trainingCount = null;
+    let holidayHits = [];
+
+    if (period && schedule.length > 0) {
+      try {
+        const holidays = await getHolidaysInRange(period.trainingStartDate, period.trainingEndDate);
+
+        trainingCount = 0;
+        for (const a of schedule) {
+          const dayNum = DAY_NAME_TO_NUM[a.day];
+          if (dayNum === undefined) continue;
+          const allDates = getDatesInRangeForDay(period.trainingStartDate, period.trainingEndDate, dayNum);
+          for (const d of allDates) {
+            const name = getHolidayName(d, holidays);
+            if (name) {
+              holidayHits.push({ date: d, name, day: a.day, hour: a.hour });
+            } else {
+              trainingCount++;
+            }
+          }
+        }
+      } catch (holidayErr) {
+        logger.error('Error computing training count', { error: holidayErr.message });
+        // trainingCount stays null — frontend will hide the stats card
+      }
+    }
+
+    // Return student info + schedule + season stats
     res.json({
       student: {
         firstName: student.firstName,
@@ -91,7 +136,14 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
         trainigGroup: student.trainigGroup,
         frequence: student.frequence
       },
-      schedule
+      schedule,
+      period: period ? {
+        start: period.trainingStartDate,
+        end:   period.trainingEndDate,
+        name:  period.name,
+      } : null,
+      trainingCount,
+      holidays: holidayHits,
     });
 
   } catch (error) {
