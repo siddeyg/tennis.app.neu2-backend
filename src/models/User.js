@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "coach", "trainer", "student"],
+    enum: ["admin", "supermod", "coach", "trainer", "student"],
     default: "student",
   },
   // Link to Student record (for role: "student")

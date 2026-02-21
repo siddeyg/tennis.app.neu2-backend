@@ -73,5 +73,12 @@ export const requireRole = (roles) => {
  */
 export const requireCoach = requireRole(['trainer']);
 
+/**
+ * Middleware allowing both admin and supermod (chief coach) roles.
+ * Use this for all operational routes that supermod should access.
+ * Keep requireRole(['admin']) for: /api/settings, /api/users, /api/audit-logs, /api/metrics
+ */
+export const requireAdminOrSupermod = requireRole(['admin', 'supermod']);
+
 // Export as default for convenience (allows both import patterns)
 export default requireRole;

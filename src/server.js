@@ -32,7 +32,7 @@ logger.info(`🛢️ MongoDB connection configured: ${!!process.env.MONGO_URI}`)
 // Now import modules that depend on env variables (loaded via loadEnv.js above)
 import passport, { configurePassport } from "./config/passport.js";
 import { requireAuth } from "./middleware/requireAuth.js";
-import { requireRole } from "./middleware/requireRole.js";
+import { requireRole, requireAdminOrSupermod } from "./middleware/requireRole.js";
 import updateActivity from "./middleware/updateActivity.js";
 import authRoutes from "./routes/auth.js";
 import portalAuthRoutes from "./routes/portalAuth.js";
@@ -229,13 +229,15 @@ app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes)
 app.use("/api/portal/children", portalChildrenRoutes);
 app.use("/api/portal/camps", portalCampsRoutes);
 
-// Admin-only routes
-app.use("/api/students", requireAuth, updateActivity, requireRole(["admin"]), studentRoutes);
-app.use("/api/schedule", requireAuth, updateActivity, requireRole(["admin"]), scheduleRoutes);
-app.use("/api/coaches", requireAuth, updateActivity, requireRole(["admin"]), coachRoutes);
-app.use("/api/saved-schedules", requireAuth, updateActivity, requireRole(["admin"]), savedScheduleRoutes);
-app.use("/api/settings", requireAuth, updateActivity, requireRole(["admin"]), settingsRoutes);
+// Admin + Supermod routes (operational — chief coach has full access)
+app.use("/api/students", requireAuth, updateActivity, requireAdminOrSupermod, studentRoutes);
+app.use("/api/schedule", requireAuth, updateActivity, requireAdminOrSupermod, scheduleRoutes);
+app.use("/api/coaches", requireAuth, updateActivity, requireAdminOrSupermod, coachRoutes);
+app.use("/api/saved-schedules", requireAuth, updateActivity, requireAdminOrSupermod, savedScheduleRoutes);
 app.use("/api/user-settings", requireAuth, updateActivity, userSettingsRoutes);
+
+// Admin-only system routes (supermod BLOCKED)
+app.use("/api/settings", requireAuth, updateActivity, requireRole(["admin"]), settingsRoutes);
 
 // Coach portal routes - trainer role required (handled in route file)
 app.use("/api/coach", coachPortalRoutes);
@@ -243,37 +245,37 @@ app.use("/api/coach", coachPortalRoutes);
 // Attendance routes - coaches and admins (authorization in route file)
 app.use("/api/attendance", attendanceRoutes);
 
-// User management routes - admin only
+// User management routes - admin only (supermod BLOCKED)
 app.use("/api/users", requireAuth, updateActivity, requireRole(["admin"]), userRoutes);
 
-// Announcements routes - admin only
-app.use("/api/announcements", requireAuth, updateActivity, requireRole(["admin"]), announcementsRoutes);
+// Announcements routes - admin + supermod
+app.use("/api/announcements", requireAuth, updateActivity, requireAdminOrSupermod, announcementsRoutes);
 
-// Schedule change requests routes - admin only
-app.use("/api/schedule-change-requests", requireAuth, updateActivity, requireRole(["admin"]), scheduleChangeRequestsRoutes);
+// Schedule change requests routes - admin + supermod
+app.use("/api/schedule-change-requests", requireAuth, updateActivity, requireAdminOrSupermod, scheduleChangeRequestsRoutes);
 
-// Registration periods routes - admin only
-app.use("/api/registration-periods", requireAuth, updateActivity, requireRole(["admin"]), registrationPeriodsRoutes);
+// Registration periods routes - admin + supermod
+app.use("/api/registration-periods", requireAuth, updateActivity, requireAdminOrSupermod, registrationPeriodsRoutes);
 
-// Seasonal registrations routes - admin only
-app.use("/api/seasonal-registrations", requireAuth, updateActivity, requireRole(["admin"]), seasonalRegistrationsRoutes);
+// Seasonal registrations routes - admin + supermod
+app.use("/api/seasonal-registrations", requireAuth, updateActivity, requireAdminOrSupermod, seasonalRegistrationsRoutes);
 
-// Portal users management routes - admin only
-app.use("/api/portal-users", requireAuth, updateActivity, requireRole(["admin"]), portalUsersRoutes);
+// Portal users management routes - admin + supermod
+app.use("/api/portal-users", requireAuth, updateActivity, requireAdminOrSupermod, portalUsersRoutes);
 
-// Camps routes - admin only
-app.use("/api/camps", requireAuth, updateActivity, requireRole(["admin"]), campsRoutes);
+// Camps routes - admin + supermod
+app.use("/api/camps", requireAuth, updateActivity, requireAdminOrSupermod, campsRoutes);
 
-// Metrics routes - admin only
+// Metrics routes - admin only (supermod BLOCKED)
 app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), metricsRoutes);
 
-// Support tickets routes - admin only
-app.use("/api/support-tickets", requireAuth, updateActivity, requireRole(["admin"]), supportTicketsRoutes);
+// Support tickets routes - admin + supermod
+app.use("/api/support-tickets", requireAuth, updateActivity, requireAdminOrSupermod, supportTicketsRoutes);
 
 // Portal support tickets routes - student portal (auth handled in route file)
 app.use("/api/portal/support-tickets", portalSupportTicketsRoutes);
 
-// Audit logs routes - admin only
+// Audit logs routes - admin only (supermod BLOCKED)
 app.use("/api/audit-logs", requireAuth, updateActivity, requireRole(["admin"]), auditLogsRoutes);
 
 // Documents routes - admin + coach (auth handled in route file)
