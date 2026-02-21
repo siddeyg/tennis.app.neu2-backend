@@ -26,7 +26,7 @@ import SavedSchedule from '../models/SavedSchedule.js';
 import Coach from '../models/Coach.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import requireAuth from '../middleware/requireAuth.js';
-import requireRole from '../middleware/requireRole.js';
+import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { createNotification } from '../utils/notificationHelpers.js';
@@ -48,9 +48,9 @@ function getChangedFields(before, after) {
   return changes;
 }
 
-// All routes require admin authentication
+// All routes require admin or supermod authentication
 router.use(requireAuth);
-router.use(requireRole(['admin']));
+router.use(requireAdminOrSupermod);
 
 /**
  * GET /api/registration-periods

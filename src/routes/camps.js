@@ -20,7 +20,7 @@ import express from 'express';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
 import requireAuth from '../middleware/requireAuth.js';
-import requireRole from '../middleware/requireRole.js';
+import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
@@ -41,9 +41,9 @@ function getChangedFields(before, after) {
   return changes;
 }
 
-// All routes require admin authentication
+// All routes require admin or supermod authentication
 router.use(requireAuth);
-router.use(requireRole(['admin']));
+router.use(requireAdminOrSupermod);
 
 /**
  * GET /api/camps

@@ -17,7 +17,7 @@ import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import Student from '../models/Student.js';
 import requireAuth from '../middleware/requireAuth.js';
-import requireRole from '../middleware/requireRole.js';
+import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, decryptIBAN, maskIBAN, validateIBANFormat } from '../utils/encryption.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
@@ -38,9 +38,9 @@ function getChangedFields(before, after) {
   return changes;
 }
 
-// All routes require admin authentication
+// All routes require admin or supermod authentication
 router.use(requireAuth);
-router.use(requireRole(['admin']));
+router.use(requireAdminOrSupermod);
 
 /**
  * GET /api/seasonal-registrations
