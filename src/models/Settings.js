@@ -100,6 +100,14 @@ const settingsSchema = new mongoose.Schema({
     sentBy: { type: String, default: null }
   },
 
+  // Support Ticket Reply Templates
+  supportTicketTemplates: [
+    {
+      label: { type: String, required: true, maxlength: 20 },
+      text:  { type: String, required: true, maxlength: 2000 }
+    }
+  ],
+
   lastModified: {
     type: Date,
     default: Date.now
