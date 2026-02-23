@@ -824,24 +824,27 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
       });
     }
 
-    // Only allow deleting pending registrations
-    if (registration.status !== 'pending') {
+    // Only allow cancelling pending or processed registrations
+    if (registration.status !== 'pending' && registration.status !== 'processed') {
       return res.status(400).json({
         success: false,
-        error: 'Nur ausstehende Anmeldungen können gelöscht werden'
+        error: 'Diese Anmeldung kann nicht storniert werden'
       });
     }
 
-    await registration.deleteOne();
+    // Soft-cancel: keep record for admin visibility, mark as cancelled
+    registration.status = 'cancelled';
+    registration.cancelledAt = new Date();
+    await registration.save();
 
-    logger.info('Seasonal registration deleted by user', {
+    logger.info('Seasonal registration cancelled by user', {
       registrationId: registration._id,
       userId: req.user.id
     });
 
     res.json({
       success: true,
-      message: 'Anmeldung erfolgreich gelöscht'
+      message: 'Anmeldung erfolgreich storniert'
     });
   } catch (error) {
     logger.error('Error deleting seasonal registration:', error);

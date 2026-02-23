@@ -214,8 +214,12 @@ const seasonalRegistrationSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ['pending', 'processed'],
+      enum: ['pending', 'processed', 'cancelled'],
       default: 'pending',
+    },
+
+    cancelledAt: {
+      type: Date,
     },
 
     processedAt: {
