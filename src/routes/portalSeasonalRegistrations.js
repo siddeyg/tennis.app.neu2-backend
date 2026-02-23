@@ -406,12 +406,15 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
       }
 
-      // Check minimum available times (5)
-      if (availableTimesKids && availableTimesKids.length < 5) {
-        return res.status(400).json({
-          success: false,
-          error: 'Bitte wählen Sie mindestens 5 verfügbare Zeiten aus'
-        });
+      // Check minimum 3 distinct days
+      if (availableTimesKids) {
+        const uniqueDays = new Set(availableTimesKids.map(t => t.day)).size;
+        if (uniqueDays < 3) {
+          return res.status(400).json({
+            success: false,
+            error: 'Bitte wählen Sie Zeiten an mindestens 3 verschiedenen Tagen aus'
+          });
+        }
       }
     } else if (formType === 'adults') {
       const adultsEnabled = period.adultsFormConfig?.enabledFields || [];
@@ -430,12 +433,15 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
       }
 
-      // Check minimum available times (5)
-      if (availableTimesAdults && availableTimesAdults.length < 5) {
-        return res.status(400).json({
-          success: false,
-          error: 'Bitte wählen Sie mindestens 5 verfügbare Zeiten aus'
-        });
+      // Check minimum 3 distinct days
+      if (availableTimesAdults) {
+        const uniqueDays = new Set(availableTimesAdults.map(t => t.day)).size;
+        if (uniqueDays < 3) {
+          return res.status(400).json({
+            success: false,
+            error: 'Bitte wählen Sie Zeiten an mindestens 3 verschiedenen Tagen aus'
+          });
+        }
       }
     }
 
