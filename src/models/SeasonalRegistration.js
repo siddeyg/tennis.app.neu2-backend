@@ -252,10 +252,10 @@ seasonalRegistrationSchema.index({ email: 1, periodId: 1 });
 seasonalRegistrationSchema.index({ formType: 1, status: 1 });
 
 // Ensure only one active registration per student per period
-// Includes familyMemberId to allow multiple children per parent per period
+// Partial index: cancelled registrations are excluded so users can re-register after cancellation
 seasonalRegistrationSchema.index(
   { studentPortalUserId: 1, periodId: 1, familyMemberId: 1 },
-  { unique: true, sparse: true }
+  { unique: true, partialFilterExpression: { status: { $in: ['pending', 'processed'] } } }
 );
 
 // Virtual: Full name
