@@ -376,7 +376,10 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       query.familyMemberId = { $exists: false };
     }
 
-    const existingRegistration = await SeasonalRegistration.findOne(query);
+    const existingRegistration = await SeasonalRegistration.findOne({
+      ...query,
+      status: { $ne: 'cancelled' }
+    });
 
     if (existingRegistration) {
       const childName = childData
