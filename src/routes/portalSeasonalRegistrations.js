@@ -835,6 +835,7 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
     // Soft-cancel: keep record for admin visibility, mark as cancelled
     registration.status = 'cancelled';
     registration.cancelledAt = new Date();
+    registration.cancelledBy = 'user';
     await registration.save();
 
     logger.info('Seasonal registration cancelled by user', {

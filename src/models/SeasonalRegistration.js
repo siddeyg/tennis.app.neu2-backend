@@ -222,6 +222,11 @@ const seasonalRegistrationSchema = new mongoose.Schema(
       type: Date,
     },
 
+    cancelledBy: {
+      type: String,
+      enum: ['user', 'admin'],
+    },
+
     processedAt: {
       type: Date,
     },
