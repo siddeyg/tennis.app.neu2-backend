@@ -20,7 +20,7 @@ import mongoose from 'mongoose';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
-import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail } from '../utils/emailService.js';
+import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail, sendCampCancellationEmail, sendCampCancellationAdminEmail } from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
@@ -647,6 +647,26 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
     } catch (notificationError) {
       logger.error('Error creating notification for camp cancellation', { error: notificationError.message, stack: notificationError.stack });
       // Don't fail the request if notification fails
+    }
+
+    // Send cancellation emails (student + admin)
+    try {
+      await sendCampCancellationEmail(registration, camp);
+
+      const settings = await Settings.findOne({ singleton: true });
+      if (settings && settings.notificationEmails) {
+        const emails = [
+          settings.notificationEmails.email1,
+          settings.notificationEmails.email2,
+          settings.notificationEmails.email3
+        ].filter(email => email && email.trim());
+        if (emails.length > 0) {
+          await sendCampCancellationAdminEmail(registration, camp, emails);
+        }
+      }
+    } catch (emailError) {
+      logger.error('Error sending camp cancellation emails', { error: emailError.message, stack: emailError.stack });
+      // Don't fail the request if emails fail
     }
 
     res.json({

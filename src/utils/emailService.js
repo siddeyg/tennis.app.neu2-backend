@@ -1550,6 +1550,151 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
   return sendEmail({ to: registration.email, subject, html, text });
 }
 
+/**
+ * Send camp cancellation confirmation email to the student
+ */
+export async function sendCampCancellationEmail(registration, camp) {
+  const subject = `Anmeldung storniert: ${camp.title}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #f3f4f6; padding: 15px; border-left: 4px solid #6b7280; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Anmeldung storniert</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde erfolgreich storniert.</strong><br>
+          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+        </div>
+        <p>Falls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).</p>
+        <p>Bei Fragen wenden Sie sich gerne an uns.</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde erfolgreich storniert.\n\nFalls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
+/**
+ * Send camp cancellation notification email to admin(s)
+ */
+export async function sendCampCancellationAdminEmail(registration, camp, notificationEmails) {
+  if (!notificationEmails || notificationEmails.length === 0) return;
+
+  const subject = `Stornierung Camp-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .section { margin-bottom: 25px; }
+        .section h2 { color: #6b7280; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #6b7280; padding-bottom: 5px; }
+        .field { margin-bottom: 12px; }
+        .field-label { font-weight: bold; color: #555; min-width: 150px; display: inline-block; }
+        .field-value { color: #333; }
+        .highlight { background-color: #f3f4f6; padding: 15px; border-left: 4px solid #6b7280; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Camp-Anmeldung storniert</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <div class="highlight">
+          <strong>Storniert am:</strong> ${formatDate(new Date())}<br>
+          <strong>Camp:</strong> ${escapeHtml(camp.title)}
+        </div>
+        <div class="section">
+          <h2>Camp-Details</h2>
+          <div class="field">
+            <span class="field-label">Camp-Name:</span>
+            <span class="field-value">${escapeHtml(camp.title)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Zeitraum:</span>
+            <span class="field-value">${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Ort:</span>
+            <span class="field-value">${escapeHtml(camp.location || 'Keine Angabe')}</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2>Teilnehmer</h2>
+          <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">E-Mail:</span>
+            <span class="field-value">${escapeHtml(registration.email)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefon:</span>
+            <span class="field-value">${escapeHtml(registration.phone || 'Keine Angabe')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Camp-Anmeldung storniert\n\nCamp: ${camp.title}\nZeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}\n\nTeilnehmer: ${registration.firstName} ${registration.lastName}\nE-Mail: ${registration.email}\nTelefon: ${registration.phone || 'Keine Angabe'}\n\nStorniert am: ${formatDate(new Date())}`;
+
+  return Promise.all(
+    notificationEmails.map(email => sendEmail({ to: email, subject, html, text }))
+  );
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
@@ -1563,6 +1708,8 @@ export default {
   sendCampConfirmationEmail,
   sendCampRejectionEmail,
   sendCampRegistrationReceivedEmail,
+  sendCampCancellationEmail,
+  sendCampCancellationAdminEmail,
   sendSeasonalRegistrationReceivedEmail,
   sendEmailChangeVerification,
   sendEmailChangeWarning,
