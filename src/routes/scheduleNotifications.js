@@ -131,7 +131,7 @@ router.post('/notify-all', async (req, res) => {
           `Deine Trainingszeiten: ${assignmentList}`,
           {
             priority: 'high',
-            actionUrl: '/schedule'
+            actionUrl: '/dashboard/schedule'
           }
         );
         sentCount++;
@@ -195,7 +195,7 @@ router.post('/notify-student/:studentId', async (req, res) => {
       `Deine Trainingszeiten: ${assignmentList}`,
       {
         priority: 'high',
-        actionUrl: '/schedule'
+        actionUrl: '/dashboard/schedule'
       }
     );
 

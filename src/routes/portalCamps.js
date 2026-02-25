@@ -435,7 +435,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
             : `Sie wurden auf die Warteliste für ${campData.title} (${startDateStr} - ${endDateStr}) gesetzt. Sie werden benachrichtigt, falls ein Platz frei wird.`,
           {
             priority: 'normal',
-            actionUrl: '/camps/meine-anmeldungen',
+            actionUrl: '/dashboard/my-camps',
             metadata: {
               campId: campId,
               registrationId: registration._id,
@@ -607,7 +607,7 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
             `Ein Platz für ${camp.title} (${startDateStr} - ${endDateStr}) ist frei geworden! Ihre Anmeldung wird nun geprüft und bestätigt.`,
             {
               priority: 'high',
-              actionUrl: '/camps/meine-anmeldungen',
+              actionUrl: '/dashboard/my-camps',
               metadata: {
                 campId: camp._id,
                 registrationId: waitlistRegistration._id,
@@ -636,7 +636,7 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
         `Ihre Anmeldung für ${camp.title} (${startDateStr} - ${endDateStr}) wurde erfolgreich storniert.`,
         {
           priority: 'normal',
-          actionUrl: '/camps',
+          actionUrl: '/dashboard/my-camps',
           metadata: {
             campId: camp._id,
             registrationId: regId,

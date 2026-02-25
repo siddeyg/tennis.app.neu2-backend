@@ -697,7 +697,7 @@ router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPD
             `Ein Platz für ${camp.title} (${startDateStr} – ${endDateStr}) ist frei geworden! Ihre Anmeldung wird nun geprüft.`,
             {
               priority: 'high',
-              actionUrl: '/camps/meine-anmeldungen',
+              actionUrl: '/dashboard/my-camps',
               metadata: { campId, registrationId: waitlistRegistration._id, promotedFromWaitlist: true }
             }
           );
@@ -737,7 +737,7 @@ router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPD
           `Ihre Anmeldung für ${camp.title} (${startDateStr} – ${endDateStr}) wurde bestätigt!`,
           {
             priority: 'high',
-            actionUrl: '/camps/meine-anmeldungen',
+            actionUrl: '/dashboard/my-camps',
             metadata: { campId, registrationId: regId }
           }
         );
@@ -749,7 +749,7 @@ router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPD
           `Ihre Anmeldung für ${camp.title} (${startDateStr} – ${endDateStr}) wurde leider abgelehnt.${rejectionReason ? ` Begründung: ${rejectionReason}` : ''}`,
           {
             priority: 'normal',
-            actionUrl: '/camps/meine-anmeldungen',
+            actionUrl: '/dashboard/my-camps',
             metadata: { campId, registrationId: regId }
           }
         );

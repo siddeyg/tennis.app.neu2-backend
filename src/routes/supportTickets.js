@@ -271,7 +271,7 @@ router.post('/:id/messages', adminReplyLimiter, auditLogMiddleware({ action: 'CR
           message.content.substring(0, 200) + (message.content.length > 200 ? '...' : ''),
           {
             priority: 'high',
-            actionUrl: `/support-tickets/${ticket._id}`,
+            actionUrl: `/dashboard/support-tickets/${ticket._id}`,
             metadata: {
               ticketId: ticket._id,
               ticketNumber: ticket.ticketNumber
@@ -448,7 +448,7 @@ router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
           `Ihr Ticket wurde von "${statusLabels[oldStatus]}" auf "${statusLabels[status]}" gesetzt.`,
           {
             priority: status === 'resolved' || status === 'closed' ? 'normal' : 'high',
-            actionUrl: `/support-tickets/${ticket._id}`,
+            actionUrl: `/dashboard/support-tickets/${ticket._id}`,
             metadata: {
               ticketId: ticket._id,
               ticketNumber: ticket.ticketNumber,
@@ -524,7 +524,7 @@ router.put('/:id/assign', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
           'Ihr Support-Ticket wurde einem Administrator zugewiesen und wird bearbeitet.',
           {
             priority: 'normal',
-            actionUrl: `/support-tickets/${ticket._id}`,
+            actionUrl: `/dashboard/support-tickets/${ticket._id}`,
             metadata: {
               ticketId: ticket._id,
               ticketNumber: ticket.ticketNumber
