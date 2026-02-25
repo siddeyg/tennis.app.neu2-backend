@@ -1297,7 +1297,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
-        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+        <p>Mondo Tennisschule</p>
       </div>
     </body>
     </html>
@@ -1353,7 +1353,7 @@ export async function sendCampRejectionEmail(registration, camp, reason) {
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
-        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+        <p>Mondo Tennisschule</p>
       </div>
     </body>
     </html>
@@ -1389,7 +1389,7 @@ export async function sendEmailChangeVerification(newEmail, token, studentName, 
           <p style="color:#666;font-size:14px;">Dieser Link ist 24 Stunden gültig.</p>
           <p style="color:#666;font-size:14px;">Falls du keine Änderung beantragt hast, kannst du diese E-Mail ignorieren.</p>
           <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
-          <p style="color:#999;font-size:12px;">Mondo Tennisschule – TC GW Am Kreuzberg</p>
+          <p style="color:#999;font-size:12px;">Mondo Tennisschule</p>
         </div>
       </div>
     </body></html>`;
@@ -1420,7 +1420,7 @@ export async function sendEmailChangeWarning(oldEmail, newEmail, studentName) {
           </div>
           <p style="color:#333;font-size:16px;">Falls du diese Änderung <strong>nicht</strong> beantragt hast, melde dich bitte sofort bei uns.</p>
           <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
-          <p style="color:#999;font-size:12px;">Mondo Tennisschule – TC GW Am Kreuzberg</p>
+          <p style="color:#999;font-size:12px;">Mondo Tennisschule</p>
         </div>
       </div>
     </body></html>`;
@@ -1477,7 +1477,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
-        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+        <p>Mondo Tennisschule</p>
       </div>
     </body>
     </html>
@@ -1539,7 +1539,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
-        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+        <p>Mondo Tennisschule</p>
       </div>
     </body>
     </html>
