@@ -1255,6 +1255,117 @@ export async function sendCampRegistrationNotification(registration, camp, notif
 }
 
 /**
+ * Send camp registration confirmation email to the student
+ */
+export async function sendCampConfirmationEmail(registration, camp) {
+  const subject = `Anmeldung bestätigt: ${camp.title}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #e8f5e9; padding: 15px; border-left: 4px solid #43a047; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>✅ Anmeldung bestätigt</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde bestätigt!</strong><br>
+          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+        </div>
+        <p>Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>
+        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde bestätigt!\n\nWir freuen uns, Sie beim Camp begrüßen zu dürfen.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
+/**
+ * Send camp registration rejection email to the student
+ */
+export async function sendCampRejectionEmail(registration, camp, reason) {
+  const subject = `Anmeldung abgelehnt: ${camp.title}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #c62828 0%, #e53935 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #ffebee; padding: 15px; border-left: 4px solid #e53935; margin: 15px 0; border-radius: 4px; }
+        .reason { background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin: 10px 0; font-style: italic; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Anmeldung abgelehnt</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> konnte leider nicht bestätigt werden.</strong><br>
+          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+        </div>
+        ${reason ? `<p><strong>Begründung:</strong></p><div class="reason">${escapeHtml(reason)}</div>` : ''}
+        <p>Bei Fragen wenden Sie sich bitte an uns.</p>
+        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const reasonText = reason ? `\n\nBegründung: ${reason}` : '';
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) konnte leider nicht bestätigt werden.${reasonText}\n\nBei Fragen wenden Sie sich bitte an uns.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
+/**
  * Send email change verification to the NEW email address
  */
 export async function sendEmailChangeVerification(newEmail, token, studentName, portalUrl = null) {
@@ -1319,6 +1430,126 @@ export async function sendEmailChangeWarning(oldEmail, newEmail, studentName) {
   return sendEmail({ to: oldEmail, subject, html, text });
 }
 
+/**
+ * Send camp registration received email to the student (pending — not yet confirmed)
+ */
+export async function sendCampRegistrationReceivedEmail(registration, camp) {
+  const subject = `Anmeldung eingegangen: ${camp.title}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #fffbeb; padding: 15px; border-left: 4px solid #f59e0b; margin: 15px 0; border-radius: 4px; }
+        .notice { background-color: #f3f4f6; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #555; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>⏳ Anmeldung eingegangen</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> ist eingegangen.</strong><br>
+          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+        </div>
+        <div class="notice">
+          <strong>Hinweis:</strong> Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.
+        </div>
+        <p>Bei Fragen wenden Sie sich gerne an uns.</p>
+        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
+/**
+ * Send seasonal registration received email to the student (pending — not yet confirmed)
+ */
+export async function sendSeasonalRegistrationReceivedEmail(registration, period) {
+  const subject = `Anmeldung eingegangen: ${period.name || 'Saisontraining'}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const participantName = registration.childName
+    ? registration.childName
+    : `${registration.firstName} ${registration.lastName}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #fffbeb; padding: 15px; border-left: 4px solid #f59e0b; margin: 15px 0; border-radius: 4px; }
+        .notice { background-color: #f3f4f6; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #555; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>⏳ Anmeldung eingegangen</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Die Anmeldung für <em>${escapeHtml(participantName)}</em> zum Saisontraining <em>${escapeHtml(period.name || 'Saisontraining')}</em> ist eingegangen.</strong><br>
+          Zeitraum: ${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}
+        </div>
+        <div class="notice">
+          <strong>Hinweis:</strong> Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.
+        </div>
+        <p>Bei Fragen wenden Sie sich gerne an uns.</p>
+        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
@@ -1329,6 +1560,10 @@ export default {
   sendTicketStatusChangeEmail,
   sendSeasonalRegistrationNotification,
   sendCampRegistrationNotification,
+  sendCampConfirmationEmail,
+  sendCampRejectionEmail,
+  sendCampRegistrationReceivedEmail,
+  sendSeasonalRegistrationReceivedEmail,
   sendEmailChangeVerification,
   sendEmailChangeWarning,
   generateVerificationTokenWithExpiry,

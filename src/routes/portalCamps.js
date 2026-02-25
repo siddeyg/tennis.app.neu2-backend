@@ -20,7 +20,7 @@ import mongoose from 'mongoose';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
-import { sendCampRegistrationNotification } from '../utils/emailService.js';
+import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail } from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
@@ -83,7 +83,7 @@ router.get('/my-registrations', async (req, res) => {
     // Find all registrations for this user (JWT uses 'id' not '_id')
     const registrations = await CampRegistration.find({
       studentPortalUserId: req.user.id,
-      status: { $in: ['confirmed', 'waitlist'] } // Exclude cancelled
+      status: { $in: ['pending', 'confirmed', 'waitlist'] } // Exclude cancelled/rejected
     })
     .populate('campId')
     .sort({ 'campId.startDate': 1 }); // Upcoming first
@@ -289,7 +289,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       campId: campId,
       studentPortalUserId: req.user.id,
       familyMemberId: familyMemberId || null,
-      status: { $in: ['confirmed', 'waitlist'] }
+      status: { $in: ['pending', 'confirmed', 'waitlist'] }
     });
 
     if (existing) {
@@ -300,20 +300,20 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       });
     }
 
-    // Clean up any cancelled registration (to avoid unique index conflict)
-    const cancelled = await CampRegistration.findOne({
+    // Clean up any cancelled/rejected registration (to avoid unique index conflict)
+    const oldReg = await CampRegistration.findOne({
       campId: campId,
       studentPortalUserId: req.user.id,
       familyMemberId: familyMemberId || null,
-      status: 'cancelled'
+      status: { $in: ['cancelled', 'rejected'] }
     });
 
-    if (cancelled) {
-      await CampRegistration.deleteOne({ _id: cancelled._id });
+    if (oldReg) {
+      await CampRegistration.deleteOne({ _id: oldReg._id });
     }
 
-    // 3. Check capacity
-    let status = 'confirmed';
+    // 3. Check capacity (pending + confirmed both hold spots)
+    let status = 'pending';
     if (camp.currentParticipants >= camp.maxParticipants) {
       if (!camp.waitlistEnabled) {
         if (session) await session.abortTransaction();
@@ -365,8 +365,8 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
 
     await registration.save(session ? { session } : {});
 
-    // 5. Increment counter (only if confirmed)
-    if (status === 'confirmed') {
+    // 5. Increment counter (when pending — spot is reserved, admin will approve/reject)
+    if (status === 'pending') {
       camp.currentParticipants += 1;
       await camp.save(session ? { session } : {});
     }
@@ -429,12 +429,12 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         await createNotification(
           req.user.id,
           'registration_approved',
-          status === 'confirmed' ? `Camp-Anmeldung bestätigt: ${campData.title}` : `Auf Warteliste: ${campData.title}`,
-          status === 'confirmed'
-            ? `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) wurde bestätigt.`
+          status === 'pending' ? `Anmeldung eingegangen: ${campData.title}` : `Auf Warteliste: ${campData.title}`,
+          status === 'pending'
+            ? `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) ist eingegangen und wird geprüft. Sie erhalten eine Benachrichtigung sobald sie bestätigt oder abgelehnt wurde.`
             : `Sie wurden auf die Warteliste für ${campData.title} (${startDateStr} - ${endDateStr}) gesetzt. Sie werden benachrichtigt, falls ein Platz frei wird.`,
           {
-            priority: status === 'confirmed' ? 'high' : 'normal',
+            priority: 'normal',
             actionUrl: '/camps/meine-anmeldungen',
             metadata: {
               campId: campId,
@@ -449,10 +449,22 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       // Don't fail the request if notification fails
     }
 
+    // 10. Send receipt email to student (non-blocking)
+    if (status === 'pending') {
+      try {
+        const campData = await Camp.findById(campId);
+        if (campData) {
+          await sendCampRegistrationReceivedEmail(registration, campData);
+        }
+      } catch (emailError) {
+        logger.error('Error sending camp registration received email to student:', emailError);
+      }
+    }
+
     res.status(201).json({
       success: true,
-      message: status === 'confirmed'
-        ? 'Anmeldung erfolgreich!'
+      message: status === 'pending'
+        ? 'Anmeldung eingegangen – wird geprüft. Sie erhalten eine Benachrichtigung sobald sie bestätigt wurde.'
         : 'Sie wurden auf die Warteliste gesetzt',
       registration: {
         _id: registration._id,
@@ -535,17 +547,20 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       });
     }
 
-    // Check cancellation deadline (7 days before start)
-    const daysUntilStart = Math.ceil((new Date(camp.startDate) - new Date()) / (1000 * 60 * 60 * 24));
-    if (daysUntilStart < 7) {
-      if (session) await session.abortTransaction();
-      return res.status(400).json({
-        success: false,
-        error: 'Stornierung ist nur bis 7 Tage vor Beginn möglich'
-      });
+    // Check cancellation deadline (7 days before start) — only for confirmed registrations
+    // Pending registrations can be cancelled at any time (not yet approved)
+    if (registration.status === 'confirmed') {
+      const daysUntilStart = Math.ceil((new Date(camp.startDate) - new Date()) / (1000 * 60 * 60 * 24));
+      if (daysUntilStart < 7) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Stornierung ist nur bis 7 Tage vor Beginn möglich'
+        });
+      }
     }
 
-    const wasConfirmed = registration.status === 'confirmed';
+    const wasConfirmedOrPending = ['confirmed', 'pending'].includes(registration.status);
     const now = new Date();
 
     // 1. Cancel registration (use updateOne to avoid re-validating old documents
@@ -555,8 +570,8 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       { $set: { status: 'cancelled', cancelledAt: now } }
     );
 
-    // 2. Decrement counter (only if was confirmed)
-    if (wasConfirmed) {
+    // 2. Decrement counter (if was confirmed or pending — both held a spot)
+    if (wasConfirmedOrPending) {
       camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
       await camp.save(session ? { session } : {});
 
@@ -568,17 +583,17 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       .sort({ registeredAt: 1 }); // Oldest first
 
       if (waitlistRegistration) {
-        // 4. Promote to confirmed (also use updateOne for same reason)
+        // 4. Promote to pending (admin still needs to approve)
         await CampRegistration.updateOne(
           { _id: waitlistRegistration._id },
-          { $set: { status: 'confirmed' } }
+          { $set: { status: 'pending' } }
         );
 
         // 5. Increment counter again
         camp.currentParticipants += 1;
         await camp.save(session ? { session } : {});
 
-        logger.info('Auto-promoted waitlist registration to confirmed', { registrationId: waitlistRegistration._id });
+        logger.info('Auto-promoted waitlist registration to pending (awaiting admin approval)', { registrationId: waitlistRegistration._id });
 
         // Send notification to promoted user
         try {
@@ -589,9 +604,9 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
             waitlistRegistration.studentPortalUserId,
             'registration_approved',
             `Platz frei: ${camp.title}`,
-            `Ein Platz für ${camp.title} (${startDateStr} - ${endDateStr}) ist frei geworden! Ihre Anmeldung wurde automatisch bestätigt.`,
+            `Ein Platz für ${camp.title} (${startDateStr} - ${endDateStr}) ist frei geworden! Ihre Anmeldung wird nun geprüft und bestätigt.`,
             {
-              priority: 'urgent',
+              priority: 'high',
               actionUrl: '/camps/meine-anmeldungen',
               metadata: {
                 campId: camp._id,

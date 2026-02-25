@@ -109,8 +109,25 @@ const campRegistrationSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['confirmed', 'waitlist', 'cancelled'],
-    default: 'confirmed'
+    enum: ['pending', 'confirmed', 'waitlist', 'cancelled', 'rejected'],
+    default: 'pending'
+  },
+
+  // Approval fields (set by admin on confirm/reject)
+  approvedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  approvalDate: {
+    type: Date,
+    default: null
+  },
+  rejectionReason: {
+    type: String,
+    trim: true,
+    maxlength: 500,
+    default: ''
   },
 
   // Metadata
@@ -162,7 +179,7 @@ campRegistrationSchema.virtual('isChild').get(function() {
 
 // Pre-save validation: Emergency contact required for children
 campRegistrationSchema.pre('save', function(next) {
-  if (this.age < 18 && this.status !== 'cancelled') {
+  if (this.age < 18 && !['cancelled', 'rejected'].includes(this.status)) {
     if (!this.emergencyContactName || !this.emergencyContactPhone) {
       return next(new Error('Notfallkontakt ist für Kinder unter 18 Jahren erforderlich'));
     }

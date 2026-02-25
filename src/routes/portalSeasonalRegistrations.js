@@ -22,7 +22,7 @@ import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
-import { sendSeasonalRegistrationNotification } from '../utils/emailService.js';
+import { sendSeasonalRegistrationNotification, sendSeasonalRegistrationReceivedEmail } from '../utils/emailService.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
@@ -556,10 +556,20 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         assignments: [] // Will be assigned during schedule planning
       };
 
+      // Map trainingsart (form label) → trainigGroup (Student model enum)
+      const trainigGroupMap = {
+        'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
+        'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
+        'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
+        'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
+        'Jugend HOBBY (Gelb)': 'Gelb Hobby',
+        'Jugend TEAM (Gelb)': 'Gelb Team',
+      };
+
       // Add form-specific fields
       if (formType === 'kids') {
         studentData.team = teamParticipation || false;
-        studentData.trainigGroup = trainingsart || ''; // e.g. "Rot", "Orange", "Gelb Team"
+        studentData.trainigGroup = trainigGroupMap[trainingsart] || null;
         studentData.availableTimes = (availableTimesKids || []).map(t => ({
           day: t.day,
           hour: t.hour,
@@ -644,6 +654,16 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
     } catch (emailError) {
       // Log error but don't fail the registration
       logger.error('Error sending seasonal registration notification email:', emailError);
+    }
+
+    // Send receipt email to student (non-blocking)
+    try {
+      const period = await RegistrationPeriod.findById(registration.periodId);
+      if (period) {
+        await sendSeasonalRegistrationReceivedEmail(registration, period);
+      }
+    } catch (emailError) {
+      logger.error('Error sending seasonal registration received email to student:', emailError);
     }
 
     // Don't send encrypted IBAN back

@@ -335,10 +335,14 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       return res.status(400).json({ error: 'Geschlecht ist erforderlich' });
     }
 
-    // Validate birthDate format
+    // Validate birthDate format and plausible year range
     const birthDateObj = new Date(birthDate);
     if (isNaN(birthDateObj.getTime())) {
       return res.status(400).json({ error: 'Ungültiges Geburtsdatum' });
+    }
+    const birthYear = birthDateObj.getFullYear();
+    if (birthYear < 1900 || birthYear > new Date().getFullYear()) {
+      return res.status(400).json({ error: 'Geburtsdatum muss zwischen 1900 und heute liegen' });
     }
 
     // Validate email format if provided (test trimmed value)

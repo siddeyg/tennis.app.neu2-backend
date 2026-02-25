@@ -24,6 +24,8 @@ import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.j
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { sendCampConfirmationEmail, sendCampRejectionEmail } from '../utils/emailService.js';
+import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
@@ -295,7 +297,7 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Camp' })
     // Check if camp has registrations
     const registrationsCount = await CampRegistration.countDocuments({
       campId: camp._id,
-      status: { $in: ['confirmed', 'waitlist'] }
+      status: { $in: ['pending', 'confirmed', 'waitlist'] }
     });
 
     if (registrationsCount > 0) {
@@ -425,13 +427,13 @@ router.get('/:id/registrations', async (req, res) => {
       });
     }
 
-    // Get all registrations (confirmed + waitlist, exclude cancelled)
+    // Get all registrations (pending + confirmed + waitlist, exclude cancelled/rejected)
     const registrations = await CampRegistration.find({
       campId: campId,
-      status: { $in: ['confirmed', 'waitlist'] }
+      status: { $in: ['pending', 'confirmed', 'waitlist'] }
     })
     .populate('studentPortalUserId', 'firstName lastName email iban')
-    .sort({ status: 1, registeredAt: 1 }); // Confirmed first, then waitlist (FIFO)
+    .sort({ registeredAt: 1 }); // FIFO
 
     // Add IBAN last 3 digits to each registration
     const { getIBANLast3 } = await import('../utils/encryption.js');
@@ -446,7 +448,8 @@ router.get('/:id/registrations', async (req, res) => {
       return regObj;
     });
 
-    // Separate confirmed and waitlist
+    // Separate by status
+    const pending = enrichedRegistrations.filter(r => r.status === 'pending');
     const confirmed = enrichedRegistrations.filter(r => r.status === 'confirmed');
     const waitlist = enrichedRegistrations.filter(r => r.status === 'waitlist');
 
@@ -459,6 +462,7 @@ router.get('/:id/registrations', async (req, res) => {
         currentParticipants: camp.currentParticipants
       },
       registrations: {
+        pending,
         confirmed,
         waitlist,
         total: enrichedRegistrations.length
@@ -521,15 +525,15 @@ router.delete('/:id/registrations/:regId', auditLogMiddleware({ action: 'DELETE'
       });
     }
 
-    const wasConfirmed = registration.status === 'confirmed';
+    const wasConfirmedOrPending = ['confirmed', 'pending'].includes(registration.status);
 
     // Cancel registration
     registration.status = 'cancelled';
     registration.cancelledAt = new Date();
     await registration.save(session ? { session } : {});
 
-    // Decrement counter if was confirmed
-    if (wasConfirmed) {
+    // Decrement counter if was confirmed or pending (both held a spot)
+    if (wasConfirmedOrPending) {
       camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
       await camp.save(session ? { session } : {});
 
@@ -541,15 +545,13 @@ router.delete('/:id/registrations/:regId', auditLogMiddleware({ action: 'DELETE'
       .sort({ registeredAt: 1 }); // Oldest first
 
       if (waitlistRegistration) {
-        // Promote to confirmed
-        waitlistRegistration.status = 'confirmed';
+        // Promote to pending (admin still needs to approve)
+        waitlistRegistration.status = 'pending';
         await waitlistRegistration.save(session ? { session } : {});
 
         // Increment counter
         camp.currentParticipants += 1;
         await camp.save(session ? { session } : {});
-
-        // TODO: Send email notification to promoted user
       }
     }
 
@@ -572,6 +574,208 @@ router.delete('/:id/registrations/:regId', auditLogMiddleware({ action: 'DELETE'
 });
 
 /**
+ * PUT /api/camps/:id/registrations/:regId/status
+ * Admin approval: confirm or reject a pending registration
+ *
+ * Body: { status: 'confirmed' | 'rejected', rejectionReason?: string }
+ */
+router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPDATE', resource: 'CampRegistration' }), async (req, res) => {
+  const useTransactions = process.env.USE_TRANSACTIONS === 'true';
+  let session = null;
+  if (useTransactions) {
+    session = await mongoose.startSession();
+    await session.startTransaction();
+  }
+
+  try {
+    const { status, rejectionReason } = req.body;
+
+    if (!['confirmed', 'rejected'].includes(status)) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Status muss "confirmed" oder "rejected" sein'
+      });
+    }
+
+    const campId = req.params.id;
+    const camp = await Camp.findById(campId);
+
+    if (!camp || camp.deletedAt) {
+      if (session) await session.abortTransaction();
+      return res.status(404).json({
+        success: false,
+        error: 'Camp nicht gefunden'
+      });
+    }
+
+    const regId = req.params.regId;
+    const registration = await CampRegistration.findById(regId);
+
+    if (!registration) {
+      if (session) await session.abortTransaction();
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    if (registration.campId.toString() !== campId.toString()) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldung gehört nicht zu diesem Camp'
+      });
+    }
+
+    if (registration.status !== 'pending') {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: `Nur ausstehende Anmeldungen können bearbeitet werden (aktueller Status: ${registration.status})`
+      });
+    }
+
+    const now = new Date();
+
+    if (status === 'confirmed') {
+      // Confirm: counter unchanged (already incremented when pending was created)
+      await CampRegistration.updateOne(
+        { _id: regId },
+        {
+          $set: {
+            status: 'confirmed',
+            approvedBy: req.user._id,
+            approvalDate: now
+          }
+        }
+      );
+
+      logger.info('Camp registration confirmed by admin', { regId, campId, adminId: req.user._id });
+    } else {
+      // Reject: decrement counter + auto-promote first waitlist → pending
+      await CampRegistration.updateOne(
+        { _id: regId },
+        {
+          $set: {
+            status: 'rejected',
+            rejectionReason: rejectionReason || '',
+            approvedBy: req.user._id,
+            approvalDate: now
+          }
+        }
+      );
+
+      camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
+      await camp.save(session ? { session } : {});
+
+      // Auto-promote first waitlist participant (FIFO)
+      const waitlistRegistration = await CampRegistration.findOne({
+        campId: campId,
+        status: 'waitlist'
+      }).sort({ registeredAt: 1 });
+
+      if (waitlistRegistration) {
+        await CampRegistration.updateOne(
+          { _id: waitlistRegistration._id },
+          { $set: { status: 'pending' } }
+        );
+
+        camp.currentParticipants += 1;
+        await camp.save(session ? { session } : {});
+
+        logger.info('Auto-promoted waitlist registration to pending after rejection', { promotedId: waitlistRegistration._id });
+
+        // Notify promoted user
+        try {
+          const startDateStr = new Date(camp.startDate).toLocaleDateString('de-DE');
+          const endDateStr = new Date(camp.endDate).toLocaleDateString('de-DE');
+          await createNotification(
+            waitlistRegistration.studentPortalUserId,
+            'registration_approved',
+            `Platz frei: ${camp.title}`,
+            `Ein Platz für ${camp.title} (${startDateStr} – ${endDateStr}) ist frei geworden! Ihre Anmeldung wird nun geprüft.`,
+            {
+              priority: 'high',
+              actionUrl: '/camps/meine-anmeldungen',
+              metadata: { campId, registrationId: waitlistRegistration._id, promotedFromWaitlist: true }
+            }
+          );
+        } catch (err) {
+          logger.error('Error notifying promoted waitlist user', { error: err.message });
+        }
+      }
+
+      logger.info('Camp registration rejected by admin', { regId, campId, adminId: req.user._id, reason: rejectionReason });
+    }
+
+    if (session) await session.commitTransaction();
+
+    // Reload updated registration for response + email
+    const updatedReg = await CampRegistration.findById(regId);
+
+    // Send email to student (non-blocking)
+    try {
+      if (status === 'confirmed') {
+        await sendCampConfirmationEmail(updatedReg, camp);
+      } else {
+        await sendCampRejectionEmail(updatedReg, camp, rejectionReason);
+      }
+    } catch (emailErr) {
+      logger.error('Error sending camp approval/rejection email', { error: emailErr.message });
+    }
+
+    // Send in-app notification to student (non-blocking)
+    try {
+      const startDateStr = new Date(camp.startDate).toLocaleDateString('de-DE');
+      const endDateStr = new Date(camp.endDate).toLocaleDateString('de-DE');
+      if (status === 'confirmed') {
+        await createNotification(
+          registration.studentPortalUserId,
+          'registration_approved',
+          `Anmeldung bestätigt: ${camp.title}`,
+          `Ihre Anmeldung für ${camp.title} (${startDateStr} – ${endDateStr}) wurde bestätigt!`,
+          {
+            priority: 'high',
+            actionUrl: '/camps/meine-anmeldungen',
+            metadata: { campId, registrationId: regId }
+          }
+        );
+      } else {
+        await createNotification(
+          registration.studentPortalUserId,
+          'announcement',
+          `Anmeldung abgelehnt: ${camp.title}`,
+          `Ihre Anmeldung für ${camp.title} (${startDateStr} – ${endDateStr}) wurde leider abgelehnt.${rejectionReason ? ` Begründung: ${rejectionReason}` : ''}`,
+          {
+            priority: 'normal',
+            actionUrl: '/camps/meine-anmeldungen',
+            metadata: { campId, registrationId: regId }
+          }
+        );
+      }
+    } catch (notifErr) {
+      logger.error('Error sending camp approval notification', { error: notifErr.message });
+    }
+
+    res.json({
+      success: true,
+      message: status === 'confirmed' ? 'Anmeldung bestätigt' : 'Anmeldung abgelehnt',
+      registration: updatedReg
+    });
+  } catch (error) {
+    if (session) await session.abortTransaction();
+    logger.error('Error updating registration status', { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Aktualisieren der Anmeldung'
+    });
+  } finally {
+    if (session) session.endSession();
+  }
+});
+
+/**
  * GET /api/camps/:id/export/csv
  * Export participants to CSV
  */
@@ -587,13 +791,13 @@ router.get('/:id/export/csv', async (req, res) => {
       });
     }
 
-    // Get all registrations (confirmed first, then waitlist)
+    // Get all registrations (pending + confirmed + waitlist)
     const registrations = await CampRegistration.find({
       campId: campId,
-      status: { $in: ['confirmed', 'waitlist'] }
+      status: { $in: ['pending', 'confirmed', 'waitlist'] }
     })
     .populate('studentPortalUserId', 'iban')
-    .sort({ status: 1, registeredAt: 1 });
+    .sort({ registeredAt: 1 });
 
     // Get IBAN decryption helper for CSV export (admin needs full IBAN for SEPA payments)
     const { decryptIBAN } = await import('../utils/encryption.js');
@@ -603,7 +807,7 @@ router.get('/:id/export/csv', async (req, res) => {
     const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
 
     const rows = registrations.map(reg => {
-      const status = reg.status === 'confirmed' ? 'Bestätigt' : 'Warteliste';
+      const status = reg.status === 'confirmed' ? 'Bestätigt' : reg.status === 'pending' ? 'Ausstehend' : 'Warteliste';
       const name = `${reg.firstName} ${reg.lastName}`;
       const birthdate = reg.birthdate.toISOString().split('T')[0];
       const age = reg.age;
