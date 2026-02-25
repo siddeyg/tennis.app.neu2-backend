@@ -21,6 +21,8 @@ import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.j
 import logger from '../utils/logger.js';
 import { encryptIBAN, decryptIBAN, maskIBAN, validateIBANFormat } from '../utils/encryption.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import Settings from '../models/Settings.js';
+import { sendSeasonalCancellationEmail, sendSeasonalCancellationAdminEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -280,6 +282,28 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
         success: false,
         error: 'Nur ausstehende Anmeldungen können gelöscht werden'
       });
+    }
+
+    // Send emails before deleting (admin cancellation)
+    try {
+      const period = await RegistrationPeriod.findById(registration.periodId);
+      if (period) {
+        await sendSeasonalCancellationEmail(registration, period);
+
+        const settings = await Settings.findOne({ singleton: true });
+        if (settings && settings.notificationEmails) {
+          const emails = [
+            settings.notificationEmails.email1,
+            settings.notificationEmails.email2,
+            settings.notificationEmails.email3
+          ].filter(email => email && email.trim());
+          if (emails.length > 0) {
+            await sendSeasonalCancellationAdminEmail(registration, period, emails, 'admin');
+          }
+        }
+      }
+    } catch (emailError) {
+      logger.error('Error sending seasonal cancellation emails', { error: emailError.message });
     }
 
     await registration.deleteOne();

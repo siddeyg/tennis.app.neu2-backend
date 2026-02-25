@@ -22,7 +22,7 @@ import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
-import { sendSeasonalRegistrationNotification, sendSeasonalRegistrationReceivedEmail } from '../utils/emailService.js';
+import { sendSeasonalRegistrationNotification, sendSeasonalRegistrationReceivedEmail, sendSeasonalCancellationEmail, sendSeasonalCancellationAdminEmail } from '../utils/emailService.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
@@ -865,6 +865,28 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
       registrationId: registration._id,
       userId: req.user.id
     });
+
+    // Send cancellation emails (student + admin), non-blocking
+    try {
+      const period = await RegistrationPeriod.findById(registration.periodId);
+      if (period) {
+        await sendSeasonalCancellationEmail(registration, period);
+
+        const settings = await Settings.findOne({ singleton: true });
+        if (settings && settings.notificationEmails) {
+          const emails = [
+            settings.notificationEmails.email1,
+            settings.notificationEmails.email2,
+            settings.notificationEmails.email3
+          ].filter(email => email && email.trim());
+          if (emails.length > 0) {
+            await sendSeasonalCancellationAdminEmail(registration, period, emails, 'user');
+          }
+        }
+      }
+    } catch (emailError) {
+      logger.error('Error sending seasonal cancellation emails', { error: emailError.message });
+    }
 
     res.json({
       success: true,

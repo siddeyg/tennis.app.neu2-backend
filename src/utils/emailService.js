@@ -1695,6 +1695,161 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
   );
 }
 
+/**
+ * Send seasonal registration cancellation confirmation email to the student
+ */
+export async function sendSeasonalCancellationEmail(registration, period) {
+  const subject = `Anmeldung storniert: ${period.name || 'Saisontraining'}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const participantName = registration.childName
+    ? registration.childName
+    : `${registration.firstName} ${registration.lastName}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #f3f4f6; padding: 15px; border-left: 4px solid #6b7280; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Anmeldung storniert</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Die Anmeldung für <em>${escapeHtml(participantName)}</em> zum Saisontraining <em>${escapeHtml(period.name || 'Saisontraining')}</em> wurde storniert.</strong><br>
+          Zeitraum: ${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}
+        </div>
+        <p>Bei Fragen wenden Sie sich gerne an uns.</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) wurde storniert.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
+/**
+ * Send seasonal registration cancellation notification email to admin(s)
+ */
+export async function sendSeasonalCancellationAdminEmail(registration, period, notificationEmails, cancelledBy = 'user') {
+  if (!notificationEmails || notificationEmails.length === 0) return;
+
+  const cancelledByLabel = cancelledBy === 'admin' ? 'Administrator' : 'Nutzer/in';
+  const subject = `Stornierung Saisontraining-Anmeldung: ${period.name || 'Saisontraining'} - ${registration.firstName} ${registration.lastName}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const participantName = registration.childName
+    ? registration.childName
+    : `${registration.firstName} ${registration.lastName}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .section { margin-bottom: 25px; }
+        .section h2 { color: #6b7280; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #6b7280; padding-bottom: 5px; }
+        .field { margin-bottom: 12px; }
+        .field-label { font-weight: bold; color: #555; min-width: 150px; display: inline-block; }
+        .field-value { color: #333; }
+        .highlight { background-color: #f3f4f6; padding: 15px; border-left: 4px solid #6b7280; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Saisontraining-Anmeldung storniert</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <div class="highlight">
+          <strong>Storniert am:</strong> ${formatDate(new Date())}<br>
+          <strong>Storniert durch:</strong> ${escapeHtml(cancelledByLabel)}<br>
+          <strong>Saison:</strong> ${escapeHtml(period.name || 'Saisontraining')}
+        </div>
+        <div class="section">
+          <h2>Trainingsperiode</h2>
+          <div class="field">
+            <span class="field-label">Bezeichnung:</span>
+            <span class="field-value">${escapeHtml(period.name || 'Saisontraining')}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Zeitraum:</span>
+            <span class="field-value">${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2>Teilnehmer</h2>
+          <div class="field">
+            <span class="field-label">Kontoinhaber/in:</span>
+            <span class="field-value">${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)}</span>
+          </div>
+          ${registration.childName ? `
+          <div class="field">
+            <span class="field-label">Teilnehmer/in:</span>
+            <span class="field-value">${escapeHtml(registration.childName)}</span>
+          </div>` : ''}
+          <div class="field">
+            <span class="field-label">E-Mail:</span>
+            <span class="field-value">${escapeHtml(registration.email)}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefon:</span>
+            <span class="field-value">${escapeHtml(registration.phone || 'Keine Angabe')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Saisontraining-Anmeldung storniert\n\nSaison: ${period.name || 'Saisontraining'}\nZeitraum: ${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}\nStorniert durch: ${cancelledByLabel}\n\nKontoinhaber/in: ${registration.firstName} ${registration.lastName}${registration.childName ? `\nTeilnehmer/in: ${registration.childName}` : ''}\nE-Mail: ${registration.email}\nTelefon: ${registration.phone || 'Keine Angabe'}\n\nStorniert am: ${formatDate(new Date())}`;
+
+  return Promise.all(
+    notificationEmails.map(email => sendEmail({ to: email, subject, html, text }))
+  );
+}
+
 export default {
   sendPasswordResetEmail,
   sendVerificationEmail,
@@ -1711,6 +1866,8 @@ export default {
   sendCampCancellationEmail,
   sendCampCancellationAdminEmail,
   sendSeasonalRegistrationReceivedEmail,
+  sendSeasonalCancellationEmail,
+  sendSeasonalCancellationAdminEmail,
   sendEmailChangeVerification,
   sendEmailChangeWarning,
   generateVerificationTokenWithExpiry,
