@@ -171,6 +171,14 @@ const seasonalRegistrationSchema = new mongoose.Schema(
       },
     ],
 
+    // Optional: Student's preferred (priority) training time
+    // One slot marked ⭐ in the registration form
+    priorityTime: {
+      day: { type: String },
+      hour: { type: mongoose.Schema.Types.Mixed }, // Number for kids, String for adults
+      venue: { type: String, default: '' },
+    },
+
     // ========================================
     // SEPA PAYMENT (for kids, optional for adults)
     // ========================================

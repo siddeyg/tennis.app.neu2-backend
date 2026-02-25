@@ -141,6 +141,14 @@ const studentSchema = new mongoose.Schema({
     }
   ],
 
+  // Optional: Student's preferred training time (set during seasonal registration)
+  // Used by resetScheduleOptimized.js Phase P pre-pass
+  priorityTime: {
+    day: { type: String },
+    hour: { type: mongoose.Schema.Types.Mixed }, // Number for kids, String for adults
+    venue: { type: String, default: '' },
+  },
+
   // ===== Kurs-Zuweisungen (Course Assignments) =====
   assignments: [{
     day: {

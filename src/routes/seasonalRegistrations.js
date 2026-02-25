@@ -391,28 +391,47 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       adult: registration.formType === 'adults'
     };
 
+    // Helper: check if two slots are the same
+    const isSameSlot = (a, b) =>
+      a && b && a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
+
     // Add form-specific fields
     if (registration.formType === 'kids') {
       studentData.trainigGroup = registration.trainingsart;
       studentData.member = registration.mitgliedsstatus === 'Mitglied';
       studentData.team = registration.teamParticipation ? 'Team' : '';
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-      studentData.availableTimes = (registration.availableTimesKids || []).map(t => ({
-        day: t.day,
-        hour: t.hour,
-        venue: t.venue || ''
+      let kidsSlots = (registration.availableTimesKids || []).map(t => ({
+        day: t.day, hour: t.hour, venue: t.venue || ''
       }));
+      if (registration.priorityTime?.day) {
+        const prio = kidsSlots.find(t => isSameSlot(t, registration.priorityTime));
+        if (prio) kidsSlots = [prio, ...kidsSlots.filter(t => !isSameSlot(t, registration.priorityTime))];
+      }
+      studentData.availableTimes = kidsSlots;
     } else {
       // Adults
       studentData.skillLevel = registration.spielstärke;
       studentData.member = true; // Assume adults are members
       studentData.sex = ''; // Will be filled by admin or gender detection
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-      studentData.availableTimes = (registration.availableTimesAdults || []).map(t => ({
-        day: t.day,
-        hour: t.hour,
-        venue: t.venue || ''
+      let adultSlots = (registration.availableTimesAdults || []).map(t => ({
+        day: t.day, hour: t.hour, venue: t.venue || ''
       }));
+      if (registration.priorityTime?.day) {
+        const prio = adultSlots.find(t => isSameSlot(t, registration.priorityTime));
+        if (prio) adultSlots = [prio, ...adultSlots.filter(t => !isSameSlot(t, registration.priorityTime))];
+      }
+      studentData.availableTimes = adultSlots;
+    }
+
+    // Copy priorityTime to Student for algorithm Phase P pre-pass
+    if (registration.priorityTime?.day) {
+      studentData.priorityTime = {
+        day: registration.priorityTime.day,
+        hour: registration.priorityTime.hour,
+        venue: registration.priorityTime.venue || ''
+      };
     }
 
     if (student) {

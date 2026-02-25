@@ -308,6 +308,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       trainingGoals,
       groupSize,
       availableTimesAdults,
+      // Priority time (optional ⭐ slot)
+      priorityTime,
       // SEPA
       sepaMandate,
       accountHolder,
@@ -483,6 +485,15 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       registrationData.availableTimesAdults = availableTimesAdults || [];
     }
 
+    // Add priority time if provided and valid
+    if (priorityTime && priorityTime.day && priorityTime.hour !== undefined) {
+      registrationData.priorityTime = {
+        day: priorityTime.day,
+        hour: priorityTime.hour,
+        venue: priorityTime.venue || ''
+      };
+    }
+
     // Handle SEPA mandate
     if (sepaMandate && accountHolder && iban) {
       // Validate IBAN format
@@ -566,25 +577,50 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         'Jugend TEAM (Gelb)': 'Gelb Team',
       };
 
+      // Helper: check if two slots are the same
+      const isSameSlot = (a, b) =>
+        a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
+
       // Add form-specific fields
       if (formType === 'kids') {
         studentData.team = teamParticipation || false;
         studentData.trainigGroup = trainigGroupMap[trainingsart] || null;
-        studentData.availableTimes = (availableTimesKids || []).map(t => ({
+        let kidsSlots = (availableTimesKids || []).map(t => ({
           day: t.day,
           hour: t.hour,
           venue: t.venue || ''
         }));
+        // Option B: reorder so priority slot is first (helps Phase 0 students)
+        if (priorityTime && priorityTime.day) {
+          const prio = kidsSlots.find(t => isSameSlot(t, priorityTime));
+          if (prio) kidsSlots = [prio, ...kidsSlots.filter(t => !isSameSlot(t, priorityTime))];
+        }
+        studentData.availableTimes = kidsSlots;
       } else {
         // Adults
         studentData.skillLevel = spielstärke || '';
         studentData.comment2 = trainingGoals ? trainingGoals.join(', ') : ''; // Trainingsziele
         studentData.groupSize = groupSize ? groupSize.join(', ') : ''; // Gruppengröße preferences
-        studentData.availableTimes = (availableTimesAdults || []).map(t => ({
+        let adultSlots = (availableTimesAdults || []).map(t => ({
           day: t.day,
           hour: t.hour,
           venue: t.venue || ''
         }));
+        // Option B: reorder so priority slot is first
+        if (priorityTime && priorityTime.day) {
+          const prio = adultSlots.find(t => isSameSlot(t, priorityTime));
+          if (prio) adultSlots = [prio, ...adultSlots.filter(t => !isSameSlot(t, priorityTime))];
+        }
+        studentData.availableTimes = adultSlots;
+      }
+
+      // Option C: store priorityTime on Student for algorithm Phase P pre-pass
+      if (priorityTime && priorityTime.day && priorityTime.hour !== undefined) {
+        studentData.priorityTime = {
+          day: priorityTime.day,
+          hour: priorityTime.hour,
+          venue: priorityTime.venue || ''
+        };
       }
 
       const student = new Student(studentData);
