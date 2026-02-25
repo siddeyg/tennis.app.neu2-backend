@@ -83,7 +83,7 @@ router.get('/my-registrations', async (req, res) => {
     // Find all registrations for this user (JWT uses 'id' not '_id')
     const registrations = await CampRegistration.find({
       studentPortalUserId: req.user.id,
-      status: { $in: ['pending', 'confirmed', 'waitlist'] } // Exclude cancelled/rejected
+      status: { $in: ['pending', 'confirmed', 'waitlist', 'rejected'] } // Exclude cancelled only
     })
     .populate('campId')
     .sort({ 'campId.startDate': 1 }); // Upcoming first
