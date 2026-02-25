@@ -1294,7 +1294,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
           Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
         </div>
         <p>Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>
-        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
         <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
@@ -1303,7 +1303,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde bestätigt!\n\nWir freuen uns, Sie beim Camp begrüßen zu dürfen.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde bestätigt!\n\nWir freuen uns, Sie beim Camp begrüßen zu dürfen.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1350,7 +1350,7 @@ export async function sendCampRejectionEmail(registration, camp, reason) {
         </div>
         ${reason ? `<p><strong>Begründung:</strong></p><div class="reason">${escapeHtml(reason)}</div>` : ''}
         <p>Bei Fragen wenden Sie sich bitte an uns.</p>
-        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
         <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
@@ -1360,7 +1360,7 @@ export async function sendCampRejectionEmail(registration, camp, reason) {
   `;
 
   const reasonText = reason ? `\n\nBegründung: ${reason}` : '';
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) konnte leider nicht bestätigt werden.${reasonText}\n\nBei Fragen wenden Sie sich bitte an uns.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) konnte leider nicht bestätigt werden.${reasonText}\n\nBei Fragen wenden Sie sich bitte an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1474,7 +1474,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
           <strong>Hinweis:</strong> Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.
         </div>
         <p>Bei Fragen wenden Sie sich gerne an uns.</p>
-        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
         <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
@@ -1483,7 +1483,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1536,7 +1536,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
           <strong>Hinweis:</strong> Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.
         </div>
         <p>Bei Fragen wenden Sie sich gerne an uns.</p>
-        <p>Viele Grüße,<br>Ihr Mondo Tennisschule Team</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
         <p>Mondo Tennisschule • TC GW Am Kreuzberg</p>
@@ -1545,7 +1545,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Mondo Tennisschule Team`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
