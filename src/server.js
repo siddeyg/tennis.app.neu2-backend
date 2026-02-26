@@ -123,9 +123,6 @@ if (isProduction) {
 // 3. CORS configuration - Strict whitelist validation
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
     // In production, only allow explicitly configured origins
     if (isProduction) {
       const allowedOrigins = [

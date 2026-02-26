@@ -73,6 +73,20 @@ const resendVerificationLimiter = rateLimit({
   }
 });
 
+// Rate limiting for password reset consumption + email change verification
+const tokenConsumptionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: process.env.NODE_ENV === 'production' ? 20 : 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: isWhitelisted,
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Zu viele Anfragen. Bitte warten Sie eine Stunde und versuchen Sie es erneut.'
+    });
+  }
+});
+
 /**
  * @route   POST /api/portal/auth/register
  * @desc    Register new student portal account (NO studentId required - GDPR compliant)
@@ -577,6 +591,7 @@ router.post('/forgot-password',
  * @access  Public
  */
 router.post('/reset-password',
+  tokenConsumptionLimiter,
   auditLogMiddleware({ action: 'UPDATE', resource: 'StudentPortalUser', metadata: { operation: 'password_reset' } }),
   async (req, res) => {
   try {
@@ -760,7 +775,7 @@ router.post('/resend-verification',
  * @desc    Confirm pending email change via token link in email
  * @access  Public (token-based)
  */
-router.get('/verify-email-change', async (req, res) => {
+router.get('/verify-email-change', tokenConsumptionLimiter, async (req, res) => {
   const portalUrl = process.env.PORTAL_URL || process.env.FRONTEND_URL || 'http://localhost:3001';
   try {
     const { token } = req.query;

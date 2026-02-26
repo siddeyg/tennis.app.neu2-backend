@@ -54,9 +54,12 @@ router.get('/', async (req, res) => {
       filter.status = status;
     }
 
-    // Build sort
+    // Build sort — whitelist allowed fields to prevent injection
+    const allowedSortFields = ['updatedAt', 'createdAt', 'status', 'ticketNumber'];
+    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'updatedAt';
+    const safeSortOrder = sortOrder === 'asc' ? 1 : -1;
     const sort = {};
-    sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    sort[safeSortBy] = safeSortOrder;
 
     // Execute query
     const tickets = await SupportTicket.find(filter)
