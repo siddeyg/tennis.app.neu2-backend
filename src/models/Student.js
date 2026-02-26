@@ -179,5 +179,6 @@ const studentSchema = new mongoose.Schema({
 // Performance indexes for load testing and production optimization
 studentSchema.index({ email: 1 });  // Critical for login and user lookups
 studentSchema.index({ 'assignments.day': 1, 'assignments.hour': 1 });  // Schedule queries
+studentSchema.index({ 'assignments.coach': 1 });  // Coach-specific schedule lookups
 
 export default mongoose.model("Student", studentSchema);

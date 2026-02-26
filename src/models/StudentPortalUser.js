@@ -208,6 +208,8 @@ StudentPortalUserSchema.methods.toJSON = function() {
 StudentPortalUserSchema.index({ verificationToken: 1 });
 StudentPortalUserSchema.index({ passwordResetToken: 1 });
 StudentPortalUserSchema.index({ emailChangeToken: 1 });
+// Family member studentId lookup (used when linking child registrations to Student records)
+StudentPortalUserSchema.index({ 'familyMembers.studentId': 1 });
 
 const StudentPortalUser = mongoose.model('StudentPortalUser', StudentPortalUserSchema);
 export default StudentPortalUser;

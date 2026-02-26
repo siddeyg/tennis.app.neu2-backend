@@ -258,6 +258,7 @@ const seasonalRegistrationSchema = new mongoose.Schema(
 seasonalRegistrationSchema.index({ periodId: 1, status: 1 });
 seasonalRegistrationSchema.index({ email: 1, periodId: 1 });
 seasonalRegistrationSchema.index({ formType: 1, status: 1 });
+seasonalRegistrationSchema.index({ studentId: 1 });  // Student→registration lookups
 
 // Ensure only one active registration per student per period
 // Partial index: cancelled registrations are excluded so users can re-register after cancellation
