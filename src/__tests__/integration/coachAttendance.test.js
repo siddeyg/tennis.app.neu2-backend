@@ -97,7 +97,7 @@ describe('Coach Attendance API', () => {
         birthDate: new Date('2010-01-01'),
         adult: false,
         trainigGroup: 'Gelb Team',
-        availableTimes: ['Montag 14'],
+        availableTimes: [{ day: 'Montag', hour: 14, venue: '' }],
         frequence: '1',
         assignments: [{ day: 'Montag', hour: 14, coach: coachUser._id }]
       }),
@@ -107,7 +107,7 @@ describe('Coach Attendance API', () => {
         birthDate: new Date('2011-01-01'),
         adult: false,
         trainigGroup: 'Gelb Team',
-        availableTimes: ['Montag 14'],
+        availableTimes: [{ day: 'Montag', hour: 14, venue: '' }],
         frequence: '1',
         assignments: [{ day: 'Montag', hour: 14, coach: coachUser._id }]
       }),
@@ -117,7 +117,7 @@ describe('Coach Attendance API', () => {
         birthDate: new Date('2012-01-01'),
         adult: false,
         trainigGroup: 'Orange',
-        availableTimes: ['Montag 15'],
+        availableTimes: [{ day: 'Montag', hour: 15, venue: '' }],
         frequence: '1',
         assignments: [{ day: 'Montag', hour: 15, coach: coachUser._id }]
       })
@@ -128,7 +128,7 @@ describe('Coach Attendance API', () => {
     attendance = await Attendance.create({
       courseDate: today,
       day: 'Montag',
-      hour: today.getHours() - 1, // 1 hour ago (within edit window)
+      hour: Math.max(10, today.getHours() - 1), // 1 hour ago (within edit window, min 10)
       coach: coachUser._id,
       students: [
         { studentId: students[0]._id, status: 'present' },
@@ -293,9 +293,9 @@ describe('Coach Attendance API', () => {
     });
 
     it('should reject coach edit after 2-hour window', async () => {
-      // Create old attendance (>2 hours ago)
+      // Use yesterday's date with hour=14 → edit deadline = yesterday 17:00 → always in the past
       const oldDate = new Date();
-      oldDate.setHours(oldDate.getHours() - 10); // 10 hours ago
+      oldDate.setDate(oldDate.getDate() - 1); // Yesterday
 
       const oldAttendance = await Attendance.create({
         courseDate: oldDate,

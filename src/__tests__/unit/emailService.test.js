@@ -7,6 +7,7 @@
  * They test token generation, email template structure, and service configuration.
  */
 
+import { jest } from '@jest/globals';
 import {
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,

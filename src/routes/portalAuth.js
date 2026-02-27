@@ -180,8 +180,10 @@ router.post('/register',
     await portalUser.save();
 
     // Send verification email (raw token goes in link, hash stored in DB)
+    // Fire-and-forget: registration succeeds immediately, email delivery is non-blocking
     const studentName = `${firstName} ${lastName}`;
-    await sendVerificationEmail(email, verificationToken, studentName);
+    sendVerificationEmail(email, verificationToken, studentName)
+      .catch(emailError => logger.error('Failed to send verification email', { email, error: emailError.message }));
 
     res.status(201).json({
       message: 'Registrierung erfolgreich. Bitte überprüfen Sie Ihre Email zur Verifizierung.',
@@ -252,9 +254,10 @@ router.post('/verify-email',
       return res.status(400).json({ error: 'Ungültiger oder abgelaufener Verifizierungs-Token' });
     }
 
-    // Send welcome email
+    // Send welcome email (non-blocking)
     const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
-    await sendWelcomeEmail(portalUser.email, studentName);
+    sendWelcomeEmail(portalUser.email, studentName)
+      .catch(emailError => logger.error('Failed to send welcome email', { email: portalUser.email, error: emailError.message }));
 
     res.json({
       message: 'Email erfolgreich verifiziert',

@@ -395,11 +395,21 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
     const isSameSlot = (a, b) =>
       a && b && a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
 
+    // Map long-form trainingsart labels to Student.trainigGroup short codes
+    const trainigGroupMap = {
+      'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
+      'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
+      'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
+      'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
+      'Jugend HOBBY (Gelb)': 'Gelb Hobby',
+      'Jugend TEAM (Gelb)': 'Gelb Team',
+    };
+
     // Add form-specific fields
     if (registration.formType === 'kids') {
-      studentData.trainigGroup = registration.trainingsart;
+      studentData.trainigGroup = trainigGroupMap[registration.trainingsart] || registration.trainingsart;
       studentData.member = registration.mitgliedsstatus === 'Mitglied';
-      studentData.team = registration.teamParticipation ? 'Team' : '';
+      studentData.team = !!(registration.teamParticipation && registration.teamParticipation !== '-');
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
       let kidsSlots = (registration.availableTimesKids || []).map(t => ({
         day: t.day, hour: t.hour, venue: t.venue || ''
@@ -413,7 +423,7 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       // Adults
       studentData.skillLevel = registration.spielstärke;
       studentData.member = true; // Assume adults are members
-      studentData.sex = ''; // Will be filled by admin or gender detection
+      studentData.sex = null; // Will be filled by admin or gender detection
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
       let adultSlots = (registration.availableTimesAdults || []).map(t => ({
         day: t.day, hour: t.hour, venue: t.venue || ''
@@ -468,6 +478,64 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
     res.status(500).json({
       success: false,
       error: 'Fehler beim Verarbeiten der Anmeldung'
+    });
+  }
+});
+
+/**
+ * POST /api/seasonal-registrations/:id/reject
+ * Reject a pending seasonal registration
+ *
+ * Body:
+ * - reason: string (required) - reason for rejection
+ */
+router.post('/:id/reject', async (req, res) => {
+  try {
+    const registration = await SeasonalRegistration.findById(req.params.id);
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    if (registration.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldung wurde bereits verarbeitet und kann nicht mehr abgelehnt werden'
+      });
+    }
+
+    const { reason } = req.body;
+    if (!reason || !reason.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Ablehnungsgrund ist erforderlich'
+      });
+    }
+
+    registration.status = 'rejected';
+    registration.rejectionReason = reason.trim();
+    registration.processedBy = req.user.id;
+    registration.processedAt = new Date();
+    await registration.save();
+
+    logger.info('Seasonal registration rejected', {
+      registrationId: registration._id,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      message: 'Anmeldung wurde abgelehnt',
+      registration
+    });
+  } catch (error) {
+    logger.error('Error rejecting seasonal registration:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Ablehnen der Anmeldung'
     });
   }
 });

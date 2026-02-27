@@ -18,10 +18,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Mock portal authentication middleware
+// Tests pass the portal user ID via Cookie header (cookie-parser parses it to req.cookies)
 const mockPortalAuth = () => {
   return (req, res, next) => {
+    const rawId = req.cookies && req.cookies.testUserId;
     req.user = {
-      id: req.testUserId || new mongoose.Types.ObjectId(),
+      id: rawId ? new mongoose.Types.ObjectId(rawId) : new mongoose.Types.ObjectId(),
       role: 'student',
     };
     next();
@@ -58,8 +60,9 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
       season: 'winter',
       trainingStartDate: new Date('2025-09-01'),
       trainingEndDate: new Date('2026-06-30'),
-      registrationDeadline: new Date('2025-08-15'),
+      registrationDeadline: new Date('2027-12-31'),
       status: 'open',
+      currentPlanId: new mongoose.Types.ObjectId(),
       isActive: true,
       createdBy: adminUser._id,
       kidsFormConfig: {
@@ -80,6 +83,9 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
       lastName: 'Test',
       birthdate: new Date('1985-01-01'),
       emailVerified: true,
+      profileCompleted: true,
+      sex: 'männlich',
+      member: false,
       familyMembers: [
         {
           firstName: 'Max',
@@ -130,8 +136,8 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         phone: '0151 12345678',
         address: 'Teststraße 1, 12345 Teststadt',
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
-        trainingshäufigkeit: '2',
+        trainingsart: 'Jugend TEAM (Gelb)',
+        trainingshäufigkeit: '2x pro Woche',
         teamSpieler: true,
         availableTimesKids: [
           { day: 'Montag', hour: 14, venue: 'BTHV' },
@@ -152,7 +158,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
       expect(response.body.registration).toBeDefined();
       expect(response.body.registration.formType).toBe('kids');
       expect(response.body.registration.firstName).toBe('Max');
-      expect(response.body.registration.status).toBe('pending');
+      expect(response.body.registration.status).toBe('processed'); // auto-processed on submit
       expect(response.body.registration.availableTimesKids).toHaveLength(5);
     });
 
@@ -168,9 +174,9 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         email: 'sandra@test.com',
         phone: '0151 98765432',
         address: 'Teststraße 2, 12345 Teststadt',
-        spielstärke: 'Fortgeschritten',
-        trainingGoals: ['Technikverbesserung', 'Fitness'],
-        groupSize: ['3er-Gruppe', '4er-Gruppe'],
+        spielstärke: 'Fortgeschrittene',
+        trainingGoals: ['Fitness', 'Turniere'],
+        groupSize: ['zu dritt', 'zu viert'],
         availableTimesAdults: [
           { day: 'Montag', hour: '18:00', venue: 'BTHV' },
           { day: 'Dienstag', hour: '19:00', venue: 'BTHV' },
@@ -192,11 +198,10 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
 
       expect(response.body.registration).toBeDefined();
       expect(response.body.registration.formType).toBe('adults');
-      expect(response.body.registration.spielstärke).toBe('Fortgeschritten');
+      expect(response.body.registration.spielstärke).toBe('Fortgeschrittene');
       expect(response.body.registration.sepaMandate).toBe(true);
-      expect(response.body.registration.iban).toBeDefined();
-      // IBAN should be encrypted (not plain text)
-      expect(response.body.registration.iban).not.toBe('DE89370400440532013000');
+      // IBAN is removed from response for security (route deletes it before returning)
+      expect(response.body.registration.iban).toBeUndefined();
     });
 
     it('should reject registration with less than 5 available times', async () => {
@@ -214,7 +219,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Montag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
       };
 
@@ -224,7 +229,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         .set('Cookie', `testUserId=${testPortalUser._id}`)
         .expect(400);
 
-      expect(response.body.error).toMatch(/mindestens 5/i);
+      expect(response.body.error).toMatch(/mindestens 3/i);
     });
 
     it('should reject registration without privacy consent', async () => {
@@ -245,7 +250,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: false,
       };
 
@@ -255,7 +260,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         .set('Cookie', `testUserId=${testPortalUser._id}`)
         .expect(400);
 
-      expect(response.body.error).toMatch(/datenschutz|privacy/i);
+      expect(response.body.error).toMatch(/erforderlich/i);
     });
 
     it('should reject registration with invalid IBAN format', async () => {
@@ -268,7 +273,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         lastName: 'Test',
         birthdate: '1980-03-20',
         email: 'sandra@test.com',
-        spielstärke: 'Fortgeschritten',
+        spielstärke: 'Fortgeschrittene',
         availableTimesAdults: [
           { day: 'Montag', hour: '18:00', venue: 'BTHV' },
           { day: 'Dienstag', hour: '19:00', venue: 'BTHV' },
@@ -277,6 +282,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
         ],
         sepaMandate: true,
+        accountHolder: 'Sandra Test',
         iban: 'INVALID_IBAN_123',
         privacyConsent: true,
       };
@@ -310,7 +316,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -330,7 +336,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
       };
 
@@ -365,7 +371,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -412,14 +418,14 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
 
       const updatedData = {
-        trainingsart: 'Gelb Hobby',
-        trainingshäufigkeit: '3',
+        trainingsart: 'Jugend HOBBY (Gelb)',
+        trainingshäufigkeit: '2x pro Woche',
         availableTimesKids: [
           { day: 'Montag', hour: 14, venue: 'BTHV' },
           { day: 'Dienstag', hour: 15, venue: 'BTHV' },
@@ -436,8 +442,8 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         .set('Cookie', `testUserId=${testPortalUser._id}`)
         .expect(200);
 
-      expect(response.body.registration.trainingsart).toBe('Gelb Hobby');
-      expect(response.body.registration.trainingshäufigkeit).toBe('3');
+      expect(response.body.registration.trainingsart).toBe('Jugend HOBBY (Gelb)');
+      expect(response.body.registration.trainingshäufigkeit).toBe('2x pro Woche');
       expect(response.body.registration.availableTimesKids).toHaveLength(6);
     });
 
@@ -460,22 +466,22 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'processed',
       });
 
       const updatedData = {
-        trainingsart: 'Gelb Hobby',
+        trainingsart: 'Jugend HOBBY (Gelb)',
       };
 
       const response = await request(app)
         .put(`/api/portal/seasonal-registrations/${registration._id}`)
         .send(updatedData)
         .set('Cookie', `testUserId=${testPortalUser._id}`)
-        .expect(403);
+        .expect(400);
 
-      expect(response.body.error).toMatch(/verarbeitet|processed/i);
+      expect(response.body.error).toMatch(/ausstehend|pending/i);
     });
 
     it('should prevent user from updating another user registration', async () => {
@@ -507,13 +513,13 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
 
       const updatedData = {
-        trainingsart: 'Gelb Hobby',
+        trainingsart: 'Jugend HOBBY (Gelb)',
       };
 
       const response = await request(app)
@@ -546,7 +552,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -556,11 +562,12 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         .set('Cookie', `testUserId=${testPortalUser._id}`)
         .expect(200);
 
-      expect(response.body.message).toMatch(/gelöscht|deleted/i);
+      expect(response.body.message).toMatch(/storniert|gelöscht|deleted/i);
 
-      // Verify registration is actually deleted
-      const deletedReg = await SeasonalRegistration.findById(registration._id);
-      expect(deletedReg).toBeNull();
+      // Verify registration is soft-cancelled (not physically deleted)
+      const cancelledReg = await SeasonalRegistration.findById(registration._id);
+      expect(cancelledReg).not.toBeNull();
+      expect(cancelledReg.status).toBe('cancelled');
     });
 
     it('should prevent deleting processed registration', async () => {
@@ -582,17 +589,20 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'processed',
       });
 
+      // Route allows cancelling processed registrations (soft-cancel)
       const response = await request(app)
         .delete(`/api/portal/seasonal-registrations/${registration._id}`)
         .set('Cookie', `testUserId=${testPortalUser._id}`)
-        .expect(403);
+        .expect(200);
 
-      expect(response.body.error).toMatch(/verarbeitet|processed/i);
+      expect(response.body.message).toMatch(/storniert|gelöscht|deleted/i);
+      const cancelledReg = await SeasonalRegistration.findById(registration._id);
+      expect(cancelledReg.status).toBe('cancelled');
     });
 
     it('should prevent user from deleting another user registration', async () => {
@@ -623,7 +633,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });

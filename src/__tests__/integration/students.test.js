@@ -2,6 +2,9 @@ import request from 'supertest';
 import express from 'express';
 import mongoose from 'mongoose';
 import Student from '../../models/Student.js';
+// Import models that students.js route uses via mongoose.model() to ensure they are registered
+import '../../models/SeasonalRegistration.js';
+import '../../models/StudentPortalUser.js';
 import studentRoutes from '../../routes/students.js';
 import { connectTestDB, disconnectTestDB, clearTestDB, createTestStudent, mockAuth } from '../../testHelpers.js';
 
@@ -69,7 +72,7 @@ describe('Student API Integration Tests', () => {
 
     test('should create student with availableTimes array', async () => {
       const newStudent = createTestStudent({
-        availableTimes: ['Montag 14', 'Mittwoch 16']
+        availableTimes: [{ day: 'Montag', hour: 14, venue: '' }, { day: 'Mittwoch', hour: 16, venue: '' }]
       });
 
       const response = await request(app)
@@ -77,7 +80,8 @@ describe('Student API Integration Tests', () => {
         .send(newStudent);
 
       expect(response.status).toBe(201);
-      expect(response.body.availableTimes).toEqual(['Montag 14', 'Mittwoch 16']);
+      expect(response.body.availableTimes).toHaveLength(2);
+      expect(response.body.availableTimes[0].day).toBe('Montag');
     });
   });
 

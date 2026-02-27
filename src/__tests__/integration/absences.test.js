@@ -67,6 +67,7 @@ describe('Absences API Integration Tests', () => {
       password: 'testpassword123',
       firstName: 'Max',
       lastName: 'Mustermann',
+      birthdate: new Date('2000-01-01'),
       studentId: testStudent._id,
       emailVerified: true,
     });

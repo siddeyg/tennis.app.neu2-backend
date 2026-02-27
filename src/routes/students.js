@@ -185,7 +185,7 @@ router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource:
       req.params.id,
       { $push: { assignments: { day, hour, coach: coach || null } } },
       { new: true, lean: true }
-    ).populate('portalUser');
+    ).populate({ path: 'portalUser', strictPopulate: false });
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });
@@ -222,7 +222,7 @@ router.delete("/:id/assignments", auditLogMiddleware({ action: 'DELETE', resourc
         $pull: { assignments: { day, hour: numericHour } }
       },
       { new: true, lean: true }
-    ).populate('portalUser');
+    ).populate({ path: 'portalUser', strictPopulate: false });
 
     if (!student) {
       return res.status(404).json({ error: "Schüler nicht gefunden" });

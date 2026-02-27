@@ -20,22 +20,21 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Use mock admin authentication
-app.use((req, res, next) => {
-  req.user = mockAuth({ role: 'admin' });
-  next();
-});
+// Shared mock admin ObjectId (used for req.user and RegistrationPeriod.createdBy)
+const mockAdminId = new mongoose.Types.ObjectId();
 
+// Use mock admin authentication (mockAuth returns a middleware)
+app.use(mockAuth(mockAdminId));
 app.use('/api/seasonal-registrations', seasonalRegistrationsRoutes);
 
 describe('Seasonal Registrations Admin API Integration Tests', () => {
   let testPeriod;
   let testPortalUser;
-  let adminUser;
+  // adminUser is a plain object with _id so it can be used in RegistrationPeriod.createdBy
+  const adminUser = { _id: mockAdminId, id: mockAdminId, role: 'admin' };
 
   beforeAll(async () => {
     await connectTestDB();
-    adminUser = mockAuth({ role: 'admin' });
   });
 
   afterEach(async () => {
@@ -55,6 +54,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       trainingEndDate: new Date('2026-06-30'),
       registrationDeadline: new Date('2025-08-15'),
       status: 'open',
+      currentPlanId: new mongoose.Types.ObjectId(),
       isActive: true,
       createdBy: adminUser._id,
     });
@@ -76,10 +76,13 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       await createTestData();
 
       // Create 3 submissions with different statuses
+      // Use distinct familyMemberId to avoid unique partial index conflict on {studentPortalUserId, periodId, familyMemberId}
+      const [fam1, fam2, fam3] = [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()];
       await SeasonalRegistration.create([
         {
           periodId: testPeriod._id,
           studentPortalUserId: testPortalUser._id,
+          familyMemberId: fam1,
           formType: 'kids',
           firstName: 'Max',
           lastName: 'Test',
@@ -93,13 +96,14 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Gelb Team',
+          trainingsart: 'Jugend TEAM (Gelb)',
           privacyConsent: true,
           status: 'pending',
         },
         {
           periodId: testPeriod._id,
           studentPortalUserId: testPortalUser._id,
+          familyMemberId: fam2,
           formType: 'adults',
           firstName: 'Sandra',
           lastName: 'Test',
@@ -112,13 +116,14 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
             { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
             { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
           ],
-          spielstärke: 'Fortgeschritten',
+          spielstärke: 'Fortgeschrittene',
           privacyConsent: true,
           status: 'processed',
         },
         {
           periodId: testPeriod._id,
           studentPortalUserId: testPortalUser._id,
+          familyMemberId: fam3,
           formType: 'kids',
           firstName: 'Anna',
           lastName: 'Test',
@@ -132,7 +137,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Rot',
+          trainingsart: 'KIDS-ROT (ca. 6-8 Jahre)',
           privacyConsent: true,
           status: 'rejected',
           rejectionReason: 'Test rejection',
@@ -145,7 +150,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         .get('/api/seasonal-registrations')
         .expect(200);
 
-      expect(response.body.submissions).toHaveLength(3);
+      expect(response.body.registrations).toHaveLength(3);
     });
 
     it('should filter submissions by status', async () => {
@@ -153,8 +158,8 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         .get('/api/seasonal-registrations?status=pending')
         .expect(200);
 
-      expect(response.body.submissions).toHaveLength(1);
-      expect(response.body.submissions[0].status).toBe('pending');
+      expect(response.body.registrations).toHaveLength(1);
+      expect(response.body.registrations[0].status).toBe('pending');
     });
 
     it('should filter submissions by form type', async () => {
@@ -162,8 +167,8 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         .get('/api/seasonal-registrations?formType=adults')
         .expect(200);
 
-      expect(response.body.submissions).toHaveLength(1);
-      expect(response.body.submissions[0].formType).toBe('adults');
+      expect(response.body.registrations).toHaveLength(1);
+      expect(response.body.registrations[0].formType).toBe('adults');
     });
 
     it('should filter submissions by period ID', async () => {
@@ -194,7 +199,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -203,7 +208,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         .get(`/api/seasonal-registrations?periodId=${testPeriod._id}`)
         .expect(200);
 
-      expect(response.body.submissions).toHaveLength(3); // Only from testPeriod
+      expect(response.body.registrations).toHaveLength(3); // Only from testPeriod
     });
 
     it('should mask IBAN in list view', async () => {
@@ -223,7 +228,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
           { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
         ],
-        spielstärke: 'Fortgeschritten',
+        spielstärke: 'Fortgeschrittene',
         sepaMandate: true,
         accountHolder: 'Test User',
         iban: encryptIBAN('DE89370400440532013000'),
@@ -235,8 +240,8 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         .get('/api/seasonal-registrations')
         .expect(200);
 
-      const ibanSubmission = response.body.submissions.find((s) => s.firstName === 'With IBAN');
-      expect(ibanSubmission.iban).toMatch(/^DE\*\*\*\*\d{4}$/); // DE****3000 format
+      const ibanSubmission = response.body.registrations.find((s) => s.firstName === 'With IBAN');
+      expect(ibanSubmission.ibanMasked).toMatch(/^DE\*\*\*\*\d{4}$/); // DE****3000 format
     });
   });
 
@@ -263,9 +268,9 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
           { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
         ],
-        spielstärke: 'Fortgeschritten',
-        trainingGoals: ['Technikverbesserung', 'Fitness'],
-        groupSize: ['3er-Gruppe'],
+        spielstärke: 'Fortgeschrittene',
+        trainingGoals: ['Fitness', 'Turniere'],
+        groupSize: ['zu dritt'],
         sepaMandate: true,
         accountHolder: 'Sandra Test',
         iban: encryptedIBAN,
@@ -279,8 +284,8 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
 
       expect(response.body.registration).toBeDefined();
       expect(response.body.registration.firstName).toBe('Sandra');
-      expect(response.body.registration.spielstärke).toBe('Fortgeschritten');
-      expect(response.body.registration.iban).toBe('DE89370400440532013000'); // Decrypted
+      expect(response.body.registration.spielstärke).toBe('Fortgeschrittene');
+      expect(response.body.registration.ibanFull).toBe('DE89370400440532013000'); // Decrypted
       expect(response.body.registration.sepaMandate).toBe(true);
     });
 
@@ -311,14 +316,14 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
 
       const updatedData = {
-        trainingsart: 'Gelb Hobby',
-        trainingshäufigkeit: '3',
+        trainingsart: 'Jugend HOBBY (Gelb)',
+        trainingshäufigkeit: '2x pro Woche',
         phone: '0151 12345678',
       };
 
@@ -327,8 +332,8 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         .send(updatedData)
         .expect(200);
 
-      expect(response.body.registration.trainingsart).toBe('Gelb Hobby');
-      expect(response.body.registration.trainingshäufigkeit).toBe('3');
+      expect(response.body.registration.trainingsart).toBe('Jugend HOBBY (Gelb)');
+      expect(response.body.registration.trainingshäufigkeit).toBe('2x pro Woche');
       expect(response.body.registration.phone).toBe('0151 12345678');
     });
 
@@ -351,19 +356,19 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'processed',
       });
 
       const updatedData = {
-        trainingsart: 'Gelb Hobby',
+        trainingsart: 'Jugend HOBBY (Gelb)',
       };
 
       const response = await request(app)
         .put(`/api/seasonal-registrations/${registration._id}`)
         .send(updatedData)
-        .expect(403);
+        .expect(400);
 
       expect(response.body.error).toMatch(/verarbeitet|processed/i);
     });
@@ -389,7 +394,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -424,16 +429,16 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'processed',
       });
 
       const response = await request(app)
         .delete(`/api/seasonal-registrations/${registration._id}`)
-        .expect(403);
+        .expect(400);
 
-      expect(response.body.error).toMatch(/verarbeitet|processed/i);
+      expect(response.body.error).toMatch(/ausstehende|pending/i);
     });
   });
 
@@ -459,9 +464,9 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
-        trainingshäufigkeit: '2',
-        teamSpieler: true,
+        trainingsart: 'Jugend TEAM (Gelb)',
+        trainingshäufigkeit: '2x pro Woche',
+        teamParticipation: 'Team',
         privacyConsent: true,
         status: 'pending',
       });
@@ -476,10 +481,10 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       const student = await Student.findOne({ email: 'max@test.com' });
       expect(student).toBeDefined();
       expect(student.firstName).toBe('Max');
-      expect(student.trainigGroup).toBe('Gelb Team');
+      expect(student.trainigGroup).toBe('Gelb Team'); // mapped from 'Jugend TEAM (Gelb)'
       expect(student.frequence).toBe('2');
       expect(student.member).toBe(true);
-      expect(student.team).toBe('yes'); // teamSpieler true → team 'yes'
+      expect(student.team).toBe(true); // teamParticipation truthy → team=true (Boolean cast from 'Team')
       expect(student.adult).toBe(false);
 
       // Verify registration is marked as processed
@@ -510,9 +515,9 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
           { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
         ],
-        spielstärke: 'Fortgeschritten',
-        trainingGoals: ['Technikverbesserung', 'Fitness'],
-        groupSize: ['3er-Gruppe', '4er-Gruppe'],
+        spielstärke: 'Fortgeschrittene',
+        trainingGoals: ['Fitness', 'Turniere'],
+        groupSize: ['zu dritt', 'zu viert'],
         privacyConsent: true,
         status: 'pending',
       });
@@ -527,7 +532,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       const student = await Student.findOne({ email: 'sandra@test.com' });
       expect(student).toBeDefined();
       expect(student.firstName).toBe('Sandra');
-      expect(student.skillLevel).toBe('Fortgeschritten');
+      expect(student.skillLevel).toBe('Fortgeschrittene');
       expect(student.adult).toBe(true);
       expect(student.frequence).toBe('1'); // Adults default to 1 session/week
     });
@@ -561,7 +566,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -599,7 +604,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'processed',
       });
@@ -632,7 +637,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -675,7 +680,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -707,7 +712,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'processed',
       });

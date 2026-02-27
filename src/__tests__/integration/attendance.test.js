@@ -71,16 +71,18 @@ describe('Attendance API Integration Tests', () => {
       password: 'testpassword123',
       firstName: 'Max',
       lastName: 'Mustermann',
+      birthdate: new Date('2000-01-01'),
       studentId: testStudent._id,
       emailVerified: true,
     });
 
-    testCoach = await Coach.create({
+    // Attendance.coach refs 'User' model (role: 'trainer'), not Coach model
+    testCoach = await User.create({
       firstName: 'Nicole',
       lastName: 'Kreienborg',
       email: 'nicole@test.com',
-      availableTimes: ['Montag 14'],
-      isCoachingChildren: true,
+      password: 'testpassword123',
+      role: 'trainer',
     });
 
     testMarker = await User.create({

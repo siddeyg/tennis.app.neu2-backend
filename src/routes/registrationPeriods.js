@@ -137,6 +137,13 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
       });
     }
 
+    if (deadline >= startDate) {
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldefrist muss vor dem Trainingsstart liegen'
+      });
+    }
+
     // Create period
     const period = new RegistrationPeriod({
       name,
@@ -327,9 +334,6 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
       });
     }
 
-    // Capture BEFORE state
-    const beforeState = period.toObject();
-
     const {
       name,
       season,
@@ -342,6 +346,20 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
       adultsFormConfig,
       trainingSlots
     } = req.body;
+
+    // Prevent changing critical date fields if submissions already exist
+    if (trainingStartDate || trainingEndDate) {
+      const submissionsCount = await SeasonalRegistration.countDocuments({ periodId: period._id });
+      if (submissionsCount > 0) {
+        return res.status(400).json({
+          success: false,
+          error: `Trainingsdaten können nicht geändert werden, da bereits ${submissionsCount} Anmeldungen existieren`
+        });
+      }
+    }
+
+    // Capture BEFORE state
+    const beforeState = period.toObject();
 
     // Update fields
     if (name) period.name = name;
@@ -780,11 +798,21 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
           adult: submission.formType === 'adults'
         };
 
+        // Map long-form trainingsart labels to Student.trainigGroup short codes
+        const trainigGroupMap = {
+          'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
+          'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
+          'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
+          'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
+          'Jugend HOBBY (Gelb)': 'Gelb Hobby',
+          'Jugend TEAM (Gelb)': 'Gelb Team',
+        };
+
         // Add form-specific fields
         if (submission.formType === 'kids') {
-          studentData.trainigGroup = submission.trainingsart;
+          studentData.trainigGroup = trainigGroupMap[submission.trainingsart] || submission.trainingsart;
           studentData.member = submission.mitgliedsstatus === 'Mitglied';
-          studentData.team = submission.teamParticipation ? 'Team' : '';
+          studentData.team = !!(submission.teamParticipation && submission.teamParticipation !== '-');
           studentData.frequence = submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
           studentData.availableTimes = (submission.availableTimesKids || []).map(t => ({
             day: t.day,
@@ -797,12 +825,12 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
           studentData.member = true; // Assume adults are members
           // Look up sex from portal user (Gap 1)
           const portalUser = await StudentPortalUser.findById(submission.studentPortalUserId);
-          let userSex = '';
+          let userSex = null;
           if (submission.familyMemberId && portalUser) {
             const child = portalUser.familyMembers.id(submission.familyMemberId);
-            userSex = child?.sex || '';
+            userSex = child?.sex || null;
           } else if (portalUser) {
-            userSex = portalUser.sex || '';
+            userSex = portalUser.sex || null;
           }
           studentData.sex = userSex;
           // Map trainingshäufigkeit to frequence (Gap 2)

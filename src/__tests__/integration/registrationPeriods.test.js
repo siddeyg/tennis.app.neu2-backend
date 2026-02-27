@@ -6,33 +6,44 @@ import RegistrationPeriod from '../../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../../models/SeasonalRegistration.js';
 import Student from '../../models/Student.js';
 import StudentPortalUser from '../../models/StudentPortalUser.js';
+// User model must be imported so Mongoose can populate 'createdBy' (ref: 'User')
+import '../../models/User.js';
 import registrationPeriodsRoutes from '../../routes/registrationPeriods.js';
 import {
   connectTestDB,
   disconnectTestDB,
   clearTestDB,
-  mockAuth,
 } from '../../testHelpers.js';
+
+// Shared admin ObjectId used for req.user and RegistrationPeriod.createdBy
+const mockAdminId = new mongoose.Types.ObjectId();
+// Placeholder plan ID used when status='open' requires currentPlanId (pre-save hook)
+const mockPlanId = new mongoose.Types.ObjectId();
 
 // Create Express app for testing
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Use mock admin authentication
+// Correct mock admin authentication middleware
+// requireAuth checks: NODE_ENV=test AND req.user is set AND req.user.role is valid
 app.use((req, res, next) => {
-  req.user = mockAuth({ role: 'admin' });
+  req.user = {
+    _id: mockAdminId,
+    id: mockAdminId,
+    role: 'admin',
+    firstName: 'Test',
+    lastName: 'Admin',
+    email: 'admin@test.com',
+  };
   next();
 });
 
 app.use('/api/registration-periods', registrationPeriodsRoutes);
 
 describe('Registration Periods API Integration Tests', () => {
-  let adminUser;
-
   beforeAll(async () => {
     await connectTestDB();
-    adminUser = mockAuth({ role: 'admin' });
   });
 
   afterEach(async () => {
@@ -106,7 +117,7 @@ describe('Registration Periods API Integration Tests', () => {
 
   describe('GET / - List periods', () => {
     beforeEach(async () => {
-      // Create test periods
+      // Create test periods (createdBy required by schema)
       await RegistrationPeriod.create([
         {
           name: 'Wintertraining 2024/25',
@@ -115,6 +126,7 @@ describe('Registration Periods API Integration Tests', () => {
           trainingEndDate: new Date('2025-06-30'),
           registrationDeadline: new Date('2024-08-15'),
           status: 'closed',
+          createdBy: mockAdminId,
         },
         {
           name: 'Sommertraining 2025',
@@ -123,7 +135,9 @@ describe('Registration Periods API Integration Tests', () => {
           trainingEndDate: new Date('2025-08-31'),
           registrationDeadline: new Date('2025-06-15'),
           status: 'open',
+          currentPlanId: mockPlanId,
           isActive: true,
+          createdBy: mockAdminId,
         },
         {
           name: 'Wintertraining 2025/26',
@@ -132,6 +146,7 @@ describe('Registration Periods API Integration Tests', () => {
           trainingEndDate: new Date('2026-06-30'),
           registrationDeadline: new Date('2025-08-15'),
           status: 'draft',
+          createdBy: mockAdminId,
         },
       ]);
     });
@@ -172,20 +187,27 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
         isActive: true,
+        createdBy: mockAdminId,
       });
 
       const portalUser = await StudentPortalUser.create({
         email: 'test@test.com',
-        password: 'test123',
+        password: 'testpass1',
+        firstName: 'Test',
+        lastName: 'User',
+        birthdate: new Date('1990-01-01'),
         emailVerified: true,
       });
 
-      // Create 3 submissions
+      // Create 3 submissions (use distinct familyMemberId to satisfy unique partial index)
+      const [fam1, fam2, fam3] = [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()];
       await SeasonalRegistration.create([
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: fam1,
           formType: 'kids',
           firstName: 'Max',
           lastName: 'Test',
@@ -199,13 +221,14 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Gelb Team',
+          trainingsart: 'Jugend TEAM (Gelb)',
           privacyConsent: true,
           status: 'pending',
         },
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: fam2,
           formType: 'kids',
           firstName: 'Anna',
           lastName: 'Test',
@@ -219,13 +242,14 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Rot',
+          trainingsart: 'KIDS-ROT (ca. 6-8 Jahre)',
           privacyConsent: true,
           status: 'pending',
         },
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: fam3,
           formType: 'adults',
           firstName: 'Sandra',
           lastName: 'Test',
@@ -238,7 +262,7 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
             { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
           ],
-          spielstärke: 'Fortgeschritten',
+          spielstärke: 'Fortgeschrittene',
           privacyConsent: true,
           status: 'processed',
         },
@@ -250,7 +274,7 @@ describe('Registration Periods API Integration Tests', () => {
 
       expect(response.body.period).toBeDefined();
       expect(response.body.period.name).toBe('Wintertraining 2025/26');
-      expect(response.body.submissionsCount).toBe(3);
+      expect(response.body.stats.totalSubmissions).toBe(3);
     });
 
     it('should return 404 for non-existent period', async () => {
@@ -271,6 +295,7 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'draft',
+        createdBy: mockAdminId,
       });
 
       const updatedData = {
@@ -297,11 +322,16 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
+        createdBy: mockAdminId,
       });
 
       const portalUser = await StudentPortalUser.create({
         email: 'test@test.com',
-        password: 'test123',
+        password: 'testpass1',
+        firstName: 'Test',
+        lastName: 'User',
+        birthdate: new Date('1990-01-01'),
         emailVerified: true,
       });
 
@@ -321,7 +351,7 @@ describe('Registration Periods API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -336,7 +366,7 @@ describe('Registration Periods API Integration Tests', () => {
         .send(updatedData)
         .expect(400);
 
-      expect(response.body.error).toMatch(/anmeldungen|submissions/i);
+      expect(response.body.error).toMatch(/anmeldungen|anmeldezeitraum|submissions/i);
     });
   });
 
@@ -349,6 +379,7 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'draft',
+        createdBy: mockAdminId,
       });
 
       const response = await request(app)
@@ -362,7 +393,7 @@ describe('Registration Periods API Integration Tests', () => {
       expect(deletedPeriod).toBeNull();
     });
 
-    it('should prevent deleting period with submissions', async () => {
+    it('should cascade-delete submissions when deleting period', async () => {
       const period = await RegistrationPeriod.create({
         name: 'Wintertraining 2025/26',
         season: 'winter',
@@ -370,11 +401,16 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
+        createdBy: mockAdminId,
       });
 
       const portalUser = await StudentPortalUser.create({
         email: 'test@test.com',
-        password: 'test123',
+        password: 'testpass1',
+        firstName: 'Test',
+        lastName: 'User',
+        birthdate: new Date('1990-01-01'),
         emailVerified: true,
       });
 
@@ -394,16 +430,25 @@ describe('Registration Periods API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
 
+      // Route cascade-deletes all submissions when period is deleted
       const response = await request(app)
         .delete(`/api/registration-periods/${period._id}`)
-        .expect(400);
+        .expect(200);
 
-      expect(response.body.error).toMatch(/anmeldungen|submissions/i);
+      expect(response.body.message).toMatch(/gelöscht|deleted/i);
+
+      // Period is deleted
+      const deletedPeriod = await RegistrationPeriod.findById(period._id);
+      expect(deletedPeriod).toBeNull();
+
+      // Submissions are also cascade-deleted
+      const submissions = await SeasonalRegistration.find({ periodId: period._id });
+      expect(submissions).toHaveLength(0);
     });
   });
 
@@ -416,6 +461,9 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'draft',
+        // currentPlanId required by pre-save hook when status changes to 'open'
+        currentPlanId: mockPlanId,
+        createdBy: mockAdminId,
       });
 
       const response = await request(app)
@@ -435,10 +483,12 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2025-08-31'),
         registrationDeadline: new Date('2025-06-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
         isActive: true,
+        createdBy: mockAdminId,
       });
 
-      // Create new draft period
+      // Create new draft period (currentPlanId required when status changes to 'open')
       const newPeriod = await RegistrationPeriod.create({
         name: 'Wintertraining 2025/26',
         season: 'winter',
@@ -446,6 +496,8 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'draft',
+        currentPlanId: mockPlanId,
+        createdBy: mockAdminId,
       });
 
       // Open new period
@@ -473,7 +525,9 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
         isActive: true,
+        createdBy: mockAdminId,
       });
 
       const response = await request(app)
@@ -494,20 +548,27 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
         isActive: true,
+        createdBy: mockAdminId,
       });
 
       const portalUser = await StudentPortalUser.create({
         email: 'test@test.com',
-        password: 'test123',
+        password: 'testpass1',
+        firstName: 'Test',
+        lastName: 'User',
+        birthdate: new Date('1990-01-01'),
         emailVerified: true,
       });
 
-      // Create 2 submissions
+      // Create 2 submissions (use distinct familyMemberId to satisfy unique partial index)
+      const [subFam1, subFam2] = [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()];
       await SeasonalRegistration.create([
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: subFam1,
           formType: 'kids',
           firstName: 'Max',
           lastName: 'Test',
@@ -521,13 +582,14 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Gelb Team',
+          trainingsart: 'Jugend TEAM (Gelb)',
           privacyConsent: true,
           status: 'pending',
         },
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: subFam2,
           formType: 'adults',
           firstName: 'Sandra',
           lastName: 'Test',
@@ -540,7 +602,7 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
             { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
           ],
-          spielstärke: 'Fortgeschritten',
+          spielstärke: 'Fortgeschrittene',
           privacyConsent: true,
           status: 'pending',
         },
@@ -565,20 +627,28 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
         isActive: true,
+        createdBy: mockAdminId,
       });
 
       const portalUser = await StudentPortalUser.create({
         email: 'test@test.com',
-        password: 'test123',
+        password: 'testpass1',
+        firstName: 'Test',
+        lastName: 'User',
+        birthdate: new Date('1990-01-01'),
         emailVerified: true,
       });
 
       // Create 3 submissions (2 pending, 1 processed)
+      // Use distinct familyMemberId to satisfy unique partial index per {studentPortalUserId, periodId, familyMemberId}
+      const [procFam1, procFam2, procFam3] = [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()];
       await SeasonalRegistration.create([
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: procFam1,
           formType: 'kids',
           firstName: 'Max',
           lastName: 'Test',
@@ -592,14 +662,15 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Gelb Team',
-          trainingshäufigkeit: '2',
+          trainingsart: 'Jugend TEAM (Gelb)',
+          trainingshäufigkeit: '2x pro Woche',
           privacyConsent: true,
           status: 'pending',
         },
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: procFam2,
           formType: 'adults',
           firstName: 'Sandra',
           lastName: 'Test',
@@ -612,13 +683,14 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Donnerstag', hour: '19:00', venue: 'Röttgen' },
             { day: 'Freitag', hour: '18:00', venue: 'BTHV' },
           ],
-          spielstärke: 'Fortgeschritten',
+          spielstärke: 'Fortgeschrittene',
           privacyConsent: true,
           status: 'pending',
         },
         {
           periodId: period._id,
           studentPortalUserId: portalUser._id,
+          familyMemberId: procFam3,
           formType: 'kids',
           firstName: 'Anna',
           lastName: 'Test',
@@ -632,7 +704,7 @@ describe('Registration Periods API Integration Tests', () => {
             { day: 'Freitag', hour: 15, venue: 'BTHV' },
           ],
           mitgliedsstatus: 'Mitglied',
-          trainingsart: 'Rot',
+          trainingsart: 'KIDS-ROT (ca. 6-8 Jahre)',
           privacyConsent: true,
           status: 'processed', // Already processed
         },
@@ -643,7 +715,7 @@ describe('Registration Periods API Integration Tests', () => {
         .expect(200);
 
       expect(response.body.message).toMatch(/verarbeitet|processed/i);
-      expect(response.body.processedCount).toBe(2); // Only pending ones
+      expect(response.body.processed).toBe(2); // Only pending ones
 
       // Verify students were created
       const students = await Student.find({});
@@ -651,13 +723,13 @@ describe('Registration Periods API Integration Tests', () => {
 
       // Verify kids student
       const kidsStudent = students.find((s) => s.firstName === 'Max');
-      expect(kidsStudent.trainigGroup).toBe('Gelb Team');
+      expect(kidsStudent.trainigGroup).toBe('Gelb Team'); // mapped from 'Jugend TEAM (Gelb)'
       expect(kidsStudent.frequence).toBe('2');
       expect(kidsStudent.adult).toBe(false);
 
       // Verify adults student
       const adultsStudent = students.find((s) => s.firstName === 'Sandra');
-      expect(adultsStudent.skillLevel).toBe('Fortgeschritten');
+      expect(adultsStudent.skillLevel).toBe('Fortgeschrittene'); // from spielstärke field
       expect(adultsStudent.adult).toBe(true);
 
       // Verify registrations are marked as processed
@@ -673,7 +745,9 @@ describe('Registration Periods API Integration Tests', () => {
         trainingEndDate: new Date('2026-06-30'),
         registrationDeadline: new Date('2025-08-15'),
         status: 'open',
+        currentPlanId: mockPlanId,
         isActive: true,
+        createdBy: mockAdminId,
       });
 
       // Create existing student
@@ -688,7 +762,10 @@ describe('Registration Periods API Integration Tests', () => {
 
       const portalUser = await StudentPortalUser.create({
         email: 'test@test.com',
-        password: 'test123',
+        password: 'testpass1',
+        firstName: 'Test',
+        lastName: 'User',
+        birthdate: new Date('1990-01-01'),
         emailVerified: true,
       });
 
@@ -709,7 +786,7 @@ describe('Registration Periods API Integration Tests', () => {
           { day: 'Freitag', hour: 15, venue: 'BTHV' },
         ],
         mitgliedsstatus: 'Mitglied',
-        trainingsart: 'Gelb Team',
+        trainingsart: 'Jugend TEAM (Gelb)',
         privacyConsent: true,
         status: 'pending',
       });
@@ -725,7 +802,7 @@ describe('Registration Periods API Integration Tests', () => {
       const updatedStudent = students[0];
       expect(updatedStudent._id.toString()).toBe(existingStudent._id.toString());
       expect(updatedStudent.lastName).toBe('Updated');
-      expect(updatedStudent.trainigGroup).toBe('Gelb Team');
+      expect(updatedStudent.trainigGroup).toBe('Gelb Team'); // mapped from 'Jugend TEAM (Gelb)'
     });
   });
 });

@@ -81,11 +81,17 @@ const studentSchema = new mongoose.Schema({
   skillLevel: {
     type: String,
     enum: [
+      // Admin portal values (legacy)
       'Anfänger',
       'wenig Fortgeschritten',
       'Fortgeschritten',
       'gute:r Spieler:in',
       'Leistungsspieler:in',
+      // Student portal seasonal registration values (spielstärke)
+      'Anfänger mit Grundkenntnissen',
+      'Fortgeschrittene',
+      'Erfahrene Spieler:innen / Mannschaftsspieler:innen',
+      'Leistungsspieler:innen / Turnierspieler:innen',
       null
     ],
     default: null

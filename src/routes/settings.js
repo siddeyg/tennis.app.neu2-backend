@@ -49,14 +49,19 @@ router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'Settings' }), 
     const beforeState = settings.toObject();
 
     if (req.body.courseCapacity) {
+      // Use toObject() to ensure Mongoose subdoc defaults are serialized to plain JS
+      const existingCapacity = settings.courseCapacity?.toObject
+        ? settings.courseCapacity.toObject()
+        : (settings.courseCapacity || {});
       settings.courseCapacity = {
-        ...settings.courseCapacity,
+        ...existingCapacity,
         ...req.body.courseCapacity
       };
 
       if (req.body.courseCapacity.capacityByGroup) {
+        const existingByGroup = existingCapacity.capacityByGroup || {};
         settings.courseCapacity.capacityByGroup = {
-          ...settings.courseCapacity.capacityByGroup,
+          ...existingByGroup,
           ...req.body.courseCapacity.capacityByGroup
         };
       }

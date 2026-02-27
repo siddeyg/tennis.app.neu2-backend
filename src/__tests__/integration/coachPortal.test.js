@@ -101,7 +101,7 @@ describe('Coach Portal API', () => {
         birthDate: new Date('2010-01-01'),
         adult: false,
         trainigGroup: 'Gelb Team',
-        availableTimes: [`${dayName} 14`, `${dayName} 15`],
+        availableTimes: [{ day: dayName, hour: 14, venue: '' }, { day: dayName, hour: 15, venue: '' }],
         frequence: '1',
         assignments: [{ day: dayName, hour: 14, coach: coachUser._id }]
       }),
@@ -111,7 +111,7 @@ describe('Coach Portal API', () => {
         birthDate: new Date('2011-01-01'),
         adult: false,
         trainigGroup: 'Gelb Team',
-        availableTimes: [`${dayName} 14`, `${dayName} 15`],
+        availableTimes: [{ day: dayName, hour: 14, venue: '' }, { day: dayName, hour: 15, venue: '' }],
         frequence: '1',
         assignments: [{ day: dayName, hour: 14, coach: coachUser._id }]
       }),
@@ -121,7 +121,7 @@ describe('Coach Portal API', () => {
         birthDate: new Date('2012-01-01'),
         adult: false,
         trainigGroup: 'Orange',
-        availableTimes: [`${dayName} 15`, `${dayName} 16`],
+        availableTimes: [{ day: dayName, hour: 15, venue: '' }, { day: dayName, hour: 16, venue: '' }],
         frequence: '1',
         assignments: [{ day: dayName, hour: 15, coach: coachUser._id }]
       }),
@@ -131,7 +131,7 @@ describe('Coach Portal API', () => {
         birthDate: new Date('2013-01-01'),
         adult: false,
         trainigGroup: 'Rot',
-        availableTimes: [`${dayName} 16`, `${dayName} 17`],
+        availableTimes: [{ day: dayName, hour: 16, venue: '' }, { day: dayName, hour: 17, venue: '' }],
         frequence: '1',
         assignments: [{ day: dayName, hour: 16, coach: otherCoachUser._id }]
       })

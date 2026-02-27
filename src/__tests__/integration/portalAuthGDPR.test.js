@@ -15,7 +15,9 @@
 
 import request from 'supertest';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 import StudentPortalUser from '../../models/StudentPortalUser.js';
 import Student from '../../models/Student.js';
 import portalAuthRoutes from '../../routes/portalAuth.js';
@@ -27,6 +29,7 @@ import {
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use('/api/portal/auth', portalAuthRoutes);
 
 describe('Portal Auth - GDPR Registration', () => {
@@ -49,7 +52,9 @@ describe('Portal Auth - GDPR Registration', () => {
       firstName: 'Max',
       lastName: 'Mustermann',
       birthdate: '1990-05-15',
-      phone: '+49123456789'
+      phone: '+49123456789',
+      sex: 'männlich',
+      member: false,
     };
 
     test('Should register user with personal data (no studentId)', async () => {
@@ -265,14 +270,19 @@ describe('Portal Auth - GDPR Registration', () => {
 
   describe('POST /api/portal/auth/verify-email', () => {
     test('Should verify email with valid token', async () => {
-      // Create user with verification token
+      // The route hashes the incoming token with SHA-256 before DB lookup,
+      // so we must store the hash in the DB and send the raw token in the request.
+      const rawToken = 'valid-token-12345';
+      const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+      // Create user with hashed verification token
       const user = new StudentPortalUser({
         email: 'verify@example.com',
         password: 'TestPass123!',
         firstName: 'Test',
         lastName: 'User',
         birthdate: new Date('1990-01-01'),
-        verificationToken: 'valid-token-12345',
+        verificationToken: hashedToken,
         verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         emailVerified: false
       });
@@ -280,7 +290,7 @@ describe('Portal Auth - GDPR Registration', () => {
 
       const res = await request(app)
         .post('/api/portal/auth/verify-email')
-        .send({ token: 'valid-token-12345' })
+        .send({ token: rawToken })
         .expect(200);
 
       expect(res.body.message).toContain('Email erfolgreich verifiziert');
@@ -294,13 +304,16 @@ describe('Portal Auth - GDPR Registration', () => {
     });
 
     test('Should reject expired verification token', async () => {
+      const rawExpiredToken = 'expired-token-12345';
+      const hashedExpiredToken = crypto.createHash('sha256').update(rawExpiredToken).digest('hex');
+
       const user = new StudentPortalUser({
         email: 'expired@example.com',
         password: 'TestPass123!',
         firstName: 'Test',
         lastName: 'User',
         birthdate: new Date('1990-01-01'),
-        verificationToken: 'expired-token',
+        verificationToken: hashedExpiredToken,
         verificationTokenExpires: new Date(Date.now() - 1000), // Expired 1 second ago
         emailVerified: false
       });
@@ -308,7 +321,7 @@ describe('Portal Auth - GDPR Registration', () => {
 
       const res = await request(app)
         .post('/api/portal/auth/verify-email')
-        .send({ token: 'expired-token' })
+        .send({ token: rawExpiredToken })
         .expect(400);
 
       expect(res.body.error).toContain('Ungültiger oder abgelaufener');

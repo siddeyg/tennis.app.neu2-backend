@@ -24,9 +24,11 @@ const app = express();
 app.use(express.json());
 
 // Mock portal authentication middleware
+// Tests pass the portal user ID via 'testPortalUserId' header
 const mockPortalAuth = (req, res, next) => {
+  const rawId = req.headers['testportaluserid'];
   req.user = {
-    id: req.testPortalUserId,
+    id: rawId ? new mongoose.Types.ObjectId(rawId) : new mongoose.Types.ObjectId(),
     role: 'student',
     studentId: null,
   };
@@ -70,6 +72,9 @@ describe('Auto-Create Student on Seasonal Registration', () => {
       lastName: 'User',
       birthdate: new Date('2010-01-01'),
       emailVerified: true,
+      profileCompleted: true,
+      sex: 'männlich',
+      member: false,
       studentId: null,
     });
     await portalUser.save();
@@ -84,6 +89,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
       trainingEndDate: new Date('2026-08-31'),
       isActive: true,
       status: 'open',
+      currentPlanId: new mongoose.Types.ObjectId(),
       createdBy: adminUser._id,
       kidsFormConfig: {
         enabledFields: ['mitgliedsstatus', 'trainingsart', 'trainingshäufigkeit', 'teamParticipation', 'availableTimesKids'],
@@ -111,7 +117,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         mitgliedsstatus: 'Mitglied',
         trainingsart: 'KIDS-ORANGE (ca. 8-10 Jahre)',
         trainingshäufigkeit: '2x pro Woche',
-        teamParticipation: '-',
+        teamParticipation: false,
         availableTimesKids: [
           { day: 'Montag', hour: 14, venue: 'BTHV' },
           { day: 'Montag', hour: 15, venue: 'BTHV' },
@@ -135,7 +141,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
       expect(student).toBeDefined();
       expect(student.firstName).toBe('Max');
       expect(student.member).toBe(true);
-      expect(student.trainigGroup).toBe('KIDS-ORANGE (ca. 8-10 Jahre)');
+      expect(student.trainigGroup).toBe('Orange'); // mapped from 'KIDS-ORANGE (ca. 8-10 Jahre)'
       expect(student.frequence).toBe('2');
 
       const updatedPortalUser = await StudentPortalUser.findById(portalUser._id);
@@ -189,6 +195,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         trainingEndDate: new Date('2026-10-31'),
         isActive: true,
         status: 'open',
+        currentPlanId: new mongoose.Types.ObjectId(),
         createdBy: adminUser._id,
         kidsFormConfig: {
           enabledFields: ['mitgliedsstatus', 'trainingsart', 'availableTimesKids'],
@@ -242,7 +249,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         mitgliedsstatus: 'Nicht-Mitglied/Schnupperkind',
         trainingsart: 'KIDS-ROT (ca. 6-8 Jahre)',
         trainingshäufigkeit: '1x pro Woche',
-        teamParticipation: '-',
+        teamParticipation: false,
         availableTimesKids: [
           { day: 'Montag', hour: 14, venue: 'BTHV' },
           { day: 'Dienstag', hour: 14, venue: 'BTHV' },
@@ -261,7 +268,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
 
       const student = await Student.findOne({ email: 'leon@example.com' });
       expect(student.member).toBe(false);
-      expect(student.trainigGroup).toBe('KIDS-ROT (ca. 6-8 Jahre)');
+      expect(student.trainigGroup).toBe('Rot'); // mapped from 'KIDS-ROT (ca. 6-8 Jahre)'
       expect(student.frequence).toBe('1');
       expect(student.team).toBe(false);
       expect(student.adult).toBe(false);

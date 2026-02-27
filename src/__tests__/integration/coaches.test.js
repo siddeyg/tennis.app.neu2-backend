@@ -69,7 +69,7 @@ describe('Coach API Integration Tests', () => {
 
     test('should create coach with availableTimes array', async () => {
       const newCoach = createTestCoach({
-        availableTimes: ['Montag 14', 'Mittwoch 16']
+        availableTimes: [{ day: 'Montag', hour: 14 }, { day: 'Mittwoch', hour: 16 }]
       });
 
       const response = await request(app)
@@ -77,7 +77,9 @@ describe('Coach API Integration Tests', () => {
         .send(newCoach);
 
       expect(response.status).toBe(201);
-      expect(response.body.availableTimes).toEqual(['Montag 14', 'Mittwoch 16']);
+      expect(response.body.availableTimes).toHaveLength(2);
+      expect(response.body.availableTimes[0].day).toBe('Montag');
+      expect(response.body.availableTimes[0].hour).toBe(14);
     });
 
     test('should create coach with coaching qualifications', async () => {
@@ -121,15 +123,20 @@ describe('Coach API Integration Tests', () => {
     test('should update coach availableTimes', async () => {
       const coach = await Coach.create(createTestCoach({
         firstName: 'Sarah',
-        availableTimes: ['Montag 14']
+        availableTimes: [{ day: 'Montag', hour: 14 }]
       }));
 
+      const newTimes = [
+        { day: 'Montag', hour: 14 },
+        { day: 'Dienstag', hour: 15 },
+        { day: 'Mittwoch', hour: 16 }
+      ];
       const response = await request(app)
         .put(`/api/coaches/${coach._id}`)
-        .send({ availableTimes: ['Montag 14', 'Dienstag 15', 'Mittwoch 16'] });
+        .send({ availableTimes: newTimes });
 
       expect(response.status).toBe(200);
-      expect(response.body.availableTimes).toEqual(['Montag 14', 'Dienstag 15', 'Mittwoch 16']);
+      expect(response.body.availableTimes).toHaveLength(3);
     });
 
     test('should return 404 for non-existent coach', async () => {

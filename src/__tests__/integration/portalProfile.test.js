@@ -22,7 +22,7 @@ const mockPortalAuth = () => {
   return (req, res, next) => {
     // Simulate portal JWT token in req.user
     req.user = {
-      id: new mongoose.Types.ObjectId(),
+      id: req.testPortalUserId || new mongoose.Types.ObjectId(),
       role: 'student',
       studentId: req.testStudentId || new mongoose.Types.ObjectId(),
     };
@@ -78,7 +78,19 @@ describe('Portal Profile API Integration Tests', () => {
       emailVerified: true,
     });
 
+    // Set both IDs on the app request prototype for mock auth
+    app.request.testStudentId = testStudent._id;
+    app.request.testPortalUserId = testPortalUser._id;
+
     return { testStudent, testPortalUser };
+  };
+
+  // Required fields for all PUT /profile requests
+  const requiredFields = {
+    firstName: 'Max',
+    lastName: 'Mustermann',
+    birthDate: '2010-05-15',
+    sex: 'männlich',
   };
 
   describe('GET /api/portal/profile', () => {
@@ -112,14 +124,13 @@ describe('Portal Profile API Integration Tests', () => {
   });
 
   describe('PUT /api/portal/profile', () => {
-    test('should update student contact info', async () => {
+    test('should update student phone and address', async () => {
       const { testStudent } = await createTestData();
-      app.request.testStudentId = testStudent._id;
 
       const updatedData = {
-        email: 'new.email@test.com',
+        ...requiredFields,
         phone: '0160 99999999',
-        address: 'Neue Stra�e 99, 54321 Neustadt',
+        address: 'Neue Strasse 99, 54321 Neustadt',
       };
 
       const response = await request(app)
@@ -127,46 +138,45 @@ describe('Portal Profile API Integration Tests', () => {
         .send(updatedData);
 
       expect(response.status).toBe(200);
-      expect(response.body.email).toBe('new.email@test.com');
       expect(response.body.phone).toBe('0160 99999999');
-      expect(response.body.address).toBe('Neue Stra�e 99, 54321 Neustadt');
+      expect(response.body.address).toBe('Neue Strasse 99, 54321 Neustadt');
 
       // Verify update in DB
       const updatedStudent = await Student.findById(testStudent._id);
-      expect(updatedStudent.email).toBe('new.email@test.com');
       expect(updatedStudent.phone).toBe('0160 99999999');
-      expect(updatedStudent.adress).toBe('Neue Stra�e 99, 54321 Neustadt');
+      expect(updatedStudent.adress).toBe('Neue Strasse 99, 54321 Neustadt');
     });
 
-    test('should not update stammdaten (firstName, lastName, birthDate)', async () => {
+    test('should update name and personal data', async () => {
       const { testStudent } = await createTestData();
-      app.request.testStudentId = testStudent._id;
 
-      const attemptedUpdate = {
-        firstName: 'Hacker',
-        lastName: 'McHackface',
-        birthDate: new Date('1990-01-01'),
-        email: 'valid@test.com',
+      const updatedData = {
+        firstName: 'Maximiliane',
+        lastName: 'Musterfrau',
+        birthDate: '2010-05-15',
+        sex: 'weiblich',
+        phone: '0160 11111111',
       };
 
       const response = await request(app)
         .put('/api/portal/profile')
-        .send(attemptedUpdate);
+        .send(updatedData);
 
       expect(response.status).toBe(200);
+      expect(response.body.firstName).toBe('Maximiliane');
+      expect(response.body.lastName).toBe('Musterfrau');
 
-      // Verify stammdaten NOT changed
+      // Verify update in DB
       const updatedStudent = await Student.findById(testStudent._id);
-      expect(updatedStudent.firstName).toBe('Max'); // NOT changed
-      expect(updatedStudent.lastName).toBe('Mustermann'); // NOT changed
-      expect(updatedStudent.email).toBe('valid@test.com'); // Only contact changed
+      expect(updatedStudent.firstName).toBe('Maximiliane');
+      expect(updatedStudent.lastName).toBe('Musterfrau');
     });
 
     test('should validate email format', async () => {
-      const { testStudent } = await createTestData();
-      app.request.testStudentId = testStudent._id;
+      await createTestData();
 
       const invalidData = {
+        ...requiredFields,
         email: 'invalid-email-format',
         phone: '0151 12345678',
       };
@@ -180,10 +190,10 @@ describe('Portal Profile API Integration Tests', () => {
     });
 
     test('should validate phone format', async () => {
-      const { testStudent } = await createTestData();
-      app.request.testStudentId = testStudent._id;
+      await createTestData();
 
       const invalidData = {
+        ...requiredFields,
         email: 'valid@test.com',
         phone: 'invalid!@#$%phone',
       };
@@ -196,12 +206,11 @@ describe('Portal Profile API Integration Tests', () => {
       expect(response.body.error).toBe('Ungültige Telefonnummer');
     });
 
-    test('should allow empty email and phone', async () => {
+    test('should allow empty phone and address', async () => {
       const { testStudent } = await createTestData();
-      app.request.testStudentId = testStudent._id;
 
       const emptyData = {
-        email: '',
+        ...requiredFields,
         phone: '',
         address: 'Some Address',
       };
@@ -211,17 +220,18 @@ describe('Portal Profile API Integration Tests', () => {
         .send(emptyData);
 
       expect(response.status).toBe(200);
-      expect(response.body.email).toBe('');
       expect(response.body.phone).toBe('');
       expect(response.body.address).toBe('Some Address');
+
+      const updatedStudent = await Student.findById(testStudent._id);
+      expect(updatedStudent.phone).toBe('');
     });
 
     test('should trim whitespace from inputs', async () => {
       const { testStudent } = await createTestData();
-      app.request.testStudentId = testStudent._id;
 
       const dataWithSpaces = {
-        email: '  trimmed@test.com  ',
+        ...requiredFields,
         phone: '  0151 12345678  ',
         address: '  Trimmed Street 1  ',
       };
@@ -231,21 +241,40 @@ describe('Portal Profile API Integration Tests', () => {
         .send(dataWithSpaces);
 
       expect(response.status).toBe(200);
-      expect(response.body.email).toBe('trimmed@test.com');
       expect(response.body.phone).toBe('0151 12345678');
       expect(response.body.address).toBe('Trimmed Street 1');
     });
 
     test('should return 404 if student not found', async () => {
-      const fakeStudentId = new mongoose.Types.ObjectId();
-      app.request.testStudentId = fakeStudentId;
+      await createTestData();
+      app.request.testStudentId = new mongoose.Types.ObjectId();
 
       const response = await request(app)
         .put('/api/portal/profile')
-        .send({ email: 'test@test.com' });
+        .send(requiredFields);
 
       expect(response.status).toBe(404);
       expect(response.body.error).toBe('Schüler nicht gefunden');
+    });
+
+    test('should require firstName', async () => {
+      await createTestData();
+
+      const response = await request(app)
+        .put('/api/portal/profile')
+        .send({ lastName: 'Mustermann', birthDate: '2010-05-15', sex: 'männlich' });
+
+      expect(response.status).toBe(400);
+    });
+
+    test('should require sex', async () => {
+      await createTestData();
+
+      const response = await request(app)
+        .put('/api/portal/profile')
+        .send({ firstName: 'Max', lastName: 'Mustermann', birthDate: '2010-05-15' });
+
+      expect(response.status).toBe(400);
     });
   });
 });

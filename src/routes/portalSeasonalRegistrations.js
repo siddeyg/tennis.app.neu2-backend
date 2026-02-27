@@ -560,8 +560,12 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         phone: phone || '',
         adress: address || '',
         comment: remarks || '',
-        sex: userSex || '',
-        member: userMember || false,
+        sex: userSex || null,
+        // For kids: derive member status from mitgliedsstatus form field
+        // For adults: use portal user's own member status (adults form has no mitgliedsstatus)
+        member: formType === 'kids'
+          ? mitgliedsstatus === 'Mitglied'
+          : (userMember || false),
         adult: formType === 'adults',
         frequence: trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
         assignments: [] // Will be assigned during schedule planning
@@ -583,7 +587,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
 
       // Add form-specific fields
       if (formType === 'kids') {
-        studentData.team = teamParticipation || false;
+        studentData.team = !!(teamParticipation && teamParticipation !== '-' && teamParticipation !== false);
         studentData.trainigGroup = trainigGroupMap[trainingsart] || null;
         let kidsSlots = (availableTimesKids || []).map(t => ({
           day: t.day,

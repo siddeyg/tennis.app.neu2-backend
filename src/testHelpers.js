@@ -50,9 +50,23 @@ export const createTestStudent = (overrides = {}) => ({
   trainigGroup: 'Rot',
   availableTimes: [
     { day: 'Montag', hour: 14, venue: '' },
-    { day: 'Mittwoch', hour: 14, venue: '' }
+    { day: 'Mittwoch', hour: 14, venue: '' },
   ],
   frequence: '2',
+  ...overrides
+});
+
+/**
+ * Create test portal user with defaults
+ * Includes all required fields (birthdate is required by the schema)
+ */
+export const createTestPortalUser = (overrides = {}) => ({
+  email: 'portal@example.com',
+  password: 'testpassword123',
+  firstName: 'Test',
+  lastName: 'Portal',
+  birthdate: new Date('1990-01-01'),
+  emailVerified: true,
   ...overrides
 });
 
