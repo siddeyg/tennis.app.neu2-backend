@@ -22,11 +22,12 @@ export const verifyPortalAuth = async (req, res, next) => {
       return res.status(401).json({ error: 'Nicht authentifiziert' });
     }
 
-    // Verify token using PORTAL_JWT_SECRET or fallback to JWT_SECRET
-    const decoded = jwt.verify(
-      token,
-      process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET
-    );
+    // Verify token using PORTAL_JWT_SECRET — must be explicitly set, no fallback
+    if (!process.env.PORTAL_JWT_SECRET) {
+      logger.error('PORTAL_JWT_SECRET is not set — portal auth misconfigured');
+      return res.status(500).json({ error: 'Server-Konfigurationsfehler' });
+    }
+    const decoded = jwt.verify(token, process.env.PORTAL_JWT_SECRET);
 
     // Attach user info to request
     req.user = decoded;
