@@ -123,6 +123,9 @@ if (isProduction) {
 // 3. CORS configuration - Strict whitelist validation
 const corsOptions = {
   origin: function (origin, callback) {
+    // Allow same-origin requests (no Origin header sent by browser for same-domain API calls)
+    if (!origin) return callback(null, true);
+
     // In production, only allow explicitly configured origins
     if (isProduction) {
       const allowedOrigins = [
