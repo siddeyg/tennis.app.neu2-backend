@@ -305,13 +305,24 @@ describe('Coach Portal API', () => {
   });
 
   describe('GET /api/coach/stats', () => {
+    // Whether a second attendance record (before this week, within this month) was created.
+    // Only possible when the 1st of the month falls before Monday of the current week.
+    let hasSecondRecord = false;
+
     beforeEach(async () => {
       const dayNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
       const today = new Date();
       const dayName = dayNames[today.getDay()];
 
-      // Create attendance records for statistics
-      // This week's attendance
+      // Compute current week's Monday
+      const weekStart = new Date(today);
+      weekStart.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+      weekStart.setHours(0, 0, 0, 0);
+
+      // First day of current calendar month
+      const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1, 12, 0, 0, 0);
+
+      // Create this week's attendance record
       await Attendance.create({
         courseDate: today,
         day: dayName,
@@ -324,21 +335,22 @@ describe('Coach Portal API', () => {
         markedBy: coachUser._id
       });
 
-      // Last week's attendance
-      const lastWeek = new Date(today);
-      lastWeek.setDate(today.getDate() - 7);
-      const lastWeekDay = dayNames[lastWeek.getDay()];
-
-      await Attendance.create({
-        courseDate: lastWeek,
-        day: lastWeekDay,
-        hour: 15,
-        coach: coachUser._id,
-        students: [
-          { studentId: students[2]._id, status: 'present' }
-        ],
-        markedBy: coachUser._id
-      });
+      // Create a second record only when first-of-month is strictly before this week.
+      // This guarantees it's in the current month but outside the current week range.
+      hasSecondRecord = firstOfMonth < weekStart;
+      if (hasSecondRecord) {
+        const firstOfMonthDay = dayNames[firstOfMonth.getDay()];
+        await Attendance.create({
+          courseDate: firstOfMonth,
+          day: firstOfMonthDay,
+          hour: 15,
+          coach: coachUser._id,
+          students: [
+            { studentId: students[2]._id, status: 'present' }
+          ],
+          markedBy: coachUser._id
+        });
+      }
     });
 
     it('should return weekly statistics by default', async () => {
@@ -371,11 +383,21 @@ describe('Coach Portal API', () => {
         .get('/api/coach/stats?range=month')
         .expect(200);
 
-      expect(response.body.totalCourses).toBe(2); // Both weeks
-      expect(response.body.totalStudents).toBe(3); // All three students
-      expect(response.body.presentCount).toBe(2);
-      expect(response.body.absentCount).toBe(1);
-      expect(response.body.attendanceRate).toBeCloseTo(66.67, 1); // 2 present / 3 total
+      if (hasSecondRecord) {
+        // Two records: today (2 students) + first-of-month (1 student)
+        expect(response.body.totalCourses).toBe(2);
+        expect(response.body.totalStudents).toBe(3);
+        expect(response.body.presentCount).toBe(2);
+        expect(response.body.absentCount).toBe(1);
+        expect(response.body.attendanceRate).toBeCloseTo(66.67, 1);
+      } else {
+        // First-of-month is within the current week — only 1 record in month range
+        expect(response.body.totalCourses).toBe(1);
+        expect(response.body.totalStudents).toBe(2);
+        expect(response.body.presentCount).toBe(1);
+        expect(response.body.absentCount).toBe(1);
+        expect(response.body.attendanceRate).toBe(50);
+      }
     });
 
     it('should only include statistics for this coach', async () => {
