@@ -191,7 +191,7 @@ app.use(
     },
     skip: (req) => {
       // Skip logging health check endpoints in production
-      return isProduction && req.originalUrl === '/';
+      return isProduction && (req.originalUrl === '/' || req.originalUrl === '/api/health');
     },
   })
 );
@@ -216,6 +216,18 @@ mongoose
 // Public routes
 app.get("/", (req, res) => {
   res.send("Willkommen zur Tennis App API");
+});
+
+// Health check endpoint (used by Uptime Kuma / external monitoring)
+app.get("/api/health", (req, res) => {
+  const mongoState = mongoose.connection.readyState; // 1 = connected
+  const healthy = mongoState === 1;
+  res.status(healthy ? 200 : 503).json({
+    status: healthy ? "ok" : "degraded",
+    mongo: mongoState === 1 ? "connected" : "disconnected",
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Auth routes (public - no authentication required)
