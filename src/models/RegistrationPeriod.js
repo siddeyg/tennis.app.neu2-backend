@@ -56,6 +56,11 @@ const registrationPeriodSchema = new mongoose.Schema(
       default: false,
     },
 
+    cancellationEnabled: {
+      type: Boolean,
+      default: true,
+    },
+
     // Link to current training plan
     currentPlanId: {
       type: mongoose.Schema.Types.ObjectId,

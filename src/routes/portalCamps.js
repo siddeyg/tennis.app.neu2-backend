@@ -547,6 +547,15 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       });
     }
 
+    // Check admin-configured cancellation toggle
+    if (!camp.cancellationEnabled) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Stornierungen sind leider nur bis zu sieben Tage vorher möglich'
+      });
+    }
+
     // Check cancellation deadline (7 days before start) — only for confirmed registrations
     // Pending registrations can be cancelled at any time (not yet approved)
     if (registration.status === 'confirmed') {

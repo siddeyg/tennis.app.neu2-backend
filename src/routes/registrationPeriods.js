@@ -689,6 +689,25 @@ router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'Regi
 });
 
 /**
+ * PATCH /api/registration-periods/:id/cancellation
+ * Enable or disable student cancellations for this period
+ */
+router.patch('/:id/cancellation', async (req, res) => {
+  try {
+    const { cancellationEnabled } = req.body;
+    if (typeof cancellationEnabled !== 'boolean') {
+      return res.status(400).json({ error: 'cancellationEnabled must be boolean' });
+    }
+    const period = await RegistrationPeriod.findByIdAndUpdate(req.params.id, { cancellationEnabled }, { new: true });
+    if (!period) return res.status(404).json({ error: 'Anmeldezeitraum nicht gefunden' });
+    res.json({ cancellationEnabled: period.cancellationEnabled });
+  } catch (error) {
+    logger.error('Error toggling period cancellation', { error: error.message });
+    res.status(500).json({ error: 'Fehler beim Ändern der Stornierungseinstellung' });
+  }
+});
+
+/**
  * GET /api/registration-periods/:id/submissions
  * List submissions for a period
  *

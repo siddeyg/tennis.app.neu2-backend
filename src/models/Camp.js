@@ -151,6 +151,10 @@ const campSchema = new mongoose.Schema({
     enum: ['draft', 'open', 'full', 'closed', 'cancelled', 'completed'],
     default: 'draft'
   },
+  cancellationEnabled: {
+    type: Boolean,
+    default: true
+  },
 
   // Metadata
   createdBy: {

@@ -412,6 +412,25 @@ router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp
 });
 
 /**
+ * PATCH /api/camps/:id/cancellation
+ * Enable or disable student cancellations for this camp
+ */
+router.patch('/:id/cancellation', async (req, res) => {
+  try {
+    const { cancellationEnabled } = req.body;
+    if (typeof cancellationEnabled !== 'boolean') {
+      return res.status(400).json({ error: 'cancellationEnabled must be boolean' });
+    }
+    const camp = await Camp.findByIdAndUpdate(req.params.id, { cancellationEnabled }, { new: true });
+    if (!camp || camp.deletedAt) return res.status(404).json({ error: 'Camp nicht gefunden' });
+    res.json({ cancellationEnabled: camp.cancellationEnabled });
+  } catch (error) {
+    logger.error('Error toggling camp cancellation', { error: error.message });
+    res.status(500).json({ error: 'Fehler beim Ändern der Stornierungseinstellung' });
+  }
+});
+
+/**
  * GET /api/camps/:id/registrations
  * View all participants for a camp
  */

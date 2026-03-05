@@ -895,6 +895,25 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
       });
     }
 
+    // Check cancellationEnabled toggle and 7-day deadline
+    const period = await RegistrationPeriod.findById(registration.periodId);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Zeitraum nicht gefunden' });
+    }
+    if (!period.cancellationEnabled) {
+      return res.status(400).json({
+        success: false,
+        error: 'Stornierungen sind leider nur bis zu sieben Tage vorher möglich'
+      });
+    }
+    const daysUntilStart = Math.ceil((new Date(period.trainingStartDate) - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysUntilStart < 7) {
+      return res.status(400).json({
+        success: false,
+        error: 'Stornierungen sind leider nur bis zu sieben Tage vorher möglich'
+      });
+    }
+
     // Soft-cancel: keep record for admin visibility, mark as cancelled
     registration.status = 'cancelled';
     registration.cancelledAt = new Date();
