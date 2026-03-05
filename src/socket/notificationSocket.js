@@ -11,8 +11,8 @@ import { setSocketIO } from '../utils/notificationHelpers.js';
  * @returns {Object} Socket.io server instance
  */
 export function initializeNotificationSocket(httpServer, corsOptions) {
-  // Check if notifications are enabled via environment variable
-  if (process.env.ENABLE_NOTIFICATIONS !== 'true') {
+  // Check if notifications are explicitly disabled via environment variable
+  if (process.env.ENABLE_NOTIFICATIONS === 'false') {
     logger.info('⏸️  Real-time notifications disabled (ENABLE_NOTIFICATIONS=false)');
     return null;
   }
