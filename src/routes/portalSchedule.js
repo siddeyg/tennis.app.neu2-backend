@@ -1,5 +1,8 @@
 import express from 'express';
 import crypto from 'crypto';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import Student from '../models/Student.js';
 import Coach from '../models/Coach.js';
 import Announcement from '../models/Announcement.js';
@@ -13,6 +16,10 @@ import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encrypti
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { getDatesInRangeForDay } from '../utils/nrwHolidays.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadDir = path.join(__dirname, '../../uploads/announcements');
 
 const router = express.Router();
 
@@ -220,7 +227,7 @@ router.get('/announcements', verifyPortalAuth, async (req, res) => {
     }
 
     const announcements = await Announcement.find(query)
-      .select('title content priority publishDate')
+      .select('title content priority publishDate attachments')
       .sort({ priority: -1, publishDate: -1 }) // Urgent first, then by date
       .limit(50); // Limit to 50 most recent
 
@@ -229,6 +236,40 @@ router.get('/announcements', verifyPortalAuth, async (req, res) => {
   } catch (error) {
     logger.error("Error fetching portal announcements", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Laden der Ankündigungen' });
+  }
+});
+
+/**
+ * @route   GET /api/portal/announcements/:id/attachments/:filename
+ * @desc    Download an attachment for a portal user
+ * @access  Private (student portal users only)
+ */
+router.get('/announcements/:id/attachments/:filename', verifyPortalAuth, async (req, res) => {
+  try {
+    const announcement = await Announcement.findOne({
+      _id: req.params.id,
+      isActive: true
+    });
+    if (!announcement) {
+      return res.status(404).json({ error: 'Ankündigung nicht gefunden' });
+    }
+
+    const attachment = announcement.attachments.find(a => a.filename === req.params.filename);
+    if (!attachment) {
+      return res.status(404).json({ error: 'Anhang nicht gefunden' });
+    }
+
+    const filePath = path.join(uploadDir, attachment.filename);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Datei nicht gefunden' });
+    }
+
+    res.setHeader('Content-Disposition', `inline; filename="${attachment.originalName}"`);
+    res.setHeader('Content-Type', attachment.mimeType);
+    res.sendFile(filePath);
+  } catch (error) {
+    logger.error("Error downloading portal announcement attachment", { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler beim Herunterladen des Anhangs' });
   }
 });
 

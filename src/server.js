@@ -46,7 +46,7 @@ import scheduleRoutes from "./routes/schedule.js";
 import coachRoutes from "./routes/coaches.js";
 import savedScheduleRoutes from "./routes/savedSchedules.js";
 import settingsRoutes from "./routes/settings.js";
-import announcementsRoutes from "./routes/announcements.js";
+import announcementsRoutes, { serveAnnouncementImage } from "./routes/announcements.js";
 import scheduleChangeRequestsRoutes from "./routes/scheduleChangeRequests.js";
 import coachPortalRoutes from "./routes/coachPortal.js";
 import attendanceRoutes from "./routes/attendance.js";
@@ -259,6 +259,9 @@ app.use("/api/attendance", attendanceRoutes);
 
 // User management routes - admin only (supermod BLOCKED)
 app.use("/api/users", requireAuth, updateActivity, requireRole(["admin"]), userRoutes);
+
+// Public image serve for inline announcement images (no auth — UUIDs are unguessable)
+app.get("/api/announcements/images/:filename", serveAnnouncementImage);
 
 // Announcements routes - admin + supermod
 app.use("/api/announcements", requireAuth, updateActivity, requireAdminOrSupermod, announcementsRoutes);
