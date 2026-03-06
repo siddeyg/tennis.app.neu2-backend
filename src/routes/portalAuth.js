@@ -16,6 +16,7 @@ import {
 } from '../utils/emailService.js';
 import { createAuditLog, auditLogMiddleware } from '../middleware/auditLog.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
+import SupportTicket from '../models/SupportTicket.js';
 
 const router = express.Router();
 
@@ -866,6 +867,129 @@ router.post('/cancel-email-change', verifyPortalAuth, async (req, res) => {
 
   } catch (error) {
     logger.error('Cancel email change error', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler' });
+  }
+});
+
+/**
+ * @route   POST /api/portal/auth/change-password
+ * @desc    Change password for logged-in portal user
+ * @access  Private (student)
+ */
+router.post('/change-password',
+  verifyPortalAuth,
+  auditLogMiddleware({ action: 'UPDATE', resource: 'StudentPortalUser', metadata: { operation: 'change_password' } }),
+  async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'Aktuelles und neues Passwort erforderlich' });
+      }
+
+      // Validate new password: min 8 chars, 1 uppercase, 1 number, 1 special char
+      const pwRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+      if (!pwRegex.test(newPassword)) {
+        return res.status(400).json({
+          error: 'Passwort muss mindestens 8 Zeichen, einen Großbuchstaben, eine Zahl und ein Sonderzeichen enthalten'
+        });
+      }
+
+      const portalUser = await StudentPortalUser.findById(req.user.id);
+      if (!portalUser) {
+        return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+      }
+
+      const isMatch = await portalUser.comparePassword(currentPassword);
+      if (!isMatch) {
+        return res.status(400).json({ error: 'Aktuelles Passwort ist falsch' });
+      }
+
+      portalUser.password = newPassword;
+      await portalUser.save();
+
+      logger.info('Password changed', { userId: portalUser._id });
+      res.json({ message: 'Passwort erfolgreich geändert' });
+
+    } catch (error) {
+      logger.error('Change password error', { error: error.message, stack: error.stack });
+      res.status(500).json({ error: 'Serverfehler' });
+    }
+  }
+);
+
+/**
+ * @route   PUT /api/portal/auth/preferences
+ * @desc    Update email notification preference
+ * @access  Private (student)
+ */
+router.put('/preferences', verifyPortalAuth, async (req, res) => {
+  try {
+    const { emailNotifications } = req.body;
+
+    if (typeof emailNotifications !== 'boolean') {
+      return res.status(400).json({ error: 'emailNotifications muss ein Boolean sein' });
+    }
+
+    const portalUser = await StudentPortalUser.findByIdAndUpdate(
+      req.user.id,
+      { 'preferences.emailNotifications': emailNotifications },
+      { new: true }
+    );
+
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+    }
+
+    res.json({ preferences: portalUser.preferences });
+
+  } catch (error) {
+    logger.error('Update preferences error', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler' });
+  }
+});
+
+/**
+ * @route   POST /api/portal/auth/request-account-deletion
+ * @desc    Submit GDPR Art. 17 account deletion request via support ticket
+ * @access  Private (student, rate limited)
+ */
+router.post('/request-account-deletion', verifyPortalAuth, authLimiter, async (req, res) => {
+  try {
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+    }
+
+    const name = [portalUser.firstName, portalUser.lastName].filter(Boolean).join(' ') || portalUser.email;
+    const ticket = new SupportTicket({
+      subject: 'Kontolöschung angefragt (DSGVO Art. 17)',
+      category: 'other',
+      priority: 'medium',
+      status: 'open',
+      createdBy: {
+        studentPortalUserId: portalUser._id,
+        email: portalUser.email,
+        name
+      },
+      messages: [{
+        senderType: 'student',
+        senderId: portalUser._id,
+        senderName: name,
+        content: `Der Nutzer hat die Löschung seines Kontos gemäß DSGVO Art. 17 angefragt.\n\nKonto-ID: ${portalUser._id}\nE-Mail: ${portalUser.email}\nName: ${name}`
+      }],
+      lastMessageAt: new Date(),
+      lastMessageFrom: 'student',
+      unreadByAdmin: 1
+    });
+
+    await ticket.save();
+
+    logger.info('Account deletion requested', { userId: portalUser._id, ticketId: ticket._id });
+    res.json({ message: 'Löschanfrage eingereicht. Wir werden uns innerhalb von 30 Tagen bei dir melden.' });
+
+  } catch (error) {
+    logger.error('Request account deletion error', { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler' });
   }
 });
