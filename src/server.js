@@ -27,6 +27,26 @@ logger.info(`📄 Config file: ${activeEnvFile}`);
 logger.info(`📍 Config path: ${envPath}`);
 logger.info(`${activeEnvFile} exists: ${fs.existsSync(envPath)}`);
 logger.info(`🔑 JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
+logger.info(`🔑 PORTAL_JWT_SECRET configured: ${!!process.env.PORTAL_JWT_SECRET}`);
+
+// Fail fast if portal JWT secrets are absent or share a value with admin secrets.
+// A shared secret would allow portal tokens to be accepted by admin-portal routes.
+if (!process.env.PORTAL_JWT_SECRET) {
+  logger.error('FATAL: PORTAL_JWT_SECRET is not set. Refusing to start.');
+  process.exit(1);
+}
+if (process.env.PORTAL_JWT_SECRET === process.env.JWT_SECRET) {
+  logger.error('FATAL: PORTAL_JWT_SECRET must differ from JWT_SECRET. Shared secrets allow portal tokens to authenticate admin routes. Refusing to start.');
+  process.exit(1);
+}
+if (!process.env.PORTAL_REFRESH_TOKEN_SECRET) {
+  logger.error('FATAL: PORTAL_REFRESH_TOKEN_SECRET is not set. Refusing to start.');
+  process.exit(1);
+}
+if (process.env.PORTAL_REFRESH_TOKEN_SECRET === process.env.REFRESH_TOKEN_SECRET) {
+  logger.error('FATAL: PORTAL_REFRESH_TOKEN_SECRET must differ from REFRESH_TOKEN_SECRET. Refusing to start.');
+  process.exit(1);
+}
 logger.info(`🛢️ MongoDB connection configured: ${!!process.env.MONGO_URI}`);
 
 // Now import modules that depend on env variables (loaded via loadEnv.js above)
