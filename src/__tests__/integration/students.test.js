@@ -70,6 +70,33 @@ describe('Student API Integration Tests', () => {
       expect(savedStudent.firstName).toBe('Charlie');
     });
 
+    // Security regression test — mass assignment prevention
+    // BEFORE the fix: new Student(req.body) would copy every field from the body,
+    // including internal fields like `assignments` and `priorityTime` that are
+    // supposed to be set only by dedicated routes/algorithms, not by the caller.
+    // AFTER the fix: only whitelisted fields are copied; injected internals are ignored.
+    test('POST /api/students — injected assignments and priorityTime are silently ignored', async () => {
+      const maliciousBody = createTestStudent({
+        firstName: 'Attacker',
+        // Attempt to pre-load course assignments (bypasses capacity checks + assignment route)
+        assignments: [{ day: 'Montag', hour: 14, coach: null }],
+        // Attempt to set priority slot (bypasses seasonal registration processing)
+        priorityTime: { day: 'Dienstag', hour: 15, venue: 'BTHV' },
+      });
+
+      const res = await request(app).post('/api/students').send(maliciousBody);
+
+      expect(res.status).toBe(201);
+
+      const saved = await Student.findById(res.body._id).lean();
+      // assignments must be empty — injected slots were stripped
+      expect(saved.assignments).toHaveLength(0);
+      // priorityTime subdoc always exists (schema default), but the injected
+      // day/hour values must not have been written
+      expect(saved.priorityTime?.day).toBeUndefined();
+      expect(saved.priorityTime?.hour).toBeUndefined();
+    });
+
     test('should create student with availableTimes array', async () => {
       const newStudent = createTestStudent({
         availableTimes: [{ day: 'Montag', hour: 14, venue: '' }, { day: 'Mittwoch', hour: 16, venue: '' }]

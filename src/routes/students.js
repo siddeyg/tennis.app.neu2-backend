@@ -132,7 +132,19 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), 
     // Note: Duplicate email check removed - families can share emails (parent email for multiple children)
     // Duplicate detection is handled on frontend with firstName + lastName + birthDate matching
 
-    const student = new Student(req.body);
+    // Whitelist allowed fields — never pass req.body directly to the constructor
+    // (mass assignment: attacker could set internal fields like assignments, priorityTime, iban)
+    const {
+      firstName, lastName, birthDate, adress, email, phone,
+      member, adult, sex, team, trainigGroup, groupSize,
+      skillLevel, availableTimes, comment, comment2, frequence,
+    } = req.body;
+
+    const student = new Student({
+      firstName, lastName, birthDate, adress, email, phone,
+      member, adult, sex, team, trainigGroup, groupSize,
+      skillLevel, availableTimes, comment, comment2, frequence,
+    });
     await student.save();
     res.status(201).json(student);
   } catch (error) {
