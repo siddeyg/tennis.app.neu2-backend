@@ -49,7 +49,13 @@ const announcementSchema = new mongoose.Schema({
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  attachments: [{
+    filename: { type: String, required: true },
+    originalName: { type: String, required: true },
+    mimeType: { type: String, required: true },
+    size: { type: Number, required: true }
+  }]
 }, {
   timestamps: true
 });

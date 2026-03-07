@@ -8,6 +8,8 @@ import LoginSession from "../models/LoginSession.js";
 import UserSettings from "../models/UserSettings.js";
 import logger from "../utils/logger.js";
 import { createAuditLog, auditLogMiddleware } from "../middleware/auditLog.js";
+import { requireAuth } from "../middleware/requireAuth.js";
+import { requireRole } from "../middleware/requireRole.js";
 
 const router = express.Router();
 
@@ -274,9 +276,11 @@ router.post("/refresh",
 /**
  * POST /api/auth/register
  * Register new user (admin only)
- * This route will be protected in server.js with requireAuth + requireRole middleware
+ * Protected: requires valid admin JWT + admin role
  */
 router.post("/register",
+  requireAuth,
+  requireRole(["admin"]),
   auditLogMiddleware({ action: 'CREATE', resource: 'users' }),
   async (req, res) => {
   try {
