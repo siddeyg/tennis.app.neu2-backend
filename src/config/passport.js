@@ -32,6 +32,11 @@ export function configurePassport() {
             return done(null, false, { message: "Ihr Konto wurde deaktiviert" });
           }
 
+          // Check email verification
+          if (!user.isEmailVerified) {
+            return done(null, false, { message: "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse" });
+          }
+
           // Compare password
           const isMatch = await user.comparePassword(password);
 
