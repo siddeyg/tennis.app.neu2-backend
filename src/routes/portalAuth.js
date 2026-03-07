@@ -378,7 +378,7 @@ router.post('/login', authLimiter, async (req, res) => {
 
     const accessToken = jwt.sign(
       tokenPayload,
-      process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET,
+      process.env.PORTAL_JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
     );
 
@@ -387,7 +387,7 @@ router.post('/login', authLimiter, async (req, res) => {
         id: portalUser._id,
         role: 'student'
       },
-      process.env.PORTAL_REFRESH_TOKEN_SECRET || process.env.REFRESH_TOKEN_SECRET,
+      process.env.PORTAL_REFRESH_TOKEN_SECRET,
       { expiresIn: process.env.REFRESH_EXPIRES_IN || '7d' }
     );
 
@@ -487,7 +487,7 @@ router.post('/refresh',
     // Verify refresh token
     const decoded = jwt.verify(
       refreshToken,
-      process.env.PORTAL_REFRESH_TOKEN_SECRET || process.env.REFRESH_TOKEN_SECRET
+      process.env.PORTAL_REFRESH_TOKEN_SECRET
     );
 
     // Find user
@@ -504,7 +504,7 @@ router.post('/refresh',
         studentId: portalUser.studentId,
         profileCompleted: portalUser.profileCompleted || false
       },
-      process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET,
+      process.env.PORTAL_JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
     );
 
@@ -656,7 +656,7 @@ router.get('/me',
     // Verify token
     const decoded = jwt.verify(
       token,
-      process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET
+      process.env.PORTAL_JWT_SECRET
     );
 
     // Find user in StudentPortalUser table
@@ -722,7 +722,7 @@ router.get('/socket-token', verifyPortalAuth, async (req, res) => {
   try {
     const socketToken = jwt.sign(
       { id: req.user.id, role: req.user.role },
-      process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET,
+      process.env.PORTAL_JWT_SECRET,
       { expiresIn: '10m' }
     );
     res.json({ token: socketToken });
