@@ -8,6 +8,9 @@ import logger from '../utils/logger.js';
 
 const router = express.Router();
 
+// Escape regex metacharacters to prevent ReDoS on user-supplied search strings
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 // Validation schemas
 const listQuerySchema = Joi.object({
   startDate: Joi.date().iso().optional(),
@@ -125,9 +128,9 @@ router.get('/', listLimiter, async (req, res) => {
     // General search (endpoint, email, resource ID, IP)
     if (search) {
       query.$or = [
-        { 'details.endpoint': { $regex: search, $options: 'i' } },
-        { ipAddress: { $regex: search, $options: 'i' } },
-        { resourceId: { $regex: search, $options: 'i' } }
+        { 'details.endpoint': { $regex: escapeRegex(search), $options: 'i' } },
+        { ipAddress: { $regex: escapeRegex(search), $options: 'i' } },
+        { resourceId: { $regex: escapeRegex(search), $options: 'i' } }
       ];
     }
 
@@ -242,9 +245,9 @@ router.post('/export', exportLimiter, async (req, res) => {
 
     if (search) {
       query.$or = [
-        { 'details.endpoint': { $regex: search, $options: 'i' } },
-        { ipAddress: { $regex: search, $options: 'i' } },
-        { resourceId: { $regex: search, $options: 'i' } }
+        { 'details.endpoint': { $regex: escapeRegex(search), $options: 'i' } },
+        { ipAddress: { $regex: escapeRegex(search), $options: 'i' } },
+        { resourceId: { $regex: escapeRegex(search), $options: 'i' } }
       ];
     }
 

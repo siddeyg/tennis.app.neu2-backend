@@ -151,10 +151,8 @@ const corsOptions = {
       const allowedOrigins = [
         process.env.CORS_ORIGIN || "https://mondo.suwar.de",
         process.env.CORS_ORIGIN_ADMIN2 || "https://mondo2.suwar.de", // New admin portal
-        process.env.CORS_ORIGIN_STUDENT || "https://user.suwar.de", // Student portal (NEW domain - www)
-        process.env.CORS_ORIGIN_STUDENT_ROOT || "https://mondo-tennis.de", // Student portal (NEW domain - root)
-        "https://user.suwar.de", // Student portal (OLD domain - 30-day transition, remove after 2026-03-08)
-        "https://www.mondo-tennis.de", // Student portal (NEW domain with www - during transition)
+        process.env.CORS_ORIGIN_STUDENT || "https://user.suwar.de", // Student portal
+        process.env.CORS_ORIGIN_STUDENT_ROOT || "https://mondo-tennis.de", // Student portal (root domain)
         process.env.CORS_ORIGIN_COACH || "https://coach.suwar.de", // Coach portal
       ];
 

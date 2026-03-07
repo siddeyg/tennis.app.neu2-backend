@@ -120,11 +120,11 @@ router.get('/:id', async (req, res) => {
 
     const obj = registration.toObject();
 
-    // Decrypt IBAN for admin view (show last 4 + allow full view on request)
+    // Show masked IBAN only — full decrypted IBAN is not sent over the wire
     if (obj.iban) {
       obj.ibanMasked = maskIBAN(obj.iban, true);
-      obj.ibanFull = decryptIBAN(obj.iban); // Admin can see full IBAN
     }
+    delete obj.iban; // remove encrypted ciphertext — useless to client, unnecessary exposure
 
     res.json({
       success: true,

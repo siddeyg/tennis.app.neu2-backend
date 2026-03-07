@@ -496,15 +496,16 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
         const newEmail = email?.trim().toLowerCase();
         if (newEmail && newEmail !== portalUser.email) {
           const token = crypto.randomBytes(32).toString('hex');
+          const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
           const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
           await StudentPortalUser.updateOne(
             { _id: portalUserId },
-            { $set: { pendingEmail: newEmail, emailChangeToken: token, emailChangeTokenExpires: expires } }
+            { $set: { pendingEmail: newEmail, emailChangeToken: hashedToken, emailChangeTokenExpires: expires } }
           );
           const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
           try {
             const { sendEmailChangeVerification, sendEmailChangeWarning } = await import('../utils/emailService.js');
-            await sendEmailChangeVerification(newEmail, token, studentName);
+            await sendEmailChangeVerification(newEmail, token, studentName); // raw token in email link
             await sendEmailChangeWarning(portalUser.email, newEmail, studentName);
           } catch (emailError) {
             logger.error('Failed to send email change emails', { error: emailError.message });
@@ -617,15 +618,16 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
     const newEmail = email?.trim().toLowerCase();
     if (newEmail && newEmail !== portalUser.email) {
       const token = crypto.randomBytes(32).toString('hex');
+      const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
       const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
       await StudentPortalUser.updateOne(
         { _id: portalUserId },
-        { $set: { pendingEmail: newEmail, emailChangeToken: token, emailChangeTokenExpires: expires } }
+        { $set: { pendingEmail: newEmail, emailChangeToken: hashedToken, emailChangeTokenExpires: expires } }
       );
       const studentName = `${portalUser.firstName} ${portalUser.lastName}`;
       try {
         const { sendEmailChangeVerification, sendEmailChangeWarning } = await import('../utils/emailService.js');
-        await sendEmailChangeVerification(newEmail, token, studentName);
+        await sendEmailChangeVerification(newEmail, token, studentName); // raw token in email link
         await sendEmailChangeWarning(portalUser.email, newEmail, studentName);
       } catch (emailError) {
         logger.error('Failed to send email change emails', { error: emailError.message });

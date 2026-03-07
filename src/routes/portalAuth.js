@@ -787,8 +787,10 @@ router.get('/verify-email-change', tokenConsumptionLimiter, async (req, res) => 
       return res.redirect(`${portalUrl}/verify-email-change?error=missing-token`);
     }
 
+    // Hash the incoming token before DB lookup — tokens are stored hashed (never raw)
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
     const portalUser = await StudentPortalUser.findOne({
-      emailChangeToken: token,
+      emailChangeToken: hashedToken,
       emailChangeTokenExpires: { $gt: new Date() }
     });
 
