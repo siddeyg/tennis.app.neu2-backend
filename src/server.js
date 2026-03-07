@@ -132,7 +132,8 @@ app.use(
 // 2. Force HTTPS in production
 if (isProduction) {
   app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https') {
+    const proto = req.header('x-forwarded-proto');
+    if (proto && proto !== 'https') {
       logger.warn(`HTTP request redirected to HTTPS: ${req.method} ${req.originalUrl}`);
       return res.redirect(`https://${req.header('host')}${req.url}`);
     }
