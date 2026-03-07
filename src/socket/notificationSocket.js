@@ -53,7 +53,7 @@ export function initializeNotificationSocket(httpServer, corsOptions) {
       }
 
       // Verify JWT token (same secret as verifyPortalAuth)
-      const decoded = jwt.verify(token, process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.PORTAL_JWT_SECRET);
 
       // Check if this is a student portal user (not admin/coach)
       if (decoded.role !== 'student') {
