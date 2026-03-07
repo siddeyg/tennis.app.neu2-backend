@@ -1,13 +1,14 @@
 import express from 'express';
 import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import Student from '../models/Student.js';
 import Settings from '../models/Settings.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
-// All routes require admin authentication
-router.use(requireAuth);
+// All routes require admin or supermod — sending bulk notifications is a privileged action
+router.use(requireAuth, requireAdminOrSupermod);
 
 // Day order for sorting assignments
 const DAY_ORDER = {

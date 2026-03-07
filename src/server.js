@@ -322,8 +322,8 @@ app.use("/api/portal/documents", portalDocumentsRoutes);
 // Portal notifications routes - student portal (auth handled in route file)
 app.use("/api/portal/notifications", portalNotificationsRoutes);
 
-// Schedule notifications routes - admin only (auth handled in route file)
-app.use("/api/schedule-notifications", scheduleNotificationsRouter);
+// Schedule notifications routes - admin/supermod only
+app.use("/api/schedule-notifications", requireAuth, updateActivity, requireAdminOrSupermod, scheduleNotificationsRouter);
 
 // ========================================
 // Error Handler Middleware (MUST BE LAST)

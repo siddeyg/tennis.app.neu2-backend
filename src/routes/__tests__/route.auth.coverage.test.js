@@ -50,6 +50,7 @@ import portalCampsRoutes from '../portalCamps.js';
 import portalSupportTicketsRoutes from '../portalSupportTickets.js';
 import portalNotificationsRoutes from '../portalNotifications.js';
 import metricsRoutes from '../metrics.js';
+import scheduleNotificationsRoutes from '../scheduleNotifications.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { requireRole, requireAdminOrSupermod } from '../../middleware/requireRole.js';
 
@@ -80,6 +81,7 @@ app.use('/api/seasonal-registrations', requireAuth, requireAdminOrSupermod, seas
 app.use('/api/support-tickets',      requireAuth, requireAdminOrSupermod, supportTicketsRoutes);
 app.use('/api/audit-logs',           requireAuth, requireRole(['admin']),  auditLogsRoutes);
 app.use('/api/metrics',              requireAuth, requireRole(['admin']),  metricsRoutes);
+app.use('/api/schedule-notifications', requireAuth, requireAdminOrSupermod, scheduleNotificationsRoutes);
 app.use('/api/portal/camps',         portalCampsRoutes);
 app.use('/api/portal/support-tickets', portalSupportTicketsRoutes);
 app.use('/api/portal/notifications', portalNotificationsRoutes);
@@ -153,6 +155,7 @@ const PROTECTED_ENDPOINTS_SAMPLE = [
   { method: 'GET',    path: '/api/support-tickets' },
   { method: 'GET',    path: '/api/audit-logs' },
   { method: 'GET',    path: '/api/metrics' },
+  { method: 'GET',    path: '/api/schedule-notifications/status' },
   // THE ROUTE THAT HAD C1 — must stay here permanently as a regression test
   { method: 'POST',   path: '/api/auth/register',
     body: { email: 'x@x.com', password: 'Abc123!x', firstName: 'X', lastName: 'X', role: 'admin' }
