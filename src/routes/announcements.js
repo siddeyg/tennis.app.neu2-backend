@@ -408,6 +408,43 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Announce
 });
 
 /**
+ * @route   DELETE /api/announcements/:id/permanent
+ * @desc    Permanently delete an announcement and its attachment files
+ * @access  Private (admin only)
+ */
+router.delete('/:id/permanent', auditLogMiddleware({ action: 'DELETE', resource: 'Announcement', metadata: { operation: 'PERMANENT_DELETE' } }), async (req, res) => {
+  try {
+    const announcement = await Announcement.findById(req.params.id);
+
+    if (!announcement) {
+      return res.status(404).json({ error: 'Ankündigung nicht gefunden' });
+    }
+
+    if (announcement.isActive) {
+      return res.status(400).json({ error: 'Nur inaktive Ankündigungen können dauerhaft gelöscht werden' });
+    }
+
+    // Delete attachment files from disk
+    if (announcement.attachments?.length > 0) {
+      for (const att of announcement.attachments) {
+        const filePath = path.join(uploadDir, att.filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    }
+
+    await Announcement.findByIdAndDelete(req.params.id);
+
+    res.json({ message: 'Ankündigung dauerhaft gelöscht' });
+
+  } catch (error) {
+    logger.error("Error permanently deleting announcement", { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler beim dauerhaften Löschen' });
+  }
+});
+
+/**
  * @route   POST /api/announcements/:id/activate
  * @desc    Reactivate deleted announcement
  * @access  Private (admin only)
