@@ -60,8 +60,8 @@ const createPeriod = () =>
   RegistrationPeriod.create({
     name: 'Wintertraining 2025/26',
     season: 'winter',
-    trainingStartDate: new Date('2025-09-01'),
-    trainingEndDate:   new Date('2026-06-30'),
+    trainingStartDate: new Date('2027-09-01'),
+    trainingEndDate:   new Date('2028-06-30'),
     registrationDeadline: new Date('2027-12-31'),
     status: 'open',
     isActive: true,
