@@ -73,8 +73,8 @@ export function configurePassport() {
         // Admin portal token - use JWT_SECRET
         return done(null, process.env.JWT_SECRET);
       } else if (req.cookies['portalAccessToken']) {
-        // Student portal token - use PORTAL_JWT_SECRET
-        return done(null, process.env.PORTAL_JWT_SECRET || process.env.JWT_SECRET);
+        // Student portal token - use PORTAL_JWT_SECRET (no fallback: server.js asserts it is set)
+        return done(null, process.env.PORTAL_JWT_SECRET);
       }
     }
     // Fallback
@@ -96,6 +96,16 @@ export function configurePassport() {
 
           if (!userId) {
             return done(null, false);
+          }
+
+          // Audience guard: a token from a portalAccessToken cookie must carry role 'student'.
+          // Admin/supermod/trainer/viewer roles are issued only in authToken cookies (JWT_SECRET).
+          // This prevents a portal token from ever resolving to an admin user, even if secrets
+          // were accidentally shared (defence-in-depth on top of the startup assertion).
+          if (req.cookies && req.cookies['portalAccessToken'] && !req.cookies['authToken']) {
+            if (payload.role !== 'student') {
+              return done(null, false);
+            }
           }
 
           let user;
