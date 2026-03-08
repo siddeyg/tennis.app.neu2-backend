@@ -189,7 +189,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use(express.json({ limit: '10mb' })); // Middleware für JSON-Daten (increased limit for large schedule imports)
+app.use(express.json({ limit: '100kb' })); // Default limit — routes that need more override with their own middleware
 app.use(cookieParser()); // Middleware für Cookies
 
 // 4. MongoDB sanitization - Prevent NoSQL injection

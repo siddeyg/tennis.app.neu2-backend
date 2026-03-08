@@ -7,6 +7,8 @@ import Schedule from "../models/Schedule.js";
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
+const largeBody = express.json({ limit: '10mb' }); // only for schedule import/load routes
+
 const router = express.Router();
 
 // GET all saved schedules
@@ -61,9 +63,8 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'SavedSchedule
       });
     }
 
-    // User info (will be replaced by new auth system)
-    const userId = "system-user";
-    const userEmail = "system@example.com";
+    const userId = req.user._id;
+    const userEmail = req.user.email;
 
     // Calculate version number (count existing plans for this period + 1)
     const existingPlansCount = await SavedSchedule.countDocuments({ periodId });
@@ -131,7 +132,7 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'SavedSchedule
 });
 
 // POST /import - Create saved schedule from imported JSON data
-router.post("/import", auditLogMiddleware({ action: 'IMPORT', resource: 'SavedSchedule', metadata: { critical: true } }), async (req, res) => {
+router.post("/import", largeBody, auditLogMiddleware({ action: 'IMPORT', resource: 'SavedSchedule', metadata: { critical: true } }), async (req, res) => {
   try {
     const { name, description, students, coaches, schedule } = req.body;
 
@@ -142,9 +143,8 @@ router.post("/import", auditLogMiddleware({ action: 'IMPORT', resource: 'SavedSc
       });
     }
 
-    // User info (will be replaced by new auth system)
-    const userId = "system-user";
-    const userEmail = "system@example.com";
+    const userId = req.user._id;
+    const userEmail = req.user.email;
 
     // Calculate unassigned students from imported data
     const studentsNotSet = students.filter(
@@ -231,11 +231,10 @@ router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'SavedSch
 });
 
 // POST - Load saved schedule (replace current DB state)
-router.post("/:id/load", auditLogMiddleware({ action: 'UPDATE', resource: 'Schedule', metadata: { critical: true, action: 'load_saved_schedule' } }), async (req, res) => {
+router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resource: 'Schedule', metadata: { critical: true, action: 'load_saved_schedule' } }), async (req, res) => {
   try {
-    // User info (will be replaced by new auth system)
-    const userId = "system-user";
-    const userEmail = "system@example.com";
+    const userId = req.user._id;
+    const userEmail = req.user.email;
 
     // Get the saved schedule with populated period
     const savedSchedule = await SavedSchedule.findById(req.params.id)
