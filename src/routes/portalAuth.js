@@ -107,7 +107,7 @@ router.post('/register',
       });
     }
 
-    const { email, password, firstName, lastName, birthdate, sex, member, phone } = req.body;
+    const { email, password, firstName, lastName, birthdate, sex, member, phone, address, parentName, parentEmail, parentPhone } = req.body;
 
     // Validation
     if (!email || !password) {
@@ -152,6 +152,27 @@ router.post('/register',
       return res.status(400).json({ error: 'Passwort muss mindestens ein Sonderzeichen enthalten' });
     }
 
+    // Address is required for all users
+    if (!address || address.trim().length === 0) {
+      return res.status(400).json({ error: 'Bitte geben Sie Ihre Adresse ein' });
+    }
+
+    // Parent fields required for minors (< 18)
+    const ageMs = Date.now() - new Date(birthdate).getTime();
+    const ageYears = ageMs / (365.25 * 24 * 60 * 60 * 1000);
+    const isMinor = ageYears < 18;
+    if (isMinor) {
+      if (!parentName || parentName.trim().length === 0) {
+        return res.status(400).json({ error: 'Bitte geben Sie den Namen eines Elternteils ein' });
+      }
+      if (!parentEmail || !parentEmail.includes('@')) {
+        return res.status(400).json({ error: 'Bitte geben Sie eine gültige E-Mail-Adresse eines Elternteils ein' });
+      }
+      if (!parentPhone || parentPhone.trim().length === 0) {
+        return res.status(400).json({ error: 'Bitte geben Sie die Telefonnummer eines Elternteils ein' });
+      }
+    }
+
     // Check if email already registered
     const existingUser = await StudentPortalUser.findOne({ email: email.toLowerCase() });
     if (existingUser) {
@@ -172,6 +193,11 @@ router.post('/register',
       sex,
       member: member === true || member === 'true',
       phone: phone || null,
+      address: address.trim(),
+      parentName: isMinor ? parentName.trim() : undefined,
+      parentEmail: isMinor ? parentEmail.toLowerCase().trim() : undefined,
+      parentPhone: isMinor ? parentPhone.trim() : undefined,
+      profileCompleted: true,
       studentId: null,  // Will be linked when first seasonal registration is submitted
       verificationToken: hashedVerificationToken,
       verificationTokenExpires,
