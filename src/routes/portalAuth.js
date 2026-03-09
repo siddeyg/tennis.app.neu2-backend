@@ -157,20 +157,11 @@ router.post('/register',
       return res.status(400).json({ error: 'Bitte geben Sie Ihre Adresse ein' });
     }
 
-    // Parent fields required for minors (< 18)
+    // Minors (< 18) cannot register
     const ageMs = Date.now() - new Date(birthdate).getTime();
     const ageYears = ageMs / (365.25 * 24 * 60 * 60 * 1000);
-    const isMinor = ageYears < 18;
-    if (isMinor) {
-      if (!parentName || parentName.trim().length === 0) {
-        return res.status(400).json({ error: 'Bitte geben Sie den Namen eines Elternteils ein' });
-      }
-      if (!parentEmail || !parentEmail.includes('@')) {
-        return res.status(400).json({ error: 'Bitte geben Sie eine gültige E-Mail-Adresse eines Elternteils ein' });
-      }
-      if (!parentPhone || parentPhone.trim().length === 0) {
-        return res.status(400).json({ error: 'Bitte geben Sie die Telefonnummer eines Elternteils ein' });
-      }
+    if (ageYears < 18) {
+      return res.status(400).json({ error: 'Die Registrierung ist nur für Personen ab 18 Jahren möglich. Bitte wenden Sie sich an den Verein.' });
     }
 
     // Check if email already registered
@@ -194,9 +185,6 @@ router.post('/register',
       member: member === true || member === 'true',
       phone: phone || null,
       address: address.trim(),
-      parentName: isMinor ? parentName.trim() : undefined,
-      parentEmail: isMinor ? parentEmail.toLowerCase().trim() : undefined,
-      parentPhone: isMinor ? parentPhone.trim() : undefined,
       profileCompleted: true,
       studentId: null,  // Will be linked when first seasonal registration is submitted
       verificationToken: hashedVerificationToken,

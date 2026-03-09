@@ -118,6 +118,15 @@ describe('Portal Auth - GDPR Registration', () => {
       }
     });
 
+    test('Should reject registration for minors (under 18)', async () => {
+      const res = await request(app)
+        .post('/api/portal/auth/register')
+        .send({ ...validRegistrationData, birthdate: '2010-05-15' })
+        .expect(400);
+
+      expect(res.body.error).toContain('nur für Personen ab 18 Jahren');
+    });
+
     test('Should reject password shorter than 8 characters', async () => {
       const res = await request(app)
         .post('/api/portal/auth/register')

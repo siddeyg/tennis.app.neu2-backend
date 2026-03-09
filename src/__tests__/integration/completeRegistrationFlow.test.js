@@ -85,14 +85,11 @@ describe('Complete Registration Flow - E2E', () => {
         password: userPassword,
         firstName: 'Emma',
         lastName: 'E2E-Test',
-        birthdate: '2013-07-20',
+        birthdate: '1990-07-20',
         sex: 'weiblich',
         member: false,
         phone: '+49111222333',
-        address: 'Teststraße 1, 10115 Berlin',
-        parentName: 'Maria E2E-Test',
-        parentEmail: 'parent-e2e@example.com',
-        parentPhone: '+49111222000'
+        address: 'Teststraße 1, 10115 Berlin'
       })
       .expect(201);
 
@@ -296,13 +293,10 @@ describe('Complete Registration Flow - E2E', () => {
         password: 'TestPass123!',
         firstName: 'Unverified',
         lastName: 'User',
-        birthdate: '2010-01-01',
+        birthdate: '1995-01-01',
         sex: 'weiblich',
         member: false,
-        address: 'Testweg 9, 10115 Berlin',
-        parentName: 'Test Elternteil',
-        parentEmail: 'parent-unverified@example.com',
-        parentPhone: '+49100200300'
+        address: 'Testweg 9, 10115 Berlin'
       })
       .expect(201);
 
@@ -345,13 +339,10 @@ describe('Complete Registration Flow - E2E', () => {
         password: 'TestPass123!',
         firstName: 'New',
         lastName: 'User',
-        birthdate: '2012-06-15',
+        birthdate: '2000-06-15',
         sex: 'weiblich',
         member: false,
-        address: 'DSGVO-Str. 1, 10115 Berlin',
-        parentName: 'GDPR Elternteil',
-        parentEmail: 'parent-gdpr@example.com',
-        parentPhone: '+49100200400'
+        address: 'DSGVO-Str. 1, 10115 Berlin'
       })
       .expect(201);
 
