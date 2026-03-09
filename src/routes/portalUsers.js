@@ -12,6 +12,10 @@ import crypto from 'crypto';
 import express from 'express';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
+import CampRegistration from '../models/CampRegistration.js';
+import Camp from '../models/Camp.js';
+import SeasonalRegistration from '../models/SeasonalRegistration.js';
+import SupportTicket from '../models/SupportTicket.js';
 import { generateVerificationTokenWithExpiry, sendVerificationEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
 import { auditLogMiddleware } from '../middleware/auditLog.js';
@@ -74,22 +78,46 @@ router.delete('/:id',
     }
 
     const linkedStudentId = portalUser.studentId;
+    const portalUserId = portalUser._id;
 
-    // Delete portal user
+    // 1. Decrement currentParticipants for each camp registration, then delete them
+    const campRegs = await CampRegistration.find({ studentPortalUserId: portalUserId });
+    for (const reg of campRegs) {
+      await Camp.findByIdAndUpdate(reg.campId, { $inc: { currentParticipants: -1 } });
+    }
+    const deletedCampRegs = await CampRegistration.deleteMany({ studentPortalUserId: portalUserId });
+
+    // 2. Delete seasonal registrations
+    const deletedSeasonalRegs = await SeasonalRegistration.deleteMany({ studentPortalUserId: portalUserId });
+
+    // 3. Archive (soft-delete) support tickets so they remain visible in DB
+    const now = new Date();
+    const archivedTickets = await SupportTicket.updateMany(
+      { 'createdBy.studentPortalUserId': portalUserId, isDeleted: false },
+      { $set: { isDeleted: true, deletedAt: now, status: 'closed' } }
+    );
+
+    // 4. Delete portal user
     await StudentPortalUser.findByIdAndDelete(id);
 
-    // Delete linked Student if requested
+    // 5. Optionally delete linked Student
     if (deleteStudent === 'true' && linkedStudentId) {
       await Student.findByIdAndDelete(linkedStudentId);
       return res.json({
         message: 'Portal-Benutzer und zugehöriger Schüler gelöscht',
-        deletedStudent: true
+        deletedStudent: true,
+        deletedCampRegistrations: deletedCampRegs.deletedCount,
+        deletedSeasonalRegistrations: deletedSeasonalRegs.deletedCount,
+        archivedTickets: archivedTickets.modifiedCount
       });
     }
 
     res.json({
       message: 'Portal-Benutzer gelöscht',
-      deletedStudent: false
+      deletedStudent: false,
+      deletedCampRegistrations: deletedCampRegs.deletedCount,
+      deletedSeasonalRegistrations: deletedSeasonalRegs.deletedCount,
+      archivedTickets: archivedTickets.modifiedCount
     });
   } catch (error) {
     logger.error("Error deleting portal user", { error: error.message, stack: error.stack });
