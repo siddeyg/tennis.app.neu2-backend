@@ -32,9 +32,16 @@ winston.addColors(colors);
 const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
+  winston.format.printf((info) => {
+    const meta = { ...info };
+    delete meta.timestamp;
+    delete meta.level;
+    delete meta.message;
+    delete meta[Symbol.for('level')];
+    delete meta[Symbol.for('splat')];
+    const metaStr = Object.keys(meta).length ? ' ' + JSON.stringify(meta) : '';
+    return `${info.timestamp} ${info.level}: ${info.message}${metaStr}`;
+  })
 );
 
 // Define which transports the logger must use
