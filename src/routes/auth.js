@@ -10,6 +10,7 @@ import logger from "../utils/logger.js";
 import { createAuditLog, auditLogMiddleware } from "../middleware/auditLog.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { requireRole } from "../middleware/requireRole.js";
+import { sendPasswordResetEmail } from "../utils/emailService.js";
 
 const router = express.Router();
 
@@ -422,25 +423,16 @@ router.post("/forgot-password",
     user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
     await user.save();
 
-    // TODO: Send email with reset link
-    // const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-    // await sendPasswordResetEmail(user.email, user.firstName, resetUrl);
+    const adminPortalUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const userName = `${user.firstName} ${user.lastName}`.trim() || user.email;
 
-    // DEVELOPMENT ONLY: Return reset link in response
-    // In production, this should be sent via email and NOT returned in response
-    const isDevelopment = process.env.NODE_ENV !== "production";
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    sendPasswordResetEmail(user.email, resetToken, userName, adminPortalUrl)
+      .catch(err => logger.error("Failed to send admin password reset email", { error: err.message, email: user.email }));
 
     logger.info("Password reset requested", { email: user.email });
-    // Security: Token is sent via email, NOT logged
 
     res.json({
       message: "Wenn die E-Mail-Adresse existiert, wurde eine Passwort-Reset-E-Mail gesendet.",
-      // DEVELOPMENT ONLY
-      ...(isDevelopment && {
-        resetUrl,
-        devNote: "In Produktion wird dieser Link per E-Mail gesendet (nicht in Response)"
-      }),
     });
   } catch (error) {
     logger.error("Forgot password error", { error: error.message, stack: error.stack });
