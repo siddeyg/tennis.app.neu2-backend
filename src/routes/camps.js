@@ -29,6 +29,13 @@ import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
 
+// Enum constants — must match Camp model AND CampForm.js option values
+// When adding a new dropdown option in the frontend, add it here AND in Camp.js enum
+const VALID_CAMP_TYPES = ['beginner-course', 'intensive-workshop', 'technique-camp', 'other'];
+const VALID_TARGET_AUDIENCES = ['all', 'adults', 'youth', 'children', 'children_youth'];
+const VALID_SKILL_LEVELS = ['beginner', 'intermediate'];
+const VALID_TEAM_ACCESS = ['all', 'team-only'];
+
 // Helper function to identify changed fields
 function getChangedFields(before, after) {
   const changes = {};
@@ -165,11 +172,16 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       });
     }
 
+    // Sanitize enum fields — strip values not in the current enum (prevents ValidationError on save)
+    const safeCampType = VALID_CAMP_TYPES.includes(campType) ? campType : 'other';
+    const safeTargetAudience = VALID_TARGET_AUDIENCES.includes(targetAudience) ? targetAudience : 'all';
+    const safeSkillLevels = (skillLevels || []).filter(l => VALID_SKILL_LEVELS.includes(l));
+
     // Create camp
     const camp = new Camp({
       title,
       description,
-      campType: campType || 'other',
+      campType: safeCampType,
       schedule,
       startDate,
       endDate,
@@ -178,10 +190,10 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       maxParticipants,
       waitlistEnabled: waitlistEnabled || false,
       maxWaitlist: maxWaitlist || 0,
-      targetAudience: targetAudience || 'all',
+      targetAudience: safeTargetAudience,
       minAge: minAge || null,
       maxAge: maxAge || null,
-      skillLevels: skillLevels || [],
+      skillLevels: safeSkillLevels.length > 0 ? safeSkillLevels : ['beginner'],
       trainerId: trainerId || null,
       trainerName: trainerName || '',
       status: 'draft',
@@ -246,10 +258,12 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       }
     });
 
-    // Sanitize skillLevels — strip any values no longer in the enum
-    const validSkillLevels = ['beginner', 'intermediate'];
-    camp.skillLevels = (camp.skillLevels || []).filter(l => validSkillLevels.includes(l));
+    // Sanitize enum fields — strip values not in current enum (prevents ValidationError on stale DB data)
+    camp.skillLevels = (camp.skillLevels || []).filter(l => VALID_SKILL_LEVELS.includes(l));
     if (camp.skillLevels.length === 0) camp.skillLevels = ['beginner'];
+    if (!VALID_CAMP_TYPES.includes(camp.campType)) camp.campType = 'other';
+    if (!VALID_TARGET_AUDIENCES.includes(camp.targetAudience)) camp.targetAudience = 'all';
+    if (camp.teamAccess && !VALID_TEAM_ACCESS.includes(camp.teamAccess)) camp.teamAccess = 'all';
 
     await camp.save();
 
