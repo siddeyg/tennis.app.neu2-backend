@@ -2,15 +2,15 @@ import express from 'express';
 import ScheduleChangeRequest from '../models/ScheduleChangeRequest.js';
 import Student from '../models/Student.js';
 import { requireAuth } from '../middleware/requireAuth.js';
-import { requireRole } from '../middleware/requireRole.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
 
-// All routes require admin authentication
+// All routes require admin or supermod authentication
 router.use(requireAuth);
-router.use(requireRole(['admin']));
+router.use(requireAdminOrSupermod);
 
 /**
  * @route   GET /api/schedule-change-requests
