@@ -1170,6 +1170,14 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-value">${formatDate(registration.birthdate)}</span>
           </div>
           <div class="field">
+            <span class="field-label">Geschlecht:</span>
+            <span class="field-value">${registration.sex || 'Keine Angabe'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Mitglied:</span>
+            <span class="field-value">${registration.member ? 'Ja' : 'Nein'}</span>
+          </div>
+          <div class="field">
             <span class="field-label">Spielstärke:</span>
             <span class="field-value">${registration.skillLevel || 'Keine Angabe'}</span>
           </div>
