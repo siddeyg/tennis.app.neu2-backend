@@ -80,14 +80,20 @@ router.delete('/:id',
     const linkedStudentId = portalUser.studentId;
     const portalUserId = portalUser._id;
 
+    // Collect Student IDs for all family members (children)
+    const familyStudentIds = (portalUser.familyMembers || [])
+      .map(m => m.studentId)
+      .filter(Boolean);
+
     // 1. Decrement currentParticipants for each camp registration, then delete them
+    // (covers both main user and family member registrations — all share the same studentPortalUserId)
     const campRegs = await CampRegistration.find({ studentPortalUserId: portalUserId });
     for (const reg of campRegs) {
       await Camp.findByIdAndUpdate(reg.campId, { $inc: { currentParticipants: -1 } });
     }
     const deletedCampRegs = await CampRegistration.deleteMany({ studentPortalUserId: portalUserId });
 
-    // 2. Delete seasonal registrations
+    // 2. Delete seasonal registrations (covers main user + family members)
     const deletedSeasonalRegs = await SeasonalRegistration.deleteMany({ studentPortalUserId: portalUserId });
 
     // 3. Archive (soft-delete) support tickets so they remain visible in DB
@@ -97,15 +103,23 @@ router.delete('/:id',
       { $set: { isDeleted: true, deletedAt: now, status: 'closed' } }
     );
 
-    // 4. Delete portal user
+    // 4. Delete Student records for all family members (children linked via familyMembers[].studentId)
+    let deletedFamilyStudents = 0;
+    if (familyStudentIds.length > 0) {
+      const result = await Student.deleteMany({ _id: { $in: familyStudentIds } });
+      deletedFamilyStudents = result.deletedCount;
+    }
+
+    // 5. Delete portal user
     await StudentPortalUser.findByIdAndDelete(id);
 
-    // 5. Optionally delete linked Student
+    // 6. Optionally delete the main user's linked Student record
     if (deleteStudent === 'true' && linkedStudentId) {
       await Student.findByIdAndDelete(linkedStudentId);
       return res.json({
         message: 'Portal-Benutzer und zugehöriger Schüler gelöscht',
         deletedStudent: true,
+        deletedFamilyStudents,
         deletedCampRegistrations: deletedCampRegs.deletedCount,
         deletedSeasonalRegistrations: deletedSeasonalRegs.deletedCount,
         archivedTickets: archivedTickets.modifiedCount
@@ -115,6 +129,7 @@ router.delete('/:id',
     res.json({
       message: 'Portal-Benutzer gelöscht',
       deletedStudent: false,
+      deletedFamilyStudents,
       deletedCampRegistrations: deletedCampRegs.deletedCount,
       deletedSeasonalRegistrations: deletedSeasonalRegs.deletedCount,
       archivedTickets: archivedTickets.modifiedCount
