@@ -494,8 +494,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       };
     }
 
-    // Handle SEPA mandate
-    if (sepaMandate && accountHolder && iban) {
+    // Handle SEPA mandate — kids only (adults receive a bill, no direct debit)
+    if (formType === 'kids' && sepaMandate && accountHolder && iban) {
       // Validate IBAN format
       if (!validateIBANFormat(iban)) {
         return res.status(400).json({
@@ -513,14 +513,12 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
     const registration = new SeasonalRegistration(registrationData);
     await registration.save();
 
-    // Save IBAN to user profile (both StudentPortalUser and Student if exists)
-    if (iban && validateIBANFormat(iban)) {
+    // Save IBAN to user profile — kids only
+    if (formType === 'kids' && iban && validateIBANFormat(iban)) {
       const encryptedIBAN = encryptIBAN(iban);
 
-      // Always save to StudentPortalUser
       await StudentPortalUser.findByIdAndUpdate(req.user.id, { iban: encryptedIBAN });
 
-      // Also save to Student if user has linked Student record
       if (req.user.studentId) {
         const Student = (await import('../models/Student.js')).default;
         await Student.findByIdAndUpdate(req.user.studentId, { iban: encryptedIBAN });

@@ -664,6 +664,25 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
 });
 
 /**
+ * @route   DELETE /api/portal/profile/iban
+ * @desc    Delete stored IBAN from user profile
+ * @access  Private (student portal users only)
+ */
+router.delete('/profile/iban', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', resource: 'StudentProfile', metadata: { operation: 'delete_iban' } }), async (req, res) => {
+  try {
+    const portalUserId = req.user.id;
+    await StudentPortalUser.findByIdAndUpdate(portalUserId, { $unset: { iban: '' } });
+    if (req.user.studentId) {
+      await Student.findByIdAndUpdate(req.user.studentId, { $unset: { iban: '' } });
+    }
+    res.json({ success: true, message: 'IBAN erfolgreich gelöscht' });
+  } catch (error) {
+    logger.error('Error deleting IBAN', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler beim Löschen der IBAN' });
+  }
+});
+
+/**
  * @route   POST /api/portal/profile/complete
  * @desc    Complete user profile with address and parent info (for children)
  * @access  Private (student portal users only)

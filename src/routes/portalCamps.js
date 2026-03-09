@@ -17,7 +17,6 @@ import CampRegistration from '../models/CampRegistration.js';
 import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
-import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail, sendCampCancellationEmail, sendCampCancellationAdminEmail } from '../utils/emailService.js';
@@ -166,7 +165,6 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       phone,
       skillLevel,
       team,
-      iban,
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
       medicalNotes
@@ -189,19 +187,6 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       });
     }
 
-    // Validate and encrypt IBAN if provided
-    let encryptedIBAN = null;
-    if (iban && iban.trim() !== '') {
-      const cleanIBAN = iban.replace(/\s/g, ''); // Remove spaces
-      if (!validateIBANFormat(cleanIBAN)) {
-        if (session) await session.abortTransaction();
-        return res.status(400).json({
-          success: false,
-          error: 'Ungültige IBAN'
-        });
-      }
-      encryptedIBAN = encryptIBAN(cleanIBAN);
-    }
 
     if (!['beginner', 'intermediate', 'advanced'].includes(skillLevel)) {
       if (session) await session.abortTransaction();
@@ -371,27 +356,6 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       await camp.save(session ? { session } : {});
     }
 
-    // 6. Save IBAN to user profile (both StudentPortalUser and Student if exists)
-    if (encryptedIBAN) {
-      const StudentPortalUser = (await import('../models/StudentPortalUser.js')).default;
-
-      // Always save to StudentPortalUser
-      await StudentPortalUser.findByIdAndUpdate(
-        req.user.id,
-        { iban: encryptedIBAN },
-        session ? { session } : {}
-      );
-
-      // Also save to Student if user has linked Student record
-      if (req.user.studentId) {
-        const Student = (await import('../models/Student.js')).default;
-        await Student.findByIdAndUpdate(
-          req.user.studentId,
-          { iban: encryptedIBAN },
-          session ? { session } : {}
-        );
-      }
-    }
 
     // 7. Commit transaction
     if (session) await session.commitTransaction();
