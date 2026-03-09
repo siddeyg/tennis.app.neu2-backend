@@ -212,11 +212,9 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
     });
   } catch (error) {
     logger.error("Error creating camp", { error: error.message, stack: error.stack });
-    if (error.message.includes('Datum')) {
-      return res.status(400).json({
-        success: false,
-        error: error.message
-      });
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(e => e.message).join(', ');
+      return res.status(400).json({ success: false, error: `Validierungsfehler: ${messages}` });
     }
     res.status(500).json({
       success: false,
@@ -285,11 +283,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
     });
   } catch (error) {
     logger.error("Error updating camp", { error: error.message, stack: error.stack });
-    if (error.message.includes('Datum')) {
-      return res.status(400).json({
-        success: false,
-        error: error.message
-      });
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(e => e.message).join(', ');
+      return res.status(400).json({ success: false, error: `Validierungsfehler: ${messages}` });
     }
     res.status(500).json({
       success: false,
