@@ -246,6 +246,11 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       }
     });
 
+    // Sanitize skillLevels — strip any values no longer in the enum
+    const validSkillLevels = ['beginner', 'intermediate'];
+    camp.skillLevels = (camp.skillLevels || []).filter(l => validSkillLevels.includes(l));
+    if (camp.skillLevels.length === 0) camp.skillLevels = ['beginner'];
+
     await camp.save();
 
     // Populate for response
