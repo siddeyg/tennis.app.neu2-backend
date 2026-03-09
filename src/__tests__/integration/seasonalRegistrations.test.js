@@ -285,7 +285,8 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       expect(response.body.registration).toBeDefined();
       expect(response.body.registration.firstName).toBe('Sandra');
       expect(response.body.registration.spielstärke).toBe('Fortgeschrittene');
-      expect(response.body.registration.ibanFull).toBe('DE89370400440532013000'); // Decrypted
+      expect(response.body.registration.ibanFull).toBeUndefined(); // Removed for security (B2-H3)
+      expect(response.body.registration.ibanMasked).toBeDefined(); // Only masked IBAN in response
       expect(response.body.registration.sepaMandate).toBe(true);
     });
 

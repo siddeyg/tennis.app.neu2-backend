@@ -88,7 +88,11 @@ describe('Complete Registration Flow - E2E', () => {
         birthdate: '2013-07-20',
         sex: 'weiblich',
         member: false,
-        phone: '+49111222333'
+        phone: '+49111222333',
+        address: 'Teststraße 1, 10115 Berlin',
+        parentName: 'Maria E2E-Test',
+        parentEmail: 'parent-e2e@example.com',
+        parentPhone: '+49111222000'
       })
       .expect(201);
 
@@ -222,7 +226,8 @@ describe('Complete Registration Flow - E2E', () => {
         birthdate: '1982-11-05',
         sex: 'männlich',
         member: false,
-        phone: '+49222333444'
+        phone: '+49222333444',
+        address: 'Erwachsenenstr. 5, 80331 München'
       })
       .expect(201);
 
@@ -293,7 +298,11 @@ describe('Complete Registration Flow - E2E', () => {
         lastName: 'User',
         birthdate: '2010-01-01',
         sex: 'weiblich',
-        member: false
+        member: false,
+        address: 'Testweg 9, 10115 Berlin',
+        parentName: 'Test Elternteil',
+        parentEmail: 'parent-unverified@example.com',
+        parentPhone: '+49100200300'
       })
       .expect(201);
 
@@ -338,7 +347,11 @@ describe('Complete Registration Flow - E2E', () => {
         lastName: 'User',
         birthdate: '2012-06-15',
         sex: 'weiblich',
-        member: false
+        member: false,
+        address: 'DSGVO-Str. 1, 10115 Berlin',
+        parentName: 'GDPR Elternteil',
+        parentEmail: 'parent-gdpr@example.com',
+        parentPhone: '+49100200400'
       })
       .expect(201);
 

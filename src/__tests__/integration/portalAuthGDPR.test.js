@@ -55,6 +55,7 @@ describe('Portal Auth - GDPR Registration', () => {
       phone: '+49123456789',
       sex: 'männlich',
       member: false,
+      address: 'Musterstraße 1, 10115 Berlin',
     };
 
     test('Should register user with personal data (no studentId)', async () => {
@@ -100,7 +101,8 @@ describe('Portal Auth - GDPR Registration', () => {
         { field: 'password', error: 'Email und Passwort sind erforderlich' },
         { field: 'firstName', error: 'Vorname, Nachname und Geburtsdatum sind erforderlich' },
         { field: 'lastName', error: 'Vorname, Nachname und Geburtsdatum sind erforderlich' },
-        { field: 'birthdate', error: 'Vorname, Nachname und Geburtsdatum sind erforderlich' }
+        { field: 'birthdate', error: 'Vorname, Nachname und Geburtsdatum sind erforderlich' },
+        { field: 'address', error: 'Bitte geben Sie Ihre Adresse ein' }
       ];
 
       for (const testCase of testCases) {
