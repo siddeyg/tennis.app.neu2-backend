@@ -1,4 +1,5 @@
 import logger from '../utils/logger.js';
+import { sendAlert } from '../utils/alertService.js';
 
 /**
  * Global error handler middleware
@@ -8,16 +9,22 @@ import logger from '../utils/logger.js';
 const errorHandler = (err, req, res, next) => {
   const isProduction = process.env.NODE_ENV === 'production';
 
+  // Determine status code
+  const statusCode = err.statusCode || err.status || 500;
+
   // Log the full error with stack trace (server-side only)
   logger.error(`${err.message}\n${err.stack}`);
-
-  // Log request details for debugging
   logger.error(`Request: ${req.method} ${req.originalUrl}`);
   logger.error(`IP: ${req.ip}`);
   logger.error(`User: ${req.user ? req.user.id : 'unauthenticated'}`);
 
-  // Determine status code
-  const statusCode = err.statusCode || err.status || 500;
+  // Alert on unexpected 500s (not on client errors like 400/401/403)
+  if (statusCode >= 500) {
+    sendAlert(
+      `🚨 500 — ${req.method} ${req.path}`,
+      err.message || 'Unexpected server error'
+    );
+  }
 
   // Prepare error response
   const errorResponse = {

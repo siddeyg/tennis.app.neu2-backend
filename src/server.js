@@ -15,6 +15,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import morgan from "morgan";
 import logger from "./utils/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
+import { sendAlert } from "./utils/alertService.js";
 
 // Get directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -249,6 +250,21 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Response interceptor — alert on every 500 response (production only)
+app.use((req, res, next) => {
+  const originalJson = res.json.bind(res);
+  res.json = (body) => {
+    if (res.statusCode >= 500) {
+      sendAlert(
+        `🚨 500 — ${req.method} ${req.path}`,
+        (body && body.error) || 'Unexpected server error'
+      );
+    }
+    return originalJson(body);
+  };
+  next();
+});
+
 // Auth routes (public - no authentication required)
 app.use("/api/auth", authRoutes);
 app.use("/api/portal/auth", portalAuthRoutes);
@@ -349,3 +365,14 @@ const shutdown = async (signal) => {
 };
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
+
+// Alert on unhandled errors — these can leave the process in an unknown state
+process.on('uncaughtException', (err) => {
+  logger.error('uncaughtException', { error: err.message, stack: err.stack });
+  sendAlert('🔴 uncaughtException — mondo-backend', err.message);
+});
+process.on('unhandledRejection', (reason) => {
+  const msg = reason instanceof Error ? reason.message : String(reason);
+  logger.error('unhandledRejection', { reason: msg });
+  sendAlert('🔴 unhandledRejection — mondo-backend', msg);
+});
