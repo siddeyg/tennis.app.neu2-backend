@@ -81,8 +81,9 @@ const textFormatters = {
   field: (label, value, labelWidth = 20) => `${label.padEnd(labelWidth)}: ${value}`
 };
 
-// Check if SMTP is configured
+// Check if SMTP is configured (never send real emails in test environment)
 const isConfigured =
+  process.env.NODE_ENV !== 'test' &&
   process.env.SMTP_HOST &&
   process.env.SMTP_USER &&
   process.env.SMTP_PASS;
