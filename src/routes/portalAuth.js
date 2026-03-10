@@ -727,7 +727,7 @@ router.get('/me',
 
 /**
  * @route   GET /api/portal/auth/socket-token
- * @desc    Issue a short-lived token for Socket.io authentication
+ * @desc    Issue a 2h token for Socket.io authentication
  *          Needed because httpOnly cookies can't be read by JS and SameSite=strict
  *          blocks the cookie on cross-origin socket connections (dev: port 3001 → 5000)
  * @access  Private (requires valid portalAccessToken cookie)
@@ -737,7 +737,7 @@ router.get('/socket-token', verifyPortalAuth, async (req, res) => {
     const socketToken = jwt.sign(
       { id: req.user.id, role: req.user.role },
       process.env.PORTAL_JWT_SECRET,
-      { expiresIn: '10m' }
+      { expiresIn: '2h' }
     );
     res.json({ token: socketToken });
   } catch (error) {
