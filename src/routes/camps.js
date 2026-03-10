@@ -146,6 +146,9 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       minAge,
       maxAge,
       skillLevels,
+      playerType,
+      memberPrice,
+      nonMemberPrice,
       trainerId,
       trainerName
     } = req.body;
@@ -194,6 +197,9 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       minAge: minAge || null,
       maxAge: maxAge || null,
       skillLevels: safeSkillLevels.length > 0 ? safeSkillLevels : ['beginner'],
+      playerType: playerType || 'all',
+      memberPrice: memberPrice || null,
+      nonMemberPrice: nonMemberPrice || null,
       trainerId: trainerId || null,
       trainerName: trainerName || '',
       status: 'draft',
@@ -247,6 +253,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       'startDate', 'endDate', 'registrationOpenDate', 'registrationCloseDate',
       'maxParticipants', 'waitlistEnabled', 'maxWaitlist',
       'targetAudience', 'minAge', 'maxAge', 'skillLevels',
+      'playerType', 'memberPrice', 'nonMemberPrice',
       'trainerId', 'trainerName'
     ];
 
