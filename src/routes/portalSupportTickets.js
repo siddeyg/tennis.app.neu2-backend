@@ -5,6 +5,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import { verifyPortalAuth } from '../middleware/verifyPortalAuth.js';
 import { sendNewTicketEmail, sendTicketReplyEmail } from '../utils/emailService.js';
+import { sendPushToAdmins } from '../utils/webPush.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
@@ -174,6 +175,13 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
       logger.error("Error sending new ticket email", { error: emailError.message, stack: emailError.stack });
       // Don't fail the request if email fails
     }
+
+    // Send push notification to admins (fire-and-forget — never block the request)
+    sendPushToAdmins(
+      `Neues Ticket #${ticket.ticketNumber}`,
+      `${ticket.createdBy.name}: ${ticket.subject}`,
+      { ticketId: ticket._id.toString(), ticketNumber: ticket.ticketNumber }
+    ).catch(err => logger.error('Push notification failed', { error: err.message }));
 
     res.status(201).json({
       success: true,

@@ -84,6 +84,7 @@ import documentRoutes from "./routes/documents.js";
 import portalDocumentsRoutes from "./routes/portalDocuments.js";
 import portalNotificationsRoutes from "./routes/portalNotifications.js";
 import scheduleNotificationsRouter from "./routes/scheduleNotifications.js";
+import pushSubscriptionRoutes from "./routes/pushSubscriptions.js";
 
 // Import Socket.io notification setup
 import { initializeNotificationSocket } from "./socket/notificationSocket.js";
@@ -156,6 +157,7 @@ const corsOptions = {
         process.env.CORS_ORIGIN_STUDENT || "https://user.suwar.de", // Student portal
         process.env.CORS_ORIGIN_STUDENT_ROOT || "https://mondo-tennis.de", // Student portal (root domain)
         process.env.CORS_ORIGIN_COACH || "https://coach.suwar.de", // Coach portal
+        process.env.CORS_ORIGIN_TICKETS || "https://tickets.suwar.de", // Tickets portal
       ];
 
       if (allowedOrigins.includes(origin)) {
@@ -173,6 +175,8 @@ const corsOptions = {
         'http://127.0.0.1:3001',
         'http://localhost:3002', // Coach portal
         'http://127.0.0.1:3002',
+        'http://localhost:3003', // Tickets portal
+        'http://127.0.0.1:3003',
         'http://localhost:5000', // Backend (proxy rewrites origin to this)
         'http://127.0.0.1:5000'
       ];
@@ -339,6 +343,9 @@ app.use("/api/portal/notifications", portalNotificationsRoutes);
 
 // Schedule notifications routes - admin/supermod only
 app.use("/api/schedule-notifications", requireAuth, updateActivity, requireAdminOrSupermod, scheduleNotificationsRouter);
+
+// Push subscription routes - admin/supermod only (auth handled in route file)
+app.use("/api/push", pushSubscriptionRoutes);
 
 // ========================================
 // Error Handler Middleware (MUST BE LAST)
