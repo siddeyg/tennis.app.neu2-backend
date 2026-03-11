@@ -124,7 +124,7 @@ async function sendAnnouncementNotifications(announcement) {
           announcement.content.substring(0, 200) + (announcement.content.length > 200 ? '...' : ''),
           {
             priority: announcement.priority === 'urgent' ? 'urgent' : 'high',
-            actionUrl: '/dashboard',
+            actionUrl: '/dashboard/announcements',
             metadata: { announcementId: announcement._id }
           }
         );
