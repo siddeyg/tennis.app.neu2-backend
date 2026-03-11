@@ -85,6 +85,7 @@ import portalDocumentsRoutes from "./routes/portalDocuments.js";
 import portalNotificationsRoutes from "./routes/portalNotifications.js";
 import scheduleNotificationsRouter from "./routes/scheduleNotifications.js";
 import pushSubscriptionRoutes from "./routes/pushSubscriptions.js";
+import dashboardRoutes from "./routes/dashboard.js";
 
 // Import Socket.io notification setup
 import { initializeNotificationSocket } from "./socket/notificationSocket.js";
@@ -322,6 +323,9 @@ app.use("/api/camps", requireAuth, updateActivity, requireAdminOrSupermod, camps
 
 // Metrics routes - admin only (supermod BLOCKED)
 app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), metricsRoutes);
+
+// Dashboard stats route - admin + supermod
+app.use("/api/dashboard", requireAuth, updateActivity, requireAdminOrSupermod, dashboardRoutes);
 
 // Support tickets routes - admin + supermod
 app.use("/api/support-tickets", requireAuth, updateActivity, requireAdminOrSupermod, supportTicketsRoutes);

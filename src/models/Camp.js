@@ -228,8 +228,12 @@ campSchema.pre('save', function(next) {
   next();
 });
 
-// Pre-save hook: Validate dates
+// Pre-save hook: Validate dates (only when date fields are modified)
 campSchema.pre('save', function(next) {
+  const datesModified = this.isModified('startDate') || this.isModified('endDate') ||
+    this.isModified('registrationOpenDate') || this.isModified('registrationCloseDate');
+  if (!datesModified) return next();
+
   if (this.endDate < this.startDate) {
     return next(new Error('Enddatum muss nach Startdatum liegen'));
   }
