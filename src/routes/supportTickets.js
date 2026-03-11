@@ -4,7 +4,7 @@ import SupportTicket from '../models/SupportTicket.js';
 import User from '../models/User.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import { requireAuth } from '../middleware/requireAuth.js';
-import { requireAdminOrSupermod } from '../middleware/requireRole.js';
+import { requireRole } from '../middleware/requireRole.js';
 import { sendTicketReplyEmail, sendTicketStatusChangeEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
@@ -59,8 +59,8 @@ const adminCreateLimiter = rateLimit({
   skip: (req) => process.env.NODE_ENV === 'test'
 });
 
-// All routes require admin authentication
-router.use(requireAuth, requireAdminOrSupermod);
+// All routes require admin role (supermods excluded)
+router.use(requireAuth, requireRole(['admin']));
 
 // GET /api/support-tickets/stats
 // Dashboard statistics

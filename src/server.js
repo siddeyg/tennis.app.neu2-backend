@@ -327,8 +327,8 @@ app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), met
 // Dashboard stats route - admin + supermod
 app.use("/api/dashboard", requireAuth, updateActivity, requireAdminOrSupermod, dashboardRoutes);
 
-// Support tickets routes - admin + supermod
-app.use("/api/support-tickets", requireAuth, updateActivity, requireAdminOrSupermod, supportTicketsRoutes);
+// Support tickets routes - admin only
+app.use("/api/support-tickets", requireAuth, updateActivity, requireRole(["admin"]), supportTicketsRoutes);
 
 // Portal support tickets routes - student portal (auth handled in route file)
 app.use("/api/portal/support-tickets", portalSupportTicketsRoutes);
