@@ -287,8 +287,9 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
     if (studentId) {
       const student = await Student.findById(studentId);
       if (!student) {
-        return res.status(404).json({ error: 'Schüler nicht gefunden' });
-      }
+        // Stale studentId — Student was deleted. Fall through to portal user data below.
+        logger.warn('Profile fetch: studentId set but Student not found, falling back to portal user', { studentId, portalUserId });
+      } else {
 
       // Return full student data with flag indicating Student record exists
       // Also fetch pendingEmail from portalUser
@@ -313,6 +314,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
         pendingEmail: portalUserForPending?.pendingEmail || null,
         hasStudentRecord: true
       });
+      }
     }
 
     // If no Student record, return StudentPortalUser data
