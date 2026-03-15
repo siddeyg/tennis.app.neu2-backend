@@ -166,12 +166,12 @@ async function seed() {
   await mongoose.connect(MONGO_URI);
   console.log('Connected.');
 
-  // ── Teardown ALL test data for clean E2E state ─────────────────────────────
-  console.log('\nRemoving ALL existing test data for clean E2E state…');
+  // ── Teardown only E2E test data (selective — preserves real coaches/students) ─
+  console.log('\nRemoving existing E2E test data…');
   const removedUsers    = await User.deleteMany({ email: /@mondo\.local$/ });
-  const removedCoaches  = await Coach.deleteMany({});   // clear ALL coaches
-  const removedStudents = await Student.deleteMany({});  // clear ALL students
-  const removedSchedule = await Schedule.deleteMany({}); // clear schedule state
+  const removedCoaches  = await Coach.deleteMany({ email: /@mondo\.local$/ }); // only test coaches
+  const removedStudents = await Student.deleteMany({ comment: '__e2e_seed__' }); // only seeded students
+  const removedSchedule = await Schedule.deleteMany({}); // clear schedule state (no ownership marker)
   console.log(`  Removed ${removedUsers.deletedCount} User(s), ${removedCoaches.deletedCount} Coach(es), ${removedStudents.deletedCount} Student(s), ${removedSchedule.deletedCount} Schedule entries`);
 
   // ── Admin user ────────────────────────────────────────────────────────────
