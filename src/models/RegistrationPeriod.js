@@ -190,6 +190,24 @@ registrationPeriodSchema.virtual('pendingSubmissionsCount', {
   count: true,
 });
 
+// Virtual: Count of kids submissions
+registrationPeriodSchema.virtual('kidsSubmissionsCount', {
+  ref: 'SeasonalRegistration',
+  localField: '_id',
+  foreignField: 'periodId',
+  match: { formType: 'kids' },
+  count: true,
+});
+
+// Virtual: Count of adults submissions
+registrationPeriodSchema.virtual('adultsSubmissionsCount', {
+  ref: 'SeasonalRegistration',
+  localField: '_id',
+  foreignField: 'periodId',
+  match: { formType: 'adults' },
+  count: true,
+});
+
 // Virtual: Current training plan
 registrationPeriodSchema.virtual('currentPlan', {
   ref: 'SavedSchedule',

@@ -27,6 +27,21 @@ if (!MONGO_URI) {
   process.exit(1);
 }
 
+// Safety guard: require --force flag to prevent accidental runs against real data.
+// E2E test specs must pass this flag. Manual use: node scripts/seed-test-data.js --force
+if (!process.argv.includes('--force')) {
+  console.error('');
+  console.error('⛔  SAFETY GUARD: seed-e2e-test-data.js requires --force to run.');
+  console.error('');
+  console.error('    This script clears the schedule and seeds test students/coaches.');
+  console.error('    Running it accidentally against real data will destroy your schedule.');
+  console.error('');
+  console.error('    If you really want to run it:');
+  console.error('      node scripts/seed-test-data.js --force');
+  console.error('');
+  process.exit(1);
+}
+
 // ─── Inline model definitions ─────────────────────────────────────────────────
 // Defined here (not imported from models/) so this script is self-contained
 // and does not pull in all model files and their cross-dependencies.

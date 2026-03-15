@@ -75,6 +75,8 @@ router.get('/', async (req, res) => {
       .populate('createdBy', 'firstName lastName email')
       .populate('submissionsCount')
       .populate('pendingSubmissionsCount')
+      .populate('kidsSubmissionsCount')
+      .populate('adultsSubmissionsCount')
       .sort({ createdAt: -1 });
 
     logger.info(`Listed ${periods.length} registration periods`, {
