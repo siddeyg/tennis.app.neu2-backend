@@ -39,9 +39,12 @@ router.get('/', async (req, res) => {
   try {
     const { targetAudience, skillLevel } = req.query;
 
-    // Build filter - only show open camps
+    // Build filter - show open camps + full camps with waitlist
     const filter = {
-      status: 'open',
+      $or: [
+        { status: 'open' },
+        { status: 'full', waitlistEnabled: true }
+      ],
       deletedAt: null,
       registrationCloseDate: { $gte: new Date() } // Registration still open
     };

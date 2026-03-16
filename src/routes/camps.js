@@ -77,12 +77,24 @@ router.get('/', async (req, res) => {
 
     const camps = await Camp.find(filter)
       .populate('createdBy', 'firstName lastName email')
-      .sort({ startDate: -1 }); // Newest first
+      .sort({ startDate: 1 }); // Soonest first
+
+    // Attach waitlist counts
+    const campIds = camps.map(c => c._id);
+    const waitlistCounts = await CampRegistration.aggregate([
+      { $match: { campId: { $in: campIds }, status: 'waitlist' } },
+      { $group: { _id: '$campId', count: { $sum: 1 } } }
+    ]);
+    const waitlistMap = Object.fromEntries(waitlistCounts.map(w => [w._id.toString(), w.count]));
+    const campsWithWaitlist = camps.map(c => ({
+      ...c.toObject({ virtuals: true }),
+      waitlistCount: waitlistMap[c._id.toString()] || 0
+    }));
 
     res.json({
       success: true,
-      count: camps.length,
-      camps
+      count: campsWithWaitlist.length,
+      camps: campsWithWaitlist
     });
   } catch (error) {
     logger.error("Error listing camps", { error: error.message, stack: error.stack });

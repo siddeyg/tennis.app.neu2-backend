@@ -179,7 +179,11 @@ const corsOptions = {
         'http://localhost:3003', // Tickets portal
         'http://127.0.0.1:3003',
         'http://localhost:5000', // Backend (proxy rewrites origin to this)
-        'http://127.0.0.1:5000'
+        'http://127.0.0.1:5000',
+        'http://192.168.178.84:3000', // LAN mobile testing
+        'http://192.168.178.84:3001',
+        'http://192.168.178.84:3002',
+        'http://192.168.178.84:3003'
       ];
 
       if (allowedOrigins.includes(origin)) {
@@ -377,8 +381,14 @@ const shutdown = async (signal) => {
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
+// Silence broken-pipe errors on stdout/stderr (happens when terminal closes while server runs in background)
+process.stdout.on('error', (err) => { if (err.code !== 'EPIPE') throw err; });
+process.stderr.on('error', (err) => { if (err.code !== 'EPIPE') throw err; });
+
 // Alert on unhandled errors — these can leave the process in an unknown state
 process.on('uncaughtException', (err) => {
+  // EPIPE = stdout/stderr pipe broke (terminal closed) — harmless, ignore
+  if (err.code === 'EPIPE') return;
   logger.error('uncaughtException', { error: err.message, stack: err.stack });
   sendAlert('🔴 uncaughtException — mondo-backend', err.message);
 });

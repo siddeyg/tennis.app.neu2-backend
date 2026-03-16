@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
       Camp.find({ deletedAt: null }, '_id title').lean(),
 
       CampRegistration.aggregate([
+        { $match: { status: { $in: ['pending', 'confirmed', 'waitlist'] } } },
         { $group: { _id: '$campId', count: { $sum: 1 } } }
       ])
     ]);

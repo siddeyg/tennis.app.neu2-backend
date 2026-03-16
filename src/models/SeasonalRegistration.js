@@ -261,6 +261,7 @@ const seasonalRegistrationSchema = new mongoose.Schema(
 
 // Indexes
 seasonalRegistrationSchema.index({ periodId: 1, status: 1 });
+seasonalRegistrationSchema.index({ periodId: 1, formType: 1 });  // Virtual count queries (kidsSubmissionsCount / adultsSubmissionsCount)
 seasonalRegistrationSchema.index({ email: 1, periodId: 1 });
 seasonalRegistrationSchema.index({ formType: 1, status: 1 });
 seasonalRegistrationSchema.index({ studentId: 1 });  // Student→registration lookups
