@@ -482,6 +482,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       registrationData.spielstärke = spielstärke;
       registrationData.trainingGoals = trainingGoals || [];
       registrationData.groupSize = groupSize || [];
+      registrationData.trainingshäufigkeit = trainingshäufigkeit;
       registrationData.availableTimesAdults = availableTimesAdults || [];
     }
 
@@ -556,7 +557,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         birthDate: new Date(birthdate).toISOString().split('T')[0], // Format: YYYY-MM-DD
         email: email,
         phone: phone || '',
-        adress: address || '',
+        adress: portalUser.address || address || '',
         comment: remarks || '',
         sex: userSex || null,
         // For kids: derive member status from mitgliedsstatus form field
@@ -653,6 +654,39 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
           portalUserId: req.user.id,
           formType
         });
+      }
+    } else {
+      // Existing student linked — update their training preferences from new registration
+      const existingStudent = await Student.findById(studentId);
+      if (existingStudent) {
+        existingStudent.frequence = trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
+        existingStudent.adress = portalUser.address || address || existingStudent.adress || '';
+        if (formType === 'kids') {
+          const trainigGroupMap = {
+            'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
+            'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
+            'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
+            'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
+            'Jugend HOBBY (Gelb)': 'Gelb Hobby',
+            'Jugend TEAM (Gelb)': 'Gelb Team',
+          };
+          if (trainigGroupMap[trainingsart]) existingStudent.trainigGroup = trainigGroupMap[trainingsart];
+          existingStudent.team = !!(teamParticipation && teamParticipation !== '-' && teamParticipation !== false);
+        } else {
+          existingStudent.skillLevel = spielstärke || existingStudent.skillLevel;
+          existingStudent.comment2 = trainingGoals ? trainingGoals.join(', ') : existingStudent.comment2;
+          existingStudent.groupSize = groupSize ? groupSize.join(', ') : existingStudent.groupSize;
+        }
+        // Update available times
+        const isSameSlot = (a, b) => a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
+        let newSlots = (formType === 'kids' ? availableTimesKids : availableTimesAdults || []).map(t => ({ day: t.day, hour: t.hour, venue: t.venue || '' }));
+        if (priorityTime && priorityTime.day) {
+          const prio = newSlots.find(t => isSameSlot(t, priorityTime));
+          if (prio) newSlots = [prio, ...newSlots.filter(t => !isSameSlot(t, priorityTime))];
+          existingStudent.priorityTime = { day: priorityTime.day, hour: priorityTime.hour, venue: priorityTime.venue || '' };
+        }
+        if (newSlots.length > 0) existingStudent.availableTimes = newSlots;
+        await existingStudent.save();
       }
     }
 
