@@ -16,11 +16,17 @@ router.get('/', async (req, res) => {
   try {
     const [
       portalUserCount,
+      familyMemberAgg,
       ticketStats,
       camps,
       campRegAgg
     ] = await Promise.all([
       StudentPortalUser.countDocuments({}),
+
+      StudentPortalUser.aggregate([
+        { $project: { count: { $size: { $ifNull: ['$familyMembers', []] } } } },
+        { $group: { _id: null, total: { $sum: '$count' } } }
+      ]),
 
       SupportTicket.aggregate([
         { $match: { isDeleted: false } },
@@ -58,8 +64,11 @@ router.get('/', async (req, res) => {
 
     const totalCampRegistrations = campRows.reduce((s, c) => s + c.registrations, 0);
 
+    const familyMemberCount = familyMemberAgg[0]?.total || 0;
+
     res.json({
       portalUsers: portalUserCount,
+      familyMembers: familyMemberCount,
       tickets: {
         open: ticketMap['open'],
         inProgress: ticketMap['in-progress'],

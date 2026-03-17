@@ -70,7 +70,7 @@ function validateStudentData(data) {
   }
 
   // Skill level validation
-  const validSkillLevels = ['Anfänger', 'Fortgeschritten', 'Turnierspieler'];
+  const validSkillLevels = ['Anfänger', 'Fortgeschritten', 'Fortgeschrittene', 'Turnierspieler', 'Anfänger mit Grundkenntnissen', 'Erfahrene Spieler:innen / Mannschaftsspieler:innen', 'Leistungsspieler:innen / Turnierspieler:innen', 'gute:r Spieler:in', 'wenig Fortgeschritten', 'Leistungsspieler:in'];
   if (data.skillLevel && !validSkillLevels.includes(data.skillLevel)) {
     errors.push('Ungültiges Spielniveau');
   }
