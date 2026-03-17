@@ -656,13 +656,11 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       }
     }
 
-    // Link registration to student and mark as processed (auto-approved)
+    // Link registration to student (status stays 'pending' — admin must approve manually)
     registration.studentId = studentId;
-    registration.status = 'processed';
-    registration.processedAt = new Date();
     await registration.save();
 
-    logger.info('Seasonal registration created and auto-approved', {
+    logger.info('Seasonal registration created, student auto-linked (pending admin approval)', {
       registrationId: registration._id,
       userId: req.user.id,
       studentId: studentId,
