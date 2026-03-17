@@ -479,6 +479,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       registrationData.teamParticipation = teamParticipation || false;
       registrationData.availableTimesKids = availableTimesKids || [];
     } else {
+      registrationData.mitgliedsstatus = mitgliedsstatus || null;
       registrationData.spielstärke = spielstärke;
       registrationData.trainingGoals = trainingGoals || [];
       registrationData.groupSize = groupSize || [];
@@ -560,11 +561,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         adress: portalUser.address || address || '',
         comment: remarks || '',
         sex: userSex || null,
-        // For kids: derive member status from mitgliedsstatus form field
-        // For adults: use portal user's own member status (adults form has no mitgliedsstatus)
-        member: formType === 'kids'
-          ? mitgliedsstatus === 'Mitglied'
-          : (userMember || false),
+        // Derive member status from mitgliedsstatus for both kids and adults
+        member: mitgliedsstatus === 'Mitglied',
         adult: formType === 'adults',
         frequence: trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
         assignments: [] // Will be assigned during schedule planning
