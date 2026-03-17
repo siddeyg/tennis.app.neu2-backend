@@ -659,6 +659,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       // Existing student linked — update their training preferences from new registration
       const existingStudent = await Student.findById(studentId);
       if (existingStudent) {
+        existingStudent.sex = userSex || existingStudent.sex;
         existingStudent.frequence = trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
         existingStudent.adress = portalUser.address || address || existingStudent.adress || '';
         if (formType === 'kids') {
