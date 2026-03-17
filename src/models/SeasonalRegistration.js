@@ -85,7 +85,7 @@ const seasonalRegistrationSchema = new mongoose.Schema(
 
     mitgliedsstatus: {
       type: String,
-      enum: ['Mitglied', 'Nicht-Mitglied/Schnupperkind', null],
+      enum: ['Mitglied', 'Nicht-Mitglied', 'Schnupperkind', 'Nicht-Mitglied/Schnupperkind', null],
     },
 
     trainingsart: {

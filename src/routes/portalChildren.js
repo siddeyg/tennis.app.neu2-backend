@@ -40,6 +40,7 @@ router.get('/', verifyPortalAuth, async (req, res) => {
         birthdate: child.birthdate || null,
         sex: child.sex || '',
         member: child.member || false,
+        mitgliedsstatus: child.mitgliedsstatus || null,
         phone: child.phone || '',
         age: child.birthdate ? calculateAge(child.birthdate) : null,
         studentId: child.studentId?._id || null,
@@ -59,7 +60,7 @@ router.get('/', verifyPortalAuth, async (req, res) => {
 // POST /api/portal/children - Add new child
 router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resource: 'Child' }), async (req, res) => {
   try {
-    const { firstName, lastName, birthdate, sex, member, phone } = req.body;
+    const { firstName, lastName, birthdate, sex, member, phone, mitgliedsstatus } = req.body;
 
     // Validation
     if (!firstName || !lastName || !birthdate) {
@@ -131,6 +132,7 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
     }
 
     // Create new child entry
+    const resolvedMitgliedsstatus = mitgliedsstatus || null;
     const newChild = {
       relationship: 'child',
       name: `${firstName} ${lastName}`,  // Keep for backward compatibility
@@ -138,7 +140,8 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
       lastName,
       birthdate: new Date(birthdate),
       sex,
-      member: member === true || member === 'true',
+      member: resolvedMitgliedsstatus ? resolvedMitgliedsstatus === 'Mitglied' : (member === true || member === 'true'),
+      mitgliedsstatus: resolvedMitgliedsstatus,
       phone: phone || '',
       createdAt: new Date()
     };
@@ -156,6 +159,7 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
         lastName: addedChild.lastName,
         sex: addedChild.sex,
         member: addedChild.member,
+        mitgliedsstatus: addedChild.mitgliedsstatus || null,
         birthdate: addedChild.birthdate,
         phone: addedChild.phone,
         age: calculateAge(addedChild.birthdate),
@@ -175,7 +179,7 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
 router.put('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', resource: 'Child' }), async (req, res) => {
   try {
     const { childId } = req.params;
-    const { firstName, lastName, birthdate, sex, member, phone } = req.body;
+    const { firstName, lastName, birthdate, sex, member, phone, mitgliedsstatus } = req.body;
 
     const user = await StudentPortalUser.findById(req.user.id);
     if (!user) {
@@ -234,7 +238,10 @@ router.put('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE',
       child.sex = sex;
     }
 
-    if (member !== undefined) {
+    if (mitgliedsstatus !== undefined) {
+      child.mitgliedsstatus = mitgliedsstatus || null;
+      child.member = mitgliedsstatus === 'Mitglied';
+    } else if (member !== undefined) {
       child.member = member === true || member === 'true';
     }
 
@@ -252,6 +259,7 @@ router.put('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE',
         birthdate: updatedChild.birthdate,
         sex: updatedChild.sex,
         member: updatedChild.member,
+        mitgliedsstatus: updatedChild.mitgliedsstatus || null,
         phone: updatedChild.phone,
         age: updatedChild.birthdate ? calculateAge(updatedChild.birthdate) : null,
         studentId: updatedChild.studentId?._id || null,

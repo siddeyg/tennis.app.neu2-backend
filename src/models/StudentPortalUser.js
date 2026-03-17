@@ -112,6 +112,11 @@ const StudentPortalUserSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
+    mitgliedsstatus: {
+      type: String,
+      enum: ['Mitglied', 'Nicht-Mitglied', 'Schnupperkind', null],
+      default: null
+    },
     phone: {
       type: String,
       trim: true
