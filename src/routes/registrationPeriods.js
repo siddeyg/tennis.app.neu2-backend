@@ -809,14 +809,29 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
           student = await Student.findOne({ email: submission.email });
         }
 
+        // Look up portal user for both kids and adults (sex, address)
+        const portalUser = await StudentPortalUser.findById(submission.studentPortalUserId);
+        let userSex = null;
+        if (submission.familyMemberId && portalUser) {
+          const child = portalUser.familyMembers.id(submission.familyMemberId);
+          userSex = child?.sex || null;
+        } else if (portalUser) {
+          userSex = portalUser.sex || null;
+        }
+
+        const isSameSlot = (a, b) => a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
+
         const studentData = {
           firstName: submission.firstName,
           lastName: submission.lastName,
           birthDate: submission.birthdate,
           email: submission.email,
           phone: submission.phone,
-          address: submission.address,
-          adult: submission.formType === 'adults'
+          adress: portalUser?.address || submission.address || '',
+          comment: submission.remarks || '',
+          adult: submission.formType === 'adults',
+          sex: userSex,
+          frequence: submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1'
         };
 
         // Map long-form trainingsart labels to Student.trainigGroup short codes
@@ -833,34 +848,34 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
         if (submission.formType === 'kids') {
           studentData.trainigGroup = trainigGroupMap[submission.trainingsart] || submission.trainingsart;
           studentData.member = submission.mitgliedsstatus === 'Mitglied';
-          studentData.team = !!(submission.teamParticipation && submission.teamParticipation !== '-');
-          studentData.frequence = submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-          studentData.availableTimes = (submission.availableTimesKids || []).map(t => ({
-            day: t.day,
-            hour: t.hour,
-            venue: t.venue || ''
-          }));
+          studentData.team = !!(submission.teamParticipation && submission.teamParticipation !== '-' && submission.teamParticipation !== false);
+          let kidsSlots = (submission.availableTimesKids || []).map(t => ({ day: t.day, hour: t.hour, venue: t.venue || '' }));
+          if (submission.priorityTime && submission.priorityTime.day) {
+            const prio = kidsSlots.find(t => isSameSlot(t, submission.priorityTime));
+            if (prio) kidsSlots = [prio, ...kidsSlots.filter(t => !isSameSlot(t, submission.priorityTime))];
+          }
+          studentData.availableTimes = kidsSlots;
         } else {
           // Adults
-          studentData.skillLevel = submission.spielstärke;
-          studentData.member = true; // Assume adults are members
-          // Look up sex from portal user (Gap 1)
-          const portalUser = await StudentPortalUser.findById(submission.studentPortalUserId);
-          let userSex = null;
-          if (submission.familyMemberId && portalUser) {
-            const child = portalUser.familyMembers.id(submission.familyMemberId);
-            userSex = child?.sex || null;
-          } else if (portalUser) {
-            userSex = portalUser.sex || null;
+          studentData.skillLevel = submission.spielstärke || '';
+          studentData.member = submission.mitgliedsstatus === 'Mitglied';
+          studentData.comment2 = submission.trainingGoals ? submission.trainingGoals.join(', ') : '';
+          studentData.groupSize = submission.groupSize ? submission.groupSize.join(', ') : '';
+          let adultSlots = (submission.availableTimesAdults || []).map(t => ({ day: t.day, hour: t.hour, venue: t.venue || '' }));
+          if (submission.priorityTime && submission.priorityTime.day) {
+            const prio = adultSlots.find(t => isSameSlot(t, submission.priorityTime));
+            if (prio) adultSlots = [prio, ...adultSlots.filter(t => !isSameSlot(t, submission.priorityTime))];
           }
-          studentData.sex = userSex;
-          // Map trainingshäufigkeit to frequence (Gap 2)
-          studentData.frequence = submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-          studentData.availableTimes = (submission.availableTimesAdults || []).map(t => ({
-            day: t.day,
-            hour: t.hour,
-            venue: t.venue || ''
-          }));
+          studentData.availableTimes = adultSlots;
+        }
+
+        // Store priorityTime on Student for algorithm Phase P
+        if (submission.priorityTime && submission.priorityTime.day && submission.priorityTime.hour !== undefined) {
+          studentData.priorityTime = {
+            day: submission.priorityTime.day,
+            hour: submission.priorityTime.hour,
+            venue: submission.priorityTime.venue || ''
+          };
         }
 
         if (!dryRun) {
