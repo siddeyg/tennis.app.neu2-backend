@@ -951,6 +951,33 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
     registration.cancelledBy = 'user';
     await registration.save();
 
+    // Clean up auto-created Student if they have no assignments and no other active registrations
+    if (registration.studentId) {
+      const student = await Student.findById(registration.studentId);
+      if (student && (!student.assignments || student.assignments.length === 0)) {
+        const otherActiveRegs = await SeasonalRegistration.countDocuments({
+          studentId: registration.studentId,
+          _id: { $ne: registration._id },
+          status: { $nin: ['cancelled'] }
+        });
+        if (otherActiveRegs === 0) {
+          await Student.deleteOne({ _id: registration.studentId });
+          // Unlink from portal user or family member
+          const portalUser = await StudentPortalUser.findById(req.user.id);
+          if (portalUser) {
+            if (registration.familyMemberId) {
+              const child = portalUser.familyMembers.id(registration.familyMemberId);
+              if (child) child.studentId = undefined;
+            } else {
+              portalUser.studentId = undefined;
+            }
+            await portalUser.save();
+          }
+          logger.info('Deleted auto-created Student after registration cancellation', { studentId: registration.studentId });
+        }
+      }
+    }
+
     logger.info('Seasonal registration cancelled by user', {
       registrationId: registration._id,
       userId: req.user.id
