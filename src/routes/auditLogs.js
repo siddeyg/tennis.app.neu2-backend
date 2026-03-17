@@ -15,7 +15,8 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const listQuerySchema = Joi.object({
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().min(Joi.ref('startDate')).optional(),
-  action: Joi.string().valid('CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'EXPORT', 'IMPORT', 'BULK_DELETE', 'ALGORITHM_RUN', 'PASSWORD_RESET', 'EMAIL_VERIFY', 'DENIED').optional(),
+  action: Joi.string().valid('CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'ACCESS', 'EXPORT', 'IMPORT', 'BULK_OPERATION', 'BULK_DELETE', 'ALGORITHM_RUN', 'PASSWORD_RESET', 'EMAIL_VERIFY', 'DENIED').optional(),
+  excludeAction: Joi.string().valid('ACCESS', 'READ').optional(),
   resource: Joi.string().max(50).optional(),
   status: Joi.string().valid('SUCCESS', 'ERROR', 'DENIED').optional(),
   userId: Joi.string().pattern(/^[a-f\d]{24}$/i).optional(),
@@ -80,6 +81,7 @@ router.get('/', listLimiter, async (req, res) => {
       endDate,
       userId,
       action,
+      excludeAction,
       resource,
       status,
       search,
@@ -110,9 +112,11 @@ router.get('/', listLimiter, async (req, res) => {
       query.userId = userId;
     }
 
-    // Filter by action
+    // Filter by action (include or exclude)
     if (action) {
       query.action = action;
+    } else if (excludeAction) {
+      query.action = { $ne: excludeAction };
     }
 
     // Filter by resource
@@ -128,7 +132,8 @@ router.get('/', listLimiter, async (req, res) => {
     // General search (endpoint, email, resource ID, IP)
     if (search) {
       query.$or = [
-        { 'details.endpoint': { $regex: escapeRegex(search), $options: 'i' } },
+        { endpoint: { $regex: escapeRegex(search), $options: 'i' } },
+        { userEmail: { $regex: escapeRegex(search), $options: 'i' } },
         { ipAddress: { $regex: escapeRegex(search), $options: 'i' } },
         { resourceId: { $regex: escapeRegex(search), $options: 'i' } }
       ];
@@ -245,7 +250,8 @@ router.post('/export', exportLimiter, async (req, res) => {
 
     if (search) {
       query.$or = [
-        { 'details.endpoint': { $regex: escapeRegex(search), $options: 'i' } },
+        { endpoint: { $regex: escapeRegex(search), $options: 'i' } },
+        { userEmail: { $regex: escapeRegex(search), $options: 'i' } },
         { ipAddress: { $regex: escapeRegex(search), $options: 'i' } },
         { resourceId: { $regex: escapeRegex(search), $options: 'i' } }
       ];
