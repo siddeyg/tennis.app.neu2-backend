@@ -338,6 +338,7 @@ router.get('/profile', verifyPortalAuth, async (req, res) => {
       parentName: portalUser.parentName || '',
       parentEmail: portalUser.parentEmail || '',
       parentPhone: portalUser.parentPhone || '',
+      isStudent: portalUser.isStudent || false,
       pendingEmail: portalUser.pendingEmail || null,
       hasStudentRecord: false
     });
@@ -358,7 +359,7 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
     const studentId = req.user.studentId;
     const portalUserId = req.user.id;
     // Accept both 'address' (correct) and 'adress' (legacy) for backward compatibility
-    const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, iban, parentName, parentEmail, parentPhone } = req.body;
+    const { firstName, lastName, birthDate, sex, member, email, phone, address, adress, iban, parentName, parentEmail, parentPhone, isStudent } = req.body;
     const addressValue = address || adress;  // Prefer 'address', fall back to 'adress'
 
     // Validate required fields
@@ -583,6 +584,9 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       if (newValue !== oldParentValues.parentPhone) parentInfoChanged = true;
       portalUser.parentPhone = newValue;
     }
+    if (isStudent !== undefined) {
+      portalUser.isStudent = isStudent === true || isStudent === 'true';
+    }
 
     await portalUser.save();
 
@@ -655,6 +659,7 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       parentName: portalUser.parentName || '',
       parentEmail: portalUser.parentEmail || '',
       parentPhone: portalUser.parentPhone || '',
+      isStudent: portalUser.isStudent || false,
       pendingEmail: refreshedUser?.pendingEmail || null,
       hasStudentRecord: false
     });

@@ -53,6 +53,11 @@ const StudentPortalUserSchema = new mongoose.Schema({
     // Required for camp and seasonal training registrations
     trim: true
   },
+  // School student status (relevant for children under 18)
+  isStudent: {
+    type: Boolean,
+    default: false
+  },
   // Parent/guardian contact (required for children under 18)
   parentName: {
     type: String,
