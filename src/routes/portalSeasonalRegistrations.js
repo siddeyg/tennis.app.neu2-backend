@@ -428,6 +428,15 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       if (adultsRequired.includes('spielstärke') && !spielstärke) {
         return res.status(400).json({ success: false, error: 'Spielstärke ist erforderlich' });
       }
+      if (mitgliedsstatus === 'Student') {
+        const bd = childData?.birthdate || birthdate;
+        if (bd) {
+          const age = Math.floor((Date.now() - new Date(bd)) / (365.25 * 24 * 60 * 60 * 1000));
+          if (age < 19 || age > 26) {
+            return res.status(400).json({ success: false, error: 'Studententarif gilt nur für Personen zwischen 19 und 26 Jahren' });
+          }
+        }
+      }
       if (adultsRequired.includes('trainingGoals') && (!trainingGoals || trainingGoals.length === 0)) {
         return res.status(400).json({ success: false, error: 'Trainingsziele sind erforderlich' });
       }
