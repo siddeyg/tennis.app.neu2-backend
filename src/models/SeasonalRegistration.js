@@ -106,6 +106,13 @@ const seasonalRegistrationSchema = new mongoose.Schema(
       enum: ['1x pro Woche', '2x pro Woche', null],
     },
 
+    // Session duration choice: 60 or 90 minutes
+    sessionDuration: {
+      type: Number,
+      enum: [60, 90, null],
+      default: null,
+    },
+
     teamParticipation: {
       type: String,
       // Dropdown value: Team name or "-"

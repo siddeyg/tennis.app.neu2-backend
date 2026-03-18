@@ -831,7 +831,8 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
           comment: submission.remarks || '',
           adult: submission.formType === 'adults',
           sex: userSex,
-          frequence: submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1'
+          frequence: submission.trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
+          sessionDuration: submission.sessionDuration || null
         };
 
         // Map long-form trainingsart labels to Student.trainigGroup short codes

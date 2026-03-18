@@ -121,6 +121,15 @@ const studentSchema = new mongoose.Schema({
     // Legacy field: "1er", "2er", "3er", "4er"
   },
 
+  // ===== Trainingsdauer (Session Duration) =====
+  // Per-student choice: 60 or 90 minutes per session
+  // Set during seasonal registration, used by schedule algorithm
+  sessionDuration: {
+    type: Number,
+    enum: [60, 90, null],
+    default: null
+  },
+
   // ===== Zeitplanung =====
   /**
    * availableTimes — OBJECT ARRAY format (Student model)
@@ -165,7 +174,12 @@ const studentSchema = new mongoose.Schema({
       type: Number,
       required: true,
       min: 10,
-      max: 21
+      max: 21.5  // Allow .5 for half-hour start times (e.g., 17.5 = 17:30)
+    },
+    duration: {
+      type: Number,
+      default: 60,
+      enum: [60, 90]
     },
     coach: {
       type: mongoose.Schema.Types.ObjectId,

@@ -26,8 +26,15 @@ const AttendanceSchema = new mongoose.Schema(
     hour: {
       type: Number,
       min: 10,
-      max: 21,
+      max: 21.5,  // Allow .5 for half-hour start times (e.g., 17.5 = 17:30)
       required: true
+    },
+
+    // Session duration in minutes
+    duration: {
+      type: Number,
+      default: 60,
+      enum: [60, 90]
     },
 
     // Coach who led the session
@@ -124,9 +131,10 @@ AttendanceSchema.methods.canEditByCoach = function(currentTime = new Date()) {
   const courseDateTime = new Date(this.courseDate);
   courseDateTime.setHours(this.hour, 0, 0, 0);
 
-  // Add 1 hour for course duration, then 2 hours for edit window
+  // Add course duration + 2 hours for edit window
+  const courseDurationHours = (this.duration || 60) / 60;
   const editDeadline = new Date(courseDateTime);
-  editDeadline.setHours(editDeadline.getHours() + 3); // course end + 2 hours
+  editDeadline.setHours(editDeadline.getHours() + courseDurationHours + 2);
 
   return currentTime <= editDeadline;
 };

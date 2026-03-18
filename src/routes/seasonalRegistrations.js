@@ -411,6 +411,7 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       studentData.member = registration.mitgliedsstatus === 'Mitglied';
       studentData.team = !!(registration.teamParticipation && registration.teamParticipation !== '-');
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
+      studentData.sessionDuration = registration.sessionDuration || null;
       let kidsSlots = (registration.availableTimesKids || []).map(t => ({
         day: t.day, hour: t.hour, venue: t.venue || ''
       }));
@@ -425,6 +426,7 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       studentData.member = true; // Assume adults are members
       studentData.sex = null; // Will be filled by admin or gender detection
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
+      studentData.sessionDuration = registration.sessionDuration || null;
       let adultSlots = (registration.availableTimesAdults || []).map(t => ({
         day: t.day, hour: t.hour, venue: t.venue || ''
       }));

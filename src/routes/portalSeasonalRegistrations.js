@@ -301,6 +301,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       mitgliedsstatus,
       trainingsart,
       trainingshäufigkeit,
+      sessionDuration,
       teamParticipation,
       availableTimesKids,
       // Adults-specific
@@ -485,6 +486,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       registrationData.mitgliedsstatus = mitgliedsstatus;
       registrationData.trainingsart = trainingsart;
       registrationData.trainingshäufigkeit = trainingshäufigkeit;
+      registrationData.sessionDuration = sessionDuration ? Number(sessionDuration) : null;
       registrationData.teamParticipation = teamParticipation || false;
       registrationData.availableTimesKids = availableTimesKids || [];
     } else {
@@ -493,6 +495,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       registrationData.trainingGoals = trainingGoals || [];
       registrationData.groupSize = groupSize || [];
       registrationData.trainingshäufigkeit = trainingshäufigkeit;
+      registrationData.sessionDuration = sessionDuration ? Number(sessionDuration) : null;
       registrationData.availableTimesAdults = availableTimesAdults || [];
     }
 
@@ -574,6 +577,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         member: mitgliedsstatus === 'Mitglied',
         adult: formType === 'adults',
         frequence: trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
+        sessionDuration: sessionDuration ? Number(sessionDuration) : null,
         assignments: [] // Will be assigned during schedule planning
       };
 
@@ -668,6 +672,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       if (existingStudent) {
         existingStudent.sex = userSex || existingStudent.sex;
         existingStudent.frequence = trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
+        existingStudent.sessionDuration = sessionDuration ? Number(sessionDuration) : existingStudent.sessionDuration;
         existingStudent.adress = portalUser.address || address || existingStudent.adress || '';
         if (formType === 'kids') {
           const trainigGroupMap = {
