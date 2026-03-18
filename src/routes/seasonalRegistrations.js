@@ -306,6 +306,19 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
       logger.error('Error sending seasonal cancellation emails', { error: emailError.message });
     }
 
+    // Clear student assignments before deleting registration
+    if (registration.studentId) {
+      const student = await Student.findById(registration.studentId);
+      if (student && student.assignments && student.assignments.length > 0) {
+        student.assignments = [];
+        student.day = undefined;
+        student.hour = undefined;
+        student.coach = undefined;
+        await student.save();
+        logger.info('Cleared assignments after admin registration deletion', { studentId: registration.studentId });
+      }
+    }
+
     await registration.deleteOne();
 
     logger.info('Seasonal registration deleted', {

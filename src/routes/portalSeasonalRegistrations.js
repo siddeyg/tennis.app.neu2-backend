@@ -964,10 +964,22 @@ router.delete('/:id', auditLogMiddleware({ action: 'DELETE', resource: 'Seasonal
     registration.cancelledBy = 'user';
     await registration.save();
 
-    // Clean up auto-created Student if they have no assignments and no other active registrations
+    // Clear assignments and clean up Student on cancellation
     if (registration.studentId) {
       const student = await Student.findById(registration.studentId);
-      if (student && (!student.assignments || student.assignments.length === 0)) {
+      if (student) {
+        // Always clear assignments — cancelled student should not occupy schedule slots
+        if (student.assignments && student.assignments.length > 0) {
+          student.assignments = [];
+          // Clear legacy fields too
+          student.day = undefined;
+          student.hour = undefined;
+          student.coach = undefined;
+          await student.save();
+          logger.info('Cleared assignments after registration cancellation', { studentId: registration.studentId });
+        }
+
+        // Delete Student if no other active registrations
         const otherActiveRegs = await SeasonalRegistration.countDocuments({
           studentId: registration.studentId,
           _id: { $ne: registration._id },
