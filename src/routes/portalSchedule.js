@@ -58,6 +58,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       schedule = student.assignments.map(assignment => ({
         day: assignment.day,
         hour: assignment.hour,
+        duration: assignment.duration || 60,
         coach: assignment.coach
           ? (coachMap.get(assignment.coach.toString()) || assignment.coach)
           : 'Unbekannt'
@@ -78,6 +79,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       schedule = [{
         day: student.day,
         hour: student.hour,
+        duration: 60,
         coach: coachName
       }];
     }

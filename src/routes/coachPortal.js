@@ -77,9 +77,11 @@ router.get('/schedule/today', async (req, res) => {
       todayAssignments.forEach(assignment => {
         const hour = assignment.hour;
 
+        const duration = assignment.duration || 60;
         if (!coursesByHour[hour]) {
           coursesByHour[hour] = {
             hour,
+            duration,
             students: []
           };
         }
@@ -148,6 +150,7 @@ router.get('/schedule/today', async (req, res) => {
 
         return {
           hour,
+          duration: course.duration || 60,
           trainingGroup,
           studentCount: course.students.length,
           attendanceMarked: !!attendance,
