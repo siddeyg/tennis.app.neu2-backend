@@ -552,17 +552,18 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       studentId = portalUser.studentId;
     }
 
+    // Get sex and member from portal user or family member
+    let userSex, userMember;
+    if (familyMemberId && childData) {
+      userSex = childData.sex;
+      userMember = childData.member;
+    } else {
+      userSex = portalUser.sex;
+      userMember = portalUser.member;
+    }
+
     if (!studentId) {
       // Create new Student record from registration data
-      // Get sex and member from portal user or family member
-      let userSex, userMember;
-      if (familyMemberId && childData) {
-        userSex = childData.sex;
-        userMember = childData.member;
-      } else {
-        userSex = portalUser.sex;
-        userMember = portalUser.member;
-      }
 
       const studentData = {
         firstName: (familyMemberId && childData) ? childData.firstName : firstName,
