@@ -73,7 +73,7 @@ const studentSchema = new mongoose.Schema({
   // ===== Geschlecht (für alle Schüler) =====
   sex: {
     type: String,
-    enum: ['männlich', 'weiblich', null],
+    enum: ['männlich', 'weiblich', 'divers', null],
     default: null
   },
 

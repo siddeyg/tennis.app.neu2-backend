@@ -69,7 +69,7 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
       });
     }
 
-    if (!sex || !['männlich', 'weiblich'].includes(sex)) {
+    if (!sex || !['männlich', 'weiblich', 'divers'].includes(sex)) {
       return res.status(400).json({
         error: 'Geschlecht ist erforderlich'
       });
@@ -232,7 +232,7 @@ router.put('/:childId', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE',
     }
 
     if (sex) {
-      if (!['männlich', 'weiblich'].includes(sex)) {
+      if (!['männlich', 'weiblich', 'divers'].includes(sex)) {
         return res.status(400).json({ error: 'Ungültiges Geschlecht' });
       }
       child.sex = sex;

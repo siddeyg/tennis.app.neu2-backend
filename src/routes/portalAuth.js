@@ -127,7 +127,7 @@ router.post('/register',
       return res.status(400).json({ error: 'Geburtsdatum muss zwischen 1900 und heute liegen' });
     }
 
-    if (!sex || !['männlich', 'weiblich'].includes(sex)) {
+    if (!sex || !['männlich', 'weiblich', 'divers'].includes(sex)) {
       return res.status(400).json({ error: 'Geschlecht ist erforderlich' });
     }
 

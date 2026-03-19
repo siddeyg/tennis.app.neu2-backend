@@ -31,7 +31,7 @@ const StudentPortalUserSchema = new mongoose.Schema({
   },
   sex: {
     type: String,
-    enum: ['männlich', 'weiblich'],
+    enum: ['männlich', 'weiblich', 'divers'],
     required: false  // Allow existing users without this field
   },
   member: {
@@ -111,7 +111,7 @@ const StudentPortalUserSchema = new mongoose.Schema({
     birthdate: Date,
     sex: {
       type: String,
-      enum: ['männlich', 'weiblich']
+      enum: ['männlich', 'weiblich', 'divers']
     },
     member: {
       type: Boolean,

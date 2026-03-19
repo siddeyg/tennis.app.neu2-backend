@@ -377,7 +377,7 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
       return res.status(400).json({ error: 'Geburtsdatum ist erforderlich' });
     }
 
-    if (!sex || !['männlich', 'weiblich'].includes(sex)) {
+    if (!sex || !['männlich', 'weiblich', 'divers'].includes(sex)) {
       return res.status(400).json({ error: 'Geschlecht ist erforderlich' });
     }
 
