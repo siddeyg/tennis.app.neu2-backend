@@ -60,7 +60,7 @@ const upload = multer({
 // GET /api/documents — list documents
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const isAdmin = req.user.role === 'admin';
+    const isAdmin = req.user.role === 'admin' || req.user.role === 'supermod';
     const isCoach = req.user.role === 'trainer';
 
     if (!isAdmin && !isCoach) {
@@ -76,10 +76,10 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/documents — upload document (admin + coach)
+// POST /api/documents — upload document (admin + supermod + coach)
 router.post('/', requireAuth, upload.single('file'), async (req, res) => {
   try {
-    const isAdmin = req.user.role === 'admin';
+    const isAdmin = req.user.role === 'admin' || req.user.role === 'supermod';
     const isCoach = req.user.role === 'trainer';
 
     if (!isAdmin && !isCoach) {
@@ -126,7 +126,7 @@ router.post('/', requireAuth, upload.single('file'), async (req, res) => {
 // GET /api/documents/:id/download — download file
 router.get('/:id/download', requireAuth, async (req, res) => {
   try {
-    const isAdmin = req.user.role === 'admin';
+    const isAdmin = req.user.role === 'admin' || req.user.role === 'supermod';
     const isCoach = req.user.role === 'trainer';
 
     if (!isAdmin && !isCoach) {
@@ -155,10 +155,10 @@ router.get('/:id/download', requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/documents/:id — update metadata (admin only)
+// PUT /api/documents/:id — update metadata (admin + supermod)
 router.put('/:id', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'supermod') {
       return res.status(403).json({ error: 'Nur Administratoren können Dokumente bearbeiten' });
     }
 
@@ -179,10 +179,10 @@ router.put('/:id', requireAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/documents/:id — delete doc + file (admin only)
+// DELETE /api/documents/:id — delete doc + file (admin + supermod)
 router.delete('/:id', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'supermod') {
       return res.status(403).json({ error: 'Nur Administratoren können Dokumente löschen' });
     }
 
