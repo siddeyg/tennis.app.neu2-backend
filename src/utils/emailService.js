@@ -778,6 +778,9 @@ export async function sendTicketStatusChangeEmail(ticket, oldStatus, newStatus, 
 function generateSeasonalRegistrationTextContent(registration) {
   const { date, yesNo, optional, availableTimes, sectionDivider, subSection, field } = textFormatters;
 
+  const isAdult = registration.formType === 'adults';
+  const times = isAdult ? registration.availableTimesAdults : registration.availableTimesKids;
+
   let text = sectionDivider('NEUE SAISONREGISTRIERUNG');
   text += 'Mondo Tennisschule\n\n';
   text += field('Eingang', date(registration.createdAt || new Date())) + '\n';
@@ -788,28 +791,47 @@ function generateSeasonalRegistrationTextContent(registration) {
   text += field('E-Mail', registration.email) + '\n';
   text += field('Telefon', optional(registration.phone)) + '\n';
   text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
-  text += field('Geschlecht', optional(registration.sex)) + '\n';
   text += field('Adresse', optional(registration.address)) + '\n';
-  text += field('Mitglied', yesNo(registration.member)) + '\n';
+  text += field('Mitgliedsstatus', optional(registration.mitgliedsstatus)) + '\n';
 
   // Registration details section
   text += subSection('REGISTRIERUNGSDETAILS');
   text += field('Saison', optional(registration.periodId?.name, 'Unbekannt')) + '\n';
-  text += field('Erwachsener', registration.adult ? 'Ja' : 'Nein (Kind)') + '\n';
+  text += field('Formular', isAdult ? 'Erwachsene' : 'Kinder/Jugend') + '\n';
 
-  if (!registration.adult) {
-    text += field('Trainingsgruppe', optional(registration.trainigGroup)) + '\n';
+  if (!isAdult) {
+    text += field('Trainingsart', optional(registration.trainingsart)) + '\n';
+    text += field('Häufigkeit', optional(registration.trainingshäufigkeit)) + '\n';
+    if (registration.sessionDuration) {
+      text += field('Trainingsdauer', `${registration.sessionDuration} Min`) + '\n';
+    }
+    if (registration.teamParticipation && registration.teamParticipation !== '-') {
+      text += field('Mannschaft', registration.teamParticipation) + '\n';
+    }
   } else {
-    text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
+    text += field('Spielstärke', optional(registration.spielstärke)) + '\n';
+    if (registration.trainingGoals?.length) {
+      text += field('Trainingsziele', registration.trainingGoals.join(', ')) + '\n';
+    }
+    if (registration.groupSize?.length) {
+      text += field('Gruppengröße', registration.groupSize.join(', ')) + '\n';
+    }
   }
 
-  text += field('Häufigkeit', registration.frequence ? `${registration.frequence}x pro Woche` : 'Keine Angabe') + '\n';
-  text += '\nVerfügbare Zeiten:\n' + availableTimes(registration.availableTimes) + '\n';
+  text += '\nVerfügbare Zeiten:\n' + availableTimes(times) + '\n';
 
   // Payment info (if provided)
   if (registration.iban) {
     text += subSection('ZAHLUNGSINFORMATIONEN');
     text += field('IBAN', 'Bereitgestellt (vorhanden)') + '\n';
+    if (registration.accountHolder) {
+      text += field('Kontoinhaber', registration.accountHolder) + '\n';
+    }
+  }
+
+  // SEPA mandate
+  if (registration.sepaMandate) {
+    text += field('SEPA-Mandat', 'Erteilt') + '\n';
   }
 
   // Parent info (if provided)
@@ -821,7 +843,7 @@ function generateSeasonalRegistrationTextContent(registration) {
 
   // Notes
   text += subSection('BEMERKUNGEN');
-  text += optional(registration.notes, 'Keine Bemerkungen') + '\n';
+  text += optional(registration.remarks, 'Keine Bemerkungen') + '\n';
 
   // Footer
   text += '\n' + '='.repeat(50) + '\n';
@@ -842,6 +864,9 @@ export async function sendSeasonalRegistrationNotification(registration, notific
   }
 
   const subject = `Neue Saisonregistrierung: ${registration.firstName} ${registration.lastName}`;
+
+  const isAdultHtml = registration.formType === 'adults';
+  const timesHtml = isAdultHtml ? registration.availableTimesAdults : registration.availableTimesKids;
 
   // Format available times
   const formatAvailableTimes = (times) => {
@@ -911,16 +936,12 @@ export async function sendSeasonalRegistrationNotification(registration, notific
             <span class="field-value">${formatDate(registration.birthdate)}</span>
           </div>
           <div class="field">
-            <span class="field-label">Geschlecht:</span>
-            <span class="field-value">${registration.sex || 'Keine Angabe'}</span>
-          </div>
-          <div class="field">
             <span class="field-label">Adresse:</span>
             <span class="field-value">${registration.address || 'Keine Angabe'}</span>
           </div>
           <div class="field">
-            <span class="field-label">Mitglied:</span>
-            <span class="field-value">${registration.member ? 'Ja' : 'Nein'}</span>
+            <span class="field-label">Mitgliedsstatus:</span>
+            <span class="field-value">${registration.mitgliedsstatus || 'Keine Angabe'}</span>
           </div>
         </div>
 
@@ -931,27 +952,51 @@ export async function sendSeasonalRegistrationNotification(registration, notific
             <span class="field-value">${registration.periodId?.name || 'Unbekannt'}</span>
           </div>
           <div class="field">
-            <span class="field-label">Erwachsener:</span>
-            <span class="field-value">${registration.adult ? 'Ja' : 'Nein (Kind)'}</span>
+            <span class="field-label">Formular:</span>
+            <span class="field-value">${isAdultHtml ? 'Erwachsene' : 'Kinder/Jugend'}</span>
           </div>
-          ${!registration.adult ? `
+          ${!isAdultHtml ? `
           <div class="field">
-            <span class="field-label">Trainingsgruppe:</span>
-            <span class="field-value">${registration.trainigGroup || 'Keine Angabe'}</span>
+            <span class="field-label">Trainingsart:</span>
+            <span class="field-value">${registration.trainingsart || 'Keine Angabe'}</span>
           </div>
+          <div class="field">
+            <span class="field-label">Häufigkeit:</span>
+            <span class="field-value">${registration.trainingshäufigkeit || 'Keine Angabe'}</span>
+          </div>
+          ${registration.sessionDuration ? `
+          <div class="field">
+            <span class="field-label">Trainingsdauer:</span>
+            <span class="field-value">${registration.sessionDuration} Min</span>
+          </div>
+          ` : ''}
+          ${registration.teamParticipation && registration.teamParticipation !== '-' ? `
+          <div class="field">
+            <span class="field-label">Mannschaft:</span>
+            <span class="field-value">${registration.teamParticipation}</span>
+          </div>
+          ` : ''}
           ` : `
           <div class="field">
             <span class="field-label">Spielstärke:</span>
-            <span class="field-value">${registration.skillLevel || 'Keine Angabe'}</span>
+            <span class="field-value">${registration.spielstärke || 'Keine Angabe'}</span>
           </div>
+          ${registration.trainingGoals?.length ? `
+          <div class="field">
+            <span class="field-label">Trainingsziele:</span>
+            <span class="field-value">${registration.trainingGoals.join(', ')}</span>
+          </div>
+          ` : ''}
+          ${registration.groupSize?.length ? `
+          <div class="field">
+            <span class="field-label">Gruppengröße:</span>
+            <span class="field-value">${registration.groupSize.join(', ')}</span>
+          </div>
+          ` : ''}
           `}
           <div class="field">
-            <span class="field-label">Häufigkeit:</span>
-            <span class="field-value">${registration.frequence ? `${registration.frequence}x pro Woche` : 'Keine Angabe'}</span>
-          </div>
-          <div class="field">
             <span class="field-label">Verfügbare Zeiten:</span>
-            <div style="margin-left: 150px; margin-top: 8px;">${formatAvailableTimes(registration.availableTimes)}</div>
+            <div style="margin-left: 150px; margin-top: 8px;">${formatAvailableTimes(timesHtml)}</div>
           </div>
         </div>
 
@@ -962,6 +1007,18 @@ export async function sendSeasonalRegistrationNotification(registration, notific
             <span class="field-label">IBAN:</span>
             <span class="field-value">Bereitgestellt ✓</span>
           </div>
+          ${registration.accountHolder ? `
+          <div class="field">
+            <span class="field-label">Kontoinhaber:</span>
+            <span class="field-value">${registration.accountHolder}</span>
+          </div>
+          ` : ''}
+          ${registration.sepaMandate ? `
+          <div class="field">
+            <span class="field-label">SEPA-Mandat:</span>
+            <span class="field-value">Erteilt ✓</span>
+          </div>
+          ` : ''}
         </div>
         ` : ''}
 
@@ -982,7 +1039,7 @@ export async function sendSeasonalRegistrationNotification(registration, notific
         <div class="section">
           <h2>Bemerkungen</h2>
           <div class="field">
-            <span class="field-value">${registration.notes || 'Keine Bemerkungen'}</span>
+            <span class="field-value">${registration.remarks || 'Keine Bemerkungen'}</span>
           </div>
         </div>
       </div>
