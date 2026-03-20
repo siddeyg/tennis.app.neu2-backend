@@ -88,9 +88,9 @@ router.post('/', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resour
     if (age < 0 || age >= 100) {
       return res.status(400).json({ error: 'Ungültiges Geburtsdatum' });
     }
-    if (age >= 18) {
+    if (age >= 19) {
       return res.status(400).json({
-        error: 'Kind muss unter 18 Jahre alt sein. Familienmitglieder ab 18 Jahren sollten ein eigenes Portal-Konto anlegen.'
+        error: 'Kind muss unter 19 Jahre alt sein. Familienmitglieder ab 19 Jahren sollten ein eigenes Portal-Konto anlegen.'
       });
     }
 
