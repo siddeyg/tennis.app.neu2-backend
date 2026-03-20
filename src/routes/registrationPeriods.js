@@ -13,6 +13,7 @@
  * - POST   /api/registration-periods/:id/create-plan - Create training plan for period
  * - POST   /api/registration-periods/:id/open    - Open registration
  * - POST   /api/registration-periods/:id/close   - Close registration
+ * - POST   /api/registration-periods/:id/reopen  - Reopen closed registration
  * - GET    /api/registration-periods/:id/submissions - List submissions
  * - POST   /api/registration-periods/:id/process-all - Bulk process submissions
  */
@@ -686,6 +687,54 @@ router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'Regi
     res.status(500).json({
       success: false,
       error: 'Fehler beim Schließen des Anmeldezeitraums'
+    });
+  }
+});
+
+/**
+ * POST /api/registration-periods/:id/reopen
+ * Reopen a closed registration period
+ *
+ * Sets status back to 'open' and isActive to true
+ */
+router.post('/:id/reopen', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod', metadata: { operation: 'REOPEN' } }), async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+
+    if (!period) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldezeitraum nicht gefunden'
+      });
+    }
+
+    if (period.status !== 'closed') {
+      return res.status(400).json({
+        success: false,
+        error: 'Nur geschlossene Anmeldezeiträume können wieder geöffnet werden'
+      });
+    }
+
+    period.status = 'open';
+    period.isActive = true;
+
+    await period.save();
+
+    logger.info('Registration period reopened', {
+      periodId: period._id,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      message: 'Anmeldezeitraum erfolgreich wieder geöffnet',
+      period
+    });
+  } catch (error) {
+    logger.error('Error reopening registration period:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Wieder-Öffnen des Anmeldezeitraums'
     });
   }
 });

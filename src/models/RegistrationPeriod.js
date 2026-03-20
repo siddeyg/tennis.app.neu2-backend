@@ -173,11 +173,12 @@ const registrationPeriodSchema = new mongoose.Schema(
 registrationPeriodSchema.index({ status: 1, isActive: 1 });
 registrationPeriodSchema.index({ season: 1, trainingStartDate: -1 });
 
-// Virtual: Count of submissions
+// Virtual: Count of submissions (excludes cancelled)
 registrationPeriodSchema.virtual('submissionsCount', {
   ref: 'SeasonalRegistration',
   localField: '_id',
   foreignField: 'periodId',
+  match: { status: { $ne: 'cancelled' } },
   count: true,
 });
 
@@ -190,21 +191,21 @@ registrationPeriodSchema.virtual('pendingSubmissionsCount', {
   count: true,
 });
 
-// Virtual: Count of kids submissions
+// Virtual: Count of kids submissions (excludes cancelled)
 registrationPeriodSchema.virtual('kidsSubmissionsCount', {
   ref: 'SeasonalRegistration',
   localField: '_id',
   foreignField: 'periodId',
-  match: { formType: 'kids' },
+  match: { formType: 'kids', status: { $ne: 'cancelled' } },
   count: true,
 });
 
-// Virtual: Count of adults submissions
+// Virtual: Count of adults submissions (excludes cancelled)
 registrationPeriodSchema.virtual('adultsSubmissionsCount', {
   ref: 'SeasonalRegistration',
   localField: '_id',
   foreignField: 'periodId',
-  match: { formType: 'adults' },
+  match: { formType: 'adults', status: { $ne: 'cancelled' } },
   count: true,
 });
 
