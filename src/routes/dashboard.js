@@ -16,12 +16,14 @@ router.get('/', async (req, res) => {
   try {
     const [
       portalUserCount,
+      unverifiedCount,
       familyMemberAgg,
       ticketStats,
       camps,
       campRegAgg
     ] = await Promise.all([
       StudentPortalUser.countDocuments({}),
+      StudentPortalUser.countDocuments({ isVerified: false }),
 
       StudentPortalUser.aggregate([
         { $project: { count: { $size: { $ifNull: ['$familyMembers', []] } } } },
@@ -70,6 +72,7 @@ router.get('/', async (req, res) => {
 
     res.json({
       portalUsers: portalUserCount,
+      unverifiedUsers: unverifiedCount,
       familyMembers: familyMemberCount,
       tickets: {
         open: ticketMap['open'],
