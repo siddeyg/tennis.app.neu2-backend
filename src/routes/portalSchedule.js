@@ -23,74 +23,108 @@ const uploadDir = path.join(__dirname, '../../uploads/announcements');
 
 const router = express.Router();
 
+const DAY_NAME_TO_NUM = { Montag: 1, Dienstag: 2, Mittwoch: 3, Donnerstag: 4, Freitag: 5, Samstag: 6 };
+
+function toDateKey(date) {
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function buildExclusionMap(computedHolidays = [], trainingExclusions = []) {
+  const map = new Map();
+  for (const h of computedHolidays) {
+    map.set(toDateKey(h.date), { name: h.name, isWholeDay: true, slots: [] });
+  }
+  for (const e of trainingExclusions) {
+    const key = toDateKey(e.date);
+    const isWholeDay = !e.affectedSlots || e.affectedSlots.length === 0;
+    const existing = map.get(key);
+    if (isWholeDay) {
+      map.set(key, { name: e.reason, isWholeDay: true, slots: [] });
+    } else if (existing) {
+      existing.slots.push(...e.affectedSlots);
+    } else {
+      map.set(key, { name: e.reason, isWholeDay: false, slots: [...e.affectedSlots] });
+    }
+  }
+  return map;
+}
+
+// Helper: build schedule array from a Student document (reused for parent + children)
+async function buildScheduleForStudent(student) {
+  let schedule = [];
+
+  if (student.assignments && student.assignments.length > 0) {
+    const coachIds = student.assignments
+      .map(a => a.coach)
+      .filter(id => id && id.toString);
+
+    const coaches = await Coach.find({ _id: { $in: coachIds } });
+    const coachMap = new Map(
+      coaches.map(c => [c._id.toString(), `${c.firstName} ${c.lastName}`])
+    );
+
+    schedule = student.assignments.map(assignment => ({
+      day: assignment.day,
+      hour: assignment.hour,
+      duration: assignment.duration || 60,
+      coach: assignment.coach
+        ? (coachMap.get(assignment.coach.toString()) || assignment.coach)
+        : 'Unbekannt'
+    }));
+  } else if (student.day && student.hour) {
+    let coachName = 'Unbekannt';
+    if (student.coach) {
+      const coach = await Coach.findById(student.coach);
+      if (coach) {
+        coachName = `${coach.firstName} ${coach.lastName}`;
+      } else {
+        coachName = student.coach;
+      }
+    }
+    schedule = [{
+      day: student.day,
+      hour: student.hour,
+      duration: 60,
+      coach: coachName
+    }];
+  }
+
+  const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  schedule.sort((a, b) => {
+    const dayComparison = dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+    if (dayComparison !== 0) return dayComparison;
+    return a.hour - b.hour;
+  });
+
+  return schedule;
+}
+
 /**
  * @route   GET /api/portal/schedule
- * @desc    Get student's personalized schedule (their assigned courses)
+ * @desc    Get student's personalized schedule + children's schedules
  * @access  Private (student portal users only)
  */
 router.get('/schedule', verifyPortalAuth, async (req, res) => {
   try {
-    const studentId = req.user.studentId;
+    // Look up current portal user from DB (JWT may be stale after registration auto-creates student)
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
+    }
 
-    // Find student
-    const student = await Student.findById(studentId);
-    if (!student) {
+    const studentId = portalUser.studentId || req.user.studentId;
+
+    // Find parent's student record (may be null if only children are registered)
+    const student = studentId ? await Student.findById(studentId) : null;
+    const hasChildren = (portalUser.familyMembers || []).some(fm => fm.studentId);
+
+    // 404 only if neither parent nor any child has a student record
+    if (!student && !hasChildren) {
       return res.status(404).json({ error: 'Schüler nicht gefunden' });
     }
 
-    // Get assignments with populated coach names
-    let schedule = [];
-
-    // Check if student has new-format assignments array
-    if (student.assignments && student.assignments.length > 0) {
-      // OPTIMIZED: Batch query all coaches at once (fixes N+1 query pattern)
-      const coachIds = student.assignments
-        .map(a => a.coach)
-        .filter(id => id && id.toString); // Filter out null/undefined and validate ObjectId
-
-      // Fetch all coaches in a single query
-      const coaches = await Coach.find({ _id: { $in: coachIds } });
-      const coachMap = new Map(
-        coaches.map(c => [c._id.toString(), `${c.firstName} ${c.lastName}`])
-      );
-
-      // Map assignments with coach names from the cache
-      schedule = student.assignments.map(assignment => ({
-        day: assignment.day,
-        hour: assignment.hour,
-        duration: assignment.duration || 60,
-        coach: assignment.coach
-          ? (coachMap.get(assignment.coach.toString()) || assignment.coach)
-          : 'Unbekannt'
-      }));
-    } else if (student.day && student.hour) {
-      // Fall back to legacy single assignment format
-      let coachName = 'Unbekannt';
-
-      if (student.coach) {
-        const coach = await Coach.findById(student.coach);
-        if (coach) {
-          coachName = `${coach.firstName} ${coach.lastName}`;
-        } else {
-          coachName = student.coach;
-        }
-      }
-
-      schedule = [{
-        day: student.day,
-        hour: student.hour,
-        duration: 60,
-        coach: coachName
-      }];
-    }
-
-    // Sort schedule by day of week and hour
-    const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-    schedule.sort((a, b) => {
-      const dayComparison = dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
-      if (dayComparison !== 0) return dayComparison;
-      return a.hour - b.hour;
-    });
+    const schedule = student ? await buildScheduleForStudent(student) : [];
 
     // Find the RegistrationPeriod that covers today (training dates bracket today)
     const today = new Date();
@@ -107,34 +141,8 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     }
 
     // Compute training session count using pre-computed holidays + custom exclusions from DB
-    const DAY_NAME_TO_NUM = { Montag: 1, Dienstag: 2, Mittwoch: 3, Donnerstag: 4, Freitag: 5, Samstag: 6 };
     let trainingCount = null;
     let holidayHits = [];
-
-    function toDateKey(date) {
-      const d = new Date(date);
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function buildExclusionMap(computedHolidays = [], trainingExclusions = []) {
-      const map = new Map(); // dateKey → { name, isWholeDay, slots[] }
-      for (const h of computedHolidays) {
-        map.set(toDateKey(h.date), { name: h.name, isWholeDay: true, slots: [] });
-      }
-      for (const e of trainingExclusions) {
-        const key = toDateKey(e.date);
-        const isWholeDay = !e.affectedSlots || e.affectedSlots.length === 0;
-        const existing = map.get(key);
-        if (isWholeDay) {
-          map.set(key, { name: e.reason, isWholeDay: true, slots: [] });
-        } else if (existing) {
-          existing.slots.push(...e.affectedSlots);
-        } else {
-          map.set(key, { name: e.reason, isWholeDay: false, slots: [...e.affectedSlots] });
-        }
-      }
-      return map;
-    }
 
     // Only compute if admin has already run compute-holidays (computedHolidays is populated)
     if (period && schedule.length > 0 && period.computedHolidays && period.computedHolidays.length > 0) {
@@ -163,15 +171,70 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     // If computedHolidays is empty: trainingCount stays null → stats card hidden on frontend
 
     // Return student info + schedule + season stats
+    // Build family member schedules (children with linked studentId)
+    const familySchedules = [];
+    const childMembers = (portalUser.familyMembers || []).filter(fm => fm.studentId);
+    if (childMembers.length > 0) {
+      const childStudentIds = childMembers.map(fm => fm.studentId);
+      const childStudents = await Student.find({ _id: { $in: childStudentIds } });
+      const childStudentMap = new Map(childStudents.map(s => [s._id.toString(), s]));
+
+      for (const fm of childMembers) {
+        const childStudent = childStudentMap.get(fm.studentId.toString());
+        if (!childStudent) continue;
+
+        const childSchedule = await buildScheduleForStudent(childStudent);
+
+        // Compute training count for child (same logic as parent)
+        let childTrainingCount = null;
+        let childHolidayHits = [];
+        if (period && childSchedule.length > 0 && period.computedHolidays && period.computedHolidays.length > 0) {
+          const childExclusionMap = buildExclusionMap(period.computedHolidays, period.trainingExclusions);
+          childTrainingCount = 0;
+          for (const a of childSchedule) {
+            const dayNum = DAY_NAME_TO_NUM[a.day];
+            if (dayNum === undefined) continue;
+            const allDates = getDatesInRangeForDay(period.trainingStartDate, period.trainingEndDate, dayNum);
+            for (const d of allDates) {
+              const key = toDateKey(d);
+              const excl = childExclusionMap.get(key);
+              const isExcluded = excl && (excl.isWholeDay || excl.slots.some(s => s.day === a.day && s.hour === a.hour));
+              if (isExcluded) {
+                childHolidayHits.push({ date: d, name: excl.name, day: a.day, hour: a.hour });
+              } else {
+                childTrainingCount++;
+              }
+            }
+          }
+        }
+
+        familySchedules.push({
+          familyMemberId: fm._id,
+          childName: `${fm.firstName || ''} ${fm.lastName || ''}`.trim() || fm.name || 'Kind',
+          student: {
+            firstName: childStudent.firstName,
+            lastName: childStudent.lastName,
+            adult: childStudent.adult,
+            skillLevel: childStudent.skillLevel,
+            trainigGroup: childStudent.trainigGroup,
+            frequence: childStudent.frequence
+          },
+          schedule: childSchedule,
+          trainingCount: childTrainingCount,
+          holidays: childHolidayHits,
+        });
+      }
+    }
+
     res.json({
-      student: {
+      student: student ? {
         firstName: student.firstName,
         lastName: student.lastName,
         adult: student.adult,
         skillLevel: student.skillLevel,
         trainigGroup: student.trainigGroup,
         frequence: student.frequence
-      },
+      } : null,
       schedule,
       period: period ? {
         start: period.trainingStartDate,
@@ -181,6 +244,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       } : null,
       trainingCount,
       holidays: holidayHits,
+      familySchedules,
     });
 
   } catch (error) {
