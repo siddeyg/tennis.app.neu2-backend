@@ -1562,6 +1562,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
           <strong>Die Anmeldung für <em>${escapeHtml(participantName)}</em> zum Saisontraining <em>${escapeHtml(period.name || 'Saisontraining')}</em> ist eingegangen.</strong><br>
           Zeitraum: ${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}
         </div>
+        <p>Details finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".</p>
         <div class="notice">
           <strong>Hinweis:</strong> Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.
         </div>
@@ -1575,7 +1576,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
