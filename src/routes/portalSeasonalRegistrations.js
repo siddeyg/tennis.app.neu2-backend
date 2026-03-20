@@ -508,18 +508,27 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       };
     }
 
-    // Handle SEPA mandate — kids only (adults receive a bill, no direct debit)
-    if (formType === 'kids' && sepaMandate && accountHolder && iban) {
-      // Validate IBAN format
+    // Validate IBAN format if provided (any form type)
+    if (iban && iban.trim()) {
       if (!validateIBANFormat(iban)) {
         return res.status(400).json({
           success: false,
           error: 'Ungültiges IBAN-Format'
         });
       }
+    }
 
+    // Handle SEPA mandate — kids only (adults receive a bill, no direct debit)
+    if (formType === 'kids' && sepaMandate && accountHolder && iban) {
       registrationData.sepaMandate = true;
       registrationData.accountHolder = accountHolder;
+      registrationData.iban = encryptIBAN(iban);
+    }
+
+    // Handle SEPA mandate — adults (optional, but save if provided)
+    if (formType === 'adults' && sepaMandate && iban && validateIBANFormat(iban)) {
+      registrationData.sepaMandate = true;
+      if (accountHolder) registrationData.accountHolder = accountHolder;
       registrationData.iban = encryptIBAN(iban);
     }
 
@@ -527,8 +536,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
     const registration = new SeasonalRegistration(registrationData);
     await registration.save();
 
-    // Save IBAN to user profile — kids only
-    if (formType === 'kids' && iban && validateIBANFormat(iban)) {
+    // Save IBAN to user profile if provided and valid
+    if (iban && validateIBANFormat(iban)) {
       const encryptedIBAN = encryptIBAN(iban);
 
       await StudentPortalUser.findByIdAndUpdate(req.user.id, { iban: encryptedIBAN });

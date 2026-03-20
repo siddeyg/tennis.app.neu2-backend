@@ -186,7 +186,7 @@ describe('Child Registration (familyMemberId) Integration Tests', () => {
     expect(res.body.registration).toBeDefined();
     expect(res.body.registration.familyMemberId).toBe(childId.toString());
     expect(res.body.registration.firstName).toBe('Max');
-    expect(res.body.registration.status).toBe('processed');
+    expect(res.body.registration.status).toBe('pending'); // stays pending until admin approves
   });
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -390,7 +390,7 @@ describe('Child Registration (familyMemberId) Integration Tests', () => {
       .expect(201);
 
     expect(res.body.success).toBe(true);
-    expect(res.body.registration.status).toBe('processed');
+    expect(res.body.registration.status).toBe('pending'); // stays pending until admin approves
   });
 
   // ────────────────────────────────────────────────────────────────────────────

@@ -158,7 +158,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
       expect(response.body.registration).toBeDefined();
       expect(response.body.registration.formType).toBe('kids');
       expect(response.body.registration.firstName).toBe('Max');
-      expect(response.body.registration.status).toBe('processed'); // auto-processed on submit
+      expect(response.body.registration.status).toBe('pending'); // stays pending until admin approves
       expect(response.body.registration.availableTimesKids).toHaveLength(5);
     });
 

@@ -184,8 +184,8 @@ describe('Complete Registration Flow - E2E', () => {
       periodId: registrationPeriod._id
     });
 
-    expect(seasonalReg.status).toBe('processed');
-    expect(seasonalReg.processedAt).toBeDefined();
+    expect(seasonalReg.status).toBe('pending'); // stays pending until admin approves
+    expect(seasonalReg.studentId).toBeDefined(); // student auto-created and linked
 
     // STEP 9: User Can Login Again and See Student Info
     const secondLoginRes = await request(app)

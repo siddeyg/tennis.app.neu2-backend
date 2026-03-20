@@ -18,6 +18,7 @@ import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
+import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail, sendCampCancellationEmail, sendCampCancellationAdminEmail } from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
@@ -170,7 +171,8 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       team,
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
-      medicalNotes
+      medicalNotes,
+      iban
     } = req.body;
 
     // Validation
@@ -197,6 +199,18 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         success: false,
         error: 'Ungültiger Skill Level'
       });
+    }
+
+    // Validate IBAN format if provided
+    if (iban && iban.trim()) {
+      const cleanIban = iban.replace(/\s/g, '');
+      if (!validateIBANFormat(cleanIban)) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültiges IBAN-Format'
+        });
+      }
     }
 
     // 1. Lock camp document
@@ -359,6 +373,16 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       await camp.save(session ? { session } : {});
     }
 
+
+    // 6b. Save IBAN to user profile if provided and valid
+    if (iban && iban.trim()) {
+      const cleanIban = iban.replace(/\s/g, '');
+      if (validateIBANFormat(cleanIban)) {
+        const StudentPortalUser = (await import('../models/StudentPortalUser.js')).default;
+        const encryptedIBAN = encryptIBAN(cleanIban);
+        await StudentPortalUser.findByIdAndUpdate(req.user.id, { iban: encryptedIBAN });
+      }
+    }
 
     // 7. Commit transaction
     if (session) await session.commitTransaction();

@@ -119,7 +119,7 @@ describe('Portal Profile API Integration Tests', () => {
       const response = await request(app).get('/api/portal/profile');
 
       expect(response.status).toBe(404);
-      expect(response.body.error).toBe('Schüler nicht gefunden');
+      expect(response.body.error).toBe('Portal-Benutzer nicht gefunden');
     });
   });
 

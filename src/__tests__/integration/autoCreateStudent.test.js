@@ -151,7 +151,7 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         studentPortalUserId: portalUser._id,
         periodId: registrationPeriod._id
       });
-      expect(registration.status).toBe('processed');
+      expect(registration.status).toBe('pending'); // stays pending until admin approves
     });
 
     test('Should NOT create duplicate Student on second registration', async () => {
@@ -351,11 +351,11 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         periodId: registrationPeriod._id
       });
 
-      expect(registration.status).toBe('processed');
-      expect(registration.processedAt).toBeInstanceOf(Date);
+      expect(registration.status).toBe('pending'); // stays pending until admin approves
+      expect(registration.studentId).toBeDefined(); // student auto-created and linked
     });
 
-    test('Should set processedAt timestamp on auto-approval', async () => {
+    test('Should have no processedAt until admin approves', async () => {
       const registrationData = {
         periodId: registrationPeriod._id,
         formType: 'kids',
@@ -390,9 +390,9 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         studentPortalUserId: portalUser._id
       });
 
-      expect(registration.processedAt).toBeDefined();
-      expect(registration.processedAt.getTime()).toBeGreaterThanOrEqual(before.getTime());
-      expect(registration.processedAt.getTime()).toBeLessThanOrEqual(after.getTime());
+      expect(registration.status).toBe('pending');
+      expect(registration.processedAt).toBeUndefined(); // not set until admin approves
+      expect(registration.studentId).toBeDefined(); // student still auto-created
     });
 
     test('Should link Student immediately (not pending admin review)', async () => {
