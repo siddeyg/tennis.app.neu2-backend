@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
       campRegAgg
     ] = await Promise.all([
       StudentPortalUser.countDocuments({}),
-      StudentPortalUser.countDocuments({ isVerified: false }),
+      StudentPortalUser.countDocuments({ emailVerified: false }),
 
       StudentPortalUser.aggregate([
         { $project: { count: { $size: { $ifNull: ['$familyMembers', []] } } } },
