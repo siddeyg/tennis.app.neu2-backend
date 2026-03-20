@@ -92,7 +92,7 @@ const campSchema = new mongoose.Schema({
   // Target Audience
   targetAudience: {
     type: String,
-    enum: ['all', 'adults', 'youth', 'children', 'children_youth'],
+    enum: ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth'],
     default: 'all'
   },
   minAge: {
@@ -115,7 +115,7 @@ const campSchema = new mongoose.Schema({
   // Player Type (Team vs Hobby)
   playerType: {
     type: String,
-    enum: ['all', 'team-only'],
+    enum: ['all', 'team-only', 'hobby-only'],
     default: 'all'
   },
 

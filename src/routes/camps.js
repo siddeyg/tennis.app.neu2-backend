@@ -32,9 +32,9 @@ const router = express.Router();
 // Enum constants — must match Camp model AND CampForm.js option values
 // When adding a new dropdown option in the frontend, add it here AND in Camp.js enum
 const VALID_CAMP_TYPES = ['beginner-course', 'intensive-workshop', 'technique-camp', 'other'];
-const VALID_TARGET_AUDIENCES = ['all', 'adults', 'youth', 'children', 'children_youth'];
+const VALID_TARGET_AUDIENCES = ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth'];
 const VALID_SKILL_LEVELS = ['beginner', 'intermediate'];
-const VALID_TEAM_ACCESS = ['all', 'team-only'];
+const VALID_TEAM_ACCESS = ['all', 'team-only', 'hobby-only'];
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {
@@ -870,7 +870,7 @@ router.get('/:id/export/csv', async (req, res) => {
         ? decryptIBAN(reg.studentPortalUserId.iban)
         : '';
       const skillLevel = reg.skillLevel;
-      const team = reg.team ? 'Mannschaft' : 'Hobby';
+      const team = reg.team ? 'Mannschaft' : 'Freizeit';
       const emergencyName = reg.emergencyContactName || '';
       const emergencyPhone = reg.emergencyContactPhone || '';
       const medicalNotes = (reg.medicalNotes || '').replace(/,/g, ';').replace(/\n/g, ' ');

@@ -70,7 +70,7 @@ const campRegistrationSchema = new mongoose.Schema({
   team: {
     type: Boolean,
     required: true,
-    // true = Mannschaftsspieler, false = Hobbyspieler
+    // true = Mannschaftsspieler, false = Freizeitspieler
   },
 
   // Emergency Contact (required for children under 18)

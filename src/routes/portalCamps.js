@@ -188,12 +188,12 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
-        error: 'Mannschaft (Team/Hobby) ist erforderlich'
+        error: 'Mannschaft (Team/Freizeit) ist erforderlich'
       });
     }
 
 
-    if (!['beginner', 'intermediate', 'advanced'].includes(skillLevel)) {
+    if (!['beginner', 'intermediate'].includes(skillLevel)) {
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,

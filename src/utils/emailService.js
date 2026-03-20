@@ -1038,7 +1038,7 @@ function generateCampRegistrationTextContent(registration, camp) {
   text += field('Telefon', optional(registration.phone)) + '\n';
   text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
   text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
-  text += field('Mannschaft', registration.team ? 'Mannschaftsspieler' : 'Hobbyspieler') + '\n';
+  text += field('Mannschaft', registration.team ? 'Mannschaftsspieler' : 'Freizeitspieler') + '\n';
 
   // Emergency contact (if provided)
   if (registration.emergencyContact) {
@@ -1183,7 +1183,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           </div>
           <div class="field">
             <span class="field-label">Mannschaft:</span>
-            <span class="field-value">${registration.team ? '⚽ Mannschaftsspieler' : '🎾 Hobbyspieler'}</span>
+            <span class="field-value">${registration.team ? '⚽ Mannschaftsspieler' : '🎾 Freizeitspieler'}</span>
           </div>
         </div>
 
