@@ -119,9 +119,9 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     const student = studentId ? await Student.findById(studentId) : null;
     const hasChildren = (portalUser.familyMembers || []).some(fm => fm.studentId);
 
-    // 404 only if neither parent nor any child has a student record
+    // No student record yet — return empty schedule (not 404)
     if (!student && !hasChildren) {
-      return res.status(404).json({ error: 'Schüler nicht gefunden' });
+      return res.json({ student: null, schedule: [], period: null, trainingCount: null, holidays: [], familySchedules: [] });
     }
 
     const schedule = student ? await buildScheduleForStudent(student) : [];
