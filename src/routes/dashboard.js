@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
         { $group: { _id: '$status', count: { $sum: 1 } } }
       ]),
 
-      Camp.find({ deletedAt: null }, '_id title').lean(),
+      Camp.find({ deletedAt: null }, '_id title maxParticipants').lean(),
 
       CampRegistration.aggregate([
         { $match: { status: { $in: ['pending', 'confirmed', 'waitlist'] } } },
@@ -58,11 +58,13 @@ router.get('/', async (req, res) => {
     const campRows = camps.map(c => ({
       _id: c._id,
       name: c.title,
-      registrations: regByCamp[String(c._id)] || 0
+      registrations: regByCamp[String(c._id)] || 0,
+      maxParticipants: c.maxParticipants || 0
     }));
     campRows.sort((a, b) => b.registrations - a.registrations);
 
     const totalCampRegistrations = campRows.reduce((s, c) => s + c.registrations, 0);
+    const totalCapacity = campRows.reduce((s, c) => s + c.maxParticipants, 0);
 
     const familyMemberCount = familyMemberAgg[0]?.total || 0;
 
@@ -78,6 +80,7 @@ router.get('/', async (req, res) => {
       },
       campRegistrations: {
         total: totalCampRegistrations,
+        totalCapacity,
         perCamp: campRows
       }
     });
