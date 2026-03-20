@@ -820,20 +820,6 @@ function generateSeasonalRegistrationTextContent(registration) {
 
   text += '\nVerfügbare Zeiten:\n' + availableTimes(times) + '\n';
 
-  // Payment info (if provided)
-  if (registration.iban) {
-    text += subSection('ZAHLUNGSINFORMATIONEN');
-    text += field('IBAN', 'Bereitgestellt (vorhanden)') + '\n';
-    if (registration.accountHolder) {
-      text += field('Kontoinhaber', registration.accountHolder) + '\n';
-    }
-  }
-
-  // SEPA mandate
-  if (registration.sepaMandate) {
-    text += field('SEPA-Mandat', 'Erteilt') + '\n';
-  }
-
   // Parent info (if provided)
   if (registration.parentEmail) {
     text += subSection('ELTERNINFORMATIONEN');
@@ -999,28 +985,6 @@ export async function sendSeasonalRegistrationNotification(registration, notific
             <div style="margin-left: 150px; margin-top: 8px;">${formatAvailableTimes(timesHtml)}</div>
           </div>
         </div>
-
-        ${registration.iban ? `
-        <div class="section">
-          <h2>Zahlungsinformationen</h2>
-          <div class="field">
-            <span class="field-label">IBAN:</span>
-            <span class="field-value">Bereitgestellt ✓</span>
-          </div>
-          ${registration.accountHolder ? `
-          <div class="field">
-            <span class="field-label">Kontoinhaber:</span>
-            <span class="field-value">${registration.accountHolder}</span>
-          </div>
-          ` : ''}
-          ${registration.sepaMandate ? `
-          <div class="field">
-            <span class="field-label">SEPA-Mandat:</span>
-            <span class="field-value">Erteilt ✓</span>
-          </div>
-          ` : ''}
-        </div>
-        ` : ''}
 
         ${registration.parentEmail ? `
         <div class="section">
