@@ -810,6 +810,10 @@ function generateSeasonalRegistrationTextContent(registration) {
     }
   } else {
     text += field('Spielstärke', optional(registration.spielstärke)) + '\n';
+    text += field('Häufigkeit', optional(registration.trainingshäufigkeit)) + '\n';
+    if (registration.sessionDuration) {
+      text += field('Trainingsdauer', `${registration.sessionDuration} Min`) + '\n';
+    }
     if (registration.trainingGoals?.length) {
       text += field('Trainingsziele', registration.trainingGoals.join(', ')) + '\n';
     }
@@ -967,6 +971,16 @@ export async function sendSeasonalRegistrationNotification(registration, notific
             <span class="field-label">Spielstärke:</span>
             <span class="field-value">${registration.spielstärke || 'Keine Angabe'}</span>
           </div>
+          <div class="field">
+            <span class="field-label">Häufigkeit:</span>
+            <span class="field-value">${registration.trainingshäufigkeit || 'Keine Angabe'}</span>
+          </div>
+          ${registration.sessionDuration ? `
+          <div class="field">
+            <span class="field-label">Trainingsdauer:</span>
+            <span class="field-value">${registration.sessionDuration} Min</span>
+          </div>
+          ` : ''}
           ${registration.trainingGoals?.length ? `
           <div class="field">
             <span class="field-label">Trainingsziele:</span>

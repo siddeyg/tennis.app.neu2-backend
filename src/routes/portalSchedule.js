@@ -294,8 +294,17 @@ router.get('/announcements', verifyPortalAuth, async (req, res) => {
 
     const announcements = await Announcement.find(query)
       .select('title content priority publishDate attachments')
-      .sort({ priority: -1, publishDate: -1 }) // Urgent first, then by date
-      .limit(50); // Limit to 50 most recent
+      .limit(50)
+      .lean();
+
+    // Sort by priority (urgent > important > normal), then by publishDate descending
+    const priorityOrder = { urgent: 0, important: 1, normal: 2 };
+    announcements.sort((a, b) => {
+      const pA = priorityOrder[a.priority] ?? 2;
+      const pB = priorityOrder[b.priority] ?? 2;
+      if (pA !== pB) return pA - pB;
+      return new Date(b.publishDate) - new Date(a.publishDate);
+    });
 
     res.json(announcements);
 

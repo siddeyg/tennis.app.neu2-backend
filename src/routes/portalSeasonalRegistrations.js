@@ -412,13 +412,13 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
       }
 
-      // Check minimum 3 distinct days
+      // Check minimum 2 distinct days
       if (availableTimesKids) {
         const uniqueDays = new Set(availableTimesKids.map(t => t.day)).size;
-        if (uniqueDays < 3) {
+        if (uniqueDays < 2) {
           return res.status(400).json({
             success: false,
-            error: 'Bitte wählen Sie Zeiten an mindestens 3 verschiedenen Tagen aus'
+            error: 'Bitte wählen Sie Zeiten an mindestens 2 verschiedenen Tagen aus'
           });
         }
       }
@@ -448,13 +448,13 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
       }
 
-      // Check minimum 3 distinct days
+      // Check minimum 2 distinct days
       if (availableTimesAdults) {
         const uniqueDays = new Set(availableTimesAdults.map(t => t.day)).size;
-        if (uniqueDays < 3) {
+        if (uniqueDays < 2) {
           return res.status(400).json({
             success: false,
-            error: 'Bitte wählen Sie Zeiten an mindestens 3 verschiedenen Tagen aus'
+            error: 'Bitte wählen Sie Zeiten an mindestens 2 verschiedenen Tagen aus'
           });
         }
       }
