@@ -3,6 +3,8 @@ import SupportTicket from '../models/SupportTicket.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
+import RegistrationPeriod from '../models/RegistrationPeriod.js';
+import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import logger from '../utils/logger.js';
 
 const router = express.Router();
@@ -20,7 +22,8 @@ router.get('/', async (req, res) => {
       familyMemberAgg,
       ticketStats,
       camps,
-      campRegAgg
+      campRegAgg,
+      activePeriod
     ] = await Promise.all([
       StudentPortalUser.countDocuments({}),
       StudentPortalUser.countDocuments({ emailVerified: false }),
@@ -40,7 +43,9 @@ router.get('/', async (req, res) => {
       CampRegistration.aggregate([
         { $match: { status: { $in: ['pending', 'confirmed', 'waitlist'] } } },
         { $group: { _id: '$campId', count: { $sum: 1 } } }
-      ])
+      ]),
+
+      RegistrationPeriod.findOne({ isActive: true }).lean()
     ]);
 
     // Build ticket summary
@@ -70,6 +75,23 @@ router.get('/', async (req, res) => {
 
     const familyMemberCount = familyMemberAgg[0]?.total || 0;
 
+    // Seasonal training registrations for active period
+    let seasonalTraining = null;
+    if (activePeriod) {
+      const [totalRegs, kidsRegs, adultsRegs] = await Promise.all([
+        SeasonalRegistration.countDocuments({ periodId: activePeriod._id, status: { $ne: 'cancelled' } }),
+        SeasonalRegistration.countDocuments({ periodId: activePeriod._id, formType: 'kids', status: { $ne: 'cancelled' } }),
+        SeasonalRegistration.countDocuments({ periodId: activePeriod._id, formType: 'adults', status: { $ne: 'cancelled' } }),
+      ]);
+      seasonalTraining = {
+        periodName: activePeriod.name,
+        status: activePeriod.status,
+        total: totalRegs,
+        kids: kidsRegs,
+        adults: adultsRegs,
+      };
+    }
+
     res.json({
       portalUsers: portalUserCount,
       unverifiedUsers: unverifiedCount,
@@ -85,7 +107,8 @@ router.get('/', async (req, res) => {
         total: totalCampRegistrations,
         totalCapacity,
         perCamp: campRows
-      }
+      },
+      seasonalTraining
     });
   } catch (err) {
     logger.error('Dashboard stats error', { error: err.message });
