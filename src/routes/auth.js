@@ -348,6 +348,7 @@ router.post("/register",
     await UserSettings.create({
       userId: user._id,
       allowResetSchedule: true, // Default: user CAN click "Plan generieren"
+      allowNotifyStudents: true, // Default: user CAN click "Schüler benachrichtigen"
     }).catch(err => {
       // Non-blocking: If settings creation fails, don't fail the registration
       logger.error("Error creating user settings", { error: err.message, userId: user._id });

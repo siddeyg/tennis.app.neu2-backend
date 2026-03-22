@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
       settings = await UserSettings.create({
         userId,
         allowResetSchedule: true,
+        allowNotifyStudents: true,
       });
     }
 
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
 router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'UserSettings' }), async (req, res) => {
   try {
     const userId = req.user._id;
-    const { allowResetSchedule } = req.body;
+    const { allowResetSchedule, allowNotifyStudents } = req.body;
 
     // Find existing settings or create new ones
     let settings = await UserSettings.findOne({ userId });
@@ -49,11 +50,15 @@ router.put("/", auditLogMiddleware({ action: 'UPDATE', resource: 'UserSettings' 
       settings = await UserSettings.create({
         userId,
         allowResetSchedule: allowResetSchedule ?? true,
+        allowNotifyStudents: allowNotifyStudents ?? true,
       });
     } else {
       // Update existing settings
       if (typeof allowResetSchedule === "boolean") {
         settings.allowResetSchedule = allowResetSchedule;
+      }
+      if (typeof allowNotifyStudents === "boolean") {
+        settings.allowNotifyStudents = allowNotifyStudents;
       }
       await settings.save();
     }

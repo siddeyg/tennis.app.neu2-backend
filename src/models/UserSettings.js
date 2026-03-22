@@ -17,6 +17,10 @@ const userSettingsSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // By default, users CAN click "Plan generieren"
   },
+  allowNotifyStudents: {
+    type: Boolean,
+    default: true, // By default, users CAN click "Schüler benachrichtigen"
+  },
   // Future user-specific settings can be added here
   // e.g., theme, notifications, defaultView, etc.
   createdAt: {
