@@ -26,13 +26,9 @@ function sanitizeBody(body) {
         if (sensitiveFields.includes(lowerKey)) {
           sanitized[key] = '[REDACTED]';
         }
-        // Mask IBAN fields (recursive check)
+        // Redact IBAN fields entirely (recursive check)
         else if (ibanPattern.test(key)) {
-          if (typeof value === 'string' && value.length > 4) {
-            sanitized[key] = value.substring(0, 4) + '***' + value.substring(value.length - 4);
-          } else {
-            sanitized[key] = '[MASKED]';
-          }
+          sanitized[key] = '[REDACTED]';
         }
         // Recursively sanitize nested objects/arrays
         else if (typeof value === 'object' && value !== null) {

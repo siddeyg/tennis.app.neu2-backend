@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
+import rateLimit from "express-rate-limit";
 import morgan from "morgan";
 import logger from "./utils/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -198,6 +199,17 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+
+// Global rate limiter — 100 requests per minute per IP
+const globalLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.path === '/api/health',
+  message: { error: 'Too many requests, please try again later.' },
+});
+app.use('/api/', globalLimiter);
 
 app.use(express.json({ limit: '100kb' })); // Default limit — routes that need more override with their own middleware
 app.use(cookieParser()); // Middleware für Cookies
