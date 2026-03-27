@@ -124,8 +124,6 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       return res.json({ student: null, schedule: [], period: null, trainingCount: null, holidays: [], familySchedules: [] });
     }
 
-    const schedule = student ? await buildScheduleForStudent(student) : [];
-
     // Find the RegistrationPeriod that covers today (training dates bracket today)
     const today = new Date();
     let period = await RegistrationPeriod.findOne({
@@ -139,6 +137,29 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
         .sort({ trainingEndDate: -1 })
         .lean();
     }
+
+    // If the schedule hasn't been published yet, return empty schedule with a flag
+    // (schedulePublished === false = explicitly unpublished; undefined/null = legacy period, stays visible)
+    if (period && period.schedulePublished === false) {
+      return res.json({
+        student: student ? {
+          firstName: student.firstName,
+          lastName: student.lastName,
+          adult: student.adult,
+          skillLevel: student.skillLevel,
+          trainigGroup: student.trainigGroup,
+          frequence: student.frequence
+        } : null,
+        schedule: [],
+        period: { start: period.trainingStartDate, end: period.trainingEndDate, name: period.name, holidaysComputed: !!period.holidaysComputedAt },
+        trainingCount: null,
+        holidays: [],
+        familySchedules: [],
+        schedulePublished: false,
+      });
+    }
+
+    const schedule = student ? await buildScheduleForStudent(student) : [];
 
     // Compute training session count using pre-computed holidays + custom exclusions from DB
     let trainingCount = null;
@@ -245,6 +266,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       trainingCount,
       holidays: holidayHits,
       familySchedules,
+      schedulePublished: true,
     });
 
   } catch (error) {

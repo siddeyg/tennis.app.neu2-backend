@@ -61,6 +61,12 @@ const registrationPeriodSchema = new mongoose.Schema(
       default: true,
     },
 
+    // Whether the final training plan has been published to students
+    schedulePublished: {
+      type: Boolean,
+      default: false,
+    },
+
     // Link to current training plan
     currentPlanId: {
       type: mongoose.Schema.Types.ObjectId,

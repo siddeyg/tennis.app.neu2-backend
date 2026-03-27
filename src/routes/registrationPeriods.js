@@ -759,6 +759,31 @@ router.patch('/:id/cancellation', async (req, res) => {
 });
 
 /**
+ * PATCH /api/registration-periods/:id/publish-schedule
+ * Publish or unpublish the training plan for students
+ * Body: { published: boolean }
+ */
+router.patch('/:id/publish-schedule', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod', metadata: { operation: 'PUBLISH_SCHEDULE' } }), async (req, res) => {
+  try {
+    const { published } = req.body;
+    if (typeof published !== 'boolean') {
+      return res.status(400).json({ error: 'published must be boolean' });
+    }
+    const period = await RegistrationPeriod.findByIdAndUpdate(
+      req.params.id,
+      { schedulePublished: published },
+      { new: true }
+    );
+    if (!period) return res.status(404).json({ error: 'Anmeldezeitraum nicht gefunden' });
+    logger.info(`Schedule ${published ? 'published' : 'unpublished'} for period ${period._id}`, { userId: req.user?.id });
+    res.json({ schedulePublished: period.schedulePublished });
+  } catch (error) {
+    logger.error('Error toggling schedule publish', { error: error.message });
+    res.status(500).json({ error: 'Fehler beim Veröffentlichen des Plans' });
+  }
+});
+
+/**
  * GET /api/registration-periods/:id/submissions
  * List submissions for a period
  *
