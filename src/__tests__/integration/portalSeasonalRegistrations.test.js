@@ -229,7 +229,7 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         .set('Cookie', `testUserId=${testPortalUser._id}`)
         .expect(400);
 
-      expect(response.body.error).toMatch(/mindestens 3/i);
+      expect(response.body.error).toMatch(/mindestens 2/i);
     });
 
     it('should reject registration without privacy consent', async () => {

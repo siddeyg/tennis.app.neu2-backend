@@ -1,17 +1,9 @@
 import express from "express";
-import mongoose from "mongoose";
 import Coach from "../models/Coach.js";
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 
 const router = express.Router();
-
-// Helper: find coach by _id (handles both ObjectId and string _id from legacy data)
-async function findCoachById(id, opts = {}) {
-  let coach = await Coach.findById(id, null, opts).lean(!!opts.lean);
-  if (!coach) coach = await Coach.findOne({ _id: id }, null, opts).lean(!!opts.lean);
-  return coach;
-}
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {
@@ -59,12 +51,7 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Coach' }), as
 // Trainer löschen
 router.delete("/:id", auditLogMiddleware({ action: 'DELETE', resource: 'Coach' }), async (req, res) => {
   try {
-    let coach = await Coach.findByIdAndDelete(req.params.id);
-    if (!coach) {
-      // Fallback for string _id (legacy data)
-      coach = await Coach.findOneAndDelete({ _id: req.params.id });
-    }
-
+    const coach = await Coach.findByIdAndDelete(req.params.id);
     if (!coach) {
       return res.status(404).json({ error: "Coach not found" });
     }
@@ -83,8 +70,7 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), 
   try {
     const coachId = req.params.id;
 
-    // Capture BEFORE state (handles both ObjectId and string _id from legacy data)
-    const beforeState = await findCoachById(coachId, { lean: true });
+    const beforeState = await Coach.findById(coachId).lean();
     if (!beforeState) {
       return res.status(404).json({ error: "Trainer nicht gefunden" });
     }
@@ -122,16 +108,11 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Coach' }), 
       comment,
     };
 
-    let coach = await Coach.findByIdAndUpdate(
+    const coach = await Coach.findByIdAndUpdate(
       coachId,
       updateData,
       { new: true, lean: true }
     );
-    if (!coach) {
-      // Fallback for string _id (legacy data)
-      coach = await Coach.findOneAndUpdate({ _id: coachId }, updateData, { new: true, lean: true });
-    }
-
     if (!coach) {
       return res.status(404).json({ error: "Trainer nicht gefunden" });
     }
