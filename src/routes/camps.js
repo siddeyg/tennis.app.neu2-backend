@@ -585,12 +585,8 @@ router.delete('/:id/registrations/:regId', auditLogMiddleware({ action: 'DELETE'
     registration.cancelledAt = new Date();
     await registration.save(session ? { session } : {});
 
-    // Decrement counter if was confirmed or pending (both held a spot)
+    // Auto-promote first waitlist participant if a spot opened up
     if (wasConfirmedOrPending) {
-      camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
-      await camp.save(session ? { session } : {});
-
-      // Auto-promote first waitlist participant (FIFO)
       const waitlistRegistration = await CampRegistration.findOne({
         campId: campId,
         status: 'waitlist'
@@ -601,12 +597,11 @@ router.delete('/:id/registrations/:regId', auditLogMiddleware({ action: 'DELETE'
         // Promote to pending (admin still needs to approve)
         waitlistRegistration.status = 'pending';
         await waitlistRegistration.save(session ? { session } : {});
-
-        // Increment counter
-        camp.currentParticipants += 1;
-        await camp.save(session ? { session } : {});
       }
     }
+
+    // Recount from actual registrations (drift-proof)
+    await Camp.refreshParticipantCount(campId);
 
     if (session) await session.commitTransaction();
 
@@ -719,9 +714,6 @@ router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPD
         }
       );
 
-      camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
-      await camp.save(session ? { session } : {});
-
       // Auto-promote first waitlist participant (FIFO)
       const waitlistRegistration = await CampRegistration.findOne({
         campId: campId,
@@ -733,9 +725,6 @@ router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPD
           { _id: waitlistRegistration._id },
           { $set: { status: 'pending' } }
         );
-
-        camp.currentParticipants += 1;
-        await camp.save(session ? { session } : {});
 
         logger.info('Auto-promoted waitlist registration to pending after rejection', { promotedId: waitlistRegistration._id });
 
@@ -758,6 +747,9 @@ router.put('/:id/registrations/:regId/status', auditLogMiddleware({ action: 'UPD
           logger.error('Error notifying promoted waitlist user', { error: err.message });
         }
       }
+
+      // Recount from actual registrations (drift-proof)
+      await Camp.refreshParticipantCount(campId);
 
       logger.info('Camp registration rejected by admin', { regId, campId, adminId: req.user._id, reason: rejectionReason });
     }

@@ -893,8 +893,17 @@ describe('Camps API — Admin + Portal Integration Tests', () => {
       const tinyOpenCamp = await createCamp(adminUser._id, {
         status: 'open',
         maxParticipants: 1,
-        currentParticipants: 1, // Already at capacity
+        currentParticipants: 1,
         waitlistEnabled: true,
+      });
+
+      // Create a real registration to fill the spot (counter alone is not enough)
+      await CampRegistration.create({
+        campId: tinyOpenCamp._id,
+        studentPortalUserId: new mongoose.Types.ObjectId(),
+        firstName: 'Existing', lastName: 'User',
+        birthdate: new Date('2000-01-01'), email: 'existing@test.com',
+        skillLevel: 'beginner', team: false, status: 'confirmed',
       });
 
       const response = await request(app)
@@ -912,6 +921,15 @@ describe('Camps API — Admin + Portal Integration Tests', () => {
         maxParticipants: 1,
         currentParticipants: 1,
         waitlistEnabled: false,
+      });
+
+      // Create a real registration to fill the spot (counter alone is not enough)
+      await CampRegistration.create({
+        campId: fullCamp._id,
+        studentPortalUserId: new mongoose.Types.ObjectId(),
+        firstName: 'Existing', lastName: 'User',
+        birthdate: new Date('2000-01-01'), email: 'existing@test.com',
+        skillLevel: 'beginner', team: false, status: 'confirmed',
       });
 
       const response = await request(app)

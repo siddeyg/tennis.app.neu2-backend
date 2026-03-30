@@ -314,9 +314,13 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       await CampRegistration.deleteOne({ _id: oldReg._id });
     }
 
-    // 3. Check capacity (pending + confirmed both hold spots)
+    // 3. Check capacity using live count (pending + confirmed both hold spots)
+    const activeCount = await CampRegistration.countDocuments({
+      campId: campId,
+      status: { $in: ['pending', 'confirmed', 'waitlist'] }
+    });
     let status = 'pending';
-    if (camp.currentParticipants >= camp.maxParticipants) {
+    if (activeCount >= camp.maxParticipants) {
       if (!camp.waitlistEnabled) {
         if (session) await session.abortTransaction();
         return res.status(400).json({
@@ -367,11 +371,8 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
 
     await registration.save(session ? { session } : {});
 
-    // 5. Increment counter (when pending — spot is reserved, admin will approve/reject)
-    if (status === 'pending') {
-      camp.currentParticipants += 1;
-      await camp.save(session ? { session } : {});
-    }
+    // 5. Recount from actual registrations (drift-proof)
+    await Camp.refreshParticipantCount(campId);
 
 
     // 6b. Save IBAN to user profile if provided and valid
@@ -570,12 +571,8 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       { $set: { status: 'cancelled', cancelledAt: now } }
     );
 
-    // 2. Decrement counter (if was confirmed or pending — both held a spot)
+    // 2. Auto-promote first waitlist participant if a spot opened up
     if (wasConfirmedOrPending) {
-      camp.currentParticipants = Math.max(0, camp.currentParticipants - 1);
-      await camp.save(session ? { session } : {});
-
-      // 3. Find first waitlist participant (FIFO)
       const waitlistRegistration = await CampRegistration.findOne({
         campId: camp._id,
         status: 'waitlist'
@@ -583,15 +580,10 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       .sort({ registeredAt: 1 }); // Oldest first
 
       if (waitlistRegistration) {
-        // 4. Promote to pending (admin still needs to approve)
         await CampRegistration.updateOne(
           { _id: waitlistRegistration._id },
           { $set: { status: 'pending' } }
         );
-
-        // 5. Increment counter again
-        camp.currentParticipants += 1;
-        await camp.save(session ? { session } : {});
 
         logger.info('Auto-promoted waitlist registration to pending (awaiting admin approval)', { registrationId: waitlistRegistration._id });
 
@@ -621,6 +613,9 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
         }
       }
     }
+
+    // 3. Recount from actual registrations (drift-proof)
+    await Camp.refreshParticipantCount(camp._id);
 
     if (session) await session.commitTransaction();
 

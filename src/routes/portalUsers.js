@@ -85,13 +85,14 @@ router.delete('/:id',
       .map(m => m.studentId)
       .filter(Boolean);
 
-    // 1. Decrement currentParticipants for each camp registration, then delete them
+    // 1. Delete camp registrations, then recount affected camps (drift-proof)
     // (covers both main user and family member registrations — all share the same studentPortalUserId)
     const campRegs = await CampRegistration.find({ studentPortalUserId: portalUserId });
-    for (const reg of campRegs) {
-      await Camp.findByIdAndUpdate(reg.campId, { $inc: { currentParticipants: -1 } });
-    }
+    const affectedCampIds = [...new Set(campRegs.map(r => r.campId.toString()))];
     const deletedCampRegs = await CampRegistration.deleteMany({ studentPortalUserId: portalUserId });
+    for (const campId of affectedCampIds) {
+      await Camp.refreshParticipantCount(campId);
+    }
 
     // 2. Delete seasonal registrations (covers main user + family members)
     const deletedSeasonalRegs = await SeasonalRegistration.deleteMany({ studentPortalUserId: portalUserId });

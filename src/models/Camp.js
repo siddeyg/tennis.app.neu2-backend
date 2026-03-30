@@ -246,5 +246,23 @@ campSchema.pre('save', function(next) {
   next();
 });
 
+/**
+ * Recount active registrations (pending + confirmed + waitlist) from the DB
+ * and update currentParticipants. Triggers pre-save hook for open↔full status.
+ */
+campSchema.statics.refreshParticipantCount = async function(campId) {
+  const CampRegistration = mongoose.model('CampRegistration');
+  const count = await CampRegistration.countDocuments({
+    campId: campId,
+    status: { $in: ['pending', 'confirmed', 'waitlist'] }
+  });
+  const camp = await this.findById(campId);
+  if (camp) {
+    camp.currentParticipants = count;
+    await camp.save();
+  }
+  return camp;
+};
+
 const Camp = mongoose.model('Camp', campSchema);
 export default Camp;
