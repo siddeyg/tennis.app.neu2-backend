@@ -138,9 +138,13 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
         .lean();
     }
 
-    // If the schedule hasn't been published yet, return empty schedule with a flag
-    // (schedulePublished === false = explicitly unpublished; undefined/null = legacy period, stays visible)
-    if (period && period.schedulePublished === false) {
+    // If the schedule hasn't been published yet, return empty schedule with a flag.
+    // Gate triggers when:
+    //   - schedulePublished === false (explicitly unpublished), OR
+    //   - schedulePublished is undefined/null AND training hasn't started yet (future season)
+    const trainingNotStarted = period && new Date(period.trainingStartDate) > new Date();
+    const isUnpublished = period && (period.schedulePublished === false || (period.schedulePublished == null && trainingNotStarted));
+    if (isUnpublished) {
       return res.json({
         student: student ? {
           firstName: student.firstName,

@@ -485,10 +485,10 @@ router.get('/:id/registrations', async (req, res) => {
       campId: campId,
       status: { $in: ['pending', 'confirmed', 'waitlist'] }
     })
-    .populate('studentPortalUserId', 'firstName lastName email iban')
+    .populate('studentPortalUserId', 'firstName lastName email iban member familyMembers')
     .sort({ registeredAt: 1 }); // FIFO
 
-    // Add IBAN last 3 digits to each registration
+    // Add IBAN last 3 digits and member status to each registration
     const { getIBANLast3 } = await import('../utils/encryption.js');
     const enrichedRegistrations = registrations.map(reg => {
       const regObj = reg.toObject();
@@ -497,6 +497,17 @@ router.get('/:id/registrations', async (req, res) => {
         regObj.ibanLast3 = getIBANLast3(regObj.studentPortalUserId.iban, true);
       } else {
         regObj.ibanLast3 = null;
+      }
+      // Resolve member status: from familyMember if applicable, otherwise from portal user
+      if (regObj.familyMemberId && regObj.studentPortalUserId?.familyMembers) {
+        const fm = regObj.studentPortalUserId.familyMembers.find(
+          m => m._id.toString() === regObj.familyMemberId.toString()
+        );
+        regObj.member = fm ? !!fm.member : false;
+      } else if (regObj.studentPortalUserId) {
+        regObj.member = !!regObj.studentPortalUserId.member;
+      } else {
+        regObj.member = false;
       }
       return regObj;
     });
