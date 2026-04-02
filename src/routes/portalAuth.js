@@ -266,7 +266,14 @@ router.post('/verify-email',
     );
 
     if (!portalUser) {
-      return res.status(400).json({ error: 'Ungültiger oder abgelaufener Verifizierungs-Token' });
+      // Diagnose why the token was rejected to show a helpful message
+      const existing = await StudentPortalUser.findOne({ verificationToken: hashedToken }).select('_id').lean();
+      if (existing) {
+        // Token found but expired (verificationTokenExpires in the past)
+        return res.status(400).json({ error: 'Dieser Bestätigungslink ist abgelaufen. Bitte melden Sie sich an und fordern Sie eine neue Bestätigungs-E-Mail an.' });
+      }
+      // Token not in DB — deleted by admin force-verify, or already used
+      return res.status(400).json({ error: 'Dieser Bestätigungslink ist nicht mehr gültig. Falls Sie sich bereits anmelden können, wurde Ihr Konto erfolgreich aktiviert.' });
     }
 
     // Send welcome email (non-blocking)
