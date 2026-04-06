@@ -265,7 +265,7 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
     if (day === null && hour === null) {
       const student = await Student.findByIdAndUpdate(
         req.params.id,
-        { assignments: [] },
+        { assignments: [], scheduleVisible: false },
         { new: true, lean: true }
       );
 
