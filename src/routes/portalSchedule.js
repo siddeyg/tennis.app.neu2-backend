@@ -142,9 +142,23 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     // Gate triggers when:
     //   - schedulePublished === false (explicitly unpublished), OR
     //   - schedulePublished is undefined/null AND training hasn't started yet (future season)
+    // Exception: per-student scheduleVisible flag bypasses this gate (set by "Benachrichtigen")
     const trainingNotStarted = period && new Date(period.trainingStartDate) > new Date();
     const isUnpublished = period && (period.schedulePublished === false || (period.schedulePublished == null && trainingNotStarted));
-    if (isUnpublished) {
+
+    // Check if any linked student has scheduleVisible: true
+    let hasVisibleSchedule = student?.scheduleVisible === true;
+    if (!hasVisibleSchedule && hasChildren) {
+      const childStudentIds = (portalUser.familyMembers || [])
+        .filter(fm => fm.studentId)
+        .map(fm => fm.studentId);
+      if (childStudentIds.length > 0) {
+        const visibleChild = await Student.findOne({ _id: { $in: childStudentIds }, scheduleVisible: true });
+        hasVisibleSchedule = !!visibleChild;
+      }
+    }
+
+    if (isUnpublished && !hasVisibleSchedule) {
       return res.json({
         student: student ? {
           firstName: student.firstName,

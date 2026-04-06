@@ -164,6 +164,13 @@ const studentSchema = new mongoose.Schema({
     venue: { type: String, default: '' },
   },
 
+  // Per-student schedule visibility (allows publishing schedule before global schedulePublished)
+  // Reset to false when algorithm overwrites assignments; set to true by "Benachrichtigen"
+  scheduleVisible: {
+    type: Boolean,
+    default: false
+  },
+
   // ===== Kurs-Zuweisungen (Course Assignments) =====
   assignments: [{
     day: {

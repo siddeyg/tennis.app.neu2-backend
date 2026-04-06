@@ -499,6 +499,8 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
     // Omitting the field must never clear existing assignments
     if (req.body.assignments !== undefined) {
       updateData.assignments = Array.isArray(assignments) ? assignments : [];
+      // Reset per-student schedule visibility when algorithm overwrites assignments
+      updateData.scheduleVisible = false;
     }
 
     const student = await Student.findByIdAndUpdate(

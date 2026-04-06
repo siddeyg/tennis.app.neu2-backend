@@ -150,6 +150,7 @@ router.post('/notify-all', async (req, res) => {
     }
 
     let sentCount = 0;
+    const notifiedStudentIds = [];
 
     for (const student of students) {
       const portalUser = portalUserByStudentId.get(String(student._id));
@@ -169,9 +170,18 @@ router.post('/notify-all', async (req, res) => {
           }
         );
         sentCount++;
+        notifiedStudentIds.push(student._id);
       } catch (notifError) {
         console.error(`[schedule-notifications] Failed to notify student ${student._id}:`, notifError.message);
       }
+    }
+
+    // Make schedule visible for all notified students
+    if (notifiedStudentIds.length > 0) {
+      await Student.updateMany(
+        { _id: { $in: notifiedStudentIds } },
+        { $set: { scheduleVisible: true } }
+      );
     }
 
     // Update Settings with bulk notification metadata
@@ -234,6 +244,9 @@ router.post('/notify-student/:studentId', async (req, res) => {
         actionUrl: '/dashboard/schedule'
       }
     );
+
+    // Make schedule visible for this student (bypasses global schedulePublished gate)
+    await Student.findByIdAndUpdate(studentId, { scheduleVisible: true });
 
     res.json({
       success: true,
