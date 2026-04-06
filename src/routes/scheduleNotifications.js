@@ -2,6 +2,7 @@ import express from 'express';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import Student from '../models/Student.js';
+import StudentPortalUser from '../models/StudentPortalUser.js';
 import Settings from '../models/Settings.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
@@ -52,6 +53,21 @@ function buildAssignmentList(assignments) {
     return (Number(a.hour) || 0) - (Number(b.hour) || 0);
   });
   return sorted.map(a => `${a.day} ${String(a.hour).padStart(2, '0')}:00`).join(', ');
+}
+
+/**
+ * Find the portal user for a student.
+ * Checks both direct link (StudentPortalUser.studentId) and
+ * family member link (StudentPortalUser.familyMembers[].studentId).
+ * Returns the parent portal user in both cases (notifications go to the parent).
+ */
+async function findPortalUserForStudent(studentId) {
+  // Direct link (adult student with own portal account)
+  const direct = await StudentPortalUser.findOne({ studentId });
+  if (direct) return direct;
+
+  // Family member link (child → parent's portal account)
+  return StudentPortalUser.findOne({ 'familyMembers.studentId': studentId });
 }
 
 /**
@@ -111,22 +127,39 @@ router.post('/notify-all', async (req, res) => {
       });
     }
 
-    // Find all students with at least one assignment and a portal account
+    // Find all students with at least one assignment
     const students = await Student.find({
-      'assignments.0': { $exists: true },
-      portalUser: { $exists: true, $ne: null }
-    }).populate({ path: 'portalUser', strictPopulate: false });
+      'assignments.0': { $exists: true }
+    });
+
+    // Build a map of studentId → portalUser for all linked portal accounts
+    // Check both direct links (StudentPortalUser.studentId) and family member links
+    const studentIds = students.map(s => s._id);
+    const portalUsers = await StudentPortalUser.find({
+      $or: [
+        { studentId: { $in: studentIds } },
+        { 'familyMembers.studentId': { $in: studentIds } }
+      ]
+    });
+    const portalUserByStudentId = new Map();
+    for (const pu of portalUsers) {
+      if (pu.studentId) portalUserByStudentId.set(String(pu.studentId), pu);
+      for (const fm of (pu.familyMembers || [])) {
+        if (fm.studentId) portalUserByStudentId.set(String(fm.studentId), pu);
+      }
+    }
 
     let sentCount = 0;
 
     for (const student of students) {
-      if (!student.portalUser || !student.assignments?.length) continue;
+      const portalUser = portalUserByStudentId.get(String(student._id));
+      if (!portalUser || !student.assignments?.length) continue;
 
       const assignmentList = buildAssignmentList(student.assignments);
 
       try {
         await createNotification(
-          student.portalUser._id,
+          portalUser._id,
           'schedule_change',
           'Dein Trainingsplan',
           `Deine Trainingszeiten: ${assignmentList}`,
@@ -173,14 +206,16 @@ router.post('/notify-student/:studentId', async (req, res) => {
   try {
     const { studentId } = req.params;
 
-    const student = await Student.findById(studentId).populate({ path: 'portalUser', strictPopulate: false });
+    const student = await Student.findById(studentId);
 
     if (!student) {
       return res.status(404).json({ error: 'Schüler nicht gefunden' });
     }
 
-    if (!student.portalUser) {
-      return res.status(404).json({ error: 'Student hat kein Portal-Konto' });
+    const portalUser = await findPortalUserForStudent(student._id);
+
+    if (!portalUser) {
+      return res.status(400).json({ error: 'Schüler hat kein Portal-Konto' });
     }
 
     if (!student.assignments || student.assignments.length === 0) {
@@ -190,7 +225,7 @@ router.post('/notify-student/:studentId', async (req, res) => {
     const assignmentList = buildAssignmentList(student.assignments);
 
     await createNotification(
-      student.portalUser._id,
+      portalUser._id,
       'schedule_change',
       'Dein Trainingsplan',
       `Deine Trainingszeiten: ${assignmentList}`,
