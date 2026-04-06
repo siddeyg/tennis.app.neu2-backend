@@ -9,11 +9,16 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { createNotification } from '../utils/notificationHelpers.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
+
+// All announcement routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, '../../uploads/announcements');

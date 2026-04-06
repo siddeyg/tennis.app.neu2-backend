@@ -115,7 +115,7 @@ router.post('/notify-all', async (req, res) => {
     const students = await Student.find({
       'assignments.0': { $exists: true },
       portalUser: { $exists: true, $ne: null }
-    }).populate('portalUser');
+    }).populate({ path: 'portalUser', strictPopulate: false });
 
     let sentCount = 0;
 
@@ -173,7 +173,7 @@ router.post('/notify-student/:studentId', async (req, res) => {
   try {
     const { studentId } = req.params;
 
-    const student = await Student.findById(studentId).populate('portalUser');
+    const student = await Student.findById(studentId).populate({ path: 'portalUser', strictPopulate: false });
 
     if (!student) {
       return res.status(404).json({ error: 'Schüler nicht gefunden' });

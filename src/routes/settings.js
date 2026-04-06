@@ -2,8 +2,13 @@ import express from "express";
 import Settings from "../models/Settings.js";
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireRole } from '../middleware/requireRole.js';
 
 const router = express.Router();
+
+// All settings routes require admin authentication
+router.use(requireAuth, requireRole(['admin']));
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {

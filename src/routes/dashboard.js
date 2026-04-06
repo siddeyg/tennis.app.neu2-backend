@@ -6,8 +6,13 @@ import CampRegistration from '../models/CampRegistration.js';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import logger from '../utils/logger.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 
 const router = express.Router();
+
+// All dashboard routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 /**
  * GET /api/dashboard

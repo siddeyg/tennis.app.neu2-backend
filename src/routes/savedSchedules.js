@@ -6,10 +6,15 @@ import Coach from "../models/Coach.js";
 import Schedule from "../models/Schedule.js";
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 
 const largeBody = express.json({ limit: '10mb' }); // only for schedule import/load routes
 
 const router = express.Router();
+
+// All saved schedule routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 // GET all saved schedules
 router.get("/", async (req, res) => {

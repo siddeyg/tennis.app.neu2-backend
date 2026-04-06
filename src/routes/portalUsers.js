@@ -19,8 +19,13 @@ import SupportTicket from '../models/SupportTicket.js';
 import { generateVerificationTokenWithExpiry, sendVerificationEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
 import { auditLogMiddleware } from '../middleware/auditLog.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 
 const router = express.Router();
+
+// All portal user management routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 /**
  * GET /api/portal-users

@@ -281,7 +281,7 @@ router.put('/:id', requireAuth, auditLogMiddleware({ action: 'UPDATE', resource:
  * - startDate: Filter records from this date (ISO string)
  * - endDate: Filter records until this date (ISO string)
  */
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', requireAuth, requireRole(['admin', 'supermod', 'trainer']), async (req, res) => {
   try {
     const userId = req.user._id;
     const userRole = req.user.role;
@@ -331,7 +331,7 @@ router.get('/', requireAuth, async (req, res) => {
  * Get a specific attendance record.
  * Coaches can view their own courses, admins can view all.
  */
-router.get('/:id', requireAuth, async (req, res) => {
+router.get('/:id', requireAuth, requireRole(['admin', 'supermod', 'trainer']), async (req, res) => {
   try {
     const attendanceId = req.params.id;
     const userId = req.user._id;

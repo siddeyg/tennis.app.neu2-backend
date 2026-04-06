@@ -4,8 +4,13 @@ import LoginSession from "../models/LoginSession.js";
 import bcrypt from "bcryptjs";
 import logger from '../utils/logger.js';
 import { auditLogMiddleware } from '../middleware/auditLog.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireRole } from '../middleware/requireRole.js';
 
 const router = express.Router();
+
+// All user management routes require admin authentication
+router.use(requireAuth, requireRole(['admin']));
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {

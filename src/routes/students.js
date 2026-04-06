@@ -5,8 +5,13 @@ import mongoose from "mongoose";
 import Student from "../models/Student.js";
 import logger from "../utils/logger.js";
 import auditLogMiddleware from "../middleware/auditLog.js";
+import { requireAuth } from "../middleware/requireAuth.js";
+import { requireAdminOrSupermod } from "../middleware/requireRole.js";
 
 const router = express.Router();
+
+// All student routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {
@@ -183,16 +188,8 @@ router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource:
       return res.status(400).json({ error: "Tag und Stunde sind erforderlich" });
     }
 
-    // Capacity check: max 4 students per course slot (same day + hour + coach)
-    const studentsInSlot = await Student.countDocuments({
-      assignments: { $elemMatch: { day, hour, coach: coach || null } }
-    });
-    if (studentsInSlot >= 4) {
-      return res.status(400).json({
-        error: `Kurs ist voll (${studentsInSlot}/4 Schüler)`,
-        currentCount: studentsInSlot
-      });
-    }
+    // No capacity cap on manual placement — admin can overfill a slot intentionally.
+    // The algorithm enforces its own max-4 cap in resetScheduleOptimized.js.
 
     const student = await Student.findByIdAndUpdate(
       req.params.id,

@@ -5,6 +5,7 @@ import fs from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import Document from '../models/Document.js';
 import logger from '../utils/logger.js';
 
@@ -12,6 +13,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
+
+// All document routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, '../../uploads/documents');
@@ -58,7 +62,7 @@ const upload = multer({
 });
 
 // GET /api/documents — list documents
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const isAdmin = req.user.role === 'admin' || req.user.role === 'supermod';
     const isCoach = req.user.role === 'trainer';
@@ -77,7 +81,7 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 // POST /api/documents — upload document (admin + supermod + coach)
-router.post('/', requireAuth, upload.single('file'), async (req, res) => {
+router.post('/', upload.single('file'), async (req, res) => {
   try {
     const isAdmin = req.user.role === 'admin' || req.user.role === 'supermod';
     const isCoach = req.user.role === 'trainer';
@@ -124,7 +128,7 @@ router.post('/', requireAuth, upload.single('file'), async (req, res) => {
 });
 
 // GET /api/documents/:id/download — download file
-router.get('/:id/download', requireAuth, async (req, res) => {
+router.get('/:id/download', async (req, res) => {
   try {
     const isAdmin = req.user.role === 'admin' || req.user.role === 'supermod';
     const isCoach = req.user.role === 'trainer';
@@ -156,7 +160,7 @@ router.get('/:id/download', requireAuth, async (req, res) => {
 });
 
 // PUT /api/documents/:id — update metadata (admin + supermod)
-router.put('/:id', requireAuth, async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     if (req.user.role !== 'admin' && req.user.role !== 'supermod') {
       return res.status(403).json({ error: 'Nur Administratoren können Dokumente bearbeiten' });
@@ -180,7 +184,7 @@ router.put('/:id', requireAuth, async (req, res) => {
 });
 
 // DELETE /api/documents/:id — delete doc + file (admin + supermod)
-router.delete('/:id', requireAuth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     if (req.user.role !== 'admin' && req.user.role !== 'supermod') {
       return res.status(403).json({ error: 'Nur Administratoren können Dokumente löschen' });

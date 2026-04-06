@@ -2,8 +2,13 @@ import express from "express";
 import Coach from "../models/Coach.js";
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 
 const router = express.Router();
+
+// All coach routes require admin or supermod authentication
+router.use(requireAuth, requireAdminOrSupermod);
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {

@@ -2,8 +2,12 @@ import express from "express";
 import UserSettings from "../models/UserSettings.js";
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
+import { requireAuth } from '../middleware/requireAuth.js';
 
 const router = express.Router();
+
+// All user settings routes require authentication (any role)
+router.use(requireAuth);
 
 /**
  * GET /api/user-settings

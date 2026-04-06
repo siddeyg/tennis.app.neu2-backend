@@ -12,11 +12,16 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import CampRegistration from '../models/CampRegistration.js';
 import logger from '../utils/logger.js';
+import { requireAuth } from '../middleware/requireAuth.js';
+import { requireRole } from '../middleware/requireRole.js';
+
+// All metrics routes require admin authentication
+router.use(requireAuth, requireRole(['admin']));
 
 /**
  * GET /api/metrics
  * Returns comprehensive server metrics
- * Admin-only (enforced by middleware in server.js)
+ * Admin-only
  */
 router.get('/', async (req, res) => {
   try {
