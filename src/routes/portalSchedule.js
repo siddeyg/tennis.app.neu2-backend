@@ -177,7 +177,10 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       });
     }
 
-    const schedule = student ? await buildScheduleForStudent(student) : [];
+    // If globally unpublished, only show schedule for students with scheduleVisible: true
+    const perStudentMode = isUnpublished && hasVisibleSchedule;
+
+    const schedule = (student && (!perStudentMode || student.scheduleVisible)) ? await buildScheduleForStudent(student) : [];
 
     // Compute training session count using pre-computed holidays + custom exclusions from DB
     let trainingCount = null;
@@ -221,6 +224,8 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       for (const fm of childMembers) {
         const childStudent = childStudentMap.get(fm.studentId.toString());
         if (!childStudent) continue;
+        // In per-student mode, skip children whose schedule hasn't been individually published
+        if (perStudentMode && !childStudent.scheduleVisible) continue;
 
         const childSchedule = await buildScheduleForStudent(childStudent);
 

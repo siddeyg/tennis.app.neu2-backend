@@ -500,7 +500,13 @@ router.put("/:id", auditLogMiddleware({ action: 'UPDATE', resource: 'Student' })
     if (req.body.assignments !== undefined) {
       updateData.assignments = Array.isArray(assignments) ? assignments : [];
       // Reset per-student schedule visibility when algorithm overwrites assignments
-      updateData.scheduleVisible = false;
+      // Only reset if assignments actually changed (avoid resetting on admin profile edits
+      // where StudentForm spreads the whole object including unchanged assignments)
+      const oldAssignments = JSON.stringify((beforeState.assignments || []).map(a => ({ day: a.day, hour: a.hour, coach: String(a.coach || ''), duration: a.duration || 60 })));
+      const newAssignments = JSON.stringify((updateData.assignments || []).map(a => ({ day: a.day, hour: Number(a.hour), coach: String(a.coach || ''), duration: a.duration || 60 })));
+      if (oldAssignments !== newAssignments) {
+        updateData.scheduleVisible = false;
+      }
     }
 
     const student = await Student.findByIdAndUpdate(
