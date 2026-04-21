@@ -16,11 +16,68 @@ const router = express.Router();
 // All saved schedule routes require admin or supermod authentication
 router.use(requireAuth, requireAdminOrSupermod);
 
-// GET all saved schedules
+// GET all saved schedules (with pagination and sorting)
 router.get("/", async (req, res) => {
   try {
-    const savedSchedules = await SavedSchedule.find().sort({ createdAt: -1 });
-    res.json(savedSchedules);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    
+    const sortBy = req.query.sortBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+    const sortOptions = { [sortBy]: sortOrder };
+
+    const totalCount = await SavedSchedule.countDocuments();
+    
+    const savedSchedules = await SavedSchedule.find()
+      .select("-students -coaches -schedule -studentsNotSet")
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
+
+    // Handle legacy records missing metadata (only for the current page)
+    const enrichedSchedules = await Promise.all(savedSchedules.map(async (schedule) => {
+      if (!schedule.metadata || schedule.metadata.studentCount === undefined) {
+        // Fetch full record only for legacy ones to compute metadata
+        const fullSchedule = await SavedSchedule.findById(schedule._id);
+        if (fullSchedule) {
+          const actualCourseCount = (fullSchedule.schedule || []).filter(
+            (course) => course.students && course.students.length > 0
+          ).length;
+
+          let possibleCourseCount = 0;
+          (fullSchedule.coaches || []).forEach(coach => {
+            if (Array.isArray(coach.availableTimes)) {
+              possibleCourseCount += coach.availableTimes.length;
+            }
+          });
+
+          const metadata = {
+            studentCount: (fullSchedule.students || []).length,
+            coachCount: (fullSchedule.coaches || []).length,
+            courseCount: actualCourseCount,
+            possibleCourseCount: possibleCourseCount,
+            unassignedCount: (fullSchedule.studentsNotSet || []).length,
+          };
+
+          // Save back to DB so we don't do this again
+          await SavedSchedule.findByIdAndUpdate(schedule._id, { metadata });
+          
+          const scheduleObj = schedule.toObject();
+          scheduleObj.metadata = metadata;
+          return scheduleObj;
+        }
+      }
+      return schedule;
+    }));
+
+    res.json({
+      schedules: enrichedSchedules,
+      totalCount,
+      page,
+      limit,
+      hasMore: skip + enrichedSchedules.length < totalCount
+    });
   } catch (error) {
     logger.error("Error fetching saved schedules", { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
