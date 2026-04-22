@@ -555,8 +555,9 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
     if (studentId) {
       const student = await Student.findById(studentId);
       if (!student) {
-        return res.status(404).json({ error: 'Schüler nicht gefunden' });
-      }
+        // Stale studentId — Student was deleted. Fall through to portal user update below.
+        logger.warn('Profile update: studentId set but Student not found, falling back to portal user', { studentId, portalUserId });
+      } else {
 
       // Update all editable fields including name and birthdate
       student.firstName = firstName.trim();
@@ -660,6 +661,7 @@ router.put('/profile', verifyPortalAuth, auditLogMiddleware({ action: 'UPDATE', 
         pendingEmail: updatedPortalUser?.pendingEmail || null,
         hasStudentRecord: true
       });
+      }
     }
 
     // If no Student record, update StudentPortalUser
