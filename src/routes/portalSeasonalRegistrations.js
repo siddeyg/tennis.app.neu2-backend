@@ -53,17 +53,13 @@ router.get('/active-period', async (req, res) => {
     }
 
     // Check if registration deadline has passed
-    if (new Date() > period.registrationDeadline) {
-      return res.json({
-        success: true,
-        period: null,
-        message: 'Die Anmeldefrist ist bereits abgelaufen'
-      });
-    }
+    const isDeadlinePassed = new Date() > period.registrationDeadline;
 
     res.json({
       success: true,
-      period
+      period,
+      registrationClosed: isDeadlinePassed,
+      message: isDeadlinePassed ? 'Die reguläre Anmeldefrist ist bereits abgelaufen' : null
     });
   } catch (error) {
     logger.error('Error fetching active period:', error);
@@ -345,13 +341,15 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       });
     }
 
-    // Check deadline
+    // Check deadline (DEACTIVATED: Allow late registrations/Nachmeldungen as requested)
+    /*
     if (new Date() > period.registrationDeadline) {
       return res.status(400).json({
         success: false,
         error: 'Die Anmeldefrist ist bereits abgelaufen'
       });
     }
+    */
 
     // Validate familyMemberId if provided
     let childData = null;

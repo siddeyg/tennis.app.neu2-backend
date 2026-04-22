@@ -351,9 +351,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
     } = req.body;
 
     // Prevent changing critical date fields if submissions already exist
-    // Only block if dates actually differ from stored values (frontend sends all fields)
-    const startChanged = trainingStartDate && new Date(trainingStartDate).getTime() !== new Date(period.trainingStartDate).getTime();
-    const endChanged = trainingEndDate && new Date(trainingEndDate).getTime() !== new Date(period.trainingEndDate).getTime();
+    // Only block if dates actually differ from stored values (ignore time component)
+    const startChanged = trainingStartDate && new Date(trainingStartDate).toISOString().split('T')[0] !== new Date(period.trainingStartDate).toISOString().split('T')[0];
+    const endChanged = trainingEndDate && new Date(trainingEndDate).toISOString().split('T')[0] !== new Date(period.trainingEndDate).toISOString().split('T')[0];
     if (startChanged || endChanged) {
       const submissionsCount = await SeasonalRegistration.countDocuments({ periodId: period._id });
       if (submissionsCount > 0) {
