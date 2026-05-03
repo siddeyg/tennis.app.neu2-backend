@@ -253,7 +253,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       playerType: playerType || 'all',
       memberPrice: memberPrice || null,
       nonMemberPrice: nonMemberPrice || null,
-      trainerId: trainerId || null,
+      trainerId: (trainerId && trainerId !== '') ? trainerId : null,
       trainerName: trainerName || '',
       status: 'draft',
       createdBy: req.user._id
@@ -312,7 +312,11 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
 
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
-        camp[field] = req.body[field];
+        if (field === 'trainerId' && req.body[field] === '') {
+          camp[field] = null;
+        } else {
+          camp[field] = req.body[field];
+        }
       }
     });
 
