@@ -169,49 +169,13 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       phone,
       skillLevel,
       team,
+      additionalParticipants,
+      privacyConsent,
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
       medicalNotes,
       iban
     } = req.body;
-
-    // Validation
-    if (!firstName || !lastName || !birthdate || !email || !skillLevel) {
-      if (session) await session.abortTransaction();
-      return res.status(400).json({
-        success: false,
-        error: 'Vorname, Nachname, Geburtsdatum, Email und Skill Level sind erforderlich'
-      });
-    }
-
-    if (team === null || team === undefined) {
-      if (session) await session.abortTransaction();
-      return res.status(400).json({
-        success: false,
-        error: 'Mannschaft (Team/Freizeit) ist erforderlich'
-      });
-    }
-
-
-    if (!['beginner', 'intermediate'].includes(skillLevel)) {
-      if (session) await session.abortTransaction();
-      return res.status(400).json({
-        success: false,
-        error: 'Ungültiger Skill Level'
-      });
-    }
-
-    // Validate IBAN format if provided
-    if (iban && iban.trim()) {
-      const cleanIban = iban.replace(/\s/g, '');
-      if (!validateIBANFormat(cleanIban)) {
-        if (session) await session.abortTransaction();
-        return res.status(400).json({
-          success: false,
-          error: 'Ungültiges IBAN-Format'
-        });
-      }
-    }
 
     // 1. Lock camp document
     const campId = req.params.id;
@@ -223,6 +187,52 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         success: false,
         error: 'Camp nicht gefunden'
       });
+    }
+
+    // Validation
+    if (!firstName || !lastName || !birthdate || !email) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Vorname, Nachname, Geburtsdatum und Email sind erforderlich'
+      });
+    }
+
+    if (!privacyConsent) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Die Zustimmung zur Datenweitergabe ist erforderlich'
+      });
+    }
+
+    // Conditional validation for non-events
+    const isEvent = camp.campType === 'event';
+
+    if (!isEvent) {
+      if (!skillLevel) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Skill Level ist für Camps erforderlich'
+        });
+      }
+
+      if (team === null || team === undefined) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Mannschaft (Team/Freizeit) ist für Camps erforderlich'
+        });
+      }
+
+      if (!['beginner', 'intermediate'].includes(skillLevel)) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültiger Skill Level'
+        });
+      }
     }
 
     // Check if registration is open
@@ -358,8 +368,10 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       birthdate,
       email,
       phone: phone || '',
-      skillLevel,
-      team: team === true || team === 'true', // Convert to boolean
+      skillLevel: isEvent ? null : skillLevel,
+      team: isEvent ? false : (team === true || team === 'true'), // Default to false for events
+      additionalParticipants: isEvent ? (parseInt(additionalParticipants) || 0) : 0,
+      privacyConsent: !!privacyConsent,
       emergencyContactName: emergencyContactName || '',
       emergencyContactPhone: emergencyContactPhone || '',
       additionalEmergencyContactName: additionalEmergencyContactName || '',

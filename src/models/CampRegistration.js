@@ -64,13 +64,26 @@ const campRegistrationSchema = new mongoose.Schema({
   // Camp-Specific
   skillLevel: {
     type: String,
-    required: true,
+    required: false, // Optional for events
     enum: ['beginner', 'intermediate', 'advanced']
   },
   team: {
     type: Boolean,
-    required: true,
+    required: false, // Optional for events
     // true = Mannschaftsspieler, false = Freizeitspieler
+  },
+  additionalParticipants: {
+    type: Number,
+    required: false,
+    default: 0,
+    min: 0
+  },
+
+  // Privacy Consent (DSGVO)
+  privacyConsent: {
+    type: Boolean,
+    required: true,
+    default: false
   },
 
   // Emergency Contact (required for children under 18)

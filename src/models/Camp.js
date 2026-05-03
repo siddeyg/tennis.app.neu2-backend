@@ -23,7 +23,7 @@ const campSchema = new mongoose.Schema({
   campType: {
     type: String,
     required: true,
-    enum: ['beginner-course', 'intensive-workshop', 'technique-camp', 'other'],
+    enum: ['beginner-course', 'intensive-workshop', 'technique-camp', 'event', 'other'],
     default: 'other'
   },
 
@@ -93,7 +93,8 @@ const campSchema = new mongoose.Schema({
   targetAudience: {
     type: String,
     enum: ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth'],
-    default: 'all'
+    default: 'all',
+    required: false
   },
   minAge: {
     type: Number,
@@ -107,10 +108,10 @@ const campSchema = new mongoose.Schema({
     max: 100,
     default: null
   },
-  skillLevels: [{
-    type: String,
-    enum: ['beginner', 'intermediate']  // Removed 'advanced'
-  }],
+  skillLevels: {
+    type: [String],
+    default: []
+  },
 
   // Player Type (Team vs Hobby)
   playerType: {
@@ -166,6 +167,11 @@ const campSchema = new mongoose.Schema({
     type: Date,
     default: null
     // Soft delete
+  },
+  bannerImage: {
+    type: String,
+    required: false,
+    default: null
   }
 }, {
   timestamps: true, // Adds createdAt and updatedAt

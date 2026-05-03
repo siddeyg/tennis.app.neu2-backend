@@ -75,7 +75,7 @@ import attendanceRoutes from "./routes/attendance.js";
 import registrationPeriodsRoutes from "./routes/registrationPeriods.js";
 import seasonalRegistrationsRoutes from "./routes/seasonalRegistrations.js";
 import portalUsersRoutes from "./routes/portalUsers.js";
-import campsRoutes from "./routes/camps.js";
+import campsRoutes, { serveCampImage } from "./routes/camps.js";
 import portalCampsRoutes from "./routes/portalCamps.js";
 import metricsRoutes from "./routes/metrics.js";
 import supportTicketsRoutes from "./routes/supportTickets.js";
@@ -325,6 +325,9 @@ app.use("/api/users", requireAuth, updateActivity, requireRole(["admin"]), userR
 
 // Public image serve for inline announcement images (no auth — UUIDs are unguessable)
 app.get("/api/announcements/images/:filename", serveAnnouncementImage);
+
+// Public image serve for camp/event banners
+app.get("/api/camps/images/:filename", serveCampImage);
 
 // Announcements routes - admin + supermod
 app.use("/api/announcements", requireAuth, updateActivity, requireAdminOrSupermod, announcementsRoutes);

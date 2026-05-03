@@ -17,6 +17,11 @@
  */
 
 import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
 import requireAuth from '../middleware/requireAuth.js';
@@ -27,11 +32,47 @@ import auditLogMiddleware from '../middleware/auditLog.js';
 import { sendCampConfirmationEmail, sendCampRejectionEmail } from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
+
+// Ensure upload directory exists
+const uploadDir = path.join(__dirname, '../../uploads/camps');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+];
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${crypto.randomUUID()}${ext}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Dateityp nicht erlaubt. Erlaubt: JPEG, PNG, GIF, WEBP'), false);
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});
 
 // Enum constants — must match Camp model AND CampForm.js option values
 // When adding a new dropdown option in the frontend, add it here AND in Camp.js enum
-const VALID_CAMP_TYPES = ['beginner-course', 'intensive-workshop', 'technique-camp', 'other'];
+const VALID_CAMP_TYPES = ['beginner-course', 'intensive-workshop', 'technique-camp', 'event', 'other'];
 const VALID_TARGET_AUDIENCES = ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth'];
 const VALID_SKILL_LEVELS = ['beginner', 'intermediate'];
 const VALID_TEAM_ACCESS = ['all', 'team-only', 'hobby-only'];
@@ -897,4 +938,23 @@ router.get('/:id/export/csv', async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/camps/upload-banner
+ * @desc    Upload a banner image for a camp/event
+ * @access  Private (admin only)
+ */
+router.post('/upload-banner', upload.single('banner'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Kein Bild hochgeladen' });
+  res.json({ filename: req.file.filename, url: `/api/camps/images/${req.file.filename}` });
+});
+
 export default router;
+
+/**
+ * Public image serve handler — mounted in server.js BEFORE auth guard
+ */
+export function serveCampImage(req, res) {
+  const filePath = path.join(uploadDir, path.basename(req.params.filename));
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Bild nicht gefunden' });
+  res.sendFile(filePath);
+}
