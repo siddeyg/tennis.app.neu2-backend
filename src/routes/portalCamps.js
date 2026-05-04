@@ -329,7 +329,9 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       campId: campId,
       status: { $in: ['pending', 'confirmed', 'waitlist'] }
     });
-    let status = 'pending';
+    
+    let status = isEvent ? 'confirmed' : 'pending';
+    
     if (activeCount >= camp.maxParticipants) {
       if (!camp.waitlistEnabled) {
         if (session) await session.abortTransaction();
@@ -378,7 +380,10 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       additionalEmergencyContactPhone: additionalEmergencyContactPhone || '',
       medicalNotes: medicalNotes || '',
       status: status,
-      registeredAt: new Date()
+      registeredAt: new Date(),
+      // Auto-approval metadata
+      approvedBy: isEvent && status === 'confirmed' ? req.user.id : null,
+      approvalDate: isEvent && status === 'confirmed' ? new Date() : null
     });
 
     await registration.save(session ? { session } : {});
@@ -453,23 +458,28 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       // Don't fail the request if notification fails
     }
 
-    // 10. Send receipt email to student (non-blocking)
-    if (status === 'pending') {
-      try {
-        const campData = await Camp.findById(campId);
-        if (campData) {
+    // 10. Send receipt/confirmation email to student (non-blocking)
+    try {
+      const campData = await Camp.findById(campId);
+      if (campData) {
+        if (status === 'confirmed') {
+          const { sendCampConfirmationEmail } = await import('../utils/emailService.js');
+          await sendCampConfirmationEmail(registration, campData);
+        } else if (status === 'pending') {
           await sendCampRegistrationReceivedEmail(registration, campData);
         }
-      } catch (emailError) {
-        logger.error('Error sending camp registration received email to student:', emailError);
       }
+    } catch (emailError) {
+      logger.error('Error sending registration email to student:', emailError);
     }
 
     res.status(201).json({
       success: true,
-      message: status === 'pending'
-        ? 'Anmeldung eingegangen – wird geprüft. Sie erhalten eine Benachrichtigung sobald sie bestätigt wurde.'
-        : 'Sie wurden auf die Warteliste gesetzt',
+      message: status === 'confirmed'
+        ? `Ihre Anmeldung für ${camp.title} wurde erfolgreich bestätigt!`
+        : (status === 'pending' 
+            ? 'Anmeldung eingegangen – wird geprüft. Sie erhalten eine Benachrichtigung sobald sie bestätigt wurde.'
+            : 'Sie wurden auf die Warteliste gesetzt'),
       registration: {
         _id: registration._id,
         status: registration.status
