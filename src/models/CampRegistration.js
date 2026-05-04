@@ -82,7 +82,7 @@ const campRegistrationSchema = new mongoose.Schema({
   // Privacy Consent (DSGVO)
   privacyConsent: {
     type: Boolean,
-    required: true,
+    required: false,
     default: false
   },
 

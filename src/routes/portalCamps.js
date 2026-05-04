@@ -198,16 +198,16 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       });
     }
 
-    if (!privacyConsent) {
+    // Conditional validation based on camp type
+    const isEvent = camp.campType === 'event';
+
+    if (isEvent && !privacyConsent) {
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: 'Die Zustimmung zur Datenweitergabe ist erforderlich'
       });
     }
-
-    // Conditional validation for non-events
-    const isEvent = camp.campType === 'event';
 
     if (!isEvent) {
       if (!skillLevel) {
