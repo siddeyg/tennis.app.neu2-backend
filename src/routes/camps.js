@@ -307,7 +307,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       'maxParticipants', 'waitlistEnabled', 'maxWaitlist',
       'targetAudience', 'minAge', 'maxAge', 'skillLevels',
       'playerType', 'memberPrice', 'nonMemberPrice',
-      'trainerId', 'trainerName'
+      'trainerId', 'trainerName', 'bannerImage'
     ];
 
     allowedFields.forEach(field => {
