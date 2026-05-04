@@ -435,15 +435,27 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         const startDateStr = new Date(campData.startDate).toLocaleDateString('de-DE');
         const endDateStr = new Date(campData.endDate).toLocaleDateString('de-DE');
 
+        let notificationTitle = '';
+        let notificationBody = '';
+
+        if (status === 'confirmed') {
+          notificationTitle = `Anmeldung bestätigt: ${campData.title}`;
+          notificationBody = `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) wurde erfolgreich bestätigt!`;
+        } else if (status === 'waitlist') {
+          notificationTitle = `Auf Warteliste: ${campData.title}`;
+          notificationBody = `Sie wurden auf die Warteliste für ${campData.title} (${startDateStr} - ${endDateStr}) gesetzt. Sie werden benachrichtigt, falls ein Platz frei wird.`;
+        } else {
+          notificationTitle = `Anmeldung eingegangen: ${campData.title}`;
+          notificationBody = `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) ist eingegangen und wird geprüft.`;
+        }
+
         await createNotification(
           req.user.id,
           'registration_approved',
-          status === 'pending' ? `Anmeldung eingegangen: ${campData.title}` : `Auf Warteliste: ${campData.title}`,
-          status === 'pending'
-            ? `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) ist eingegangen und wird geprüft. Sie erhalten eine Benachrichtigung sobald sie bestätigt oder abgelehnt wurde.`
-            : `Sie wurden auf die Warteliste für ${campData.title} (${startDateStr} - ${endDateStr}) gesetzt. Sie werden benachrichtigt, falls ein Platz frei wird.`,
+          notificationTitle,
+          notificationBody,
           {
-            priority: 'normal',
+            priority: status === 'confirmed' ? 'high' : 'normal',
             actionUrl: '/dashboard/my-camps',
             metadata: {
               campId: campId,
