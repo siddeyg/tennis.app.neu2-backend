@@ -120,7 +120,7 @@ router.get('/:id', async (req, res) => {
     if (!camp || camp.deletedAt) {
       return res.status(404).json({
         success: false,
-        error: 'Camp nicht gefunden'
+        error: `${camp?.campType === 'event' ? 'Event' : 'Camp'} nicht gefunden`
       });
     }
 
@@ -132,7 +132,7 @@ router.get('/:id', async (req, res) => {
     logger.error("Error fetching camp", { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
-      error: 'Fehler beim Laden des Camps'
+      error: 'Fehler beim Laden'
     });
   }
 });
@@ -181,11 +181,13 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
     const campId = req.params.id;
     const camp = await Camp.findById(campId);
 
+    const isEvent = camp?.campType === 'event';
+
     if (!camp || camp.deletedAt) {
       if (session) await session.abortTransaction();
       return res.status(404).json({
         success: false,
-        error: 'Camp nicht gefunden'
+        error: `${isEvent ? 'Event' : 'Camp'} nicht gefunden`
       });
     }
 
@@ -199,8 +201,6 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
     }
 
     // Conditional validation based on camp type
-    const isEvent = camp.campType === 'event';
-
     if (isEvent && !privacyConsent) {
       if (session) await session.abortTransaction();
       return res.status(400).json({
@@ -214,7 +214,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         if (session) await session.abortTransaction();
         return res.status(400).json({
           success: false,
-          error: 'Skill Level ist für Camps erforderlich'
+          error: `Skill Level ist für ${isEvent ? 'Events' : 'Camps'} erforderlich`
         });
       }
 
@@ -222,7 +222,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         if (session) await session.abortTransaction();
         return res.status(400).json({
           success: false,
-          error: 'Mannschaft (Team/Freizeit) ist für Camps erforderlich'
+          error: `Mannschaft (Team/Freizeit) ist für ${isEvent ? 'Events' : 'Camps'} erforderlich`
         });
       }
 
@@ -241,7 +241,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
-        error: 'Die Anmeldung für dieses Camp ist nicht geöffnet'
+        error: `Die Anmeldung für dieses ${isEvent ? 'Event' : 'Camp'} ist nicht geöffnet`
       });
     }
 
@@ -308,7 +308,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
-        error: 'Sie sind bereits für dieses Camp angemeldet'
+        error: `Sie sind bereits für dieses ${isEvent ? 'Event' : 'Camp'} angemeldet`
       });
     }
 
@@ -337,7 +337,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         if (session) await session.abortTransaction();
         return res.status(400).json({
           success: false,
-          error: 'Das Camp ist ausgebucht'
+          error: `Das ${isEvent ? 'Event' : 'Camp'} ist ausgebucht`
         });
       }
 
@@ -510,7 +510,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
 
     res.status(500).json({
       success: false,
-      error: 'Fehler beim Anmelden für das Camp'
+      error: 'Fehler beim Anmelden'
     });
   } finally {
     if (session) session.endSession();
