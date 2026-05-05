@@ -1743,7 +1743,7 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
     </html>
   `;
 
-  const text = `Camp-Anmeldung storniert\n\nCamp: ${camp.title}\nZeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}\n\nTeilnehmer: ${registration.firstName} ${registration.lastName}\nE-Mail: ${registration.email}\nTelefon: ${registration.phone || 'Keine Angabe'}\n\nStorniert am: ${formatDate(new Date())}`;
+  const text = `${typeLabel}-Anmeldung storniert\n\n${typeLabel}: ${camp.title}\nZeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}\n\nTeilnehmer: ${registration.firstName} ${registration.lastName}\nE-Mail: ${registration.email}\nTelefon: ${registration.phone || 'Keine Angabe'}\n\nStorniert am: ${formatDate(new Date())}`;
 
   return Promise.all(
     notificationEmails.map(email => sendEmail({ to: email, subject, html, text }))
@@ -1926,5 +1926,10 @@ export default {
   sendEmailChangeVerification,
   sendEmailChangeWarning,
   generateVerificationTokenWithExpiry,
+  generatePasswordResetToken,
+};
+dResetToken,
+};
+enerateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };
