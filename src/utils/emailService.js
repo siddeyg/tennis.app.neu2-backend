@@ -1055,13 +1055,17 @@ export async function sendSeasonalRegistrationNotification(registration, notific
 function generateCampRegistrationTextContent(registration, camp) {
   const { date, optional, sectionDivider, subSection, field } = textFormatters;
 
-  let text = sectionDivider('NEUE CAMP-ANMELDUNG');
+  const isEvent = camp.campType === 'event';
+  const typeLabel = isEvent ? 'Event' : 'Camp';
+  const typeLabelUpper = typeLabel.toUpperCase();
+
+  let text = sectionDivider(`NEUE ${typeLabelUpper}-ANMELDUNG`);
   text += 'Mondo Tennisschule\n\n';
   text += field('Eingang', date(registration.createdAt || new Date())) + '\n';
 
   // Camp details section
-  text += subSection('CAMP-DETAILS');
-  text += field('Camp-Name', camp.title) + '\n';
+  text += subSection(`${typeLabelUpper}-DETAILS`);
+  text += field(`${typeLabel}-Name`, camp.title) + '\n';
   text += field('Zeitraum', `${date(camp.startDate)} - ${date(camp.endDate)}`) + '\n';
   text += field('Ort', optional(camp.location)) + '\n';
   text += field('Preis', camp.price ? `${camp.price}€` : 'Keine Angabe') + '\n';
@@ -1123,7 +1127,9 @@ export async function sendCampRegistrationNotification(registration, camp, notif
     return; // No emails to send to
   }
 
-  const subject = `Neue Camp-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
+  const isEvent = camp.campType === 'event';
+  const typeLabel = isEvent ? 'Event' : 'Camp';
+  const subject = `Neue ${typeLabel}-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
 
   // Format date
   const formatDate = (date) => {
@@ -1156,20 +1162,20 @@ export async function sendCampRegistrationNotification(registration, camp, notif
     </head>
     <body>
       <div class="header">
-        <h1>⛺ Neue Camp-Anmeldung</h1>
+        <h1>⛺ Neue ${typeLabel}-Anmeldung</h1>
         <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
       </div>
 
       <div class="content">
         <div class="highlight">
           <strong>Eingang:</strong> ${formatDate(registration.createdAt || new Date())}<br>
-          <strong>Camp:</strong> <span class="camp-badge">${camp.title}</span>
+          <strong>${typeLabel}:</strong> <span class="camp-badge">${camp.title}</span>
         </div>
 
         <div class="section">
-          <h2>Camp-Details</h2>
+          <h2>${typeLabel}-Details</h2>
           <div class="field">
-            <span class="field-label">Camp-Name:</span>
+            <span class="field-label">${typeLabel}-Name:</span>
             <span class="field-value">${camp.title}</span>
           </div>
           <div class="field">
@@ -1302,7 +1308,9 @@ export async function sendCampRegistrationNotification(registration, camp, notif
  * Send camp registration confirmation email to the student
  */
 export async function sendCampConfirmationEmail(registration, camp) {
-  const subject = `Anmeldung bestätigt: ${camp.title}`;
+  const isEvent = camp.campType === "event";
+  const typeLabel = isEvent ? "Event" : "Camp";
+  const subject = `${typeLabel}-Anmeldung bestätigt: ${camp.title}`;
 
   const formatDate = (date) => {
     if (!date) return 'Keine Angabe';
@@ -1328,7 +1336,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
     </head>
     <body>
       <div class="header">
-        <h1>✅ Anmeldung bestätigt</h1>
+        <h1>✅ ${typeLabel}-Anmeldung bestätigt</h1>
         <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
       </div>
       <div class="content">
@@ -1337,7 +1345,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
           <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde bestätigt!</strong><br>
           Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
         </div>
-        <p>Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>
+        <p>Wir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
       <div class="footer">
@@ -1347,7 +1355,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde bestätigt!\n\nWir freuen uns, Sie beim Camp begrüßen zu dürfen.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde bestätigt!\n\nWir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1478,7 +1486,9 @@ export async function sendEmailChangeWarning(oldEmail, newEmail, studentName) {
  * Send camp registration received email to the student (pending — not yet confirmed)
  */
 export async function sendCampRegistrationReceivedEmail(registration, camp) {
-  const subject = `Anmeldung eingegangen: ${camp.title}`;
+  const isEvent = camp.campType === 'event';
+  const typeLabel = isEvent ? 'Event' : 'Camp';
+  const subject = `${typeLabel}-Anmeldung eingegangen: ${camp.title}`;
 
   const formatDate = (date) => {
     if (!date) return 'Keine Angabe';
@@ -1505,7 +1515,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
     </head>
     <body>
       <div class="header">
-        <h1>⏳ Anmeldung eingegangen</h1>
+        <h1>⏳ ${typeLabel}-Anmeldung eingegangen</h1>
         <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
       </div>
       <div class="content">
