@@ -418,7 +418,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         if (emails.length > 0) {
           // Populate camp data for email (note: Camp model uses 'title' not 'name')
           const populatedRegistration = await CampRegistration.findById(registration._id)
-            .populate('campId', 'title startDate endDate location price targetAudience ageMin ageMax skillLevels');
+            .populate('campId', 'title campType startDate endDate location price targetAudience ageMin ageMax skillLevels');
           await sendCampRegistrationNotification(populatedRegistration, populatedRegistration.campId, emails);
           logger.info(`Camp registration notification emails sent to ${emails.length} recipient(s)`);
         }
@@ -438,9 +438,13 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         let notificationTitle = '';
         let notificationBody = '';
 
+        const additionalText = (isEvent && registration.additionalParticipants > 0) 
+          ? ` und ${registration.additionalParticipants} weitere ${registration.additionalParticipants === 1 ? 'Person' : 'Personen'}` 
+          : "";
+
         if (status === 'confirmed') {
           notificationTitle = `Anmeldung bestätigt: ${campData.title}`;
-          notificationBody = `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr}) wurde erfolgreich bestätigt!`;
+          notificationBody = `Ihre Anmeldung für ${campData.title} (${startDateStr} - ${endDateStr})${additionalText} wurde erfolgreich bestätigt!`;
         } else if (status === 'waitlist') {
           notificationTitle = `Auf Warteliste: ${campData.title}`;
           notificationBody = `Sie wurden auf die Warteliste für ${campData.title} (${startDateStr} - ${endDateStr}) gesetzt. Sie werden benachrichtigt, falls ein Platz frei wird.`;
@@ -485,10 +489,14 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       logger.error('Error sending registration email to student:', emailError);
     }
 
+    const additionalText = (isEvent && registration.additionalParticipants > 0) 
+      ? ` und ${registration.additionalParticipants} weitere ${registration.additionalParticipants === 1 ? 'Person' : 'Personen'}` 
+      : "";
+
     res.status(201).json({
       success: true,
       message: status === 'confirmed'
-        ? `Ihre Anmeldung für ${camp.title} wurde erfolgreich bestätigt!`
+        ? `Ihre Anmeldung für ${camp.title}${additionalText} wurde erfolgreich bestätigt!`
         : (status === 'pending' 
             ? 'Anmeldung eingegangen – wird geprüft. Sie erhalten eine Benachrichtigung sobald sie bestätigt wurde.'
             : 'Sie wurden auf die Warteliste gesetzt'),

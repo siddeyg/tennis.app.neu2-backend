@@ -1063,49 +1063,57 @@ function generateCampRegistrationTextContent(registration, camp) {
   text += 'Mondo Tennisschule\n\n';
   text += field('Eingang', date(registration.createdAt || new Date())) + '\n';
 
-  // Camp details section
-  text += subSection(`${typeLabelUpper}-DETAILS`);
-  text += field(`${typeLabel}-Name`, camp.title) + '\n';
-  text += field('Zeitraum', `${date(camp.startDate)} - ${date(camp.endDate)}`) + '\n';
-  text += field('Ort', optional(camp.location)) + '\n';
-  text += field('Preis', camp.price ? `${camp.price}€` : 'Keine Angabe') + '\n';
+  if (isEvent) {
+    // Simplified version for events
+    text += subSection('EVENT-ANMELDUNG');
+    text += field('Event', camp.title) + '\n';
+    text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
+    text += field('Zusätzliche Personen', registration.additionalParticipants || 0) + '\n';
+  } else {
+    // Camp details section
+    text += subSection(`${typeLabelUpper}-DETAILS`);
+    text += field(`${typeLabel}-Name`, camp.title) + '\n';
+    text += field('Zeitraum', `${date(camp.startDate)} - ${date(camp.endDate)}`) + '\n';
+    text += field('Ort', optional(camp.location)) + '\n';
+    text += field('Preis', camp.price ? `${camp.price}€` : 'Keine Angabe') + '\n';
 
-  // Participant data section
-  text += subSection('TEILNEHMER-DATEN');
-  text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
-  text += field('E-Mail', registration.email) + '\n';
-  text += field('Telefon', optional(registration.phone)) + '\n';
-  text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
-  text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
-  text += field('Mannschaft', registration.team ? 'Mannschaftsspieler' : 'Freizeitspieler') + '\n';
+    // Participant data section
+    text += subSection('TEILNEHMER-DATEN');
+    text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
+    text += field('E-Mail', registration.email) + '\n';
+    text += field('Telefon', optional(registration.phone)) + '\n';
+    text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
+    text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
+    text += field('Mannschaft', registration.team ? 'Mannschaftsspieler' : 'Freizeitspieler') + '\n';
 
-  // Emergency contact (if provided)
-  if (registration.emergencyContact) {
-    text += subSection('NOTFALLKONTAKT');
-    text += field('Name', optional(registration.emergencyContact.name)) + '\n';
-    text += field('Beziehung', optional(registration.emergencyContact.relationship)) + '\n';
-    text += field('Telefon', optional(registration.emergencyContact.phone)) + '\n';
-  }
+    // Emergency contact (if provided)
+    if (registration.emergencyContact) {
+      text += subSection('NOTFALLKONTAKT');
+      text += field('Name', optional(registration.emergencyContact.name)) + '\n';
+      text += field('Beziehung', optional(registration.emergencyContact.relationship)) + '\n';
+      text += field('Telefon', optional(registration.emergencyContact.phone)) + '\n';
+    }
 
-  // Additional emergency contact (if provided)
-  if (registration.additionalEmergencyContact) {
-    text += subSection('ZUSÄTZLICHER NOTFALLKONTAKT');
-    text += field('Name', optional(registration.additionalEmergencyContact.name)) + '\n';
-    text += field('Beziehung', optional(registration.additionalEmergencyContact.relationship)) + '\n';
-    text += field('Telefon', optional(registration.additionalEmergencyContact.phone)) + '\n';
-  }
+    // Additional emergency contact (if provided)
+    if (registration.additionalEmergencyContact) {
+      text += subSection('ZUSÄTZLICHER NOTFALLKONTAKT');
+      text += field('Name', optional(registration.additionalEmergencyContact.name)) + '\n';
+      text += field('Beziehung', optional(registration.additionalEmergencyContact.relationship)) + '\n';
+      text += field('Telefon', optional(registration.additionalEmergencyContact.phone)) + '\n';
+    }
 
-  // Status section
-  text += subSection('STATUS');
-  let statusText = registration.status === 'confirmed' ? 'Bestätigt' :
-                   registration.status === 'waitlist' ? 'Warteliste' :
-                   'Angemeldet';
-  text += field('Registrierungsstatus', statusText) + '\n';
+    // Status section
+    text += subSection('STATUS');
+    let statusText = registration.status === 'confirmed' ? 'Bestätigt' :
+                     registration.status === 'waitlist' ? 'Warteliste' :
+                     'Angemeldet';
+    text += field('Registrierungsstatus', statusText) + '\n';
 
-  // Notes (if provided)
-  if (registration.notes) {
-    text += subSection('BEMERKUNGEN');
-    text += registration.notes + '\n';
+    // Notes (if provided)
+    if (registration.notes) {
+      text += subSection('BEMERKUNGEN');
+      text += registration.notes + '\n';
+    }
   }
 
   // Footer
@@ -1139,7 +1147,53 @@ export async function sendCampRegistrationNotification(registration, camp, notif
     });
   };
 
-  const html = `
+  const html = isEvent ? `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #00838f 0%, #00acc1 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .section { margin-bottom: 25px; }
+        .section h2 { color: #00838f; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #00838f; padding-bottom: 5px; }
+        .field { margin-bottom: 12px; }
+        .field-label { font-weight: bold; color: #555; min-width: 150px; display: inline-block; }
+        .field-value { color: #333; }
+        .highlight { background-color: #e0f7fa; padding: 15px; border-left: 4px solid #00acc1; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>🎾 Neue Event-Anmeldung</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <div class="highlight">
+          <strong>Event:</strong> ${camp.title}
+        </div>
+        <div class="section">
+          <h2>Teilnehmer</h2>
+          <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">${registration.firstName} ${registration.lastName}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Zusätzliche Personen:</span>
+            <span class="field-value">${registration.additionalParticipants || 0}</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  ` : `
     <!DOCTYPE html>
     <html lang="de">
     <head>
@@ -1319,6 +1373,10 @@ export async function sendCampConfirmationEmail(registration, camp) {
     });
   };
 
+  const additionalText = (isEvent && registration.additionalParticipants > 0) 
+    ? ` und ${registration.additionalParticipants} weitere ${registration.additionalParticipants === 1 ? 'Person' : 'Personen'}` 
+    : "";
+
   const html = `
     <!DOCTYPE html>
     <html lang="de">
@@ -1342,7 +1400,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
       <div class="content">
         <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
         <div class="highlight">
-          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde bestätigt!</strong><br>
+          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em>${additionalText} wurde bestätigt!</strong><br>
           Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
         </div>
         <p>Wir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>
@@ -1355,7 +1413,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde bestätigt!\n\nWir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)})${additionalText} wurde bestätigt!\n\nWir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
