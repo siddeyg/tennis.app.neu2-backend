@@ -1928,8 +1928,3 @@ export default {
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };
-dResetToken,
-};
-enerateVerificationTokenWithExpiry,
-  generatePasswordResetToken,
-};
