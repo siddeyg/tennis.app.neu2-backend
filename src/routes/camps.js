@@ -905,26 +905,27 @@ router.get('/:id/export/csv', async (req, res) => {
 
     // Build CSV with UTF-8 BOM
     const BOM = '\uFEFF';
-    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
+    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Zusätzliche Personen,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
 
     const rows = registrations.map(reg => {
       const status = reg.status === 'confirmed' ? 'Bestätigt' : reg.status === 'pending' ? 'Ausstehend' : 'Warteliste';
       const name = `${reg.firstName} ${reg.lastName}`;
-      const birthdate = reg.birthdate.toISOString().split('T')[0];
-      const age = reg.age;
+      const birthdate = reg.birthdate ? reg.birthdate.toISOString().split('T')[0] : '';
+      const age = reg.age || '';
       const email = reg.email;
       const phone = reg.phone || '';
       const iban = reg.studentPortalUserId && reg.studentPortalUserId.iban
         ? decryptIBAN(reg.studentPortalUserId.iban)
         : '';
-      const skillLevel = reg.skillLevel;
+      const skillLevel = reg.skillLevel || '';
       const team = reg.team ? 'Mannschaft' : 'Freizeit';
+      const additionalParticipants = reg.additionalParticipants || 0;
       const emergencyName = reg.emergencyContactName || '';
       const emergencyPhone = reg.emergencyContactPhone || '';
       const medicalNotes = (reg.medicalNotes || '').replace(/,/g, ';').replace(/\n/g, ' ');
-      const registeredAt = reg.registeredAt.toISOString().split('T')[0];
+      const registeredAt = reg.registeredAt ? reg.registeredAt.toISOString().split('T')[0] : '';
 
-      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}",${skillLevel},${team},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
+      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}","${skillLevel}",${team},${additionalParticipants},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
     }).join('\n');
 
     const csv = BOM + headers + rows;
