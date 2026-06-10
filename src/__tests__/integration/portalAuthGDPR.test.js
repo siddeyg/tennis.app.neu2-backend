@@ -335,7 +335,7 @@ describe('Portal Auth - GDPR Registration', () => {
         .send({ token: rawExpiredToken })
         .expect(400);
 
-      expect(res.body.error).toContain('Ungültiger oder abgelaufener');
+      expect(res.body.error).toContain('Bestätigungslink ist abgelaufen');
     });
 
     test('Should reject invalid token', async () => {
@@ -344,7 +344,7 @@ describe('Portal Auth - GDPR Registration', () => {
         .send({ token: 'invalid-token' })
         .expect(400);
 
-      expect(res.body.error).toContain('Ungültiger oder abgelaufener');
+      expect(res.body.error).toContain('Bestätigungslink ist nicht mehr gültig');
     });
   });
 

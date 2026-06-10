@@ -15,8 +15,9 @@
  * Only active in production (NODE_ENV=production).
  */
 
-const NTFY_TOPIC = 'mondo-srv-k9x4';
-const NTFY_URL = `https://ntfy.sh/${NTFY_TOPIC}`;
+const NTFY_URL = process.env.NTFY_URL || 'http://5.252.227.183/mondo-srv-k9x4';
+const NTFY_USER = process.env.NTFY_USER || 'admin';
+const NTFY_PASS = process.env.NTFY_PASS || 'goonline4M';
 const RATE_LIMIT_MS = 60 * 1000; // 1 alert per title per minute
 
 // In-memory rate limit map: title → last sent timestamp
@@ -40,6 +41,8 @@ export async function sendAlert(title, message) {
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
   const body = `${message}\n\n${timestamp}`;
 
+  const auth = Buffer.from(`${NTFY_USER}:${NTFY_PASS}`).toString('base64');
+
   try {
     await fetch(NTFY_URL, {
       method: 'POST',
@@ -48,6 +51,7 @@ export async function sendAlert(title, message) {
         'Title': title,
         'Priority': 'high',
         'Tags': 'warning,mondo',
+        'Authorization': `Basic ${auth}`,
       },
       body,
     });

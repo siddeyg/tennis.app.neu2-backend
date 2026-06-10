@@ -183,6 +183,7 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), async (req, res) => {
   try {
+    logger.info('Received camp creation request:', { body: req.body });
     const {
       title,
       description,
@@ -203,8 +204,19 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       memberPrice,
       nonMemberPrice,
       trainerId,
-      trainerName
+      trainerName,
+      bannerImage,
+      showBarbecueOption,
+      showAdditionalGuestsOption,
+      allowFamilyRegistration,
+      showVegetarianOption
     } = req.body;
+
+    // Explicitly convert to boolean to handle potential string inputs
+    const shouldShowBarbecue = showBarbecueOption === true || showBarbecueOption === 'true';
+    const shouldShowAdditionalGuests = showAdditionalGuestsOption === true || showAdditionalGuestsOption === 'true';
+    const shouldAllowFamily = allowFamilyRegistration !== undefined ? (allowFamilyRegistration === true || allowFamilyRegistration === 'true') : true;
+    const shouldShowVegetarian = showVegetarianOption !== undefined ? (showVegetarianOption === true || showVegetarianOption === 'true') : true;
 
     // Validation
     if (!title || !description || !schedule || schedule.length === 0) {
@@ -255,6 +267,11 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       nonMemberPrice: nonMemberPrice || null,
       trainerId: (trainerId && trainerId !== '') ? trainerId : null,
       trainerName: trainerName || '',
+      bannerImage: bannerImage || null,
+      showBarbecueOption: shouldShowBarbecue,
+      showAdditionalGuestsOption: shouldShowAdditionalGuests,
+      allowFamilyRegistration: shouldAllowFamily,
+      showVegetarianOption: shouldShowVegetarian,
       status: 'draft',
       createdBy: req.user._id
     });
@@ -288,6 +305,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
  */
 router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), async (req, res) => {
   try {
+    logger.info('Received camp update request:', { id: req.params.id, body: req.body });
     const camp = await Camp.findById(req.params.id);
 
     if (!camp || camp.deletedAt) {
@@ -307,13 +325,17 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       'maxParticipants', 'waitlistEnabled', 'maxWaitlist',
       'targetAudience', 'minAge', 'maxAge', 'skillLevels',
       'playerType', 'memberPrice', 'nonMemberPrice',
-      'trainerId', 'trainerName', 'bannerImage'
+      'trainerId', 'trainerName', 'bannerImage',
+      'showBarbecueOption', 'showAdditionalGuestsOption',
+      'allowFamilyRegistration', 'showVegetarianOption'
     ];
 
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
         if (field === 'trainerId' && req.body[field] === '') {
           camp[field] = null;
+        } else if (['showBarbecueOption', 'showAdditionalGuestsOption', 'allowFamilyRegistration', 'showVegetarianOption'].includes(field)) {
+          camp[field] = req.body[field] === true || req.body[field] === 'true';
         } else {
           camp[field] = req.body[field];
         }
@@ -905,7 +927,7 @@ router.get('/:id/export/csv', async (req, res) => {
 
     // Build CSV with UTF-8 BOM
     const BOM = '\uFEFF';
-    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Zusätzliche Personen,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
+    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Zusätzliche Kinder,Zusätzliche Erwachsene,Grillen,Grillanzahl,Vegetarisch,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
 
     const rows = registrations.map(reg => {
       const status = reg.status === 'confirmed' ? 'Bestätigt' : reg.status === 'pending' ? 'Ausstehend' : 'Warteliste';
@@ -919,13 +941,17 @@ router.get('/:id/export/csv', async (req, res) => {
         : '';
       const skillLevel = reg.skillLevel || '';
       const team = reg.team ? 'Mannschaft' : 'Freizeit';
-      const additionalParticipants = reg.additionalParticipants || 0;
+      const addChildren = reg.additionalChildren || 0;
+      const addAdults = reg.additionalAdults || 0;
+      const bbq = reg.isBarbecueParticipant ? 'Ja' : 'Nein';
+      const bbqCount = reg.barbecueCount || 0;
+      const vegetarian = reg.isVegetarian ? 'Ja' : 'Nein';
       const emergencyName = reg.emergencyContactName || '';
       const emergencyPhone = reg.emergencyContactPhone || '';
       const medicalNotes = (reg.medicalNotes || '').replace(/,/g, ';').replace(/\n/g, ' ');
       const registeredAt = reg.registeredAt ? reg.registeredAt.toISOString().split('T')[0] : '';
 
-      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}","${skillLevel}",${team},${additionalParticipants},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
+      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}","${skillLevel}",${team},${addChildren},${addAdults},${bbq},${bbqCount},${vegetarian},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
     }).join('\n');
 
     const csv = BOM + headers + rows;

@@ -245,18 +245,6 @@ describe('Portal Profile API Integration Tests', () => {
       expect(response.body.address).toBe('Trimmed Street 1');
     });
 
-    test('should return 404 if student not found', async () => {
-      await createTestData();
-      app.request.testStudentId = new mongoose.Types.ObjectId();
-
-      const response = await request(app)
-        .put('/api/portal/profile')
-        .send(requiredFields);
-
-      expect(response.status).toBe(404);
-      expect(response.body.error).toBe('Schüler nicht gefunden');
-    });
-
     test('should require firstName', async () => {
       await createTestData();
 

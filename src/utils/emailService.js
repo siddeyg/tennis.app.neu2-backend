@@ -1068,7 +1068,12 @@ function generateCampRegistrationTextContent(registration, camp) {
     text += subSection('EVENT-ANMELDUNG');
     text += field('Event', camp.title) + '\n';
     text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
-    text += field('Zusätzliche Personen', registration.additionalParticipants || 0) + '\n';
+    text += field('Zusätzliche Kinder', registration.additionalChildren || 0) + '\n';
+    text += field('Zusätzliche Erwachsene', registration.additionalAdults || 0) + '\n';
+    text += field('Grillen', registration.isBarbecueParticipant ? `Ja (${registration.barbecueCount} Pers.)` : 'Nein') + '\n';
+    if (registration.isVegetarian) {
+      text += field('Vegetarisch', 'Ja') + '\n';
+    }
   } else {
     // Camp details section
     text += subSection(`${typeLabelUpper}-DETAILS`);
@@ -1183,9 +1188,23 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-value">${registration.firstName} ${registration.lastName}</span>
           </div>
           <div class="field">
-            <span class="field-label">Zusätzliche Personen:</span>
-            <span class="field-value">${registration.additionalParticipants || 0}</span>
+            <span class="field-label">Zusätzliche Kinder:</span>
+            <span class="field-value">${registration.additionalChildren || 0}</span>
           </div>
+          <div class="field">
+            <span class="field-label">Zusätzliche Erwachsene:</span>
+            <span class="field-value">${registration.additionalAdults || 0}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Teilnahme Grillen:</span>
+            <span class="field-value">${registration.isBarbecueParticipant ? `Ja (${registration.barbecueCount} Personen)` : 'Nein'}</span>
+          </div>
+          ${registration.isVegetarian ? `
+          <div class="field">
+            <span class="field-label">Vegetarisch:</span>
+            <span class="field-value">Ja</span>
+          </div>
+          ` : ''}
         </div>
       </div>
       <div class="footer">

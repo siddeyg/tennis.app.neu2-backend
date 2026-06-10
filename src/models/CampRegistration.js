@@ -78,6 +78,30 @@ const campRegistrationSchema = new mongoose.Schema({
     default: 0,
     min: 0
   },
+  // Sommerfest / Event Specific
+  additionalChildren: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  additionalAdults: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  isBarbecueParticipant: {
+    type: Boolean,
+    default: false
+  },
+  barbecueCount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  isVegetarian: {
+    type: Boolean,
+    default: false
+  },
 
   // Privacy Consent (DSGVO)
   privacyConsent: {

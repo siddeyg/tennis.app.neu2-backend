@@ -221,8 +221,8 @@ describe('SavedSchedules API Integration Tests', () => {
         .get('/api/saved-schedules')
         .expect(200);
 
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body).toHaveLength(0);
+      expect(Array.isArray(res.body.schedules)).toBe(true);
+      expect(res.body.schedules).toHaveLength(0);
     });
 
     it('returns all saved schedules sorted newest-first', async () => {
@@ -235,10 +235,10 @@ describe('SavedSchedules API Integration Tests', () => {
         .get('/api/saved-schedules')
         .expect(200);
 
-      expect(res.body).toHaveLength(2);
+      expect(res.body.schedules).toHaveLength(2);
       // Newest first (createdAt desc) — both created in the same instant so
       // just verify both names are present
-      const names = res.body.map(s => s.name);
+      const names = res.body.schedules.map(s => s.name);
       expect(names).toContain('Plan A');
       expect(names).toContain('Plan B');
     });
@@ -255,7 +255,7 @@ describe('SavedSchedules API Integration Tests', () => {
         .get('/api/saved-schedules')
         .expect(200);
 
-      const schedule = res.body[0];
+      const schedule = res.body.schedules[0];
       expect(schedule.name).toBe('Meta Test');
       expect(schedule.version).toBe(3);
       expect(schedule.periodId).toBe(period._id.toString());

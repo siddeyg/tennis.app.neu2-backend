@@ -169,7 +169,11 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       phone,
       skillLevel,
       team,
-      additionalParticipants,
+      additionalChildren,
+      additionalAdults,
+      isBarbecueParticipant,
+      barbecueCount,
+      isVegetarian,
       privacyConsent,
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
@@ -198,6 +202,18 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         success: false,
         error: 'Vorname, Nachname, Geburtsdatum und Email sind erforderlich'
       });
+    }
+
+    // IBAN Validation
+    if (iban && iban.trim()) {
+      const cleanIban = iban.replace(/\s/g, '');
+      if (!validateIBANFormat(cleanIban)) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültiges IBAN-Format'
+        });
+      }
     }
 
     // Conditional validation based on camp type
@@ -297,6 +313,14 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
     }
 
     // 2. Check duplicate registration (JWT uses 'id' not '_id')
+    if (familyMemberId && camp.allowFamilyRegistration === false) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldungen für Familienmitglieder sind für dieses Event nicht erlaubt'
+      });
+    }
+
     const existing = await CampRegistration.findOne({
       campId: campId,
       studentPortalUserId: req.user.id,
@@ -361,6 +385,10 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
     }
 
     // 4. Create registration
+    const isBBQ = isEvent ? !!isBarbecueParticipant : false;
+    const guests = isEvent ? ((parseInt(additionalChildren) || 0) + (parseInt(additionalAdults) || 0)) : 0;
+    const totalBBQPeople = isBBQ ? (guests + 1) : 0;
+
     const registration = new CampRegistration({
       campId: campId,
       studentPortalUserId: req.user.id,
@@ -372,7 +400,12 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       phone: phone || '',
       skillLevel: isEvent ? null : skillLevel,
       team: isEvent ? false : (team === true || team === 'true'), // Default to false for events
-      additionalParticipants: isEvent ? (parseInt(additionalParticipants) || 0) : 0,
+      additionalChildren: isEvent ? (parseInt(additionalChildren) || 0) : 0,
+      additionalAdults: isEvent ? (parseInt(additionalAdults) || 0) : 0,
+      additionalParticipants: guests,
+      isBarbecueParticipant: isBBQ,
+      barbecueCount: totalBBQPeople,
+      isVegetarian: isEvent ? (camp.showVegetarianOption !== false ? !!isVegetarian : false) : false,
       privacyConsent: !!privacyConsent,
       emergencyContactName: emergencyContactName || '',
       emergencyContactPhone: emergencyContactPhone || '',

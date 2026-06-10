@@ -156,6 +156,23 @@ const campSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  // Event Specific Configuration
+  showBarbecueOption: {
+    type: Boolean,
+    default: false
+  },
+  showAdditionalGuestsOption: {
+    type: Boolean,
+    default: false
+  },
+  allowFamilyRegistration: {
+    type: Boolean,
+    default: true
+  },
+  showVegetarianOption: {
+    type: Boolean,
+    default: true
+  },
 
   // Metadata
   createdBy: {
