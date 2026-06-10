@@ -1007,6 +1007,3 @@ export function serveCampImage(req, res) {
   if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Bild nicht gefunden' });
   res.sendFile(filePath);
 }
-son({ error: 'Bild nicht gefunden' });
-  res.sendFile(filePath);
-}
