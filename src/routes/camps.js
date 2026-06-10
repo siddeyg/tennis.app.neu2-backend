@@ -219,10 +219,11 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
     const shouldShowVegetarian = showVegetarianOption !== undefined ? (showVegetarianOption === true || showVegetarianOption === 'true') : true;
 
     // Validation
-    if (!title || !description || !schedule || schedule.length === 0) {
+    const isEvent = req.body.campType === 'event';
+    if (!title || !description || (!isEvent && (!schedule || schedule.length === 0))) {
       return res.status(400).json({
         success: false,
-        error: 'Titel, Beschreibung und Trainingsplan sind erforderlich'
+        error: isEvent ? 'Titel und Beschreibung sind erforderlich' : 'Titel, Beschreibung und Trainingsplan sind erforderlich'
       });
     }
 
@@ -317,6 +318,22 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
 
     // Capture BEFORE state
     const beforeState = camp.toObject();
+
+    // Validation
+    const { title, description, schedule, campType } = req.body;
+    const currentCampType = campType || camp.campType;
+    const isEvent = currentCampType === 'event';
+    
+    // Only validate if these fields are being updated
+    if (title !== undefined && title.trim() === '') {
+      return res.status(400).json({ success: false, error: 'Titel ist erforderlich' });
+    }
+    if (description !== undefined && description.trim() === '') {
+      return res.status(400).json({ success: false, error: 'Beschreibung ist erforderlich' });
+    }
+    if (!isEvent && schedule !== undefined && (!Array.isArray(schedule) || schedule.length === 0)) {
+      return res.status(400).json({ success: false, error: 'Trainingsplan ist erforderlich' });
+    }
 
     // Update allowed fields
     const allowedFields = [
