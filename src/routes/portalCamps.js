@@ -356,7 +356,8 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
     
     let status = isEvent ? 'confirmed' : 'pending';
     
-    if (activeCount >= camp.maxParticipants) {
+    // Only check capacity if participants are NOT unlimited
+    if (!camp.isUnlimitedParticipants && activeCount >= camp.maxParticipants) {
       if (!camp.waitlistEnabled) {
         if (session) await session.abortTransaction();
         return res.status(400).json({

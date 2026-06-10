@@ -344,14 +344,15 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       'playerType', 'memberPrice', 'nonMemberPrice',
       'trainerId', 'trainerName', 'bannerImage',
       'showBarbecueOption', 'showAdditionalGuestsOption',
-      'allowFamilyRegistration', 'showVegetarianOption'
+      'allowFamilyRegistration', 'showVegetarianOption',
+      'isUnlimitedParticipants'
     ];
 
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
         if (field === 'trainerId' && req.body[field] === '') {
           camp[field] = null;
-        } else if (['showBarbecueOption', 'showAdditionalGuestsOption', 'allowFamilyRegistration', 'showVegetarianOption'].includes(field)) {
+        } else if (['showBarbecueOption', 'showAdditionalGuestsOption', 'allowFamilyRegistration', 'showVegetarianOption', 'isUnlimitedParticipants'].includes(field)) {
           camp[field] = req.body[field] === true || req.body[field] === 'true';
         } else {
           camp[field] = req.body[field];
@@ -1004,5 +1005,8 @@ export default router;
 export function serveCampImage(req, res) {
   const filePath = path.join(uploadDir, path.basename(req.params.filename));
   if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Bild nicht gefunden' });
+  res.sendFile(filePath);
+}
+son({ error: 'Bild nicht gefunden' });
   res.sendFile(filePath);
 }

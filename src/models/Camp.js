@@ -73,6 +73,10 @@ const campSchema = new mongoose.Schema({
     min: 1,
     default: 20
   },
+  isUnlimitedParticipants: {
+    type: Boolean,
+    default: false
+  },
   currentParticipants: {
     type: Number,
     default: 0,
