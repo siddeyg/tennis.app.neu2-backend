@@ -1396,6 +1396,39 @@ export async function sendCampConfirmationEmail(registration, camp) {
     ? ` und ${registration.additionalParticipants} weitere ${registration.additionalParticipants === 1 ? 'Person' : 'Personen'}` 
     : "";
 
+  const startDateFormatted = formatDate(camp.startDate);
+  const endDateFormatted = formatDate(camp.endDate);
+  const dateText = (isEvent || startDateFormatted === endDateFormatted) 
+    ? startDateFormatted 
+    : `${startDateFormatted} – ${endDateFormatted}`;
+
+  const greeting = `Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},`;
+  const confirmationHtml = isEvent 
+    ? `<strong>deine Anmeldung für <em>${escapeHtml(camp.title)}</em>${additionalText} wurde bestätigt!</strong>`
+    : `<strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em>${additionalText} wurde bestätigt!</strong>`;
+    
+  const confirmationText = isEvent
+    ? `deine Anmeldung für "${camp.title}" (${dateText})${additionalText} wurde bestätigt!`
+    : `Ihre Anmeldung für "${camp.title}" (${dateText})${additionalText} wurde bestätigt!`;
+
+  const bodyHtml = isEvent
+    ? `<p>Wir freuen uns, dich beim Event begrüßen zu dürfen.</p>`
+    : `<p>Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>`;
+    
+  const bodyText = isEvent
+    ? `Wir freuen uns, dich beim Event begrüßen zu dürfen.`
+    : `Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.`;
+
+  const signatureHtml = isEvent
+    ? `<p>Viele Grüße,<br>euer Vorstand des TC Grün-Weiß Am Kreuzberg e.V.</p>`
+    : `<p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>`;
+    
+  const signatureText = isEvent
+    ? `Viele Grüße,\neuer Vorstand des TC Grün-Weiß Am Kreuzberg e.V.`
+    : `Viele Grüße,\nIhr Team von der Mondo Tennisschule`;
+
+  const headerSender = isEvent ? "TC Grün-Weiß Am Kreuzberg e.V." : "Mondo Tennisschule";
+
   const html = `
     <!DOCTYPE html>
     <html lang="de">
@@ -1414,25 +1447,25 @@ export async function sendCampConfirmationEmail(registration, camp) {
     <body>
       <div class="header">
         <h1>✅ ${typeLabel}-Anmeldung bestätigt</h1>
-        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">${headerSender}</p>
       </div>
       <div class="content">
-        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <p>${greeting}</p>
         <div class="highlight">
-          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em>${additionalText} wurde bestätigt!</strong><br>
-          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+          ${confirmationHtml}<br>
+          Datum: ${dateText}
         </div>
-        <p>Wir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>
-        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
+        ${bodyHtml}
+        ${signatureHtml}
       </div>
       <div class="footer">
-        <p>Mondo Tennisschule</p>
+        <p>${headerSender}</p>
       </div>
     </body>
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)})${additionalText} wurde bestätigt!\n\nWir freuen uns, Sie beim ${typeLabel} begrüßen zu dürfen.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `${greeting}\n\n${confirmationText}\n\n${bodyText}\n\n${signatureText}`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
