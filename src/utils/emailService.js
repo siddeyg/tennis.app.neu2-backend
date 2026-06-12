@@ -1141,6 +1141,14 @@ export async function sendCampRegistrationNotification(registration, camp, notif
   }
 
   const isEvent = camp.campType === 'event';
+
+  if (isEvent) {
+    notificationEmails = notificationEmails.filter(
+      email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
+    );
+    if (notificationEmails.length === 0) return;
+  }
+
   const typeLabel = isEvent ? 'Event' : 'Camp';
   const subject = `Neue ${typeLabel}-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
 
@@ -1819,6 +1827,14 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
   if (!notificationEmails || notificationEmails.length === 0) return;
 
   const isEvent = camp.campType === "event";
+
+  if (isEvent) {
+    notificationEmails = notificationEmails.filter(
+      email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
+    );
+    if (notificationEmails.length === 0) return;
+  }
+
   const typeLabel = isEvent ? "Event" : "Camp";
 
   const subject = `Stornierung ${typeLabel}-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
