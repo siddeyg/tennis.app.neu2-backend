@@ -1412,11 +1412,11 @@ export async function sendCampConfirmationEmail(registration, camp) {
     : `Ihre Anmeldung für "${camp.title}" (${dateText})${additionalText} wurde bestätigt!`;
 
   const bodyHtml = isEvent
-    ? `<p>Wir freuen uns, dich beim Event begrüßen zu dürfen.</p>`
+    ? `<p>Wir freuen uns auf dich! 👋</p>`
     : `<p>Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.</p>`;
     
   const bodyText = isEvent
-    ? `Wir freuen uns, dich beim Event begrüßen zu dürfen.`
+    ? `Wir freuen uns auf dich! 👋`
     : `Wir freuen uns, Sie beim Camp begrüßen zu dürfen. Bei Fragen wenden Sie sich gerne an uns.`;
 
   const signatureHtml = isEvent
