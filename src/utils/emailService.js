@@ -1818,7 +1818,10 @@ export async function sendCampCancellationEmail(registration, camp) {
 export async function sendCampCancellationAdminEmail(registration, camp, notificationEmails) {
   if (!notificationEmails || notificationEmails.length === 0) return;
 
-  const subject = `Stornierung Camp-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
+  const isEvent = camp.campType === "event";
+  const typeLabel = isEvent ? "Event" : "Camp";
+
+  const subject = `Stornierung ${typeLabel}-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
 
   const formatDate = (date) => {
     if (!date) return 'Keine Angabe';
