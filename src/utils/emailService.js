@@ -1719,6 +1719,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
  * Send camp cancellation confirmation email to the student
  */
 export async function sendCampCancellationEmail(registration, camp) {
+  const isEvent = camp.campType === "event";
   const subject = `Anmeldung storniert: ${camp.title}`;
 
   const formatDate = (date) => {
@@ -1727,6 +1728,40 @@ export async function sendCampCancellationEmail(registration, camp) {
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
   };
+
+  const startDateFormatted = formatDate(camp.startDate);
+  const endDateFormatted = formatDate(camp.endDate);
+  const dateText = (isEvent || startDateFormatted === endDateFormatted) 
+    ? startDateFormatted 
+    : `${startDateFormatted} – ${endDateFormatted}`;
+
+  const greeting = `Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},`;
+  
+  const cancellationHtml = isEvent 
+    ? `<strong>Deine Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde erfolgreich storniert.</strong>`
+    : `<strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde erfolgreich storniert.</strong>`;
+    
+  const cancellationText = isEvent
+    ? `Deine Anmeldung für "${camp.title}" wurde erfolgreich storniert.`
+    : `Ihre Anmeldung für "${camp.title}" wurde erfolgreich storniert.`;
+
+  const bodyHtml = isEvent
+    ? `<p>Falls du dich erneut anmelden möchtest, kannst du das gern wieder über das Portal tun (sofern noch Plätze verfügbar sind).</p><p>Bei Fragen melde dich gern bei uns.</p>`
+    : `<p>Falls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).</p><p>Bei Fragen wenden Sie sich gerne an uns.</p>`;
+    
+  const bodyText = isEvent
+    ? `Falls du dich erneut anmelden möchtest, kannst du das gern wieder über das Portal tun (sofern noch Plätze verfügbar sind).\n\nBei Fragen melde dich gern bei uns.`
+    : `Falls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).\n\nBei Fragen wenden Sie sich gerne an uns.`;
+
+  const signatureHtml = isEvent
+    ? `<p>Viele Grüße,<br>der Vorstand vom TC GW Am Kreuzberg e.V.</p>`
+    : `<p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>`;
+    
+  const signatureText = isEvent
+    ? `Viele Grüße,\nder Vorstand vom TC GW Am Kreuzberg e.V.`
+    : `Viele Grüße,\nIhr Team von der Mondo Tennisschule`;
+
+  const headerSender = isEvent ? "TC GW Am Kreuzberg e.V." : "Mondo Tennisschule";
 
   const html = `
     <!DOCTYPE html>
@@ -1746,26 +1781,25 @@ export async function sendCampCancellationEmail(registration, camp) {
     <body>
       <div class="header">
         <h1>❌ Anmeldung storniert</h1>
-        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">${headerSender}</p>
       </div>
       <div class="content">
-        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <p>${greeting}</p>
         <div class="highlight">
-          <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> wurde erfolgreich storniert.</strong><br>
-          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+          ${cancellationHtml}<br>
+          Datum: ${dateText}
         </div>
-        <p>Falls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).</p>
-        <p>Bei Fragen wenden Sie sich gerne an uns.</p>
-        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
+        ${bodyHtml}
+        ${signatureHtml}
       </div>
       <div class="footer">
-        <p>Mondo Tennisschule</p>
+        <p>${headerSender}</p>
       </div>
     </body>
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) wurde erfolgreich storniert.\n\nFalls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `${greeting}\n\n${cancellationText}\nDatum: ${dateText}\n\n${bodyText}\n\n${signatureText}`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
