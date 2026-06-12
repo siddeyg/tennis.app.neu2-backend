@@ -1746,19 +1746,19 @@ export async function sendCampCancellationEmail(registration, camp) {
     : `Ihre Anmeldung für "${camp.title}" wurde erfolgreich storniert.`;
 
   const bodyHtml = isEvent
-    ? `<p>Falls du dich erneut anmelden möchtest, kannst du das gern wieder über das Portal tun (sofern noch Plätze verfügbar sind).</p><p>Bei Fragen melde dich gern bei uns.</p>`
+    ? `<p>Falls du dich erneut anmelden möchtest, kannst du das wieder über das Portal machen (sofern noch Plätze verfügbar sind).</p><p>Bei Fragen melde dich gern bei uns.</p>`
     : `<p>Falls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).</p><p>Bei Fragen wenden Sie sich gerne an uns.</p>`;
     
   const bodyText = isEvent
-    ? `Falls du dich erneut anmelden möchtest, kannst du das gern wieder über das Portal tun (sofern noch Plätze verfügbar sind).\n\nBei Fragen melde dich gern bei uns.`
+    ? `Falls du dich erneut anmelden möchtest, kannst du das wieder über das Portal machen (sofern noch Plätze verfügbar sind).\n\nBei Fragen melde dich gern bei uns.`
     : `Falls Sie sich erneut anmelden möchten, können Sie dies jederzeit über das Portal tun (sofern noch Plätze verfügbar sind).\n\nBei Fragen wenden Sie sich gerne an uns.`;
 
   const signatureHtml = isEvent
-    ? `<p>Viele Grüße,<br>der Vorstand vom TC GW Am Kreuzberg e.V.</p>`
+    ? `<p>Viele Grüße,<br>der Vorstand des TC GW Am Kreuzberg e.V.</p>`
     : `<p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>`;
     
   const signatureText = isEvent
-    ? `Viele Grüße,\nder Vorstand vom TC GW Am Kreuzberg e.V.`
+    ? `Viele Grüße,\nder Vorstand des TC GW Am Kreuzberg e.V.`
     : `Viele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   const headerSender = isEvent ? "TC GW Am Kreuzberg e.V." : "Mondo Tennisschule";
