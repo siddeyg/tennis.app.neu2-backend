@@ -173,6 +173,8 @@ const corsOptions = {
       const allowedOrigins = [
         'http://localhost:3000', // Admin portal
         'http://127.0.0.1:3000',
+        'http://localhost:3005', // Admin portal (alternate port)
+        'http://127.0.0.1:3005',
         'http://localhost:3001', // Student portal
         'http://127.0.0.1:3001',
         'http://localhost:3002', // Coach portal

@@ -22,6 +22,8 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
 import requireAuth from '../middleware/requireAuth.js';
@@ -995,6 +997,38 @@ router.get('/:id/export/csv', async (req, res) => {
 router.post('/upload-banner', upload.single('banner'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Kein Bild hochgeladen' });
   res.json({ filename: req.file.filename, url: `/api/camps/images/${req.file.filename}` });
+});
+
+const execAsync = promisify(exec);
+
+/**
+ * @route   POST /api/camps/rotate-banner
+ * @desc    Rotate an existing banner image
+ * @access  Private (admin only)
+ */
+router.post('/rotate-banner', async (req, res) => {
+  const { filename, degrees } = req.body;
+  if (!filename || !degrees) return res.status(400).json({ error: 'Fehlende Parameter' });
+
+  // Basic security check to prevent directory traversal
+  const safeFilename = path.basename(filename);
+  const filePath = path.join(uploadDir, safeFilename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'Bild nicht gefunden' });
+  }
+
+  try {
+    // Make sure degrees is a safe number (e.g., 90, -90, 180, 270)
+    const deg = parseInt(degrees, 10);
+    if (isNaN(deg)) return res.status(400).json({ error: 'Ungültige Gradzahl' });
+
+    await execAsync(`mogrify -rotate ${deg} "${filePath}"`);
+    res.json({ success: true, url: `/api/camps/images/${safeFilename}` });
+  } catch (error) {
+    logger.error("Error rotating image", { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Fehler beim Rotieren des Bildes' });
+  }
 });
 
 export default router;
