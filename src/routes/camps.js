@@ -22,8 +22,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import sharp from 'sharp';
 import Camp from '../models/Camp.js';
 import CampRegistration from '../models/CampRegistration.js';
 import requireAuth from '../middleware/requireAuth.js';
@@ -999,7 +998,6 @@ router.post('/upload-banner', upload.single('banner'), (req, res) => {
   res.json({ filename: req.file.filename, url: `/api/camps/images/${req.file.filename}` });
 });
 
-const execAsync = promisify(exec);
 
 /**
  * @route   POST /api/camps/rotate-banner
@@ -1023,7 +1021,11 @@ router.post('/rotate-banner', async (req, res) => {
     const deg = parseInt(degrees, 10);
     if (isNaN(deg)) return res.status(400).json({ error: 'Ungültige Gradzahl' });
 
-    await execAsync(`mogrify -rotate ${deg} "${filePath}"`);
+    // Rotate in-place using a temporary file
+    const tempPath = `${filePath}.tmp`;
+    await sharp(filePath).rotate(deg).toFile(tempPath);
+    fs.renameSync(tempPath, filePath);
+
     res.json({ success: true, url: `/api/camps/images/${safeFilename}` });
   } catch (error) {
     logger.error("Error rotating image", { error: error.message, stack: error.stack });

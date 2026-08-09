@@ -128,6 +128,7 @@ app.use(
       preload: true,
     },
     frameguard: { action: 'deny' },
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
     noSniff: true,
     xssFilter: true,
   })
