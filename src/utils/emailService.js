@@ -1069,11 +1069,15 @@ function generateCampRegistrationTextContent(registration, camp) {
     text += field('Event', camp.title) + '\n';
     text += field('Datum', generateCampDateString(camp, true)) + '\n';
     text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
-    text += field('Zusätzliche Kinder', registration.additionalChildren || 0) + '\n';
-    text += field('Zusätzliche Erwachsene', registration.additionalAdults || 0) + '\n';
-    text += field('Grillen', registration.isBarbecueParticipant ? `Ja (${registration.barbecueCount} Pers.)` : 'Nein') + '\n';
-    if (registration.isVegetarian) {
-      text += field('Vegetarisch', 'Ja') + '\n';
+    if (camp.showAdditionalGuestsOption) {
+      text += field('Zusätzliche Kinder', registration.additionalChildren || 0) + '\n';
+      text += field('Zusätzliche Erwachsene', registration.additionalAdults || 0) + '\n';
+    }
+    if (camp.showBarbecueOption) {
+      text += field('Grillen', registration.isBarbecueParticipant ? `Ja (${registration.barbecueCount} Pers.)` : 'Nein') + '\n';
+      if (registration.isVegetarian) {
+        text += field('Vegetarisch', 'Ja') + '\n';
+      }
     }
   } else {
     // Camp details section
@@ -1197,6 +1201,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-label">Name:</span>
             <span class="field-value">${registration.firstName} ${registration.lastName}</span>
           </div>
+          ${camp.showAdditionalGuestsOption ? `
           <div class="field">
             <span class="field-label">Zusätzliche Kinder:</span>
             <span class="field-value">${registration.additionalChildren || 0}</span>
@@ -1205,6 +1210,8 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-label">Zusätzliche Erwachsene:</span>
             <span class="field-value">${registration.additionalAdults || 0}</span>
           </div>
+          ` : ''}
+          ${camp.showBarbecueOption ? `
           <div class="field">
             <span class="field-label">Teilnahme Grillen:</span>
             <span class="field-value">${registration.isBarbecueParticipant ? `Ja (${registration.barbecueCount} Personen)` : 'Nein'}</span>
@@ -1214,6 +1221,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-label">Vegetarisch:</span>
             <span class="field-value">Ja</span>
           </div>
+          ` : ''}
           ` : ''}
         </div>
       </div>
