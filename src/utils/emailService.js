@@ -1067,6 +1067,7 @@ function generateCampRegistrationTextContent(registration, camp) {
     // Simplified version for events
     text += subSection('EVENT-ANMELDUNG');
     text += field('Event', camp.title) + '\n';
+    text += field('Datum', generateCampDateString(camp, true)) + '\n';
     text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
     text += field('Zusätzliche Kinder', registration.additionalChildren || 0) + '\n';
     text += field('Zusätzliche Erwachsene', registration.additionalAdults || 0) + '\n';
@@ -1187,7 +1188,8 @@ export async function sendCampRegistrationNotification(registration, camp, notif
       </div>
       <div class="content">
         <div class="highlight">
-          <strong>Event:</strong> ${camp.title}
+          <strong>Event:</strong> ${camp.title}<br/>
+          <strong style="margin-top: 5px; display: inline-block;">Datum:</strong> ${generateCampDateString(camp, true)}
         </div>
         <div class="section">
           <h2>Teilnehmer</h2>
