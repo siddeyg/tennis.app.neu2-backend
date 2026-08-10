@@ -20,7 +20,7 @@ import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
 import { encryptIBAN, validateIBANFormat } from '../utils/encryption.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
-import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail, sendCampCancellationEmail, sendCampCancellationAdminEmail } from '../utils/emailService.js';
+import { sendCampRegistrationNotification, sendCampRegistrationReceivedEmail, sendCampCancellationEmail, sendCampCancellationAdminEmail, sendCampConfirmationEmail } from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
@@ -452,7 +452,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         if (emails.length > 0) {
           // Populate camp data for email (note: Camp model uses 'title' not 'name')
           const populatedRegistration = await CampRegistration.findById(registration._id)
-            .populate('campId', 'title campType startDate endDate location price targetAudience ageMin ageMax skillLevels');
+            .populate('campId', 'title campType startDate endDate location price targetAudience ageMin ageMax skillLevels isWholeDay schedule showAdditionalGuestsOption showBarbecueOption');
           await sendCampRegistrationNotification(populatedRegistration, populatedRegistration.campId, emails);
           logger.info(`Camp registration notification emails sent to ${emails.length} recipient(s)`);
         }
@@ -513,7 +513,6 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       const campData = await Camp.findById(campId);
       if (campData) {
         if (status === 'confirmed') {
-          const { sendCampConfirmationEmail } = await import('../utils/emailService.js');
           await sendCampConfirmationEmail(registration, campData);
         } else if (status === 'pending') {
           await sendCampRegistrationReceivedEmail(registration, campData);
@@ -703,7 +702,7 @@ router.delete('/registrations/:id', auditLogMiddleware({ action: 'DELETE', resou
       await createNotification(
         req.user.id,
         'announcement',
-        `Camp-Anmeldung storniert: ${camp.title}`,
+        `${camp.campType === 'event' ? 'Event' : 'Camp'}-Anmeldung storniert: ${camp.title}`,
         `Ihre Anmeldung für ${camp.title} (${startDateStr} - ${endDateStr}) wurde erfolgreich storniert.`,
         {
           priority: 'normal',

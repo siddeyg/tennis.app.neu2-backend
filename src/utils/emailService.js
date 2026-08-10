@@ -1432,6 +1432,10 @@ export async function sendCampConfirmationEmail(registration, camp) {
 
   const dateText = generateCampDateString(camp, isEvent);
 
+  const additionalText = (isEvent && registration.additionalParticipants > 0) 
+    ? ` und ${registration.additionalParticipants} weitere ${registration.additionalParticipants === 1 ? 'Person' : 'Personen'}` 
+    : "";
+
   const greeting = `Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},`;
   const confirmationHtml = isEvent 
     ? `<strong>deine Anmeldung für <em>${escapeHtml(camp.title)}</em>${additionalText} wurde bestätigt!</strong>`
@@ -1843,6 +1847,13 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
 
   const dateText = generateCampDateString(camp, isEvent);
 
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
   const html = `
     <!DOCTYPE html>
     <html lang="de">
@@ -1865,7 +1876,7 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
     </head>
     <body>
       <div class="header">
-        <h1>❌ Camp-Anmeldung storniert</h1>
+        <h1>❌ ${typeLabel}-Anmeldung storniert</h1>
         <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
       </div>
       <div class="content">
