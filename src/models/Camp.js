@@ -169,6 +169,10 @@ const campSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isWholeDay: {
+    type: Boolean,
+    default: false
+  },
   allowFamilyRegistration: {
     type: Boolean,
     default: true

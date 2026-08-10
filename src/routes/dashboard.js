@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
         { $group: { _id: '$status', count: { $sum: 1 } } }
       ]),
 
-      Camp.find({ deletedAt: null }, '_id title maxParticipants').lean(),
+      Camp.find({ deletedAt: null }, '_id title maxParticipants isUnlimitedParticipants campType').lean(),
 
       CampRegistration.aggregate([
         { $match: { status: { $in: ['pending', 'confirmed', 'waitlist'] } } },
@@ -71,12 +71,15 @@ router.get('/', async (req, res) => {
       _id: c._id,
       name: c.title,
       registrations: regByCamp[String(c._id)] || 0,
-      maxParticipants: c.maxParticipants || 0
+      maxParticipants: c.maxParticipants || 0,
+      isUnlimitedParticipants: c.isUnlimitedParticipants || false,
+      campType: c.campType
     }));
     campRows.sort((a, b) => b.registrations - a.registrations);
 
     const totalCampRegistrations = campRows.reduce((s, c) => s + c.registrations, 0);
-    const totalCapacity = campRows.reduce((s, c) => s + c.maxParticipants, 0);
+    // Don't count unlimited participants (usually 9999) towards the hard totalCapacity
+    const totalCapacity = campRows.reduce((s, c) => s + (c.isUnlimitedParticipants ? 0 : c.maxParticipants), 0);
 
     const familyMemberCount = familyMemberAgg[0]?.total || 0;
 

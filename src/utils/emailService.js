@@ -1385,6 +1385,33 @@ export async function sendCampRegistrationNotification(registration, camp, notif
   }
 }
 
+function generateCampDateString(camp, isEvent) {
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const startDateFormatted = formatDate(camp.startDate);
+  const endDateFormatted = formatDate(camp.endDate);
+  
+  let dateText;
+  if (camp.isWholeDay && startDateFormatted !== endDateFormatted) {
+    dateText = `${startDateFormatted} – ${endDateFormatted}`;
+  } else if (!isEvent && startDateFormatted !== endDateFormatted) {
+    dateText = `${startDateFormatted} – ${endDateFormatted}`;
+  } else {
+    dateText = startDateFormatted;
+  }
+  
+  if (!camp.isWholeDay && camp.schedule && camp.schedule.length > 0) {
+    dateText += `, ${camp.schedule[0].startTime} Uhr`;
+  }
+
+  return dateText;
+}
+
 /**
  * Send camp registration confirmation email to the student
  */
@@ -1393,22 +1420,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
   const typeLabel = isEvent ? "Event" : "Camp";
   const subject = `${typeLabel}-Anmeldung bestätigt: ${camp.title}`;
 
-  const formatDate = (date) => {
-    if (!date) return 'Keine Angabe';
-    return new Date(date).toLocaleDateString('de-DE', {
-      day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-  };
-
-  const additionalText = (isEvent && registration.additionalParticipants > 0) 
-    ? ` und ${registration.additionalParticipants} weitere ${registration.additionalParticipants === 1 ? 'Person' : 'Personen'}` 
-    : "";
-
-  const startDateFormatted = formatDate(camp.startDate);
-  const endDateFormatted = formatDate(camp.endDate);
-  const dateText = (isEvent || startDateFormatted === endDateFormatted) 
-    ? startDateFormatted 
-    : `${startDateFormatted} – ${endDateFormatted}`;
+  const dateText = generateCampDateString(camp, isEvent);
 
   const greeting = `Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},`;
   const confirmationHtml = isEvent 
@@ -1492,12 +1504,8 @@ export async function sendCampConfirmationEmail(registration, camp) {
 export async function sendCampRejectionEmail(registration, camp, reason) {
   const subject = `Anmeldung abgelehnt: ${camp.title}`;
 
-  const formatDate = (date) => {
-    if (!date) return 'Keine Angabe';
-    return new Date(date).toLocaleDateString('de-DE', {
-      day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-  };
+  const isEvent = camp.campType === 'event';
+  const dateText = generateCampDateString(camp, isEvent);
 
   const html = `
     <!DOCTYPE html>
@@ -1524,7 +1532,7 @@ export async function sendCampRejectionEmail(registration, camp, reason) {
         <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
         <div class="highlight">
           <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> konnte leider nicht bestätigt werden.</strong><br>
-          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+          Datum: ${dateText}
         </div>
         ${reason ? `<p><strong>Begründung:</strong></p><div class="reason">${escapeHtml(reason)}</div>` : ''}
         <p>Bei Fragen wenden Sie sich bitte an uns.</p>
@@ -1538,7 +1546,7 @@ export async function sendCampRejectionEmail(registration, camp, reason) {
   `;
 
   const reasonText = reason ? `\n\nBegründung: ${reason}` : '';
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) konnte leider nicht bestätigt werden.${reasonText}\n\nBei Fragen wenden Sie sich bitte an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${dateText}) konnte leider nicht bestätigt werden.${reasonText}\n\nBei Fragen wenden Sie sich bitte an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1616,12 +1624,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
   const typeLabel = isEvent ? 'Event' : 'Camp';
   const subject = `${typeLabel}-Anmeldung eingegangen: ${camp.title}`;
 
-  const formatDate = (date) => {
-    if (!date) return 'Keine Angabe';
-    return new Date(date).toLocaleDateString('de-DE', {
-      day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-  };
+  const dateText = generateCampDateString(camp, isEvent);
 
   const html = `
     <!DOCTYPE html>
@@ -1648,7 +1651,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
         <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
         <div class="highlight">
           <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> ist eingegangen.</strong><br>
-          Zeitraum: ${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}
+          Datum: ${dateText}
         </div>
         <div class="notice">
           <strong>Hinweis:</strong> Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.
@@ -1663,7 +1666,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}) ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${dateText}) ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1738,18 +1741,7 @@ export async function sendCampCancellationEmail(registration, camp) {
   const isEvent = camp.campType === "event";
   const subject = `Anmeldung storniert: ${camp.title}`;
 
-  const formatDate = (date) => {
-    if (!date) return 'Keine Angabe';
-    return new Date(date).toLocaleDateString('de-DE', {
-      day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-  };
-
-  const startDateFormatted = formatDate(camp.startDate);
-  const endDateFormatted = formatDate(camp.endDate);
-  const dateText = (isEvent || startDateFormatted === endDateFormatted) 
-    ? startDateFormatted 
-    : `${startDateFormatted} – ${endDateFormatted}`;
+  const dateText = generateCampDateString(camp, isEvent);
 
   const greeting = `Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},`;
   
@@ -1839,12 +1831,7 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
 
   const subject = `Stornierung ${typeLabel}-Anmeldung: ${camp.title} - ${registration.firstName} ${registration.lastName}`;
 
-  const formatDate = (date) => {
-    if (!date) return 'Keine Angabe';
-    return new Date(date).toLocaleDateString('de-DE', {
-      day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-  };
+  const dateText = generateCampDateString(camp, isEvent);
 
   const html = `
     <!DOCTYPE html>
@@ -1884,7 +1871,7 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
           </div>
           <div class="field">
             <span class="field-label">Zeitraum:</span>
-            <span class="field-value">${formatDate(camp.startDate)} – ${formatDate(camp.endDate)}</span>
+            <span class="field-value">${dateText}</span>
           </div>
           <div class="field">
             <span class="field-label">Ort:</span>
