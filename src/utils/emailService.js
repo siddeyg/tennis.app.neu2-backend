@@ -2107,3 +2107,57 @@ export default {
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
 };
+
+
+/**
+ * Send event cancellation email
+ *
+ * @param {Object} options
+ * @param {string} options.email
+ * @param {string} options.studentName
+ * @param {string} options.eventName
+ * @param {string} [options.customMessage]
+ */
+export async function sendEventCancellationEmail({ email, studentName, eventName, customMessage }) {
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Wichtige Information: Absage - ${escapeHtml(eventName)}</title>
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
+      </div>
+
+      <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
+        <h2 style="color: #333; margin-top: 0;">Hallo ${escapeHtml(studentName)},</h2>
+
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+          <p style="margin: 0; color: #856404; font-weight: 600;">Wir müssen dir leider mitteilen, dass das Event/Camp <strong>${escapeHtml(eventName)}</strong> abgesagt wurde.</p>
+        </div>
+
+        ${customMessage ? `<p style="margin-top: 20px;"><strong>Nachricht der Tennisschule:</strong><br/>${escapeHtml(customMessage)}</p>` : ''}
+
+        <p style="color: #666; font-size: 14px; margin-top: 30px;">Bei Rückfragen stehen wir dir gerne zur Verfügung.</p>
+
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+
+        <p style="color: #999; font-size: 12px; margin: 0;">Diese E-Mail wurde automatisch generiert. Bitte antworte nicht auf diese Nachricht.</p>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
+        <p style="margin: 5px 0;">Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  await sendEmail({
+    to: email,
+    subject: `Wichtige Information: Absage - ${eventName}`,
+    html,
+  });
+}
