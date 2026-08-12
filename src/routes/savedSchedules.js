@@ -446,6 +446,12 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
         });
       }
 
+      // Fix legacy empty strings for enums
+      if (student.trainigGroup === '') student.trainigGroup = null;
+      if (student.skillLevel === '') student.skillLevel = null;
+      if (student.frequence === '') student.frequence = null;
+      if (student.sex === '') student.sex = null;
+
       // Update coach reference if it exists (legacy field)
       if (student.coach && coachIdMap.has(String(student.coach))) {
         student.coach = coachIdMap.get(String(student.coach));
