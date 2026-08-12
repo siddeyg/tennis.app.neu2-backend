@@ -94,6 +94,24 @@ const registrationPeriodSchema = new mongoose.Schema(
       },
     ],
 
+    // Training schedule for adults (supports string-based hours like "15:00 - 16:30")
+    trainingSlotsAdults: [
+      {
+        day: {
+          type: String,
+          enum: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+        },
+        hour: {
+          type: String, // e.g. "15:00 - 16:30" or "10:00"
+        },
+        venues: [
+          {
+            type: String, 
+          },
+        ],
+      },
+    ],
+
     // Pre-computed holidays (set once by admin via POST /:id/compute-holidays)
     computedHolidays: [{
       date: { type: Date, required: true },
@@ -119,6 +137,7 @@ const registrationPeriodSchema = new mongoose.Schema(
           'mitgliedsstatus',
           'trainingsart',
           'trainingshäufigkeit',
+          'sessionDuration',
           'teamParticipation',
           'availableTimes',
           'sepaMandate',
@@ -148,7 +167,12 @@ const registrationPeriodSchema = new mongoose.Schema(
           'spielstärke',
           'trainingGoals',
           'groupSize',
+          'sessionDuration',
           'availableTimes',
+          'sepaMandate',
+          'accountHolder',
+          'iban',
+          'privacyConsent',
           'remarks',
         ],
       },
@@ -157,6 +181,7 @@ const registrationPeriodSchema = new mongoose.Schema(
         default: [
           'spielstärke',
           'availableTimes',
+          'privacyConsent',
         ],
       },
     },
