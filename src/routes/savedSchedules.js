@@ -40,6 +40,18 @@ router.get("/", async (req, res) => {
     if (req.query.periodId) {
       filter.periodId = req.query.periodId;
     }
+    
+    if (req.query.startDate || req.query.endDate) {
+      filter.createdAt = {};
+      if (req.query.startDate) {
+        filter.createdAt.$gte = new Date(req.query.startDate);
+      }
+      if (req.query.endDate) {
+        const endDate = new Date(req.query.endDate);
+        endDate.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = endDate;
+      }
+    }
 
     const totalItems = await SavedSchedule.countDocuments(filter);
     
