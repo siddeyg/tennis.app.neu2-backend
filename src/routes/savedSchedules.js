@@ -411,6 +411,17 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
       const oldId = coach._id;
       delete coach._id; // Remove old ID to generate new one
 
+      // Fix legacy string availableTimes (e.g. "Samstag 13")
+      if (Array.isArray(coach.availableTimes)) {
+        coach.availableTimes = coach.availableTimes.map(t => {
+          if (typeof t === 'string') {
+            const parts = t.split(' ');
+            return { day: parts[0] || '', hour: parseInt(parts[1], 10) || null };
+          }
+          return t;
+        });
+      }
+
       const newCoach = new Coach(coach);
       await newCoach.save();
 
@@ -423,6 +434,17 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
     for (const student of savedSchedule.students) {
       const oldId = student._id;
       delete student._id;
+
+      // Fix legacy string availableTimes
+      if (Array.isArray(student.availableTimes)) {
+        student.availableTimes = student.availableTimes.map(t => {
+          if (typeof t === 'string') {
+            const parts = t.split(' ');
+            return { day: parts[0] || '', hour: parts.length > 1 ? parseInt(parts[1], 10) || parts[1] : null, venue: '' };
+          }
+          return t;
+        });
+      }
 
       // Update coach reference if it exists (legacy field)
       if (student.coach && coachIdMap.has(String(student.coach))) {
