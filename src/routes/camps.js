@@ -300,6 +300,10 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       const messages = Object.values(error.errors).map(e => e.message).join(', ');
       return res.status(400).json({ success: false, error: `Validierungsfehler: ${messages}` });
     }
+    // Catch custom thrown errors from pre-save hooks (they don't have name='ValidationError')
+    if (error.message && (error.message.includes('muss') || error.message.includes('darf nicht'))) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
     res.status(500).json({
       success: false,
       error: 'Fehler beim Erstellen des Camps'
@@ -397,6 +401,10 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map(e => e.message).join(', ');
       return res.status(400).json({ success: false, error: `Validierungsfehler: ${messages}` });
+    }
+    // Catch custom thrown errors from pre-save hooks (they don't have name='ValidationError')
+    if (error.message && (error.message.includes('muss') || error.message.includes('darf nicht'))) {
+      return res.status(400).json({ success: false, error: error.message });
     }
     res.status(500).json({
       success: false,
