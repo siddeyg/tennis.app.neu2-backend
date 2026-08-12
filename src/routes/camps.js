@@ -30,7 +30,7 @@ import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.j
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
-import { sendCampConfirmationEmail, sendCampRejectionEmail } from '../utils/emailService.js';
+import { sendCampConfirmationEmail, sendCampRejectionEmail, sendEventCancellationEmail } from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const __filename = fileURLToPath(import.meta.url);
