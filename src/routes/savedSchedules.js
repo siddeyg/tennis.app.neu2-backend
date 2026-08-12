@@ -27,9 +27,23 @@ router.get("/", async (req, res) => {
     const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
     const sortOptions = { [sortBy]: sortOrder };
 
-    const totalCount = await SavedSchedule.countDocuments();
+    const filter = {};
+    if (req.query.search) {
+      filter.$or = [
+        { name: { $regex: req.query.search, $options: 'i' } },
+        { description: { $regex: req.query.search, $options: 'i' } }
+      ];
+    }
+    if (req.query.createdBy) {
+      filter.createdBy = req.query.createdBy;
+    }
+    if (req.query.periodId) {
+      filter.periodId = req.query.periodId;
+    }
+
+    const totalItems = await SavedSchedule.countDocuments(filter);
     
-    const savedSchedules = await SavedSchedule.find()
+    const savedSchedules = await SavedSchedule.find(filter)
       .select("-students -coaches -schedule -studentsNotSet")
       .sort(sortOptions)
       .skip(skip)
@@ -71,12 +85,16 @@ router.get("/", async (req, res) => {
       return schedule;
     }));
 
+    const totalPages = Math.ceil(totalItems / limit);
     res.json({
-      schedules: enrichedSchedules,
-      totalCount,
-      page,
-      limit,
-      hasMore: skip + enrichedSchedules.length < totalCount
+      success: true,
+      data: enrichedSchedules,
+      pagination: {
+        totalItems,
+        totalPages,
+        page,
+        limit
+      }
     });
   } catch (error) {
     logger.error("Error fetching saved schedules", { error: error.message, stack: error.stack });
