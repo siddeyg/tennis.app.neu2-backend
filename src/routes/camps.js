@@ -1039,6 +1039,91 @@ router.post('/rotate-banner', async (req, res) => {
   }
 });
 
+
+/**
+ * PATCH /api/camps/:id/cancel-event
+ * Cancel a camp/event and optionally notify students
+ */
+router.patch('/:id/cancel-event', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp', metadata: { operation: 'CANCEL_EVENT' } }), async (req, res) => {
+  try {
+    const camp = await Camp.findById(req.params.id);
+
+    if (!camp || camp.deletedAt) {
+      return res.status(404).json({
+        success: false,
+        error: 'Camp nicht gefunden'
+      });
+    }
+
+    if (camp.status === 'cancelled') {
+      return res.status(400).json({
+        success: false,
+        error: 'Camp ist bereits abgesagt'
+      });
+    }
+
+    const beforeState = camp.toObject();
+    camp.status = 'cancelled';
+    await camp.save();
+
+    const { notifyStudents, customMessage } = req.body;
+    const shouldNotify = notifyStudents === true || notifyStudents === 'true';
+
+    let notifiedCount = 0;
+
+    if (shouldNotify) {
+      const registrations = await CampRegistration.find({
+        campId: camp._id,
+        status: { $in: ['pending', 'confirmed', 'waitlist'] }
+      });
+
+      for (const reg of registrations) {
+        // Mark registration as cancelled
+        reg.status = 'cancelled';
+        reg.cancelledAt = new Date();
+        await reg.save();
+
+        if (reg.email) {
+          const studentName = `${reg.firstName} ${reg.lastName}`.trim() || 'Teilnehmer';
+          // Fire and forget email
+          sendEventCancellationEmail({
+            email: reg.email,
+            studentName,
+            eventName: camp.title,
+            customMessage
+          }).catch(err => logger.error("Failed to send cancellation email", { error: err.message, email: reg.email }));
+          notifiedCount++;
+        }
+      }
+      
+      // Update the camp's participant count to reflect the cancellations
+      await Camp.refreshParticipantCount(camp._id);
+
+    }
+
+    const afterState = camp.toObject();
+    req.auditMetadata = {
+      before: beforeState,
+      after: afterState,
+      changes: {
+        status: { old: beforeState.status, new: afterState.status }
+      }
+    };
+
+    res.json({
+      success: true,
+      message: shouldNotify ? `Camp abgesagt und ${notifiedCount} Teilnehmer benachrichtigt` : 'Camp erfolgreich abgesagt',
+      camp
+    });
+  } catch (error) {
+    logger.error("Error cancelling camp", { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Absagen des Camps'
+    });
+  }
+});
+
 export default router;
 
 /**
