@@ -1,12 +1,12 @@
 import express from 'express';
-import { requireRole } from '../middleware/auth.js';
+import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import Gallery from '../models/Gallery.js';
 import Media from '../models/Media.js';
 
 const router = express.Router();
 
 // Get all published galleries
-router.get('/', requireRole('student'), async (req, res) => {
+router.get('/', verifyPortalAuth, async (req, res) => {
   try {
     const galleries = await Gallery.find({ isPublished: true })
       .sort({ date: -1 })
@@ -20,7 +20,7 @@ router.get('/', requireRole('student'), async (req, res) => {
 });
 
 // Get a specific published gallery with its media
-router.get('/:id', requireRole('student'), async (req, res) => {
+router.get('/:id', verifyPortalAuth, async (req, res) => {
   try {
     const gallery = await Gallery.findOne({ _id: req.params.id, isPublished: true }).lean();
     if (!gallery) {
