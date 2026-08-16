@@ -199,6 +199,10 @@ const studentSchema = new mongoose.Schema({
         },
         message: 'Coach must be a valid ObjectId or null'
       }
+    },
+    isPinned: {
+      type: Boolean,
+      default: false
     }
   }]
 });

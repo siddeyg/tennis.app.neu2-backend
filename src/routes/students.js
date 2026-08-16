@@ -180,7 +180,7 @@ router.delete("/all", auditLogMiddleware({ action: 'DELETE', resource: 'Student'
 // Add assignment to student (for multiple course assignments)
 router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
-    const { day, coach, duration } = req.body;
+    const { day, coach, duration, isPinned } = req.body;
     const hour = Number(req.body.hour); // Always store hour as Number for consistent $pull matching
     const assignmentDuration = [60, 90].includes(Number(duration)) ? Number(duration) : 60;
 
@@ -193,7 +193,7 @@ router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource:
 
     const student = await Student.findByIdAndUpdate(
       req.params.id,
-      { $push: { assignments: { day, hour, coach: coach || null, duration: assignmentDuration } } },
+      { $push: { assignments: { day, hour, coach: coach || null, duration: assignmentDuration, isPinned: !!isPinned } } },
       { new: true, lean: true }
     ).populate({ path: 'portalUser', strictPopulate: false });
 
@@ -255,7 +255,7 @@ router.delete("/:id/assignments", auditLogMiddleware({ action: 'DELETE', resourc
 // Replace specific assignment (move student - update one assignment, preserve others)
 router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
-    const { day, coach, fromDay, duration } = req.body;
+    const { day, coach, fromDay, duration, isPinned } = req.body;
     // Coerce hours to Number for consistent storage and $pull matching
     const hour = req.body.hour !== null && req.body.hour !== undefined ? Number(req.body.hour) : req.body.hour;
     const fromHour = req.body.fromHour !== null && req.body.fromHour !== undefined ? Number(req.body.fromHour) : req.body.fromHour;
@@ -307,11 +307,16 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
         const oldIndex = doc.assignments.findIndex(
           a => a.day === fromDay && Number(a.hour) === Number(fromHour)
         );
+        
+        let originalIsPinned = false;
         if (oldIndex !== -1) {
+          originalIsPinned = doc.assignments[oldIndex].isPinned;
           doc.assignments.splice(oldIndex, 1);
         }
 
-        doc.assignments.push({ day, hour, coach: coach || null, duration: assignmentDuration });
+        const finalIsPinned = isPinned !== undefined ? !!isPinned : !!originalIsPinned;
+
+        doc.assignments.push({ day, hour, coach: coach || null, duration: assignmentDuration, isPinned: finalIsPinned });
 
         await (useTransactions && session ? doc.save({ session }) : doc.save());
 
@@ -334,7 +339,7 @@ router.put("/:id/assignments/replace", auditLogMiddleware({ action: 'UPDATE', re
       // Replace all assignments
       student = await Student.findByIdAndUpdate(
         req.params.id,
-        { assignments: [{ day, hour, coach: coach || null, duration: assignmentDuration }] },
+        { assignments: [{ day, hour, coach: coach || null, duration: assignmentDuration, isPinned: !!isPinned }] },
         { new: true, lean: true }
       );
     }
