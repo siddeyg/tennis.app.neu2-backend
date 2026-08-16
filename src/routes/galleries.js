@@ -117,6 +117,68 @@ router.get('/:id', passport.authenticate('jwt', { session: false }), async (req,
   }
 });
 
+// PUT update single gallery (Admin only)
+router.put('/:id', passport.authenticate('jwt', { session: false }), requireAdmin, async (req, res) => {
+  try {
+    const { isPublished, headline, description, coverImage } = req.body;
+    const gallery = await Gallery.findById(req.params.id);
+    if (!gallery) return res.status(404).json({ message: 'Gallery not found' });
+
+    if (isPublished !== undefined) gallery.isPublished = isPublished;
+    if (headline !== undefined) gallery.headline = headline;
+    if (description !== undefined) gallery.description = description;
+    
+    if (coverImage !== undefined) {
+      // Validate that the media exists and belongs to this gallery
+      if (coverImage === null) {
+        gallery.coverImage = undefined;
+      } else {
+        const mediaExists = await Media.findOne({ _id: coverImage, gallery: gallery._id });
+        if (!mediaExists) {
+          return res.status(400).json({ message: 'Invalid cover image. Media not found in this gallery.' });
+        }
+        gallery.coverImage = coverImage;
+      }
+    }
+
+    await gallery.save();
+    res.json(gallery);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating gallery', error: error.message });
+  }
+});
+
+// PUT /:id/reorder to update sortOrder for media items
+router.put('/:id/reorder', passport.authenticate('jwt', { session: false }), requireAdmin, async (req, res) => {
+  try {
+    const { mediaIds } = req.body; // Array of ordered media IDs
+    
+    if (!Array.isArray(mediaIds)) {
+      return res.status(400).json({ message: 'mediaIds must be an array' });
+    }
+
+    // Verify gallery exists
+    const gallery = await Gallery.findById(req.params.id);
+    if (!gallery) return res.status(404).json({ message: 'Gallery not found' });
+
+    // Update sortOrder in bulk using Promise.all and individual save() or bulkWrite
+    const bulkOps = mediaIds.map((mediaId, index) => ({
+      updateOne: {
+        filter: { _id: mediaId, gallery: gallery._id },
+        update: { $set: { sortOrder: index } }
+      }
+    }));
+
+    if (bulkOps.length > 0) {
+      await Media.bulkWrite(bulkOps);
+    }
+
+    res.json({ message: 'Media reordered successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error reordering media', error: error.message });
+  }
+});
+
 // DELETE single gallery and all its media (Admin only)
 router.delete('/:id', passport.authenticate('jwt', { session: false }), requireAdmin, async (req, res) => {
   try {
@@ -247,6 +309,22 @@ router.get('/media/:mediaId/file', passport.authenticate('jwt', { session: false
   }
 });
 
+// PUT update Media
+router.put('/media/:mediaId', passport.authenticate('jwt', { session: false }), requireAdmin, async (req, res) => {
+    try {
+        const { isPublished } = req.body;
+        const media = await Media.findById(req.params.mediaId);
+        if (!media) return res.status(404).json({ message: 'Media not found' });
+
+        if (isPublished !== undefined) media.isPublished = isPublished;
+
+        await media.save();
+        res.json(media);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating media', error: error.message });
+    }
+});
+
 // DELETE Media
 router.delete('/media/:mediaId', passport.authenticate('jwt', { session: false }), requireAdmin, async (req, res) => {
     try {
@@ -254,6 +332,10 @@ router.delete('/media/:mediaId', passport.authenticate('jwt', { session: false }
         if (!media) return res.status(404).json({ message: 'Media not found' });
 
         await storageService.deleteMedia(media.filePath, media.thumbnailPath);
+        
+        // Remove coverImage reference if this media was the cover
+        await Gallery.updateMany({ coverImage: media._id }, { $unset: { coverImage: "" } });
+        
         await Media.deleteOne({ _id: media._id });
 
         res.json({ message: 'Media deleted successfully' });
