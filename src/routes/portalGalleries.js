@@ -9,6 +9,12 @@ const router = express.Router();
 router.get('/', verifyPortalAuth, async (req, res) => {
   try {
     const galleries = await Gallery.find({ isPublished: true })
+      .select('headline date description coverImage isPublished createdAt')
+      .populate({
+        path: 'coverImage',
+        match: { isPublished: true },
+        select: 'thumbnailPath type mimeType'
+      })
       .sort({ date: -1 })
       .lean();
     
