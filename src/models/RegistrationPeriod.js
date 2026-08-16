@@ -112,6 +112,12 @@ const registrationPeriodSchema = new mongoose.Schema(
       },
     ],
 
+    // Configurable list of venues (Hallen) for winter seasons
+    availableVenues: {
+      type: [String],
+      default: ['BTHV', 'Brüser Berg', 'Röttgen'], // Fallback for backward compatibility
+    },
+
     // Pre-computed holidays (set once by admin via POST /:id/compute-holidays)
     computedHolidays: [{
       date: { type: Date, required: true },
