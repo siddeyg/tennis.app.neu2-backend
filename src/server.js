@@ -87,6 +87,7 @@ import portalNotificationsRoutes from "./routes/portalNotifications.js";
 import scheduleNotificationsRouter from "./routes/scheduleNotifications.js";
 import pushSubscriptionRoutes from "./routes/pushSubscriptions.js";
 import dashboardRoutes from "./routes/dashboard.js";
+import galleriesRoutes from "./routes/galleries.js";
 
 // Import Socket.io notification setup
 import { initializeNotificationSocket } from "./socket/notificationSocket.js";
@@ -355,6 +356,9 @@ app.use("/api/metrics", requireAuth, updateActivity, requireRole(["admin"]), met
 
 // Dashboard stats route - admin + supermod
 app.use("/api/dashboard", requireAuth, updateActivity, requireAdminOrSupermod, dashboardRoutes);
+
+// Galleries route - authorization handled internally in the routes
+app.use("/api/galleries", galleriesRoutes);
 
 // Support tickets routes - admin only
 app.use("/api/support-tickets", requireAuth, updateActivity, requireRole(["admin"]), supportTicketsRoutes);
