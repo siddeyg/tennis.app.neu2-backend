@@ -88,6 +88,7 @@ import scheduleNotificationsRouter from "./routes/scheduleNotifications.js";
 import pushSubscriptionRoutes from "./routes/pushSubscriptions.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import galleriesRoutes from "./routes/galleries.js";
+import portalGalleriesRoutes from "./routes/portalGalleries.js";
 
 // Import Socket.io notification setup
 import { initializeNotificationSocket } from "./socket/notificationSocket.js";
