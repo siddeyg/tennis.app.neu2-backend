@@ -308,6 +308,7 @@ app.use("/api/portal", portalScheduleRoutes);
 app.use("/api/portal/seasonal-registrations", portalSeasonalRegistrationsRoutes);
 app.use("/api/portal/children", portalChildrenRoutes);
 app.use("/api/portal/camps", portalCampsRoutes);
+app.use("/api/portal/galleries", portalGalleriesRoutes);
 
 // Admin + Supermod routes (operational — chief coach has full access)
 app.use("/api/students", requireAuth, updateActivity, requireAdminOrSupermod, studentRoutes);
