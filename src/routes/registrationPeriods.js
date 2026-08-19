@@ -148,14 +148,18 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
     }
 
     // Create period
+    // New periods must be created as 'draft' until a plan is created/linked (Step 3)
+    const initialStatus = (!req.body.currentPlanId && status === 'open') ? 'draft' : (status || 'draft');
+    const initialIsActive = (!req.body.currentPlanId && status === 'open') ? false : (isActive || false);
+
     const period = new RegistrationPeriod({
       name,
       season,
       trainingStartDate: startDate,
       trainingEndDate: endDate,
       registrationDeadline: deadline,
-      status: status || 'draft',
-      isActive: isActive || false,
+      status: initialStatus,
+      isActive: initialIsActive,
       kidsFormConfig: kidsFormConfig || {
         enabledFields: [
           'mitgliedsstatus',
@@ -208,9 +212,9 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
     });
   } catch (error) {
     logger.error('Error creating registration period:', error);
-    res.status(500).json({
+    res.status(error.name === 'ValidationError' ? 400 : 500).json({
       success: false,
-      error: 'Fehler beim Erstellen des Anmeldezeitraums'
+      error: error.message || 'Fehler beim Erstellen des Anmeldezeitraums'
     });
   }
 });
