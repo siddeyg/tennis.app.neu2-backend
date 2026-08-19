@@ -573,7 +573,7 @@ router.post('/:id/create-plan', auditLogMiddleware({ action: 'CREATE', resource:
 
     await plan.save();
 
-    // Update period's currentPlanId
+    // Update period's currentPlanId (preserve user-selected status and isActive)
     period.currentPlanId = plan._id;
     await period.save();
 
@@ -628,7 +628,7 @@ router.post('/:id/open', auditLogMiddleware({ action: 'UPDATE', resource: 'Regis
 
     period.status = 'open';
     period.isActive = true; // Activate when opening
-
+    await RegistrationPeriod.updateMany({ _id: { $ne: period._id } }, { isActive: false });
     await period.save();
 
     logger.info('Registration period opened', {

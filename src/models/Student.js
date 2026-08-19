@@ -203,6 +203,11 @@ const studentSchema = new mongoose.Schema({
     isPinned: {
       type: Boolean,
       default: false
+    },
+    venue: {
+      type: String,
+      default: '',
+      trim: true
     }
   }]
 });
