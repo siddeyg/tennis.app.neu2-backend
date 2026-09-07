@@ -108,6 +108,11 @@ const campRegistrationSchema = new mongoose.Schema({
     enum: ['U9', 'U11', 'U12', null],
     default: null
   },
+  secondaryTournamentCategory: {
+    type: String,
+    enum: ['U9', 'U11', 'U12', null],
+    default: null
+  },
 
 
   // Privacy Consent (DSGVO)

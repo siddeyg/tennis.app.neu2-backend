@@ -1121,4 +1121,160 @@ describe('Camps API — Admin + Portal Integration Tests', () => {
       expect(response.body.error).toMatch(/7 tage/i);
     });
   });
+
+  describe('Tennolino Tournament Registration & CSV Export', () => {
+    let tennolinoEvent;
+    let childId;
+
+    beforeEach(async () => {
+      portalUser.phone = '0171 9876543';
+      portalUser.familyMembers = [{
+        firstName: 'Florian',
+        lastName: 'Portal',
+        birthdate: new Date('2018-05-10'),
+        relationship: 'child'
+      }];
+      await portalUser.save();
+      childId = portalUser.familyMembers[0]._id;
+
+      const now = new Date();
+      tennolinoEvent = await Camp.create({
+        title: 'Tennolino Turnier 2026',
+        description: 'Kinderturnier',
+        campType: 'event',
+        eventType: 'tennolino',
+        targetAudience: 'children_4_12',
+        minAge: 4,
+        maxAge: 12,
+        startDate: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000),
+        endDate: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000 + 7 * 60 * 60 * 1000),
+        registrationOpenDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+        registrationCloseDate: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
+        maxParticipants: 32,
+        status: 'open',
+        createdBy: adminUser._id,
+      });
+    });
+
+    it('should reject Tennolino registration without tournamentCategory', async () => {
+      mockPortalUser = portalUser;
+      mockAdminUser = null;
+      const res = await request(app)
+        .post(`/api/portal/camps/${tennolinoEvent._id}/register`)
+        .send({
+          familyMemberId: childId,
+          firstName: 'Florian',
+          lastName: 'Portal',
+          birthdate: '2018-05-10',
+          email: 'student@test.com',
+          privacyConsent: true,
+        })
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/Altersklasse/i);
+    });
+
+    it('should successfully register for Tennolino with primary and secondary category', async () => {
+      mockPortalUser = portalUser;
+      mockAdminUser = null;
+      const res = await request(app)
+        .post(`/api/portal/camps/${tennolinoEvent._id}/register`)
+        .send({
+          familyMemberId: childId,
+          firstName: 'Florian',
+          lastName: 'Portal',
+          birthdate: '2018-05-10',
+          email: 'student@test.com',
+          privacyConsent: true,
+          tournamentCategory: 'U9',
+          secondaryTournamentCategory: 'U11'
+        })
+        .expect(201);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.registration.tournamentCategory).toBe('U9');
+      expect(res.body.registration.secondaryTournamentCategory).toBe('U11');
+      expect(res.body.registration.status).toBe('confirmed');
+    });
+
+    it('should reject if secondaryTournamentCategory is identical to tournamentCategory', async () => {
+      mockPortalUser = portalUser;
+      mockAdminUser = null;
+      const res = await request(app)
+        .post(`/api/portal/camps/${tennolinoEvent._id}/register`)
+        .send({
+          familyMemberId: childId,
+          firstName: 'Florian',
+          lastName: 'Portal',
+          birthdate: '2018-05-10',
+          email: 'student@test.com',
+          privacyConsent: true,
+          tournamentCategory: 'U9',
+          secondaryTournamentCategory: 'U9'
+        })
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/identisch/i);
+    });
+
+    it('should reject if child is too old for secondaryTournamentCategory', async () => {
+      portalUser.familyMembers.push({
+        firstName: 'Older',
+        lastName: 'Child',
+        birthdate: new Date('2015-02-01'),
+        relationship: 'child'
+      });
+      await portalUser.save();
+      const olderChildId = portalUser.familyMembers[1]._id;
+
+      mockPortalUser = portalUser;
+      mockAdminUser = null;
+      const res = await request(app)
+        .post(`/api/portal/camps/${tennolinoEvent._id}/register`)
+        .send({
+          familyMemberId: olderChildId,
+          firstName: 'Older',
+          lastName: 'Child',
+          birthdate: '2015-02-01',
+          email: 'student@test.com',
+          privacyConsent: true,
+          tournamentCategory: 'U11',
+          secondaryTournamentCategory: 'U9'
+        })
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/zu alt für die Zweitgruppe U9/i);
+    });
+
+    it('should export CSV with Altersklasse and Zweitgruppe columns', async () => {
+      await CampRegistration.create({
+        campId: tennolinoEvent._id,
+        studentPortalUserId: portalUser._id,
+        familyMemberId: childId,
+        firstName: 'Florian',
+        lastName: 'Portal',
+        birthdate: new Date('2018-05-10'),
+        email: 'student@test.com',
+        privacyConsent: true,
+        emergencyContactName: 'Florian Papa',
+        emergencyContactPhone: '0171 9876543',
+        tournamentCategory: 'U9',
+        secondaryTournamentCategory: 'U11',
+        status: 'confirmed'
+      });
+
+      mockPortalUser = null;
+      mockAdminUser = adminUser;
+      const res = await request(app)
+        .get(`/api/camps/${tennolinoEvent._id}/export/csv`)
+        .expect(200);
+
+      expect(res.headers['content-type']).toMatch(/text\/csv/);
+      expect(res.text).toContain('Altersklasse,Zweitgruppe');
+      expect(res.text).toContain('"U9","U11"');
+    });
+  });
 });

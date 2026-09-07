@@ -1070,7 +1070,10 @@ function generateCampRegistrationTextContent(registration, camp) {
     text += field('Datum', generateCampDateString(camp, true)) + '\n';
     text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
     if (registration.tournamentCategory) {
-      text += field('Altersklasse', registration.tournamentCategory) + '\n';
+      const catText = registration.secondaryTournamentCategory
+        ? `${registration.tournamentCategory} (Wunschgruppe), ${registration.secondaryTournamentCategory} (Optionale Zweitgruppe)`
+        : registration.tournamentCategory;
+      text += field('Altersklasse', catText) + '\n';
     }
     if (camp.showAdditionalGuestsOption) {
 
@@ -1098,7 +1101,10 @@ function generateCampRegistrationTextContent(registration, camp) {
     text += field('Telefon', optional(registration.phone)) + '\n';
     text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
     if (registration.tournamentCategory) {
-      text += field('Altersklasse', registration.tournamentCategory) + '\n';
+      const catText = registration.secondaryTournamentCategory
+        ? `${registration.tournamentCategory} (Wunschgruppe), ${registration.secondaryTournamentCategory} (Optionale Zweitgruppe)`
+        : registration.tournamentCategory;
+      text += field('Altersklasse', catText) + '\n';
     }
 
     text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
@@ -1213,7 +1219,9 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           ${registration.tournamentCategory ? `
           <div class="field">
             <span class="field-label">Altersklasse:</span>
-            <span class="field-value"><strong>${escapeHtml(registration.tournamentCategory)}</strong></span>
+            <span class="field-value">
+              <strong>${escapeHtml(registration.tournamentCategory)}</strong>${registration.secondaryTournamentCategory ? ` (Wunschgruppe)<br><span style="font-size: 13px; color: #555;">Optionale Zweitgruppe: <strong>${escapeHtml(registration.secondaryTournamentCategory)}</strong></span>` : ''}
+            </span>
           </div>
           ` : ''}
           ${camp.showAdditionalGuestsOption ? `
@@ -1327,7 +1335,9 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           ${registration.tournamentCategory ? `
           <div class="field">
             <span class="field-label">Altersklasse:</span>
-            <span class="field-value"><strong>${escapeHtml(registration.tournamentCategory)}</strong></span>
+            <span class="field-value">
+              <strong>${escapeHtml(registration.tournamentCategory)}</strong>${registration.secondaryTournamentCategory ? ` (Wunschgruppe)<br><span style="font-size: 13px; color: #555;">Optionale Zweitgruppe: <strong>${escapeHtml(registration.secondaryTournamentCategory)}</strong></span>` : ''}
+            </span>
           </div>
           ` : ''}
           <div class="field">
@@ -1518,7 +1528,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
         <div class="highlight">
           ${confirmationHtml}<br>
           Datum: ${dateText}
-          ${registration.tournamentCategory ? `<br>Altersklasse: <strong>${escapeHtml(registration.tournamentCategory)}</strong>` : ''}
+          ${registration.tournamentCategory ? `<br>Altersklasse: <strong>${escapeHtml(registration.tournamentCategory)}</strong>${registration.secondaryTournamentCategory ? ` (Wunschgruppe), <strong>${escapeHtml(registration.secondaryTournamentCategory)}</strong> (Zweitgruppe)` : ''}` : ''}
         </div>
         ${bodyHtml}
         ${signatureHtml}
@@ -1530,7 +1540,9 @@ export async function sendCampConfirmationEmail(registration, camp) {
     </html>
   `;
 
-  const categoryText = registration.tournamentCategory ? `\nAltersklasse: ${registration.tournamentCategory}` : '';
+  const categoryText = registration.tournamentCategory
+    ? `\nAltersklasse: ${registration.tournamentCategory}${registration.secondaryTournamentCategory ? ` (Wunschgruppe), ${registration.secondaryTournamentCategory} (Zweitgruppe)` : ''}`
+    : '';
   const text = `${greeting}\n\n${confirmationText}\nDatum: ${dateText}${categoryText}\n\n${bodyText}\n\n${signatureText}`;
 
 
@@ -1691,7 +1703,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
         <div class="highlight">
           <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> ist eingegangen.</strong><br>
           Datum: ${dateText}
-          ${registration.tournamentCategory ? `<br>Altersklasse: <strong>${escapeHtml(registration.tournamentCategory)}</strong>` : ''}
+          ${registration.tournamentCategory ? `<br>Altersklasse: <strong>${escapeHtml(registration.tournamentCategory)}</strong>${registration.secondaryTournamentCategory ? ` (Wunschgruppe), <strong>${escapeHtml(registration.secondaryTournamentCategory)}</strong> (Zweitgruppe)` : ''}` : ''}
         </div>
         <div class="notice">
           <strong>Hinweis:</strong> Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.
@@ -1706,7 +1718,9 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
     </html>
   `;
 
-  const categoryText = registration.tournamentCategory ? `\nAltersklasse: ${registration.tournamentCategory}` : '';
+  const categoryText = registration.tournamentCategory
+    ? `\nAltersklasse: ${registration.tournamentCategory}${registration.secondaryTournamentCategory ? ` (Wunschgruppe), ${registration.secondaryTournamentCategory} (Zweitgruppe)` : ''}`
+    : '';
   const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${dateText})${categoryText} ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });

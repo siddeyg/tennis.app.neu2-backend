@@ -179,7 +179,8 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       additionalEmergencyContactPhone,
       medicalNotes,
       iban,
-      tournamentCategory
+      tournamentCategory,
+      secondaryTournamentCategory
     } = req.body;
 
     // 1. Lock camp document
@@ -411,6 +412,49 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
           error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für Tennolino (Altersklasse U12 erfordert Jahrgang ${cutoffU12} oder jünger).`
         });
       }
+
+      // Optional secondary tournament category validation
+      if (secondaryTournamentCategory) {
+        if (!['U9', 'U11', 'U12'].includes(secondaryTournamentCategory)) {
+          if (session) await session.abortTransaction();
+          return res.status(400).json({
+            success: false,
+            error: 'Ungültige optionale Zweitgruppe (erlaubt: U9, U11, U12)'
+          });
+        }
+
+        if (secondaryTournamentCategory === tournamentCategory) {
+          if (session) await session.abortTransaction();
+          return res.status(400).json({
+            success: false,
+            error: 'Die optionale Zweitgruppe darf nicht mit der Wunschgruppe identisch sein'
+          });
+        }
+
+        if (secondaryTournamentCategory === 'U9' && birthYear < cutoffU9) {
+          if (session) await session.abortTransaction();
+          return res.status(400).json({
+            success: false,
+            error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für die Zweitgruppe U9 (erfordert Jahrgang ${cutoffU9} oder jünger).`
+          });
+        }
+
+        if (secondaryTournamentCategory === 'U11' && birthYear < cutoffU11) {
+          if (session) await session.abortTransaction();
+          return res.status(400).json({
+            success: false,
+            error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für die Zweitgruppe U11 (erfordert Jahrgang ${cutoffU11} oder jünger).`
+          });
+        }
+
+        if (secondaryTournamentCategory === 'U12' && birthYear < cutoffU12) {
+          if (session) await session.abortTransaction();
+          return res.status(400).json({
+            success: false,
+            error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für die Zweitgruppe U12 (erfordert Jahrgang ${cutoffU12} oder jünger).`
+          });
+        }
+      }
     }
 
     // 2. Check duplicate registration (JWT uses 'id' not '_id')
@@ -502,6 +546,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       email,
       phone: phone || '',
       tournamentCategory: camp.eventType === 'tennolino' ? tournamentCategory : null,
+      secondaryTournamentCategory: camp.eventType === 'tennolino' && secondaryTournamentCategory ? secondaryTournamentCategory : null,
       skillLevel: isEvent ? null : skillLevel,
       team: isEvent ? false : (team === true || team === 'true'), // Default to false for events
       additionalChildren: isEvent ? (parseInt(additionalChildren) || 0) : 0,
@@ -638,7 +683,9 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
             : 'Sie wurden auf die Warteliste gesetzt'),
       registration: {
         _id: registration._id,
-        status: registration.status
+        status: registration.status,
+        tournamentCategory: registration.tournamentCategory,
+        secondaryTournamentCategory: registration.secondaryTournamentCategory
       }
     });
   } catch (error) {
