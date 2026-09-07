@@ -366,6 +366,16 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         });
       }
 
+      // Enforce minimum age of 4 years (Zielgruppe 4-12)
+      const minAge = camp.minAge || 4;
+      if (age < minAge) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: `Das Kind ist mit ${age} Jahren noch zu jung für das Tennolino-Turnier (Mindestalter ${minAge} Jahre).`
+        });
+      }
+
       const cutoffU9 = tournamentYear - 9;
       const cutoffU11 = tournamentYear - 11;
       const cutoffU12 = tournamentYear - 12;
