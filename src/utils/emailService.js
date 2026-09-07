@@ -1069,7 +1069,11 @@ function generateCampRegistrationTextContent(registration, camp) {
     text += field('Event', camp.title) + '\n';
     text += field('Datum', generateCampDateString(camp, true)) + '\n';
     text += field('Name', `${registration.firstName} ${registration.lastName}`) + '\n';
+    if (registration.tournamentCategory) {
+      text += field('Altersklasse', registration.tournamentCategory) + '\n';
+    }
     if (camp.showAdditionalGuestsOption) {
+
       text += field('Zusätzliche Kinder', registration.additionalChildren || 0) + '\n';
       text += field('Zusätzliche Erwachsene', registration.additionalAdults || 0) + '\n';
     }
@@ -1093,8 +1097,13 @@ function generateCampRegistrationTextContent(registration, camp) {
     text += field('E-Mail', registration.email) + '\n';
     text += field('Telefon', optional(registration.phone)) + '\n';
     text += field('Geburtsdatum', date(registration.birthdate)) + '\n';
+    if (registration.tournamentCategory) {
+      text += field('Altersklasse', registration.tournamentCategory) + '\n';
+    }
+
     text += field('Spielstärke', optional(registration.skillLevel)) + '\n';
     text += field('Mannschaft', registration.team ? 'Mannschaftsspieler' : 'Freizeitspieler') + '\n';
+
 
     // Emergency contact (if provided)
     if (registration.emergencyContact) {
@@ -1201,6 +1210,12 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-label">Name:</span>
             <span class="field-value">${registration.firstName} ${registration.lastName}</span>
           </div>
+          ${registration.tournamentCategory ? `
+          <div class="field">
+            <span class="field-label">Altersklasse:</span>
+            <span class="field-value"><strong>${escapeHtml(registration.tournamentCategory)}</strong></span>
+          </div>
+          ` : ''}
           ${camp.showAdditionalGuestsOption ? `
           <div class="field">
             <span class="field-label">Zusätzliche Kinder:</span>
@@ -1309,6 +1324,12 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-label">Mitglied:</span>
             <span class="field-value">${registration.member ? 'Ja' : 'Nein'}</span>
           </div>
+          ${registration.tournamentCategory ? `
+          <div class="field">
+            <span class="field-label">Altersklasse:</span>
+            <span class="field-value"><strong>${escapeHtml(registration.tournamentCategory)}</strong></span>
+          </div>
+          ` : ''}
           <div class="field">
             <span class="field-label">Spielstärke:</span>
             <span class="field-value">${registration.skillLevel || 'Keine Angabe'}</span>
@@ -1318,6 +1339,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
             <span class="field-value">${registration.team ? '⚽ Mannschaftsspieler' : '🎾 Freizeitspieler'}</span>
           </div>
         </div>
+
 
         ${registration.emergencyContact ? `
         <div class="section">
@@ -1496,6 +1518,7 @@ export async function sendCampConfirmationEmail(registration, camp) {
         <div class="highlight">
           ${confirmationHtml}<br>
           Datum: ${dateText}
+          ${registration.tournamentCategory ? `<br>Altersklasse: <strong>${escapeHtml(registration.tournamentCategory)}</strong>` : ''}
         </div>
         ${bodyHtml}
         ${signatureHtml}
@@ -1507,7 +1530,9 @@ export async function sendCampConfirmationEmail(registration, camp) {
     </html>
   `;
 
-  const text = `${greeting}\n\n${confirmationText}\n\n${bodyText}\n\n${signatureText}`;
+  const categoryText = registration.tournamentCategory ? `\nAltersklasse: ${registration.tournamentCategory}` : '';
+  const text = `${greeting}\n\n${confirmationText}\nDatum: ${dateText}${categoryText}\n\n${bodyText}\n\n${signatureText}`;
+
 
   return sendEmail({ to: registration.email, subject, html, text });
 }
@@ -1666,6 +1691,7 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
         <div class="highlight">
           <strong>Ihre Anmeldung für <em>${escapeHtml(camp.title)}</em> ist eingegangen.</strong><br>
           Datum: ${dateText}
+          ${registration.tournamentCategory ? `<br>Altersklasse: <strong>${escapeHtml(registration.tournamentCategory)}</strong>` : ''}
         </div>
         <div class="notice">
           <strong>Hinweis:</strong> Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.
@@ -1680,7 +1706,8 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${dateText}) ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const categoryText = registration.tournamentCategory ? `\nAltersklasse: ${registration.tournamentCategory}` : '';
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${dateText})${categoryText} ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return sendEmail({ to: registration.email, subject, html, text });
 }

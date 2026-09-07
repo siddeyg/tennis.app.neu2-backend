@@ -102,6 +102,13 @@ const campRegistrationSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  // Tournament / Tennolino Specific
+  tournamentCategory: {
+    type: String,
+    enum: ['U9', 'U11', 'U12', null],
+    default: null
+  },
+
 
   // Privacy Consent (DSGVO)
   privacyConsent: {

@@ -161,6 +161,11 @@ const campSchema = new mongoose.Schema({
     default: true
   },
   // Event Specific Configuration
+  eventType: {
+    type: String,
+    enum: ['standard', 'sommerfest', 'meet-and-match', 'fritz-cup', 'tennolino', 'other'],
+    default: 'standard'
+  },
   showBarbecueOption: {
     type: Boolean,
     default: false

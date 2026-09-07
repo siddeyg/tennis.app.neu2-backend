@@ -207,6 +207,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       trainerId,
       trainerName,
       bannerImage,
+      eventType,
       showBarbecueOption,
       showAdditionalGuestsOption,
       isWholeDay,
@@ -274,6 +275,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       trainerId: (trainerId && trainerId !== '') ? trainerId : null,
       trainerName: trainerName || '',
       bannerImage: bannerImage || null,
+      eventType: eventType || 'standard',
       showBarbecueOption: shouldShowBarbecue,
       showAdditionalGuestsOption: shouldShowAdditionalGuests,
       isWholeDay: shouldBeWholeDay,
@@ -353,11 +355,12 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       'maxParticipants', 'waitlistEnabled', 'maxWaitlist',
       'targetAudience', 'minAge', 'maxAge', 'skillLevels',
       'playerType', 'memberPrice', 'nonMemberPrice',
-      'trainerId', 'trainerName', 'bannerImage',
+      'trainerId', 'trainerName', 'bannerImage', 'eventType',
       'showBarbecueOption', 'showAdditionalGuestsOption',
       'isWholeDay', 'allowFamilyRegistration', 'showVegetarianOption',
       'isUnlimitedParticipants'
     ];
+
 
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
@@ -960,11 +963,12 @@ router.get('/:id/export/csv', async (req, res) => {
 
     // Build CSV with UTF-8 BOM
     const BOM = '\uFEFF';
-    const headers = 'Status,Name,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Zusätzliche Kinder,Zusätzliche Erwachsene,Grillen,Grillanzahl,Vegetarisch,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
+    const headers = 'Status,Name,Altersklasse,Geburtsdatum,Alter,Email,Telefon,IBAN,Skill Level,Mannschaft,Zusätzliche Kinder,Zusätzliche Erwachsene,Grillen,Grillanzahl,Vegetarisch,Notfallkontakt,Notfalltelefon,Medizinische Hinweise,Anmeldedatum\n';
 
     const rows = registrations.map(reg => {
       const status = reg.status === 'confirmed' ? 'Bestätigt' : reg.status === 'pending' ? 'Ausstehend' : 'Warteliste';
       const name = `${reg.firstName} ${reg.lastName}`;
+      const category = reg.tournamentCategory || '';
       const birthdate = reg.birthdate ? reg.birthdate.toISOString().split('T')[0] : '';
       const age = reg.age || '';
       const email = reg.email;
@@ -984,7 +988,7 @@ router.get('/:id/export/csv', async (req, res) => {
       const medicalNotes = (reg.medicalNotes || '').replace(/,/g, ';').replace(/\n/g, ' ');
       const registeredAt = reg.registeredAt ? reg.registeredAt.toISOString().split('T')[0] : '';
 
-      return `${status},"${name}",${birthdate},${age},"${email}","${phone}","${iban}","${skillLevel}",${team},${addChildren},${addAdults},${bbq},${bbqCount},${vegetarian},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
+      return `${status},"${name}","${category}",${birthdate},${age},"${email}","${phone}","${iban}","${skillLevel}",${team},${addChildren},${addAdults},${bbq},${bbqCount},${vegetarian},"${emergencyName}","${emergencyPhone}","${medicalNotes}",${registeredAt}`;
     }).join('\n');
 
     const csv = BOM + headers + rows;

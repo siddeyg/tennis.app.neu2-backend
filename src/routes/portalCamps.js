@@ -178,7 +178,8 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       additionalEmergencyContactName,
       additionalEmergencyContactPhone,
       medicalNotes,
-      iban
+      iban,
+      tournamentCategory
     } = req.body;
 
     // 1. Lock camp document
@@ -312,6 +313,88 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       });
     }
 
+    // Tennolino Tournament Specific Validation
+    if (camp.eventType === 'tennolino') {
+      if (!tournamentCategory || !['U9', 'U11', 'U12'].includes(tournamentCategory)) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Bitte wählen Sie eine gültige Altersklasse (U9, U11 oder U12)'
+        });
+      }
+
+      if (!familyMemberId) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Tennolino ist ein reines Kinderturnier. Bitte wählen Sie ein Kind aus „Meine Familie“ aus.'
+        });
+      }
+
+      const StudentPortalUser = (await import('../models/StudentPortalUser.js')).default;
+      const parentUser = await StudentPortalUser.findById(req.user.id);
+      const childMember = parentUser?.familyMembers?.id(familyMemberId);
+      if (!childMember) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Das ausgewählte Kind wurde in Ihrem Profil nicht gefunden'
+        });
+      }
+
+      const childBirthdate = childMember.birthdate;
+      if (!childBirthdate) {
+
+
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Für dieses Kind ist kein Geburtsdatum hinterlegt. Bitte pflegen Sie das Geburtsdatum unter „Meine Familie“ nach.'
+        });
+      }
+
+      const tournamentYear = (camp.startDate && !isNaN(new Date(camp.startDate).getTime()))
+        ? new Date(camp.startDate).getFullYear()
+        : new Date().getFullYear();
+      const birthYear = new Date(childBirthdate).getFullYear();
+
+      if (isNaN(birthYear)) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: 'Ungültiges Geburtsdatum des Kindes'
+        });
+      }
+
+      const cutoffU9 = tournamentYear - 9;
+      const cutoffU11 = tournamentYear - 11;
+      const cutoffU12 = tournamentYear - 12;
+
+      if (tournamentCategory === 'U9' && birthYear < cutoffU9) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für die Altersklasse U9 (erfordert Jahrgang ${cutoffU9} oder jünger).`
+        });
+      }
+
+      if (tournamentCategory === 'U11' && birthYear < cutoffU11) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für die Altersklasse U11 (erfordert Jahrgang ${cutoffU11} oder jünger).`
+        });
+      }
+
+      if (tournamentCategory === 'U12' && birthYear < cutoffU12) {
+        if (session) await session.abortTransaction();
+        return res.status(400).json({
+          success: false,
+          error: `Das Kind (Jahrgang ${birthYear}) ist zu alt für Tennolino (Altersklasse U12 erfordert Jahrgang ${cutoffU12} oder jünger).`
+        });
+      }
+    }
+
     // 2. Check duplicate registration (JWT uses 'id' not '_id')
     if (familyMemberId && camp.allowFamilyRegistration === false) {
       if (session) await session.abortTransaction();
@@ -320,6 +403,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         error: 'Anmeldungen für Familienmitglieder sind für dieses Event nicht erlaubt'
       });
     }
+
 
     const existing = await CampRegistration.findOne({
       campId: campId,
@@ -399,6 +483,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
       birthdate,
       email,
       phone: phone || '',
+      tournamentCategory: camp.eventType === 'tennolino' ? tournamentCategory : null,
       skillLevel: isEvent ? null : skillLevel,
       team: isEvent ? false : (team === true || team === 'true'), // Default to false for events
       additionalChildren: isEvent ? (parseInt(additionalChildren) || 0) : 0,
