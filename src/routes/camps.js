@@ -77,6 +77,7 @@ const VALID_CAMP_TYPES = ['beginner-course', 'intensive-workshop', 'technique-ca
 const VALID_TARGET_AUDIENCES = ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth', 'children_4_12'];
 const VALID_SKILL_LEVELS = ['beginner', 'intermediate'];
 const VALID_TEAM_ACCESS = ['all', 'team-only', 'hobby-only'];
+const VALID_EVENT_TYPES = ['standard', 'sommerfest', 'meet-and-match', 'fritz-cup', 'tennolino', 'other'];
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {
@@ -251,6 +252,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
     const safeCampType = VALID_CAMP_TYPES.includes(campType) ? campType : 'other';
     const safeTargetAudience = VALID_TARGET_AUDIENCES.includes(targetAudience) ? targetAudience : 'all';
     const safeSkillLevels = (skillLevels || []).filter(l => VALID_SKILL_LEVELS.includes(l));
+    const safeEventType = VALID_EVENT_TYPES.includes(eventType) ? eventType : 'standard';
 
     // Create camp
     const camp = new Camp({
@@ -275,7 +277,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       trainerId: (trainerId && trainerId !== '') ? trainerId : null,
       trainerName: trainerName || '',
       bannerImage: bannerImage || null,
-      eventType: eventType || 'standard',
+      eventType: safeEventType,
       showBarbecueOption: shouldShowBarbecue,
       showAdditionalGuestsOption: shouldShowAdditionalGuests,
       isWholeDay: shouldBeWholeDay,
@@ -380,6 +382,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
     if (!VALID_CAMP_TYPES.includes(camp.campType)) camp.campType = 'other';
     if (!VALID_TARGET_AUDIENCES.includes(camp.targetAudience)) camp.targetAudience = 'all';
     if (camp.teamAccess && !VALID_TEAM_ACCESS.includes(camp.teamAccess)) camp.teamAccess = 'all';
+    if (camp.eventType && !VALID_EVENT_TYPES.includes(camp.eventType)) camp.eventType = 'standard';
 
     await camp.save();
 

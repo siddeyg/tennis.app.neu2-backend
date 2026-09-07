@@ -272,6 +272,13 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
 
     // Calculate age from birthdate
     const birthDate = new Date(birthdate);
+    if (isNaN(birthDate.getTime())) {
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        error: 'Ungültiges Geburtsdatum angegeben'
+      });
+    }
     const age = Math.floor((now - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
 
     // Force parent's info as primary emergency contact for children
@@ -366,13 +373,14 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         });
       }
 
-      // Enforce minimum age of 4 years (Zielgruppe 4-12)
+      // Enforce minimum age of 4 years (Zielgruppe 4-12) based on child's verified birthdate
       const minAge = camp.minAge || 4;
-      if (age < minAge) {
+      const childAge = Math.floor((now - new Date(childBirthdate)) / (365.25 * 24 * 60 * 60 * 1000));
+      if (childAge < minAge) {
         if (session) await session.abortTransaction();
         return res.status(400).json({
           success: false,
-          error: `Das Kind ist mit ${age} Jahren noch zu jung für das Tennolino-Turnier (Mindestalter ${minAge} Jahre).`
+          error: `Das Kind ist mit ${childAge} Jahren noch zu jung für das Tennolino-Turnier (Mindestalter ${minAge} Jahre).`
         });
       }
 
