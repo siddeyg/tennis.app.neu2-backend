@@ -96,7 +96,7 @@ const campSchema = new mongoose.Schema({
   // Target Audience
   targetAudience: {
     type: String,
-    enum: ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth'],
+    enum: ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth', 'children_4_12'],
     default: 'all',
     required: false
   },
