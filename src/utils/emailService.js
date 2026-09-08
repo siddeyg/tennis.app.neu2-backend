@@ -1163,10 +1163,17 @@ export async function sendCampRegistrationNotification(registration, camp, notif
   const isEvent = camp.campType === 'event';
 
   if (isEvent) {
-    notificationEmails = notificationEmails.filter(
-      email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
-    );
-    if (notificationEmails.length === 0) return;
+    const shouldNotifyNicole = camp.notifyNicole === true || camp.notifyNicole === 'true';
+    if (shouldNotifyNicole) {
+      if (!notificationEmails.some(email => email.trim().toLowerCase() === 'info@mondo-tennisschule.de')) {
+        notificationEmails.push('info@mondo-tennisschule.de');
+      }
+    } else {
+      notificationEmails = notificationEmails.filter(
+        email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
+      );
+      if (notificationEmails.length === 0) return;
+    }
   }
 
   const typeLabel = isEvent ? 'Event' : 'Camp';
@@ -1876,10 +1883,17 @@ export async function sendCampCancellationAdminEmail(registration, camp, notific
   const isEvent = camp.campType === "event";
 
   if (isEvent) {
-    notificationEmails = notificationEmails.filter(
-      email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
-    );
-    if (notificationEmails.length === 0) return;
+    const shouldNotifyNicole = camp.notifyNicole === true || camp.notifyNicole === 'true';
+    if (shouldNotifyNicole) {
+      if (!notificationEmails.some(email => email.trim().toLowerCase() === 'info@mondo-tennisschule.de')) {
+        notificationEmails.push('info@mondo-tennisschule.de');
+      }
+    } else {
+      notificationEmails = notificationEmails.filter(
+        email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
+      );
+      if (notificationEmails.length === 0) return;
+    }
   }
 
   const typeLabel = isEvent ? "Event" : "Camp";

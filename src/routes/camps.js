@@ -214,7 +214,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       isWholeDay,
       allowFamilyRegistration,
       showVegetarianOption,
-      isUnlimitedParticipants
+      isUnlimitedParticipants,
+      notifyNicole
     } = req.body;
 
     // Explicitly convert to boolean to handle potential string inputs
@@ -224,6 +225,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
     const shouldAllowFamily = allowFamilyRegistration !== undefined ? (allowFamilyRegistration === true || allowFamilyRegistration === 'true') : true;
     const shouldShowVegetarian = showVegetarianOption !== undefined ? (showVegetarianOption === true || showVegetarianOption === 'true') : true;
     const shouldBeUnlimited = isUnlimitedParticipants === true || isUnlimitedParticipants === 'true';
+    const shouldNotifyNicole = notifyNicole === true || notifyNicole === 'true';
 
     // Validation
     const isEvent = req.body.campType === 'event';
@@ -284,6 +286,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'Camp' }), asy
       allowFamilyRegistration: shouldAllowFamily,
       showVegetarianOption: shouldShowVegetarian,
       isUnlimitedParticipants: shouldBeUnlimited,
+      notifyNicole: shouldNotifyNicole,
       status: 'draft',
       createdBy: req.user._id
     });
@@ -360,7 +363,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       'trainerId', 'trainerName', 'bannerImage', 'eventType',
       'showBarbecueOption', 'showAdditionalGuestsOption',
       'isWholeDay', 'allowFamilyRegistration', 'showVegetarianOption',
-      'isUnlimitedParticipants'
+      'isUnlimitedParticipants', 'notifyNicole'
     ];
 
 
@@ -368,7 +371,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Camp' }), a
       if (req.body[field] !== undefined) {
         if (field === 'trainerId' && req.body[field] === '') {
           camp[field] = null;
-        } else if (['showBarbecueOption', 'showAdditionalGuestsOption', 'isWholeDay', 'allowFamilyRegistration', 'showVegetarianOption', 'isUnlimitedParticipants'].includes(field)) {
+        } else if (['showBarbecueOption', 'showAdditionalGuestsOption', 'isWholeDay', 'allowFamilyRegistration', 'showVegetarianOption', 'isUnlimitedParticipants', 'notifyNicole'].includes(field)) {
           camp[field] = req.body[field] === true || req.body[field] === 'true';
         } else {
           camp[field] = req.body[field];

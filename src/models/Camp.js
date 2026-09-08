@@ -178,6 +178,10 @@ const campSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  notifyNicole: {
+    type: Boolean,
+    default: false
+  },
   allowFamilyRegistration: {
     type: Boolean,
     default: true

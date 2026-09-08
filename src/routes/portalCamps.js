@@ -600,7 +600,7 @@ router.post('/:id/register', auditLogMiddleware({ action: 'CREATE', resource: 'C
         if (emails.length > 0) {
           // Populate camp data for email (note: Camp model uses 'title' not 'name')
           const populatedRegistration = await CampRegistration.findById(registration._id)
-            .populate('campId', 'title campType startDate endDate location price targetAudience ageMin ageMax skillLevels isWholeDay schedule showAdditionalGuestsOption showBarbecueOption');
+            .populate('campId', 'title campType startDate endDate location price targetAudience ageMin ageMax skillLevels isWholeDay schedule showAdditionalGuestsOption showBarbecueOption eventType notifyNicole');
           await sendCampRegistrationNotification(populatedRegistration, populatedRegistration.campId, emails);
           logger.info(`Camp registration notification emails sent to ${emails.length} recipient(s)`);
         }

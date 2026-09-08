@@ -1276,5 +1276,32 @@ describe('Camps API — Admin + Portal Integration Tests', () => {
       expect(res.text).toContain('Altersklasse,Zweitgruppe');
       expect(res.text).toContain('"U9","U11"');
     });
+
+    it('should save and update notifyNicole option correctly for events', async () => {
+      mockPortalUser = null;
+      mockAdminUser = adminUser;
+
+      // Update notifyNicole to true
+      const putRes = await request(app)
+        .put(`/api/camps/${tennolinoEvent._id}`)
+        .send({ notifyNicole: true })
+        .expect(200);
+
+      expect(putRes.body.success).toBe(true);
+      expect(putRes.body.camp.notifyNicole).toBe(true);
+
+      // Verify in database
+      const updated = await Camp.findById(tennolinoEvent._id);
+      expect(updated.notifyNicole).toBe(true);
+
+      // Toggle back to false
+      await request(app)
+        .put(`/api/camps/${tennolinoEvent._id}`)
+        .send({ notifyNicole: false })
+        .expect(200);
+
+      const updatedFalse = await Camp.findById(tennolinoEvent._id);
+      expect(updatedFalse.notifyNicole).toBe(false);
+    });
   });
 });
