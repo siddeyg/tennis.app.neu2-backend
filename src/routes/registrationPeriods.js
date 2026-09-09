@@ -194,6 +194,8 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'RegistrationP
         ]
       },
       trainingSlots: trainingSlots || [],
+      trainingSlotsAdults: req.body.trainingSlotsAdults || [],
+      availableVenues: req.body.availableVenues || ['BTHV', 'Brüser Berg', 'Röttgen', 'Duisdorf'],
       createdBy: req.user.id
     });
 
@@ -351,7 +353,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
       isActive,
       kidsFormConfig,
       adultsFormConfig,
-      trainingSlots
+      trainingSlots,
+      trainingSlotsAdults,
+      availableVenues
     } = req.body;
 
     // Prevent changing critical date fields if submissions already exist
@@ -382,6 +386,8 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'Registratio
     if (kidsFormConfig) period.kidsFormConfig = kidsFormConfig;
     if (adultsFormConfig) period.adultsFormConfig = adultsFormConfig;
     if (trainingSlots !== undefined) period.trainingSlots = trainingSlots;
+    if (trainingSlotsAdults !== undefined) period.trainingSlotsAdults = trainingSlotsAdults;
+    if (availableVenues !== undefined) period.availableVenues = availableVenues;
 
     await period.save();
 
