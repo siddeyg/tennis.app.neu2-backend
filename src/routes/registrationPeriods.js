@@ -32,6 +32,11 @@ import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 import { getHolidaysInRange } from '../utils/nrwHolidays.js';
+import {
+  renderSeasonalRegistrationNotificationEmail,
+  renderSeasonalRegistrationReceivedEmail,
+  sendEmail
+} from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -1300,6 +1305,183 @@ router.delete('/:id/exclusions/:exclusionId', async (req, res) => {
   } catch (error) {
     logger.error('Error removing training exclusion:', error);
     res.status(500).json({ success: false, error: 'Fehler beim Entfernen des Ausschlusstags' });
+  }
+});
+
+/**
+ * POST /api/registration-periods/:id/test-registration
+ * Simulate or perform a test seasonal registration (kids or adults) and render
+ * the resulting confirmation and admin notification emails.
+ * Admin-only route.
+ */
+router.post('/:id/test-registration', async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    const {
+      dryRun = true,
+      sendRealEmail = false,
+      scenario = 'kids',
+      registrationData = {}
+    } = req.body;
+
+    const isAdult = scenario === 'adults' || registrationData.formType === 'adults';
+
+    let mockData = {};
+
+    if (!isAdult) {
+      // Kids preset / mock data
+      mockData = {
+        periodId: period._id,
+        studentPortalUserId: new mongoose.Types.ObjectId(),
+        formType: 'kids',
+        firstName: registrationData.firstName || 'Leo',
+        lastName: registrationData.lastName || 'Musterkind (Test)',
+        birthdate: registrationData.birthdate || new Date('2016-04-10'),
+        email: registrationData.email || (req.user?.email || 'eltern-test@mondo.local'),
+        phone: registrationData.phone || '0171 1234567',
+        address: registrationData.address || 'Musterstr. 1, 53111 Bonn',
+        mitgliedsstatus: registrationData.mitgliedsstatus || 'Mitglied',
+        trainingsart: registrationData.trainingsart || 'KIDS-GRÜN (ca. 10-12 Jahre)',
+        trainingshäufigkeit: registrationData.trainingshäufigkeit || '1x pro Woche',
+        sessionDuration: registrationData.sessionDuration || 60,
+        teamParticipation: registrationData.teamParticipation || '-',
+        availableTimesKids: registrationData.availableTimesKids || [
+          { day: 'Montag', hour: 15 },
+          { day: 'Dienstag', hour: 16 },
+          { day: 'Mittwoch', hour: 15 },
+          { day: 'Donnerstag', hour: 17 },
+          { day: 'Freitag', hour: 15 }
+        ],
+        sepaMandate: registrationData.sepaMandate !== undefined ? registrationData.sepaMandate : true,
+        accountHolder: registrationData.accountHolder || 'Max Mustereltern',
+        iban: registrationData.iban || 'DE12345678901234567890',
+        parentEmail: registrationData.parentEmail || (req.user?.email || 'eltern-test@mondo.local'),
+        parentPhone: registrationData.parentPhone || '0171 1234567',
+        remarks: registrationData.remarks || 'Automatisierte Testanmeldung Jugend im Admin-Portal.',
+        privacyConsent: registrationData.privacyConsent !== undefined ? registrationData.privacyConsent : true,
+        status: 'pending',
+        createdAt: new Date(),
+        ...registrationData
+      };
+    } else {
+      // Adults preset / mock data
+      mockData = {
+        periodId: period._id,
+        studentPortalUserId: new mongoose.Types.ObjectId(),
+        formType: 'adults',
+        firstName: registrationData.firstName || 'Erika',
+        lastName: registrationData.lastName || 'Musterfrau (Test)',
+        birthdate: registrationData.birthdate || new Date('1990-08-20'),
+        email: registrationData.email || (req.user?.email || 'erika-test@mondo.local'),
+        phone: registrationData.phone || '0172 9876543',
+        address: registrationData.address || 'Hauptstr. 12, 53113 Bonn',
+        mitgliedsstatus: registrationData.mitgliedsstatus || 'Mitglied',
+        spielstärke: registrationData.spielstärke || 'Fortgeschrittene',
+        trainingshäufigkeit: registrationData.trainingshäufigkeit || '1x pro Woche',
+        sessionDuration: registrationData.sessionDuration || 60,
+        trainingGoals: registrationData.trainingGoals || ['Freizeit', 'Fitness'],
+        groupSize: registrationData.groupSize || ['zu viert'],
+        availableTimesAdults: registrationData.availableTimesAdults || [
+          { day: 'Montag', hour: '17:00 - 18:00', venue: 'BTHV (Traglufthalle, Sand)' },
+          { day: 'Dienstag', hour: '18:00 - 19:00', venue: 'BTHV (Traglufthalle, Sand)' },
+          { day: 'Donnerstag', hour: '17:00 - 18:00', venue: 'BTHV (Traglufthalle, Sand)' }
+        ],
+        remarks: registrationData.remarks || 'Automatisierte Testanmeldung Erwachsene im Admin-Portal.',
+        privacyConsent: registrationData.privacyConsent !== undefined ? registrationData.privacyConsent : true,
+        status: 'pending',
+        createdAt: new Date(),
+        ...registrationData
+      };
+    }
+
+    // Validate using SeasonalRegistration schema
+    const tempDoc = new SeasonalRegistration(mockData);
+    let validationErrors = [];
+    try {
+      await tempDoc.validate();
+    } catch (err) {
+      if (err.errors) {
+        validationErrors = Object.keys(err.errors).map(k => ({
+          field: k,
+          message: err.errors[k].message
+        }));
+      } else {
+        validationErrors.push({ message: err.message });
+      }
+    }
+
+    const notificationEmails = period.notificationEmails && period.notificationEmails.length > 0
+      ? [...period.notificationEmails]
+      : ['info@mondo-tennisschule.de'];
+
+    // Render pure emails
+    const adminEmail = renderSeasonalRegistrationNotificationEmail(mockData, notificationEmails);
+    const userEmail = renderSeasonalRegistrationReceivedEmail(mockData, period);
+
+    // Optional: send test email strictly to current admin's email
+    let realEmailsSent = false;
+    if (sendRealEmail && req.user?.email) {
+      try {
+        await sendEmail({
+          to: req.user.email,
+          subject: `[TEST-VORSCHAU ADMIN] ${adminEmail.subject}`,
+          html: adminEmail.html,
+          text: adminEmail.text
+        });
+        await sendEmail({
+          to: req.user.email,
+          subject: `[TEST-VORSCHAU TEILNEHMER] ${userEmail.subject}`,
+          html: userEmail.html,
+          text: userEmail.text
+        });
+        realEmailsSent = true;
+      } catch (emailErr) {
+        logger.error('Failed to send test emails to admin:', emailErr);
+      }
+    }
+
+    res.json({
+      success: true,
+      dryRun: true,
+      scenario: isAdult ? 'adults' : 'kids',
+      validation: {
+        valid: validationErrors.length === 0,
+        errors: validationErrors
+      },
+      period: {
+        _id: period._id,
+        name: period.name,
+        season: period.season,
+        year: period.year
+      },
+      registrationData: mockData,
+      emails: {
+        userEmail: {
+          to: userEmail.to,
+          subject: userEmail.subject,
+          html: userEmail.html,
+          text: userEmail.text,
+          sent: realEmailsSent
+        },
+        adminEmail: {
+          to: adminEmail.to,
+          subject: adminEmail.subject,
+          html: adminEmail.html,
+          text: adminEmail.text,
+          sent: realEmailsSent
+        }
+      }
+    });
+  } catch (error) {
+    logger.error('Error executing test registration for period:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Ausführen der Testanmeldung: ' + error.message
+    });
   }
 });
 

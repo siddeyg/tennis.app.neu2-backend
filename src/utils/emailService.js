@@ -138,7 +138,7 @@ if (isConfigured) {
  * @param {string} options.html - HTML content
  * @param {string} [options.text] - Plain text content (optional, for multipart MIME)
  */
-async function sendEmail({ to, subject, html, text = null }) {
+export async function sendEmail({ to, subject, html, text = null }) {
   // Development mode - log instead of sending
   if (!isConfigured || !transporter) {
     logger.info(`📧 [DEV MODE] Would send email to: ${to}`);
@@ -844,15 +844,12 @@ function generateSeasonalRegistrationTextContent(registration) {
 }
 
 /**
- * Send notification email to admins for new seasonal registration
+ * Render notification email to admins for new seasonal registration (Pure Renderer)
  * @param {Object} registration - Registration data
  * @param {Array} notificationEmails - Array of email addresses to notify
+ * @returns {Object} { subject, html, text, notificationEmails, to }
  */
-export async function sendSeasonalRegistrationNotification(registration, notificationEmails) {
-  if (!notificationEmails || notificationEmails.length === 0) {
-    return; // No emails to send to
-  }
-
+export function renderSeasonalRegistrationNotificationEmail(registration, notificationEmails = []) {
   const subject = `Neue Saisonregistrierung: ${registration.firstName} ${registration.lastName}`;
 
   const isAdultHtml = registration.formType === 'adults';
@@ -875,6 +872,8 @@ export async function sendSeasonalRegistrationNotification(registration, notific
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
   };
+
+  const recipients = Array.isArray(notificationEmails) ? notificationEmails : [];
 
   const html = `
     <!DOCTYPE html>
@@ -911,15 +910,15 @@ export async function sendSeasonalRegistrationNotification(registration, notific
           <h2>Persönliche Daten</h2>
           <div class="field">
             <span class="field-label">Name:</span>
-            <span class="field-value">${registration.firstName} ${registration.lastName}</span>
+            <span class="field-value">${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)}</span>
           </div>
           <div class="field">
             <span class="field-label">E-Mail:</span>
-            <span class="field-value">${registration.email}</span>
+            <span class="field-value">${escapeHtml(registration.email)}</span>
           </div>
           <div class="field">
             <span class="field-label">Telefon:</span>
-            <span class="field-value">${registration.phone || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.phone || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Geburtsdatum:</span>
@@ -927,11 +926,11 @@ export async function sendSeasonalRegistrationNotification(registration, notific
           </div>
           <div class="field">
             <span class="field-label">Adresse:</span>
-            <span class="field-value">${registration.address || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.address || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Mitgliedsstatus:</span>
-            <span class="field-value">${registration.mitgliedsstatus || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.mitgliedsstatus || 'Keine Angabe')}</span>
           </div>
         </div>
 
@@ -939,7 +938,7 @@ export async function sendSeasonalRegistrationNotification(registration, notific
           <h2>Registrierungsdetails</h2>
           <div class="field">
             <span class="field-label">Saison:</span>
-            <span class="field-value">${registration.periodId?.name || 'Unbekannt'}</span>
+            <span class="field-value">${escapeHtml(registration.periodId?.name || 'Unbekannt')}</span>
           </div>
           <div class="field">
             <span class="field-label">Formular:</span>
@@ -948,49 +947,49 @@ export async function sendSeasonalRegistrationNotification(registration, notific
           ${!isAdultHtml ? `
           <div class="field">
             <span class="field-label">Trainingsart:</span>
-            <span class="field-value">${registration.trainingsart || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.trainingsart || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Häufigkeit:</span>
-            <span class="field-value">${registration.trainingshäufigkeit || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.trainingshäufigkeit || 'Keine Angabe')}</span>
           </div>
           ${registration.sessionDuration ? `
           <div class="field">
             <span class="field-label">Trainingsdauer:</span>
-            <span class="field-value">${registration.sessionDuration} Min</span>
+            <span class="field-value">${escapeHtml(String(registration.sessionDuration))} Min</span>
           </div>
           ` : ''}
           ${registration.teamParticipation && registration.teamParticipation !== '-' ? `
           <div class="field">
             <span class="field-label">Mannschaft:</span>
-            <span class="field-value">${registration.teamParticipation}</span>
+            <span class="field-value">${escapeHtml(registration.teamParticipation)}</span>
           </div>
           ` : ''}
           ` : `
           <div class="field">
             <span class="field-label">Spielstärke:</span>
-            <span class="field-value">${registration.spielstärke || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.spielstärke || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Häufigkeit:</span>
-            <span class="field-value">${registration.trainingshäufigkeit || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.trainingshäufigkeit || 'Keine Angabe')}</span>
           </div>
           ${registration.sessionDuration ? `
           <div class="field">
             <span class="field-label">Trainingsdauer:</span>
-            <span class="field-value">${registration.sessionDuration} Min</span>
+            <span class="field-value">${escapeHtml(String(registration.sessionDuration))} Min</span>
           </div>
           ` : ''}
           ${registration.trainingGoals?.length ? `
           <div class="field">
             <span class="field-label">Trainingsziele:</span>
-            <span class="field-value">${registration.trainingGoals.join(', ')}</span>
+            <span class="field-value">${escapeHtml(registration.trainingGoals.join(', '))}</span>
           </div>
           ` : ''}
           ${registration.groupSize?.length ? `
           <div class="field">
             <span class="field-label">Gruppengröße:</span>
-            <span class="field-value">${registration.groupSize.join(', ')}</span>
+            <span class="field-value">${escapeHtml(registration.groupSize.join(', '))}</span>
           </div>
           ` : ''}
           `}
@@ -1005,11 +1004,11 @@ export async function sendSeasonalRegistrationNotification(registration, notific
           <h2>Elterninformationen</h2>
           <div class="field">
             <span class="field-label">Eltern-E-Mail:</span>
-            <span class="field-value">${registration.parentEmail}</span>
+            <span class="field-value">${escapeHtml(registration.parentEmail)}</span>
           </div>
           <div class="field">
             <span class="field-label">Eltern-Telefon:</span>
-            <span class="field-value">${registration.parentPhone || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.parentPhone || 'Keine Angabe')}</span>
           </div>
         </div>
         ` : ''}
@@ -1017,7 +1016,7 @@ export async function sendSeasonalRegistrationNotification(registration, notific
         <div class="section">
           <h2>Bemerkungen</h2>
           <div class="field">
-            <span class="field-value">${registration.remarks || 'Keine Bemerkungen'}</span>
+            <span class="field-value">${escapeHtml(registration.remarks || 'Keine Bemerkungen')}</span>
           </div>
         </div>
       </div>
@@ -1033,10 +1032,31 @@ export async function sendSeasonalRegistrationNotification(registration, notific
   // Generate plain text version
   const text = generateSeasonalRegistrationTextContent(registration);
 
+  return {
+    to: recipients,
+    subject,
+    html,
+    text,
+    notificationEmails: recipients
+  };
+}
+
+/**
+ * Send notification email to admins for new seasonal registration
+ * @param {Object} registration - Registration data
+ * @param {Array} notificationEmails - Array of email addresses to notify
+ */
+export async function sendSeasonalRegistrationNotification(registration, notificationEmails) {
+  if (!notificationEmails || notificationEmails.length === 0) {
+    return; // No emails to send to
+  }
+
+  const rendered = renderSeasonalRegistrationNotificationEmail(registration, notificationEmails);
+
   // Send to all notification emails
-  for (const email of notificationEmails) {
+  for (const email of rendered.notificationEmails) {
     try {
-      await sendEmail({ to: email, subject, html, text });
+      await sendEmail({ to: email, subject: rendered.subject, html: rendered.html, text: rendered.text });
     } catch (error) {
       logger.error(`Failed to send seasonal registration notification to ${email}:`, error);
       // Continue with other emails even if one fails
@@ -1150,30 +1170,32 @@ function generateCampRegistrationTextContent(registration, camp) {
 }
 
 /**
- * Send notification email to admins for new camp registration
+ * Render notification email to admins for new camp registration (Pure Renderer)
  * @param {Object} registration - Camp registration data
  * @param {Object} camp - Camp details
  * @param {Array} notificationEmails - Array of email addresses to notify
+ * @returns {Object} { subject, html, text, notificationEmails, sentToNicole, to }
  */
-export async function sendCampRegistrationNotification(registration, camp, notificationEmails) {
-  if (!notificationEmails || notificationEmails.length === 0) {
-    return; // No emails to send to
-  }
-
+export function renderCampRegistrationNotificationEmail(registration, camp, notificationEmails = []) {
   const isEvent = camp.campType === 'event';
+  let recipients = Array.isArray(notificationEmails) ? [...notificationEmails] : [];
+  let sentToNicole = false;
 
   if (isEvent) {
     const shouldNotifyNicole = camp.notifyNicole === true || camp.notifyNicole === 'true';
     if (shouldNotifyNicole) {
-      if (!notificationEmails.some(email => email.trim().toLowerCase() === 'info@mondo-tennisschule.de')) {
-        notificationEmails.push('info@mondo-tennisschule.de');
+      if (!recipients.some(email => email.trim().toLowerCase() === 'info@mondo-tennisschule.de')) {
+        recipients.push('info@mondo-tennisschule.de');
       }
+      sentToNicole = true;
     } else {
-      notificationEmails = notificationEmails.filter(
+      recipients = recipients.filter(
         email => email.trim().toLowerCase() !== 'info@mondo-tennisschule.de'
       );
-      if (notificationEmails.length === 0) return;
+      sentToNicole = false;
     }
+  } else {
+    sentToNicole = recipients.some(email => email.trim().toLowerCase() === 'info@mondo-tennisschule.de');
   }
 
   const typeLabel = isEvent ? 'Event' : 'Camp';
@@ -1214,14 +1236,14 @@ export async function sendCampRegistrationNotification(registration, camp, notif
       </div>
       <div class="content">
         <div class="highlight">
-          <strong>Event:</strong> ${camp.title}<br/>
+          <strong>Event:</strong> ${escapeHtml(camp.title)}<br/>
           <strong style="margin-top: 5px; display: inline-block;">Datum:</strong> ${generateCampDateString(camp, true)}
         </div>
         <div class="section">
           <h2>Teilnehmer</h2>
           <div class="field">
             <span class="field-label">Name:</span>
-            <span class="field-value">${registration.firstName} ${registration.lastName}</span>
+            <span class="field-value">${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)}</span>
           </div>
           ${registration.tournamentCategory ? `
           <div class="field">
@@ -1234,17 +1256,17 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           ${camp.showAdditionalGuestsOption ? `
           <div class="field">
             <span class="field-label">Zusätzliche Kinder:</span>
-            <span class="field-value">${registration.additionalChildren || 0}</span>
+            <span class="field-value">${escapeHtml(String(registration.additionalChildren || 0))}</span>
           </div>
           <div class="field">
             <span class="field-label">Zusätzliche Erwachsene:</span>
-            <span class="field-value">${registration.additionalAdults || 0}</span>
+            <span class="field-value">${escapeHtml(String(registration.additionalAdults || 0))}</span>
           </div>
           ` : ''}
           ${camp.showBarbecueOption ? `
           <div class="field">
             <span class="field-label">Teilnahme Grillen:</span>
-            <span class="field-value">${registration.isBarbecueParticipant ? `Ja (${registration.barbecueCount} Personen)` : 'Nein'}</span>
+            <span class="field-value">${registration.isBarbecueParticipant ? `Ja (${escapeHtml(String(registration.barbecueCount))} Personen)` : 'Nein'}</span>
           </div>
           ${registration.isVegetarian ? `
           <div class="field">
@@ -1290,14 +1312,14 @@ export async function sendCampRegistrationNotification(registration, camp, notif
       <div class="content">
         <div class="highlight">
           <strong>Eingang:</strong> ${formatDate(registration.createdAt || new Date())}<br>
-          <strong>${typeLabel}:</strong> <span class="camp-badge">${camp.title}</span>
+          <strong>${typeLabel}:</strong> <span class="camp-badge">${escapeHtml(camp.title)}</span>
         </div>
 
         <div class="section">
           <h2>${typeLabel}-Details</h2>
           <div class="field">
             <span class="field-label">${typeLabel}-Name:</span>
-            <span class="field-value">${camp.title}</span>
+            <span class="field-value">${escapeHtml(camp.title)}</span>
           </div>
           <div class="field">
             <span class="field-label">Zeitraum:</span>
@@ -1305,11 +1327,11 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           </div>
           <div class="field">
             <span class="field-label">Ort:</span>
-            <span class="field-value">${camp.location || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(camp.location || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Preis:</span>
-            <span class="field-value">${camp.price ? `${camp.price}€` : 'Keine Angabe'}</span>
+            <span class="field-value">${camp.price ? `${escapeHtml(String(camp.price))}€` : 'Keine Angabe'}</span>
           </div>
         </div>
 
@@ -1317,15 +1339,15 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           <h2>Teilnehmer-Daten</h2>
           <div class="field">
             <span class="field-label">Name:</span>
-            <span class="field-value">${registration.firstName} ${registration.lastName}</span>
+            <span class="field-value">${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)}</span>
           </div>
           <div class="field">
             <span class="field-label">E-Mail:</span>
-            <span class="field-value">${registration.email}</span>
+            <span class="field-value">${escapeHtml(registration.email)}</span>
           </div>
           <div class="field">
             <span class="field-label">Telefon:</span>
-            <span class="field-value">${registration.phone || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.phone || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Geburtsdatum:</span>
@@ -1333,7 +1355,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           </div>
           <div class="field">
             <span class="field-label">Geschlecht:</span>
-            <span class="field-value">${registration.sex || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.sex || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Mitglied:</span>
@@ -1349,7 +1371,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           ` : ''}
           <div class="field">
             <span class="field-label">Spielstärke:</span>
-            <span class="field-value">${registration.skillLevel || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.skillLevel || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Mannschaft:</span>
@@ -1363,15 +1385,15 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           <h2>Notfallkontakt</h2>
           <div class="field">
             <span class="field-label">Name:</span>
-            <span class="field-value">${registration.emergencyContact.name || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.emergencyContact.name || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Beziehung:</span>
-            <span class="field-value">${registration.emergencyContact.relationship || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.emergencyContact.relationship || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Telefon:</span>
-            <span class="field-value">${registration.emergencyContact.phone || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.emergencyContact.phone || 'Keine Angabe')}</span>
           </div>
         </div>
         ` : ''}
@@ -1381,15 +1403,15 @@ export async function sendCampRegistrationNotification(registration, camp, notif
           <h2>Zusätzlicher Notfallkontakt</h2>
           <div class="field">
             <span class="field-label">Name:</span>
-            <span class="field-value">${registration.additionalEmergencyContact.name || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.additionalEmergencyContact.name || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Beziehung:</span>
-            <span class="field-value">${registration.additionalEmergencyContact.relationship || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.additionalEmergencyContact.relationship || 'Keine Angabe')}</span>
           </div>
           <div class="field">
             <span class="field-label">Telefon:</span>
-            <span class="field-value">${registration.additionalEmergencyContact.phone || 'Keine Angabe'}</span>
+            <span class="field-value">${escapeHtml(registration.additionalEmergencyContact.phone || 'Keine Angabe')}</span>
           </div>
         </div>
         ` : ''}
@@ -1406,7 +1428,7 @@ export async function sendCampRegistrationNotification(registration, camp, notif
         <div class="section">
           <h2>Bemerkungen</h2>
           <div class="field">
-            <span class="field-value">${registration.notes}</span>
+            <span class="field-value">${escapeHtml(registration.notes)}</span>
           </div>
         </div>
         ` : ''}
@@ -1423,10 +1445,34 @@ export async function sendCampRegistrationNotification(registration, camp, notif
   // Generate plain text version
   const text = generateCampRegistrationTextContent(registration, camp);
 
+  return {
+    to: recipients,
+    subject,
+    html,
+    text,
+    sentToNicole,
+    notificationEmails: recipients
+  };
+}
+
+/**
+ * Send notification email to admins for new camp registration
+ * @param {Object} registration - Camp registration data
+ * @param {Object} camp - Camp details
+ * @param {Array} notificationEmails - Array of email addresses to notify
+ */
+export async function sendCampRegistrationNotification(registration, camp, notificationEmails) {
+  if (!notificationEmails || notificationEmails.length === 0) {
+    return; // No emails to send to
+  }
+
+  const rendered = renderCampRegistrationNotificationEmail(registration, camp, notificationEmails);
+  if (!rendered.notificationEmails || rendered.notificationEmails.length === 0) return;
+
   // Send to all notification emails
-  for (const email of notificationEmails) {
+  for (const email of rendered.notificationEmails) {
     try {
-      await sendEmail({ to: email, subject, html, text });
+      await sendEmail({ to: email, subject: rendered.subject, html: rendered.html, text: rendered.text });
     } catch (error) {
       logger.error(`Failed to send camp registration notification to ${email}:`, error);
       // Continue with other emails even if one fails
@@ -1675,9 +1721,12 @@ export async function sendEmailChangeWarning(oldEmail, newEmail, studentName) {
 }
 
 /**
- * Send camp registration received email to the student (pending — not yet confirmed)
+ * Render camp registration received email for the student (Pure Renderer)
+ * @param {Object} registration - Camp registration data
+ * @param {Object} camp - Camp details
+ * @returns {Object} { to, subject, html, text }
  */
-export async function sendCampRegistrationReceivedEmail(registration, camp) {
+export function renderCampRegistrationReceivedEmail(registration, camp) {
   const isEvent = camp.campType === 'event';
   const typeLabel = isEvent ? 'Event' : 'Camp';
   const subject = `${typeLabel}-Anmeldung eingegangen: ${camp.title}`;
@@ -1730,14 +1779,26 @@ export async function sendCampRegistrationReceivedEmail(registration, camp) {
     : '';
   const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nIhre Anmeldung für "${camp.title}" (${dateText})${categoryText} ist eingegangen.\n\nHinweis: Ihre Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere E-Mail, sobald sie bestätigt oder abgelehnt wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
-  return sendEmail({ to: registration.email, subject, html, text });
+  return { to: registration.email, subject, html, text };
 }
 
 /**
- * Send seasonal registration received email to the student (pending — not yet confirmed)
+ * Send camp registration received email to the student (pending — not yet confirmed)
  */
-export async function sendSeasonalRegistrationReceivedEmail(registration, period) {
-  const subject = `Anmeldung eingegangen: ${period.name || 'Saisontraining'}`;
+export async function sendCampRegistrationReceivedEmail(registration, camp) {
+  const rendered = renderCampRegistrationReceivedEmail(registration, camp);
+  return sendEmail({ to: rendered.to, subject: rendered.subject, html: rendered.html, text: rendered.text });
+}
+
+/**
+ * Render seasonal registration received email to the student (Pure Renderer)
+ * @param {Object} registration - Seasonal registration data
+ * @param {Object} period - Registration period
+ * @returns {Object} { to, subject, html, text }
+ */
+export function renderSeasonalRegistrationReceivedEmail(registration, period = {}) {
+  const periodName = period?.name || 'Saisontraining';
+  const subject = `Anmeldung eingegangen: ${periodName}`;
 
   const formatDate = (date) => {
     if (!date) return 'Keine Angabe';
@@ -1774,7 +1835,7 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
       <div class="content">
         <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
         <div class="highlight">
-          <strong>Die Anmeldung für <em>${escapeHtml(participantName)}</em> zum Saisontraining <em>${escapeHtml(period.name || 'Saisontraining')}</em> ist eingegangen.</strong><br>
+          <strong>Die Anmeldung für <em>${escapeHtml(participantName)}</em> zum Saisontraining <em>${escapeHtml(periodName)}</em> ist eingegangen.</strong><br>
           Zeitraum: ${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}
         </div>
         <p>Details finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".</p>
@@ -1791,9 +1852,17 @@ export async function sendSeasonalRegistrationReceivedEmail(registration, period
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
-  return sendEmail({ to: registration.email, subject, html, text });
+  return { to: registration.email, subject, html, text };
+}
+
+/**
+ * Send seasonal registration received email to the student (pending — not yet confirmed)
+ */
+export async function sendSeasonalRegistrationReceivedEmail(registration, period) {
+  const rendered = renderSeasonalRegistrationReceivedEmail(registration, period);
+  return sendEmail({ to: rendered.to, subject: rendered.subject, html: rendered.html, text: rendered.text });
 }
 
 /**
@@ -2140,6 +2209,7 @@ export async function sendSeasonalCancellationAdminEmail(registration, period, n
 }
 
 export default {
+  sendEmail,
   sendPasswordResetEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
@@ -2161,6 +2231,10 @@ export default {
   sendEmailChangeWarning,
   generateVerificationTokenWithExpiry,
   generatePasswordResetToken,
+  renderCampRegistrationNotificationEmail,
+  renderCampRegistrationReceivedEmail,
+  renderSeasonalRegistrationNotificationEmail,
+  renderSeasonalRegistrationReceivedEmail,
 };
 
 

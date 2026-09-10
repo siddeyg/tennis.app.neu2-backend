@@ -30,7 +30,14 @@ import requireRole, { requireAdminOrSupermod } from '../middleware/requireRole.j
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
-import { sendCampConfirmationEmail, sendCampRejectionEmail, sendEventCancellationEmail } from '../utils/emailService.js';
+import {
+  sendCampConfirmationEmail,
+  sendCampRejectionEmail,
+  sendEventCancellationEmail,
+  renderCampRegistrationNotificationEmail,
+  renderCampRegistrationReceivedEmail,
+  sendEmail
+} from '../utils/emailService.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -1139,6 +1146,146 @@ router.patch('/:id/cancel-event', auditLogMiddleware({ action: 'UPDATE', resourc
     res.status(500).json({
       success: false,
       error: 'Fehler beim Absagen des Camps'
+    });
+  }
+});
+
+/**
+ * POST /api/camps/:id/test-registration
+ * Simulate or perform a test registration and render the resulting emails
+ * (admin notification email and participant confirmation email).
+ * Admin-only route.
+ */
+router.post('/:id/test-registration', requireAuth, requireAdminOrSupermod, async (req, res) => {
+  try {
+    const camp = await Camp.findById(req.params.id);
+    if (!camp) {
+      return res.status(404).json({ success: false, error: 'Camp/Event nicht gefunden' });
+    }
+
+    const {
+      dryRun = true,
+      sendRealEmail = false,
+      scenario = 'standard',
+      registrationData = {}
+    } = req.body;
+
+    // Build realistic mock data with fallbacks
+    const mockData = {
+      campId: camp._id,
+      studentPortalUserId: new mongoose.Types.ObjectId(),
+      firstName: registrationData.firstName || 'Max',
+      lastName: registrationData.lastName || 'Mustermann (Test)',
+      email: registrationData.email || (req.user?.email || 'test-teilnehmer@mondo.local'),
+      phone: registrationData.phone || '0151 12345678',
+      birthdate: registrationData.birthdate || new Date('2015-05-15'),
+      sex: registrationData.sex || 'm',
+      member: registrationData.member !== undefined ? registrationData.member : true,
+      skillLevel: registrationData.skillLevel || 'Fortgeschritten',
+      team: registrationData.team !== undefined ? registrationData.team : true,
+      tournamentCategory: registrationData.tournamentCategory || (camp.categories?.length ? camp.categories[0] : undefined),
+      secondaryTournamentCategory: registrationData.secondaryTournamentCategory || undefined,
+      additionalChildren: Number(registrationData.additionalChildren) || 0,
+      additionalAdults: Number(registrationData.additionalAdults) || 0,
+      isBarbecueParticipant: Boolean(registrationData.isBarbecueParticipant),
+      barbecueCount: Number(registrationData.barbecueCount) || (registrationData.isBarbecueParticipant ? 1 : 0),
+      isVegetarian: Boolean(registrationData.isVegetarian),
+      notes: registrationData.notes || 'Automatisierte Testanmeldung im Admin-Portal.',
+      emergencyContact: registrationData.emergencyContact || {
+        name: 'Erika Mustermann',
+        relationship: 'Mutter',
+        phone: '0151 98765432'
+      },
+      status: 'pending',
+      createdAt: new Date(),
+      ...registrationData
+    };
+
+    // Perform schema validation
+    const tempDoc = new CampRegistration(mockData);
+    let validationErrors = [];
+    try {
+      await tempDoc.validate();
+    } catch (err) {
+      if (err.errors) {
+        validationErrors = Object.keys(err.errors).map(k => ({
+          field: k,
+          message: err.errors[k].message
+        }));
+      } else {
+        validationErrors.push({ message: err.message });
+      }
+    }
+
+    // Determine notification recipients
+    const notificationEmails = camp.notificationEmails && camp.notificationEmails.length > 0
+      ? [...camp.notificationEmails]
+      : ['info@mondo-tennisschule.de'];
+
+    // Render pure emails
+    const adminEmail = renderCampRegistrationNotificationEmail(mockData, camp, notificationEmails);
+    const userEmail = renderCampRegistrationReceivedEmail(mockData, camp);
+
+    // Optional: send test email strictly to current admin's email
+    let realEmailsSent = false;
+    if (sendRealEmail && req.user?.email) {
+      try {
+        await sendEmail({
+          to: req.user.email,
+          subject: `[TEST-VORSCHAU ADMIN] ${adminEmail.subject}`,
+          html: adminEmail.html,
+          text: adminEmail.text
+        });
+        await sendEmail({
+          to: req.user.email,
+          subject: `[TEST-VORSCHAU TEILNEHMER] ${userEmail.subject}`,
+          html: userEmail.html,
+          text: userEmail.text
+        });
+        realEmailsSent = true;
+      } catch (emailErr) {
+        logger.error('Failed to send test emails to admin:', emailErr);
+      }
+    }
+
+    res.json({
+      success: true,
+      dryRun: true,
+      scenario,
+      validation: {
+        valid: validationErrors.length === 0,
+        errors: validationErrors
+      },
+      camp: {
+        _id: camp._id,
+        title: camp.title,
+        campType: camp.campType,
+        notifyNicole: camp.notifyNicole
+      },
+      registrationData: mockData,
+      emails: {
+        userEmail: {
+          to: userEmail.to,
+          subject: userEmail.subject,
+          html: userEmail.html,
+          text: userEmail.text,
+          sent: realEmailsSent
+        },
+        adminEmail: {
+          to: adminEmail.to,
+          subject: adminEmail.subject,
+          html: adminEmail.html,
+          text: adminEmail.text,
+          sentToNicole: adminEmail.sentToNicole,
+          sent: realEmailsSent
+        }
+      }
+    });
+  } catch (error) {
+    logger.error('Error executing test registration for camp:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Ausführen der Testanmeldung: ' + error.message
     });
   }
 });
