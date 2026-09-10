@@ -1324,9 +1324,9 @@ router.post('/:id/test-registration', async (req, res) => {
     const {
       dryRun = true,
       sendRealEmail = false,
-      scenario = 'kids',
-      registrationData = {}
+      scenario = 'kids'
     } = req.body;
+    const registrationData = req.body.formData || req.body.registrationData || {};
 
     const isAdult = scenario === 'adults' || registrationData.formType === 'adults';
 

@@ -1166,9 +1166,9 @@ router.post('/:id/test-registration', requireAuth, requireAdminOrSupermod, async
     const {
       dryRun = true,
       sendRealEmail = false,
-      scenario = 'standard',
-      registrationData = {}
+      scenario = 'standard'
     } = req.body;
+    const registrationData = req.body.formData || req.body.registrationData || {};
 
     // Build realistic mock data with fallbacks
     const mockData = {
