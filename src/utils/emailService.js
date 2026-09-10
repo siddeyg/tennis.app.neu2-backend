@@ -862,7 +862,7 @@ export function renderSeasonalRegistrationNotificationEmail(registration, notifi
       Mo: 'Montag', Di: 'Dienstag', Mi: 'Mittwoch',
       Do: 'Donnerstag', Fr: 'Freitag', Sa: 'Samstag', So: 'Sonntag'
     };
-    return times.map(t => `${dayNames[t.day] || t.day}: ${t.hour} Uhr`).join('<br>');
+    return times.map(t => `${escapeHtml(dayNames[t.day] || t.day)}: ${escapeHtml(t.hour)} Uhr`).join('<br>');
   };
 
   // Format date
