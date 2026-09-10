@@ -313,6 +313,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       iban,
       // Privacy & remarks
       privacyConsent,
+      winterHolidayConsent,
       remarks
     } = req.body;
 
@@ -471,6 +472,7 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       phone: childData?.phone || phone || '',
       address: portalUser.address || address || '',
       privacyConsent,
+      winterHolidayConsent: !!winterHolidayConsent,
       remarks: remarks || ''
     };
 
@@ -840,6 +842,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       sepaMandate,
       accountHolder,
       iban,
+      winterHolidayConsent,
       remarks
     } = req.body;
 
@@ -886,6 +889,7 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       registration.iban = encryptIBAN(iban);
     }
 
+    if (winterHolidayConsent !== undefined) registration.winterHolidayConsent = !!winterHolidayConsent;
     if (remarks !== undefined) registration.remarks = remarks;
 
     await registration.save();

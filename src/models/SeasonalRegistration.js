@@ -216,6 +216,11 @@ const seasonalRegistrationSchema = new mongoose.Schema(
       // Must be true to submit
     },
 
+    winterHolidayConsent: {
+      type: Boolean,
+      default: false,
+    },
+
     remarks: {
       type: String,
       trim: true,
