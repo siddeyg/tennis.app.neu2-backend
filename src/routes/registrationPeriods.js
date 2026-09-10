@@ -1314,7 +1314,7 @@ router.delete('/:id/exclusions/:exclusionId', async (req, res) => {
  * the resulting confirmation and admin notification emails.
  * Admin-only route.
  */
-router.post('/:id/test-registration', async (req, res) => {
+router.post('/:id/test-registration', requireAuth, requireAdminOrSupermod, async (req, res) => {
   try {
     const period = await RegistrationPeriod.findById(req.params.id);
     if (!period) {
