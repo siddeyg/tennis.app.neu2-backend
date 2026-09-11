@@ -16,6 +16,7 @@ import logger from '../utils/logger.js';
 export const WINTER_2026_VENUES = [
   'BTHV Sand (Traglufthalle)',
   'BTHV Halle (Teppich)',
+  'BTHV (Belag noch offen)',
   'Brüser Berg (Sand)',
   'TC Duisdorf (Teppich)',
   'Robinson Club (Teppich)',
@@ -23,39 +24,45 @@ export const WINTER_2026_VENUES = [
 ];
 
 export const WINTER_2026_ADULT_SLOTS = [
-  // Montag
-  { day: 'Montag', hour: '12', venues: ['BTHV Sand (Traglufthalle)'] },
-  { day: 'Montag', hour: '13', venues: ['BTHV Sand (Traglufthalle)'] },
+  // Montag: BTHV (Belag noch offen) 12-14h, Duisdorf 13-16:30h, BTHV TLH 15-20h
+  { day: 'Montag', hour: '12', venues: ['BTHV (Belag noch offen)'] },
+  { day: 'Montag', hour: '13', venues: ['BTHV (Belag noch offen)', 'TC Duisdorf (Teppich)'] },
+  { day: 'Montag', hour: '14', venues: ['TC Duisdorf (Teppich)'] },
+  { day: 'Montag', hour: '15', venues: ['BTHV Sand (Traglufthalle)', 'TC Duisdorf (Teppich)'] },
+  { day: 'Montag', hour: '16', venues: ['BTHV Sand (Traglufthalle)'] },
   { day: 'Montag', hour: '17', venues: ['BTHV Sand (Traglufthalle)'] },
   { day: 'Montag', hour: '18', venues: ['BTHV Sand (Traglufthalle)'] },
   { day: 'Montag', hour: '19', venues: ['BTHV Sand (Traglufthalle)'] },
 
-  // Dienstag
-  { day: 'Dienstag', hour: '10', venues: ['BTHV Halle (Teppich)'] },
-  { day: 'Dienstag', hour: '11', venues: ['BTHV Halle (Teppich)'] },
-  { day: 'Dienstag', hour: '12', venues: ['BTHV Halle (Teppich)'] },
+  // Dienstag: BTHV (Belag noch offen) 10-13h, BTHV TLH 15-18h
+  { day: 'Dienstag', hour: '10', venues: ['BTHV (Belag noch offen)'] },
+  { day: 'Dienstag', hour: '11', venues: ['BTHV (Belag noch offen)'] },
+  { day: 'Dienstag', hour: '12', venues: ['BTHV (Belag noch offen)'] },
   { day: 'Dienstag', hour: '15', venues: ['BTHV Sand (Traglufthalle)'] },
   { day: 'Dienstag', hour: '16', venues: ['BTHV Sand (Traglufthalle)'] },
   { day: 'Dienstag', hour: '17', venues: ['BTHV Sand (Traglufthalle)'] },
 
-  // Mittwoch
+  // Mittwoch: BTHV Teppich 10-12h, Brüser Berg 15-18h, Robinson Club 21-22h
   { day: 'Mittwoch', hour: '10', venues: ['BTHV Halle (Teppich)'] },
   { day: 'Mittwoch', hour: '11', venues: ['BTHV Halle (Teppich)'] },
-  { day: 'Mittwoch', hour: '14', venues: ['Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '15', venues: ['Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '16', venues: ['Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '17', venues: ['Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '21', venues: ['Robinson Club (Teppich)'] },
 
-  // Donnerstag
+  // Donnerstag: BTHV Teppich 10-14h, BTHV TLH + Brüser Berg 15-18h
   { day: 'Donnerstag', hour: '10', venues: ['BTHV Halle (Teppich)'] },
   { day: 'Donnerstag', hour: '11', venues: ['BTHV Halle (Teppich)'] },
   { day: 'Donnerstag', hour: '12', venues: ['BTHV Halle (Teppich)'] },
-  { day: 'Donnerstag', hour: '15', venues: ['BTHV Sand (Traglufthalle)'] },
+  { day: 'Donnerstag', hour: '13', venues: ['BTHV Halle (Teppich)'] },
+  { day: 'Donnerstag', hour: '15', venues: ['BTHV Sand (Traglufthalle)', 'Brüser Berg (Sand)'] },
   { day: 'Donnerstag', hour: '16', venues: ['BTHV Sand (Traglufthalle)', 'Brüser Berg (Sand)'] },
   { day: 'Donnerstag', hour: '17', venues: ['BTHV Sand (Traglufthalle)', 'Brüser Berg (Sand)'] },
 
-  // Freitag
+  // Freitag: BTHV Teppich 10-13h (Neu!), Brüser Berg Sand 14-20h
+  { day: 'Freitag', hour: '10', venues: ['BTHV Halle (Teppich)'] },
+  { day: 'Freitag', hour: '11', venues: ['BTHV Halle (Teppich)'] },
+  { day: 'Freitag', hour: '12', venues: ['BTHV Halle (Teppich)'] },
   { day: 'Freitag', hour: '14', venues: ['Brüser Berg (Sand)'] },
   { day: 'Freitag', hour: '15', venues: ['Brüser Berg (Sand)'] },
   { day: 'Freitag', hour: '16', venues: ['Brüser Berg (Sand)'] },
@@ -63,8 +70,7 @@ export const WINTER_2026_ADULT_SLOTS = [
   { day: 'Freitag', hour: '18', venues: ['Brüser Berg (Sand)'] },
   { day: 'Freitag', hour: '19', venues: ['Brüser Berg (Sand)'] },
 
-  // Samstag
-  { day: 'Samstag', hour: '9', venues: ['BTHV Sand (Traglufthalle)', 'TC Duisdorf (Teppich)'] },
+  // Samstag: BTHV TLH 10-15h, TC Duisdorf Teppich 10-14h (vorläufig beibehalten bis Rückmeldung)
   { day: 'Samstag', hour: '10', venues: ['BTHV Sand (Traglufthalle)', 'TC Duisdorf (Teppich)'] },
   { day: 'Samstag', hour: '11', venues: ['BTHV Sand (Traglufthalle)', 'TC Duisdorf (Teppich)'] },
   { day: 'Samstag', hour: '12', venues: ['BTHV Sand (Traglufthalle)', 'TC Duisdorf (Teppich)'] },
