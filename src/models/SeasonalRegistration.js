@@ -221,6 +221,23 @@ const seasonalRegistrationSchema = new mongoose.Schema(
       default: false,
     },
 
+    isFirstTimeParticipant: {
+      type: Boolean,
+      default: false,
+    },
+
+    firstTimeDetails: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+      default: '',
+    },
+
+    isReturningPlayer: {
+      type: Boolean,
+      default: false,
+    },
+
     remarks: {
       type: String,
       trim: true,

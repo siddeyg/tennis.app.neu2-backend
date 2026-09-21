@@ -366,6 +366,28 @@ describe('Testanmeldungen & E-Mail-Vorschau Test Suite', () => {
       expect(result.text).toContain('Winter-Abo (Ferien/Feiertage): ✓ Zur Kenntnis genommen');
     });
 
+    test('should render first time participant and returning player details in notification email', () => {
+      const reg = {
+        firstName: 'Stefan',
+        lastName: 'Neuankömmling',
+        email: 'stefan@example.com',
+        formType: 'adults',
+        isFirstTimeParticipant: true,
+        isReturningPlayer: true,
+        firstTimeDetails: 'Spiele seit 5 Jahren, 2 Jahre Pause.',
+        availableTimesAdults: [{ day: 'Mo', hour: '18:00' }]
+      };
+
+      const result = renderSeasonalRegistrationNotificationEmail(reg, ['admin@mondo.de']);
+
+      expect(result.html).toContain('Erstteilnahme:');
+      expect(result.html).toContain('Wiedereinsteiger:in nach Trainings-/Spielpause');
+      expect(result.html).toContain('Spiele seit 5 Jahren, 2 Jahre Pause.');
+      expect(result.text).toContain('Erstteilnahme       : Ja');
+      expect(result.text).toContain('Wiedereinsteiger    : Ja (nach Trainings-/Spielpause)');
+      expect(result.text).toContain('Spiele seit 5 Jahren, 2 Jahre Pause.');
+    });
+
     test('should strictly escape HTML across all seasonal registration fields', () => {
       const xssReg = {
         firstName: '<script>xss()</script>',

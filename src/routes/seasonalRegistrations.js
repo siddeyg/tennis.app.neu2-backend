@@ -186,6 +186,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       sepaMandate,
       accountHolder,
       iban,
+      isFirstTimeParticipant,
+      firstTimeDetails,
+      isReturningPlayer,
       remarks
     } = req.body;
 
@@ -228,6 +231,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       registration.iban = encryptIBAN(iban);
     }
 
+    if (isFirstTimeParticipant !== undefined) registration.isFirstTimeParticipant = !!isFirstTimeParticipant;
+    if (firstTimeDetails !== undefined) registration.firstTimeDetails = firstTimeDetails;
+    if (isReturningPlayer !== undefined) registration.isReturningPlayer = !!isReturningPlayer;
     if (remarks !== undefined) registration.remarks = remarks;
 
     await registration.save();

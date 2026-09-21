@@ -832,6 +832,16 @@ function generateSeasonalRegistrationTextContent(registration) {
 
   text += field('Zahlungsart', isAdult ? 'Rechnung (Überweisung · kein Bankeinzug)' : 'Bankeinzug (SEPA-Basislastschrift)') + '\n';
 
+  if (registration.isFirstTimeParticipant) {
+    text += field('Erstteilnahme', 'Ja') + '\n';
+    if (registration.isReturningPlayer) {
+      text += field('Wiedereinsteiger', 'Ja (nach Trainings-/Spielpause)') + '\n';
+    }
+    if (registration.firstTimeDetails) {
+      text += field('Erfahrung/Spielstärke', registration.firstTimeDetails) + '\n';
+    }
+  }
+
   text += '\nVerfügbare Zeiten:\n' + availableTimes(times) + '\n';
 
   // Parent info (if provided)
@@ -1018,6 +1028,18 @@ export function renderSeasonalRegistrationNotificationEmail(registration, notifi
             <span class="field-label">Zahlungsart:</span>
             <span class="field-value">${isAdultHtml ? 'Rechnung (Überweisung · kein Bankeinzug)' : 'Bankeinzug (SEPA-Basislastschrift)'}</span>
           </div>
+          ${registration.isFirstTimeParticipant ? `
+          <div class="field">
+            <span class="field-label">Erstteilnahme:</span>
+            <span class="field-value">Ja${registration.isReturningPlayer ? ' (Wiedereinsteiger:in nach Trainings-/Spielpause)' : ''}</span>
+          </div>
+          ${registration.firstTimeDetails ? `
+          <div class="field">
+            <span class="field-label">Erfahrung &amp; Spielstärke:</span>
+            <span class="field-value">${escapeHtml(registration.firstTimeDetails)}</span>
+          </div>
+          ` : ''}
+          ` : ''}
           <div class="field">
             <span class="field-label">Verfügbare Zeiten:</span>
             <div style="margin-left: 150px; margin-top: 8px;">${formatAvailableTimes(timesHtml)}</div>

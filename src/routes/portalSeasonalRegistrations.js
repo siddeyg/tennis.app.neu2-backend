@@ -314,7 +314,11 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       // Privacy & remarks
       privacyConsent,
       winterHolidayConsent,
-      remarks
+      remarks,
+      // First-time participant fields
+      isFirstTimeParticipant,
+      firstTimeDetails,
+      isReturningPlayer
     } = req.body;
 
     // Validate required fields
@@ -322,6 +326,14 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       return res.status(400).json({
         success: false,
         error: 'Erforderliche Felder fehlen'
+      });
+    }
+
+    // Validate first-time participant explanation if checked
+    if (isFirstTimeParticipant && (!firstTimeDetails || !firstTimeDetails.trim())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Bitte beschreiben Sie kurz Ihre bisherige Tennis-Erfahrung und Spielstärke.'
       });
     }
 
@@ -473,6 +485,9 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       address: portalUser.address || address || '',
       privacyConsent,
       winterHolidayConsent: !!winterHolidayConsent,
+      isFirstTimeParticipant: !!isFirstTimeParticipant,
+      firstTimeDetails: firstTimeDetails || '',
+      isReturningPlayer: !!isReturningPlayer,
       remarks: remarks || ''
     };
 
@@ -843,6 +858,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       accountHolder,
       iban,
       winterHolidayConsent,
+      isFirstTimeParticipant,
+      firstTimeDetails,
+      isReturningPlayer,
       remarks
     } = req.body;
 
@@ -890,6 +908,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
     }
 
     if (winterHolidayConsent !== undefined) registration.winterHolidayConsent = !!winterHolidayConsent;
+    if (isFirstTimeParticipant !== undefined) registration.isFirstTimeParticipant = !!isFirstTimeParticipant;
+    if (firstTimeDetails !== undefined) registration.firstTimeDetails = firstTimeDetails;
+    if (isReturningPlayer !== undefined) registration.isReturningPlayer = !!isReturningPlayer;
     if (remarks !== undefined) registration.remarks = remarks;
 
     await registration.save();
