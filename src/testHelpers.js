@@ -20,7 +20,7 @@ export const disconnectTestDB = async () => {
     await mongoose.disconnect();
   }
   if (mongoServer) {
-    await mongoServer.stop();
+    await mongoServer.stop({ doCleanup: true, force: true });
   }
 };
 

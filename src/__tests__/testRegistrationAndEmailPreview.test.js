@@ -343,6 +343,7 @@ describe('Testanmeldungen & E-Mail-Vorschau Test Suite', () => {
         sessionDuration: 90,
         trainingGoals: ['Freizeit', 'Fitness'],
         groupSize: ['zu viert', 'zu dritt'],
+        winterHolidayConsent: true,
         availableTimesAdults: [
           { day: 'Di', hour: '18:00 - 19:30' }
         ],
@@ -356,10 +357,13 @@ describe('Testanmeldungen & E-Mail-Vorschau Test Suite', () => {
       expect(result.html).toContain('Fortgeschrittene');
       expect(result.html).toContain('Freizeit, Fitness');
       expect(result.html).toContain('zu viert, zu dritt');
+      expect(result.html).toContain('Winter-Abo:');
+      expect(result.html).toContain('ruht an Feiertagen &amp; Schulferien NRW');
       expect(result.html).toContain('90 Min');
       expect(result.html).toContain('Dienstag: 18:00 - 19:30 Uhr');
       expect(result.text).toContain('Fortgeschrittene');
       expect(result.text).toContain('Freizeit, Fitness');
+      expect(result.text).toContain('Winter-Abo (Ferien/Feiertage): ✓ Zur Kenntnis genommen');
     });
 
     test('should strictly escape HTML across all seasonal registration fields', () => {
@@ -425,6 +429,25 @@ describe('Testanmeldungen & E-Mail-Vorschau Test Suite', () => {
 
       expect(result.html).toContain('Felix Meier');
       expect(result.text).toContain('Die Anmeldung für "Felix Meier"');
+    });
+
+    test('should render invoice and Hallenkosten notice for adults', () => {
+      const period = { name: 'Wintertraining 2026/2027' };
+      const reg = {
+        firstName: 'Max',
+        lastName: 'Mustermann',
+        formType: 'adults',
+        email: 'max@example.com'
+      };
+
+      const result = renderSeasonalRegistrationReceivedEmail(reg, period);
+
+      expect(result.html).toContain('Abrechnung &amp; Bezahlung');
+      expect(result.html).toContain('Es erfolgt <strong>kein Bankeinzug</strong>');
+      expect(result.html).toContain('Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt');
+      expect(result.text).toContain('Abrechnung & Bezahlung:');
+      expect(result.text).toContain('Es erfolgt kein Bankeinzug');
+      expect(result.text).toContain('Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt');
     });
 
     test('should fallback gracefully when period object is empty or missing name', () => {

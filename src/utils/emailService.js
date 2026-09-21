@@ -820,6 +820,9 @@ function generateSeasonalRegistrationTextContent(registration) {
     if (registration.groupSize?.length) {
       text += field('Gruppengröße', registration.groupSize.join(', ')) + '\n';
     }
+    if (registration.winterHolidayConsent) {
+      text += field('Winter-Abo (Ferien/Feiertage)', '✓ Zur Kenntnis genommen') + '\n';
+    }
   }
 
   text += '\nVerfügbare Zeiten:\n' + availableTimes(times) + '\n';
@@ -990,6 +993,12 @@ export function renderSeasonalRegistrationNotificationEmail(registration, notifi
           <div class="field">
             <span class="field-label">Gruppengröße:</span>
             <span class="field-value">${escapeHtml(registration.groupSize.join(', '))}</span>
+          </div>
+          ` : ''}
+          ${registration.winterHolidayConsent ? `
+          <div class="field">
+            <span class="field-label">Winter-Abo:</span>
+            <span class="field-value">✓ Zur Kenntnis genommen (ruht an Feiertagen &amp; Schulferien NRW)</span>
           </div>
           ` : ''}
           `}
@@ -1842,6 +1851,14 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
         <div class="notice">
           <strong>Hinweis:</strong> Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.
         </div>
+        ${registration.formType === 'adults' ? `
+        <div class="notice" style="background-color: #f0f9ff; border-left: 4px solid #0284c7; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #0f172a;">
+          <strong>Abrechnung &amp; Bezahlung:</strong><br>
+          Sie erhalten von uns eine <strong>Rechnung</strong>. Es erfolgt <strong>kein Bankeinzug</strong>.<br>
+          Die Rechnung für das Training wird zeitnah zum Saisonstart versandt.<br>
+          <em>Hinweis zu den Hallenkosten: Die Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt, da die Hallenbetreiber früh ihr Geld sehen wollen.</em>
+        </div>
+        ` : ''}
         <p>Bei Fragen wenden Sie sich gerne an uns.</p>
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
@@ -1852,7 +1869,11 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
     </html>
   `;
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const adultNoticeText = registration.formType === 'adults'
+    ? '\n\nAbrechnung & Bezahlung:\nSie erhalten von uns eine Rechnung. Es erfolgt kein Bankeinzug.\nDie Rechnung für das Training wird zeitnah zum Saisonstart versandt.\nHinweis zu den Hallenkosten: Die Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt, da die Hallenbetreiber früh ihr Geld sehen wollen.\n'
+    : '';
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.${adultNoticeText}\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return { to: registration.email, subject, html, text };
 }
