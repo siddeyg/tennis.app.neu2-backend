@@ -1870,9 +1870,7 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
         ${registration.formType === 'adults' ? `
         <div class="notice" style="background-color: #f0f9ff; border-left: 4px solid #0284c7; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #0f172a;">
           <strong>Abrechnung &amp; Bezahlung:</strong><br>
-          Sie erhalten von uns eine <strong>Rechnung</strong>. Es erfolgt <strong>kein Bankeinzug</strong>.<br>
-          Die Rechnung für das Training wird zeitnah zum Saisonstart versandt.<br>
-          <em>Hinweis zu den Hallenkosten: Die Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt, da die Hallenbetreiber früh ihr Geld sehen wollen.</em>
+          Sie erhalten von uns eine <strong>Rechnung zum Saisonbeginn</strong>. Es erfolgt <strong>kein Bankeinzug</strong>.
         </div>
         ` : `
         <div class="notice" style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #14532d;">
@@ -1892,7 +1890,7 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
   `;
 
   const billingNoticeText = registration.formType === 'adults'
-    ? '\n\nAbrechnung & Bezahlung:\nSie erhalten von uns eine Rechnung. Es erfolgt kein Bankeinzug.\nDie Rechnung für das Training wird zeitnah zum Saisonstart versandt.\nHinweis zu den Hallenkosten: Die Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt, da die Hallenbetreiber früh ihr Geld sehen wollen.\n'
+    ? '\n\nAbrechnung & Bezahlung:\nSie erhalten von uns eine Rechnung zum Saisonbeginn. Es erfolgt kein Bankeinzug.\n'
     : '\n\nAbrechnung & Bezahlung:\nDie Abrechnung für Kinder und Jugendliche (U18) erfolgt per Bankeinzug (SEPA-Basislastschrift) über das von Ihnen angegebene Bankkonto.\nDer Einzug erfolgt zeitnah zum Beginn des Trainingszeitraums.\n';
 
   const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.${billingNoticeText}\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;

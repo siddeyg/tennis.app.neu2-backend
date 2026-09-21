@@ -443,11 +443,10 @@ describe('Testanmeldungen & E-Mail-Vorschau Test Suite', () => {
       const result = renderSeasonalRegistrationReceivedEmail(reg, period);
 
       expect(result.html).toContain('Abrechnung &amp; Bezahlung');
+      expect(result.html).toContain('Rechnung zum Saisonbeginn');
       expect(result.html).toContain('Es erfolgt <strong>kein Bankeinzug</strong>');
-      expect(result.html).toContain('Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt');
       expect(result.text).toContain('Abrechnung & Bezahlung:');
-      expect(result.text).toContain('Es erfolgt kein Bankeinzug');
-      expect(result.text).toContain('Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt');
+      expect(result.text).toContain('Sie erhalten von uns eine Rechnung zum Saisonbeginn. Es erfolgt kein Bankeinzug.');
     });
 
     test('should fallback gracefully when period object is empty or missing name', () => {
