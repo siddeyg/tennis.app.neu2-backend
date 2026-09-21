@@ -945,13 +945,21 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
           'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
           'Jugend HOBBY (Gelb)': 'Gelb Hobby',
           'Jugend TEAM (Gelb)': 'Gelb Team',
+          'Kindergarten (Jg. 2019–2022 / 4–7 Jahre)': 'Kinderland',
+          'ROT (ca. 6–8 Jahre)': 'Rot',
+          'ORANGE (ca. 8–10 Jahre)': 'Orange',
+          'GRÜN (ca. 10–12 Jahre)': 'Grün',
+          'GELB (11–17 Jahre)': 'Gelb Hobby',
+          'TEAM-GELB (11–17 Jahre / U15)': 'Gelb Team',
         };
 
         // Add form-specific fields
         if (submission.formType === 'kids') {
           studentData.trainigGroup = trainigGroupMap[submission.trainingsart] || submission.trainingsart;
           studentData.member = submission.mitgliedsstatus === 'Mitglied';
-          studentData.team = !!(submission.teamParticipation && submission.teamParticipation !== '-' && submission.teamParticipation !== false);
+          studentData.team = !!(submission.teamParticipation && submission.teamParticipation !== '-' && submission.teamParticipation !== false) ||
+            submission.trainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
+            submission.trainingsart === 'Jugend TEAM (Gelb)';
           let kidsSlots = (submission.availableTimesKids || []).map(t => ({ day: t.day, hour: t.hour, venue: t.venue || '' }));
           if (submission.priorityTime && submission.priorityTime.day) {
             const prio = kidsSlots.find(t => isSameSlot(t, submission.priorityTime));

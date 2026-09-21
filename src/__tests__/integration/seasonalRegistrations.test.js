@@ -730,4 +730,86 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       expect(response.body.error).toMatch(/bereits|already/i);
     });
   });
+
+  describe('Youth Winter 2026/2027 Talentinos & Adaptations', () => {
+    it('should allow creating and processing a TEAM-GELB registration with team=true and Gelb Team', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'kids',
+        firstName: 'Leo',
+        lastName: 'Talentino',
+        birthdate: new Date('2013-03-10'),
+        email: 'leo@test.com',
+        availableTimesKids: [
+          { day: 'Montag', hour: 15, venue: 'BTHV' },
+          { day: 'Dienstag', hour: 16, venue: 'BTHV' },
+        ],
+        mitgliedsstatus: 'Mitglied',
+        trainingsart: 'TEAM-GELB (11–17 Jahre / U15)',
+        sessionDuration: 90,
+        privacyConsent: true,
+        status: 'pending',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/process`)
+        .send({ studentAction: 'create' })
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+
+      const createdStudent = await Student.findOne({ email: 'leo@test.com' });
+      expect(createdStudent).toBeTruthy();
+      expect(createdStudent.trainigGroup).toBe('Gelb Team');
+      expect(createdStudent.team).toBe(true);
+      expect(createdStudent.sessionDuration).toBe(90);
+    });
+
+    it('should map ROT group to "Rot" and allow updating sessionDuration via PUT', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'kids',
+        firstName: 'Mia',
+        lastName: 'Talentino',
+        birthdate: new Date('2018-02-14'),
+        email: 'mia@test.com',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 15, venue: 'BTHV' },
+        ],
+        mitgliedsstatus: 'Schnuppermitglied',
+        trainingsart: 'ROT (ca. 6–8 Jahre)',
+        sessionDuration: 60,
+        privacyConsent: true,
+        status: 'pending',
+      });
+
+      // Try PUT with 90 minutes for ROT (should be rejected)
+      const invalidPut = await request(app)
+        .put(`/api/seasonal-registrations/${registration._id}`)
+        .send({ sessionDuration: 90 })
+        .expect(400);
+
+      expect(invalidPut.body.error).toContain('90 Minuten Trainingsdauer ist ausschließlich');
+
+      // Process ROT registration
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/process`)
+        .send({ studentAction: 'create' })
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+
+      const createdStudent = await Student.findOne({ email: 'mia@test.com' });
+      expect(createdStudent).toBeTruthy();
+      expect(createdStudent.trainigGroup).toBe('Rot');
+      expect(createdStudent.member).toBe(false); // Schnuppermitglied != Vollmitglied
+    });
+  });
 });

@@ -177,12 +177,14 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       mitgliedsstatus,
       trainingsart,
       trainingshäufigkeit,
+      sessionDuration,
       teamParticipation,
       availableTimesKids,
       spielstärke,
       trainingGoals,
       groupSize,
       availableTimesAdults,
+      priorityTime,
       sepaMandate,
       accountHolder,
       iban,
@@ -202,11 +204,37 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
 
     // Update kids-specific fields
     if (registration.formType === 'kids') {
+      const newTrainingsart = trainingsart || registration.trainingsart;
+      const newMitglied = mitgliedsstatus || registration.mitgliedsstatus;
+      const is90MinAllowed =
+        newTrainingsart === 'GELB (11–17 Jahre)' ||
+        newTrainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
+        newTrainingsart === 'Jugend HOBBY (Gelb)' ||
+        newTrainingsart === 'Jugend TEAM (Gelb)';
+      const durToCheck = sessionDuration !== undefined ? sessionDuration : registration.sessionDuration;
+      if (Number(durToCheck) === 90 && !is90MinAllowed) {
+        return res.status(400).json({
+          success: false,
+          error: '90 Minuten Trainingsdauer ist ausschließlich für GELB und TEAM-GELB verfügbar.'
+        });
+      }
+      const isTeamGelb =
+        newTrainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
+        newTrainingsart === 'Jugend TEAM (Gelb)';
+      if (isTeamGelb && (newMitglied === 'Schnuppermitglied' || newMitglied === 'Schnupperkind')) {
+        return res.status(400).json({
+          success: false,
+          error: 'Für TEAM-GELB ist eine Vereinsmitgliedschaft erforderlich (keine Schnuppermitgliedschaft).'
+        });
+      }
+
       if (mitgliedsstatus) registration.mitgliedsstatus = mitgliedsstatus;
       if (trainingsart) registration.trainingsart = trainingsart;
       if (trainingshäufigkeit) registration.trainingshäufigkeit = trainingshäufigkeit;
+      if (sessionDuration !== undefined) registration.sessionDuration = sessionDuration ? Number(sessionDuration) : null;
       if (teamParticipation !== undefined) registration.teamParticipation = teamParticipation;
       if (availableTimesKids) registration.availableTimesKids = availableTimesKids;
+      if (priorityTime !== undefined) registration.priorityTime = priorityTime;
     }
 
     // Update adults-specific fields
@@ -214,7 +242,9 @@ router.put('/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalReg
       if (spielstärke) registration.spielstärke = spielstärke;
       if (trainingGoals) registration.trainingGoals = trainingGoals;
       if (groupSize) registration.groupSize = groupSize;
+      if (sessionDuration !== undefined) registration.sessionDuration = sessionDuration ? Number(sessionDuration) : null;
       if (availableTimesAdults) registration.availableTimesAdults = availableTimesAdults;
+      if (priorityTime !== undefined) registration.priorityTime = priorityTime;
     }
 
     // Update SEPA fields
@@ -422,13 +452,21 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
       'Jugend HOBBY (Gelb)': 'Gelb Hobby',
       'Jugend TEAM (Gelb)': 'Gelb Team',
+      'Kindergarten (Jg. 2019–2022 / 4–7 Jahre)': 'Kinderland',
+      'ROT (ca. 6–8 Jahre)': 'Rot',
+      'ORANGE (ca. 8–10 Jahre)': 'Orange',
+      'GRÜN (ca. 10–12 Jahre)': 'Grün',
+      'GELB (11–17 Jahre)': 'Gelb Hobby',
+      'TEAM-GELB (11–17 Jahre / U15)': 'Gelb Team',
     };
 
     // Add form-specific fields
     if (registration.formType === 'kids') {
       studentData.trainigGroup = trainigGroupMap[registration.trainingsart] || registration.trainingsart;
       studentData.member = registration.mitgliedsstatus === 'Mitglied';
-      studentData.team = !!(registration.teamParticipation && registration.teamParticipation !== '-');
+      studentData.team = !!(registration.teamParticipation && registration.teamParticipation !== '-' && registration.teamParticipation !== false) ||
+        registration.trainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
+        registration.trainingsart === 'Jugend TEAM (Gelb)';
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
       studentData.sessionDuration = registration.sessionDuration || null;
       let kidsSlots = (registration.availableTimesKids || []).map(t => ({

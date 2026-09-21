@@ -85,7 +85,7 @@ const seasonalRegistrationSchema = new mongoose.Schema(
 
     mitgliedsstatus: {
       type: String,
-      enum: ['Mitglied', 'Nicht-Mitglied', 'Schnupperkind', 'Nicht-Mitglied/Schnupperkind', 'Student', null],
+      enum: ['Mitglied', 'Nicht-Mitglied', 'Schnupperkind', 'Schnuppermitglied', 'Nicht-Mitglied/Schnupperkind', 'Student', null],
     },
 
     trainingsart: {
@@ -97,6 +97,12 @@ const seasonalRegistrationSchema = new mongoose.Schema(
         'KIDS-GRÜN (ca. 10-12 Jahre)',
         'Jugend HOBBY (Gelb)',
         'Jugend TEAM (Gelb)',
+        'Kindergarten (Jg. 2019–2022 / 4–7 Jahre)',
+        'ROT (ca. 6–8 Jahre)',
+        'ORANGE (ca. 8–10 Jahre)',
+        'GRÜN (ca. 10–12 Jahre)',
+        'GELB (11–17 Jahre)',
+        'TEAM-GELB (11–17 Jahre / U15)',
         null,
       ],
     },
