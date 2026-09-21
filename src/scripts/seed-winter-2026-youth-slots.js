@@ -18,7 +18,7 @@ import logger from '../utils/logger.js';
 
 export const generateSlots = (day, fromHour, toHour, venues) => {
   const slots = [];
-  for (let h = fromHour; h < toHour; h += 0.5) {
+  for (let h = fromHour; h < toHour; h += 1) {
     slots.push({
       day,
       hour: h,
@@ -84,8 +84,8 @@ async function seedWinterYouthSlots() {
 
     for (const [day, hours] of Object.entries(byDay)) {
       const min = Math.min(...hours);
-      const max = Math.max(...hours) + 0.5;
-      logger.info(`  • ${day}: ${min}:00 – ${max}:00 Uhr (${hours.length} Halbstunden-Slots)`);
+      const max = Math.max(...hours) + 1;
+      logger.info(`  • ${day}: ${min}:00 – ${max}:00 Uhr (${hours.length} Stunden-Slots)`);
     }
 
     await mongoose.disconnect();
