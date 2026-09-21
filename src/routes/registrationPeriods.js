@@ -32,6 +32,7 @@ import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 import { getHolidaysInRange } from '../utils/nrwHolidays.js';
+import { maskIBAN } from '../utils/encryption.js';
 import {
   renderSeasonalRegistrationNotificationEmail,
   renderSeasonalRegistrationReceivedEmail,
@@ -833,10 +834,19 @@ router.get('/:id/submissions', async (req, res) => {
       .populate('processedBy', 'firstName lastName')
       .sort({ createdAt: -1 });
 
+    const sanitizedSubmissions = submissions.map(reg => {
+      const obj = reg.toObject();
+      if (obj.iban) {
+        obj.ibanMasked = maskIBAN(obj.iban, true);
+        delete obj.iban;
+      }
+      return obj;
+    });
+
     res.json({
       success: true,
-      count: submissions.length,
-      submissions
+      count: sanitizedSubmissions.length,
+      submissions: sanitizedSubmissions
     });
   } catch (error) {
     logger.error('Error fetching submissions:', error);
