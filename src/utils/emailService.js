@@ -830,6 +830,8 @@ function generateSeasonalRegistrationTextContent(registration) {
     }
   }
 
+  text += field('Zahlungsart', isAdult ? 'Rechnung (Überweisung · kein Bankeinzug)' : 'Bankeinzug (SEPA-Basislastschrift)') + '\n';
+
   text += '\nVerfügbare Zeiten:\n' + availableTimes(times) + '\n';
 
   // Parent info (if provided)
@@ -1012,6 +1014,10 @@ export function renderSeasonalRegistrationNotificationEmail(registration, notifi
           </div>
           ` : ''}
           `}
+          <div class="field">
+            <span class="field-label">Zahlungsart:</span>
+            <span class="field-value">${isAdultHtml ? 'Rechnung (Überweisung · kein Bankeinzug)' : 'Bankeinzug (SEPA-Basislastschrift)'}</span>
+          </div>
           <div class="field">
             <span class="field-label">Verfügbare Zeiten:</span>
             <div style="margin-left: 150px; margin-top: 8px;">${formatAvailableTimes(timesHtml)}</div>
@@ -1868,7 +1874,13 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
           Die Rechnung für das Training wird zeitnah zum Saisonstart versandt.<br>
           <em>Hinweis zu den Hallenkosten: Die Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt, da die Hallenbetreiber früh ihr Geld sehen wollen.</em>
         </div>
-        ` : ''}
+        ` : `
+        <div class="notice" style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #14532d;">
+          <strong>Abrechnung &amp; Bezahlung:</strong><br>
+          Die Abrechnung für Kinder und Jugendliche (U18) erfolgt per <strong>Bankeinzug (SEPA-Basislastschrift)</strong> über das von Ihnen angegebene Bankkonto.<br>
+          Der Einzug erfolgt zeitnah zum Beginn des Trainingszeitraums.
+        </div>
+        `}
         <p>Bei Fragen wenden Sie sich gerne an uns.</p>
         <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
       </div>
@@ -1879,11 +1891,11 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
     </html>
   `;
 
-  const adultNoticeText = registration.formType === 'adults'
+  const billingNoticeText = registration.formType === 'adults'
     ? '\n\nAbrechnung & Bezahlung:\nSie erhalten von uns eine Rechnung. Es erfolgt kein Bankeinzug.\nDie Rechnung für das Training wird zeitnah zum Saisonstart versandt.\nHinweis zu den Hallenkosten: Die Hallenkosten werden bereits vor Trainingsbeginn in Rechnung gestellt, da die Hallenbetreiber früh ihr Geld sehen wollen.\n'
-    : '';
+    : '\n\nAbrechnung & Bezahlung:\nDie Abrechnung für Kinder und Jugendliche (U18) erfolgt per Bankeinzug (SEPA-Basislastschrift) über das von Ihnen angegebene Bankkonto.\nDer Einzug erfolgt zeitnah zum Beginn des Trainingszeitraums.\n';
 
-  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.${adultNoticeText}\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.${billingNoticeText}\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
   return { to: registration.email, subject, html, text };
 }
