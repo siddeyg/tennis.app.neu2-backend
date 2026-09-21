@@ -805,7 +805,9 @@ function generateSeasonalRegistrationTextContent(registration) {
   text += field('Formular', isAdult ? 'Erwachsene' : 'Kinder/Jugend') + '\n';
 
   if (!isAdult) {
-    text += field('Trainingsart', optional(registration.trainingsart)) + '\n';
+    const isTeamGelb = registration.trainingsart?.startsWith('TEAM-GELB') || registration.trainingsart === 'Jugend TEAM (Gelb)';
+    const artDisplay = isTeamGelb ? `${registration.trainingsart} [⭐️ U15 Mannschaft · Priorität 1]` : registration.trainingsart;
+    text += field('Trainingsart', optional(artDisplay)) + '\n';
     text += field('Häufigkeit', optional(registration.trainingshäufigkeit)) + '\n';
     if (registration.sessionDuration) {
       text += field('Trainingsdauer', `${registration.sessionDuration} Min`) + '\n';
@@ -972,7 +974,12 @@ export function renderSeasonalRegistrationNotificationEmail(registration, notifi
           ${!isAdultHtml ? `
           <div class="field">
             <span class="field-label">Trainingsart:</span>
-            <span class="field-value">${escapeHtml(registration.trainingsart || 'Keine Angabe')}</span>
+            <span class="field-value">
+              ${escapeHtml(registration.trainingsart || 'Keine Angabe')}
+              ${(registration.trainingsart?.startsWith('TEAM-GELB') || registration.trainingsart === 'Jugend TEAM (Gelb)') ? `
+                <span style="display: inline-block; background-color: #fef08a; color: #854d0e; font-weight: bold; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 6px;">⭐️ U15 Mannschaft (Prio 1)</span>
+              ` : ''}
+            </span>
           </div>
           <div class="field">
             <span class="field-label">Häufigkeit:</span>
@@ -1897,8 +1904,10 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
         ` : `
         <div class="notice" style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px 15px; border-radius: 4px; margin: 15px 0; font-size: 14px; color: #14532d;">
           <strong>Abrechnung &amp; Bezahlung:</strong><br>
-          Die Abrechnung für Kinder und Jugendliche (U18) erfolgt per <strong>Bankeinzug (SEPA-Basislastschrift)</strong> über das von Ihnen angegebene Bankkonto.<br>
-          Der Einzug erfolgt zeitnah zum Beginn des Trainingszeitraums.
+          Die Abrechnung für Kinder und Jugendliche (U18) erfolgt per <strong>Bankeinzug (SEPA-Basislastschrift)</strong> über das angegebene Bankkonto.<br>
+          ${registration.trainingsart ? `<strong>Trainingsart:</strong> ${escapeHtml(registration.trainingsart)}<br>` : ''}
+          ${registration.sessionDuration ? `<strong>Trainingsdauer:</strong> ${escapeHtml(String(registration.sessionDuration))} Minuten<br>` : ''}
+          <span style="display: inline-block; margin-top: 4px; color: #15803d; font-weight: bold;">✓ Alle Hallenkosten sind im Saisonbeitrag enthalten.</span> Ausgefallene Stunden werden bis zu 3 Einheiten nicht erstattet oder nachgeholt.
         </div>
         `}
         <p>Bei Fragen wenden Sie sich gerne an uns.</p>
@@ -1911,9 +1920,11 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
     </html>
   `;
 
+  const youthDetailsText = `${registration.trainingsart ? `Trainingsart: ${registration.trainingsart}\n` : ''}${registration.sessionDuration ? `Trainingsdauer: ${registration.sessionDuration} Minuten\n` : ''}Alle Hallenkosten sind im Saisonbeitrag enthalten. Ausgefallene Stunden werden bis zu 3 Einheiten nicht erstattet oder nachgeholt.\n`;
+
   const billingNoticeText = registration.formType === 'adults'
     ? '\n\nAbrechnung & Bezahlung:\nSie erhalten von uns eine Rechnung zum Saisonbeginn. Es erfolgt kein Bankeinzug.\n'
-    : '\n\nAbrechnung & Bezahlung:\nDie Abrechnung für Kinder und Jugendliche (U18) erfolgt per Bankeinzug (SEPA-Basislastschrift) über das von Ihnen angegebene Bankkonto.\nDer Einzug erfolgt zeitnah zum Beginn des Trainingszeitraums.\n';
+    : `\n\nAbrechnung & Bezahlung:\nDie Abrechnung für Kinder und Jugendliche (U18) erfolgt per Bankeinzug (SEPA-Basislastschrift) über das angegebene Bankkonto.\n${youthDetailsText}`;
 
   const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${periodName}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) ist eingegangen.\n\nDetails finden Sie im Online-Portal unter dem Menüpunkt "Meine Anmeldungen".\n\nHinweis: Die Anmeldung ist noch nicht bestätigt. Sie wird von uns geprüft und Sie erhalten eine weitere Benachrichtigung, sobald sie bearbeitet wurde.${billingNoticeText}\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
 
