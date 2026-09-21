@@ -19,6 +19,8 @@ import '../loadEnv.js';
 import mongoose from 'mongoose';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
+import User from '../models/User.js';
+import SavedSchedule from '../models/SavedSchedule.js';
 import logger from '../utils/logger.js';
 import { WINTER_2026_YOUTH_SLOTS } from './seed-winter-2026-youth-slots.js';
 import { WINTER_2026_ADULT_SLOTS, WINTER_2026_VENUES } from './seed-winter-2026-adult-slots.js';
@@ -42,6 +44,11 @@ export async function setupWinterPeriod() {
     await mongoose.connect(mongoUri);
     logger.info('Connected to MongoDB');
 
+    const adminUser = await User.findOne({ role: { $in: ['admin', 'supermod'] } });
+    if (!adminUser) {
+      throw new Error('No admin user found to associate with RegistrationPeriod');
+    }
+
     let period = await RegistrationPeriod.findOne({
       $or: [
         { name: /Wintertraining 2026/i },
@@ -55,9 +62,13 @@ export async function setupWinterPeriod() {
       period = new RegistrationPeriod({
         name: 'Wintertraining 2026/2027',
         season: 'winter',
+        createdBy: adminUser._id,
       });
     } else {
       logger.info(`Found existing period "${period.name}" (ID: ${period._id}) — updating...`);
+      if (!period.createdBy) {
+        period.createdBy = adminUser._id;
+      }
     }
 
     // Official dates
@@ -99,6 +110,35 @@ export async function setupWinterPeriod() {
         'privacyConsent'
       ]
     };
+
+    // Ensure linked training plan exists for open status
+    if (!period.currentPlanId) {
+      let plan = await SavedSchedule.findOne({ periodId: period._id });
+      if (!plan) {
+        plan = new SavedSchedule({
+          name: 'Wintertraining 2026/2027 - Basisplan',
+          description: 'Initialer Trainingsplan für Winter 2026/2027',
+          periodId: period._id,
+          version: 1,
+          createdBy: adminUser._id,
+          createdByEmail: adminUser.email,
+          students: [],
+          coaches: [],
+          schedule: [],
+          studentsNotSet: [],
+          metadata: {
+            studentCount: 0,
+            coachCount: 0,
+            courseCount: 0,
+            possibleCourseCount: 0,
+            unassignedCount: 0
+          }
+        });
+        await plan.save();
+        logger.info(`Created initial training plan for period (ID: ${plan._id})`);
+      }
+      period.currentPlanId = plan._id;
+    }
 
     // Deactivate all older periods
     await RegistrationPeriod.updateMany(
