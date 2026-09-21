@@ -68,7 +68,12 @@ const textFormatters = {
       Mo: 'Montag', Di: 'Dienstag', Mi: 'Mittwoch',
       Do: 'Donnerstag', Fr: 'Freitag', Sa: 'Samstag', So: 'Sonntag'
     };
-    return times.map(t => `  - ${dayNames[t.day] || t.day}: ${t.hour} Uhr`).join('\n');
+    return times.map(t => {
+      const hNum = Number(t.hour);
+      const hourStr = !isNaN(hNum) ? `${hNum}:00–${hNum + 1}:00 Uhr` : `${t.hour} Uhr`;
+      const venueStr = t.venue ? ` (${t.venue})` : '';
+      return `  - ${dayNames[t.day] || t.day}: ${hourStr}${venueStr}`;
+    }).join('\n');
   },
 
   // Create section divider with title
@@ -865,7 +870,12 @@ export function renderSeasonalRegistrationNotificationEmail(registration, notifi
       Mo: 'Montag', Di: 'Dienstag', Mi: 'Mittwoch',
       Do: 'Donnerstag', Fr: 'Freitag', Sa: 'Samstag', So: 'Sonntag'
     };
-    return times.map(t => `${escapeHtml(dayNames[t.day] || t.day)}: ${escapeHtml(t.hour)} Uhr`).join('<br>');
+    return times.map(t => {
+      const hNum = Number(t.hour);
+      const hourStr = !isNaN(hNum) ? `${hNum}:00–${hNum + 1}:00 Uhr` : `${t.hour} Uhr`;
+      const venueStr = t.venue ? ` · ${escapeHtml(t.venue)}` : '';
+      return `${escapeHtml(dayNames[t.day] || t.day)}: ${escapeHtml(hourStr)}${venueStr}`;
+    }).join('<br>');
   };
 
   // Format date

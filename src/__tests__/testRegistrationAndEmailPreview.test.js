@@ -322,12 +322,12 @@ describe('Testanmeldungen & E-Mail-Vorschau Test Suite', () => {
       expect(result.subject).toBe('Neue Saisonregistrierung: Leo Musterkind');
       expect(result.html).toContain('Kinder/Jugend');
       expect(result.html).toContain('KIDS-GRÜN (ca. 10-12 Jahre)');
-      expect(result.html).toContain('Montag: 15 Uhr');
-      expect(result.html).toContain('Mittwoch: 16 Uhr');
+      expect(result.html).toContain('Montag: 15:00–16:00 Uhr');
+      expect(result.html).toContain('Mittwoch: 16:00–17:00 Uhr');
       expect(result.html).toContain('mutter@example.com');
       expect(result.html).toContain('Spielt gerne Vorhand.');
       expect(result.text).toContain('Leo Musterkind');
-      expect(result.text).toContain('Montag: 15 Uhr');
+      expect(result.text).toContain('Montag: 15:00–16:00 Uhr');
     });
 
     test('should render adults seasonal registration with skillLevel, goals, and groupSize', () => {
