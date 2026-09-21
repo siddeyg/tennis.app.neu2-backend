@@ -48,14 +48,14 @@ export const WINTER_2026_ADULT_SLOTS = [
   { day: 'Mittwoch', hour: '17', venues: ['TC Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '21', venues: ['Robinson Club (Teppich)'] },
 
-  // Donnerstag: BTHV Teppich 10-14h, BTHV TLH + Brüser Berg 15-18h
+  // Donnerstag: BTHV Teppich 10-14h, BTHV TLH 15-17h, Brüser Berg 15-18h
   { day: 'Donnerstag', hour: '10', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Donnerstag', hour: '11', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Donnerstag', hour: '12', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Donnerstag', hour: '13', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Donnerstag', hour: '15', venues: ['BonnerTHV – Traglufthalle', 'TC Brüser Berg (Sand)'] },
   { day: 'Donnerstag', hour: '16', venues: ['BonnerTHV – Traglufthalle', 'TC Brüser Berg (Sand)'] },
-  { day: 'Donnerstag', hour: '17', venues: ['BonnerTHV – Traglufthalle', 'TC Brüser Berg (Sand)'] },
+  { day: 'Donnerstag', hour: '17', venues: ['TC Brüser Berg (Sand)'] },
 
   // Freitag: BTHV Teppich 10-13h, Brüser Berg Sand 14-20h
   { day: 'Freitag', hour: '10', venues: ['BonnerTHV – Teppichhalle'] },
