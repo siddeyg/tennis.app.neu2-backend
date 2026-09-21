@@ -1907,7 +1907,7 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
           Die Abrechnung für Kinder und Jugendliche (U18) erfolgt per <strong>Bankeinzug (SEPA-Basislastschrift)</strong> über das angegebene Bankkonto.<br>
           ${registration.trainingsart ? `<strong>Trainingsart:</strong> ${escapeHtml(registration.trainingsart)}<br>` : ''}
           ${registration.sessionDuration ? `<strong>Trainingsdauer:</strong> ${escapeHtml(String(registration.sessionDuration))} Minuten<br>` : ''}
-          <span style="display: inline-block; margin-top: 4px; color: #15803d; font-weight: bold;">✓ Alle Hallenkosten sind im Saisonbeitrag enthalten.</span>
+          <span style="display: inline-block; margin-top: 4px; color: #15803d; font-weight: bold;">✓ Die Hallenkosten sind im Saisonbeitrag enthalten beim Jugend- und Kindertraining.</span>
         </div>
         `}
         <p>Bei Fragen wenden Sie sich gerne an uns.</p>
@@ -1920,7 +1920,7 @@ export function renderSeasonalRegistrationReceivedEmail(registration, period = {
     </html>
   `;
 
-  const youthDetailsText = `${registration.trainingsart ? `Trainingsart: ${registration.trainingsart}\n` : ''}${registration.sessionDuration ? `Trainingsdauer: ${registration.sessionDuration} Minuten\n` : ''}Alle Hallenkosten sind im Saisonbeitrag enthalten.\n`;
+  const youthDetailsText = `${registration.trainingsart ? `Trainingsart: ${registration.trainingsart}\n` : ''}${registration.sessionDuration ? `Trainingsdauer: ${registration.sessionDuration} Minuten\n` : ''}Die Hallenkosten sind im Saisonbeitrag enthalten beim Jugend- und Kindertraining.\n`;
 
   const billingNoticeText = registration.formType === 'adults'
     ? '\n\nAbrechnung & Bezahlung:\nSie erhalten von uns eine Rechnung zum Saisonbeginn. Es erfolgt kein Bankeinzug.\n'
