@@ -1386,9 +1386,9 @@ router.post('/:id/test-registration', requireAuth, requireAdminOrSupermod, async
         trainingGoals: registrationData.trainingGoals || ['Freizeit', 'Fitness'],
         groupSize: registrationData.groupSize || ['zu viert'],
         availableTimesAdults: registrationData.availableTimesAdults || [
-          { day: 'Montag', hour: '17:00 - 18:00', venue: 'BTHV (Traglufthalle, Sand)' },
-          { day: 'Dienstag', hour: '18:00 - 19:00', venue: 'BTHV (Traglufthalle, Sand)' },
-          { day: 'Donnerstag', hour: '17:00 - 18:00', venue: 'BTHV (Traglufthalle, Sand)' }
+          { day: 'Montag', hour: '17:00 - 18:30', venue: 'BonnerTHV – Traglufthalle' },
+          { day: 'Dienstag', hour: '18:00 - 19:30', venue: 'BonnerTHV – Traglufthalle' },
+          { day: 'Donnerstag', hour: '17:00 - 18:30', venue: 'BonnerTHV – Traglufthalle' }
         ],
         remarks: registrationData.remarks || 'Automatisierte Testanmeldung Erwachsene im Admin-Portal.',
         privacyConsent: registrationData.privacyConsent !== undefined ? registrationData.privacyConsent : true,
