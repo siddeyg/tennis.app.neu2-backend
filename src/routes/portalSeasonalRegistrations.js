@@ -423,6 +423,14 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         return res.status(400).json({ success: false, error: 'Verfügbare Zeiten sind erforderlich' });
       }
 
+      // Validate SEPA requirement for kids (MUST provide IBAN and accountHolder when required or when mandate is provided)
+      if (kidsRequired.includes('sepaMandate') && (!sepaMandate || !iban || !accountHolder)) {
+        return res.status(400).json({ success: false, error: 'Für Kinder/Jugendliche ist das SEPA-Mandat zwingend erforderlich (inkl. IBAN und Kontoinhaber).' });
+      }
+      if (sepaMandate && (!iban || !accountHolder)) {
+        return res.status(400).json({ success: false, error: 'IBAN und Kontoinhaber sind für das SEPA-Mandat erforderlich.' });
+      }
+
       // Check minimum 2 distinct days
       if (availableTimesKids) {
         const uniqueDays = new Set(availableTimesKids.map(t => t.day)).size;

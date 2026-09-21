@@ -75,6 +75,31 @@ export async function setupWinterPeriod() {
     period.trainingSlotsAdults = WINTER_2026_ADULT_SLOTS;
     period.trainingExclusions = WINTER_2026_EXCLUSIONS;
 
+    // Kids form config — SEPA direct debit is mandatory for U18
+    period.kidsFormConfig = {
+      enabledFields: [
+        'mitgliedsstatus',
+        'trainingsart',
+        'trainingshäufigkeit',
+        'sessionDuration',
+        'teamParticipation',
+        'availableTimes',
+        'sepaMandate',
+        'accountHolder',
+        'iban',
+        'privacyConsent',
+        'remarks'
+      ],
+      requiredFields: [
+        'mitgliedsstatus',
+        'trainingsart',
+        'trainingshäufigkeit',
+        'availableTimes',
+        'sepaMandate',
+        'privacyConsent'
+      ]
+    };
+
     // Deactivate all older periods
     await RegistrationPeriod.updateMany(
       { _id: { $ne: period._id }, isActive: true },
