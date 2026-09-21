@@ -17,21 +17,22 @@ export const WINTER_2026_VENUES = [
   'TC Brüser Berg (Sand)',
   'BonnerTHV – Teppichhalle',
   'BonnerTHV – Traglufthalle',
-  'TC Duisdorf (Teppich)'
+  'TC Duisdorf (Teppich)',
+  'Robinson Club (Teppich)'
 ];
 
 export const WINTER_2026_ADULT_SLOTS = [
-  // Montag: BTHV TLH 12h, Duisdorf 13-16:30h, BTHV TLH 15-20h
+  // Montag: BTHV TLH 12h, BTHV TLH + Duisdorf 13h, Duisdorf 14h, BTHV TLH + Duisdorf 15-16:30h, BTHV TLH 17-20h
   { day: 'Montag', hour: '12', venues: ['BonnerTHV – Traglufthalle'] },
-  { day: 'Montag', hour: '13', venues: ['TC Duisdorf (Teppich)'] },
+  { day: 'Montag', hour: '13', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
   { day: 'Montag', hour: '14', venues: ['TC Duisdorf (Teppich)'] },
   { day: 'Montag', hour: '15', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
-  { day: 'Montag', hour: '16', venues: ['BonnerTHV – Traglufthalle'] },
+  { day: 'Montag', hour: '16', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
   { day: 'Montag', hour: '17', venues: ['BonnerTHV – Traglufthalle'] },
   { day: 'Montag', hour: '18', venues: ['BonnerTHV – Traglufthalle'] },
   { day: 'Montag', hour: '19', venues: ['BonnerTHV – Traglufthalle'] },
 
-  // Dienstag: BTHV Teppich 10-13h, BTHV TLH 15-18h
+  // Dienstag: BTHV Teppich 10-13h, BTHV TLH 15-18h (Dienstag endet um 18:00 Uhr!)
   { day: 'Dienstag', hour: '10', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Dienstag', hour: '11', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Dienstag', hour: '12', venues: ['BonnerTHV – Teppichhalle'] },
@@ -39,12 +40,13 @@ export const WINTER_2026_ADULT_SLOTS = [
   { day: 'Dienstag', hour: '16', venues: ['BonnerTHV – Traglufthalle'] },
   { day: 'Dienstag', hour: '17', venues: ['BonnerTHV – Traglufthalle'] },
 
-  // Mittwoch: BTHV Teppich 10-12h, Brüser Berg 15-18h
+  // Mittwoch: BTHV Teppich 10-12h, Brüser Berg 15-18h, Robinson Club 21-22h
   { day: 'Mittwoch', hour: '10', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Mittwoch', hour: '11', venues: ['BonnerTHV – Teppichhalle'] },
   { day: 'Mittwoch', hour: '15', venues: ['TC Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '16', venues: ['TC Brüser Berg (Sand)'] },
   { day: 'Mittwoch', hour: '17', venues: ['TC Brüser Berg (Sand)'] },
+  { day: 'Mittwoch', hour: '21', venues: ['Robinson Club (Teppich)'] },
 
   // Donnerstag: BTHV Teppich 10-14h, BTHV TLH + Brüser Berg 15-18h
   { day: 'Donnerstag', hour: '10', venues: ['BonnerTHV – Teppichhalle'] },
@@ -66,11 +68,11 @@ export const WINTER_2026_ADULT_SLOTS = [
   { day: 'Freitag', hour: '18', venues: ['TC Brüser Berg (Sand)'] },
   { day: 'Freitag', hour: '19', venues: ['TC Brüser Berg (Sand)'] },
 
-  // Samstag: BTHV TLH 10-15h, TC Duisdorf Teppich 10-14h
-  { day: 'Samstag', hour: '10', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
-  { day: 'Samstag', hour: '11', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
-  { day: 'Samstag', hour: '12', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
-  { day: 'Samstag', hour: '13', venues: ['BonnerTHV – Traglufthalle', 'TC Duisdorf (Teppich)'] },
+  // Samstag: BTHV TLH 10-15h (KEIN Duisdorf am Samstag!)
+  { day: 'Samstag', hour: '10', venues: ['BonnerTHV – Traglufthalle'] },
+  { day: 'Samstag', hour: '11', venues: ['BonnerTHV – Traglufthalle'] },
+  { day: 'Samstag', hour: '12', venues: ['BonnerTHV – Traglufthalle'] },
+  { day: 'Samstag', hour: '13', venues: ['BonnerTHV – Traglufthalle'] },
   { day: 'Samstag', hour: '14', venues: ['BonnerTHV – Traglufthalle'] }
 ];
 
