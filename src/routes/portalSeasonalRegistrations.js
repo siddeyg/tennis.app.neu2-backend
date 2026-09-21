@@ -468,7 +468,12 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
     } else if (formType === 'adults') {
       const adultsEnabled = period.adultsFormConfig?.enabledFields || [];
       const adultsRequired = period.adultsFormConfig?.requiredFields || [];
-
+      if (adultsRequired.includes('mitgliedsstatus') && mitgliedsstatus !== 'Mitglied') {
+        return res.status(400).json({
+          success: false,
+          error: 'Am Wintertraining können ausschließlich Mitglieder des TC GW Kreuzberg e.V. teilnehmen. Bitte bestätigen Sie Ihre Vereinsmitgliedschaft.'
+        });
+      }
       if (adultsRequired.includes('spielstärke') && !spielstärke) {
         return res.status(400).json({ success: false, error: 'Spielstärke ist erforderlich' });
       }
