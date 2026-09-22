@@ -102,7 +102,7 @@ async function seedWinterAdultSlots() {
     // Update dates per official chefcoach documents
     period.trainingStartDate = new Date('2026-10-05T00:00:00.000Z');
     period.trainingEndDate = new Date('2027-04-24T23:59:59.000Z');
-    period.registrationDeadline = new Date('2026-09-27T23:59:59.000Z');
+    period.registrationDeadline = new Date('2026-09-27T21:59:59.999Z');
     period.status = 'open';
     period.isActive = true;
 
