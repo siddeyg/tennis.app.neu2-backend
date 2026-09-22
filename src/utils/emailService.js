@@ -99,6 +99,9 @@ let transporter = null;
 if (isConfigured) {
   try {
     transporter = nodemailer.createTransport({
+      pool: true,
+      maxConnections: 2,
+      maxMessages: 100,
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT, 10) || 587,
       secure: process.env.SMTP_SECURE === 'true', // true for 465, false for 587
@@ -120,7 +123,7 @@ if (isConfigured) {
         logger.error('❌ SMTP connection failed:', error.message);
         logger.warn('   Emails will NOT be sent until SMTP is configured correctly');
       } else {
-        logger.info('✅ SMTP email service initialized successfully');
+        logger.info('✅ SMTP email service initialized successfully (Connection Pool active)');
         logger.info(`   SMTP Host: ${process.env.SMTP_HOST}:${process.env.SMTP_PORT}`);
         logger.info(`   From: ${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`);
       }
@@ -142,16 +145,24 @@ if (isConfigured) {
  * @param {string} options.subject - Email subject
  * @param {string} options.html - HTML content
  * @param {string} [options.text] - Plain text content (optional, for multipart MIME)
+ * @param {Array} [options.attachments] - Optional attachments array for Nodemailer
+ * @param {string} [options.replyTo] - Optional Reply-To address
  */
-export async function sendEmail({ to, subject, html, text = null }) {
+export async function sendEmail({ to, subject, html, text = null, attachments = null, replyTo = null }) {
   // Development mode - log instead of sending
   if (!isConfigured || !transporter) {
     logger.info(`📧 [DEV MODE] Would send email to: ${to}`);
     logger.info(`   Subject: ${subject}`);
     logger.info(`   From: ${process.env.FROM_NAME || 'Mondo Tennisschule'} <${process.env.FROM_EMAIL || 'noreply@tcgw.de'}>`);
+    if (replyTo) {
+      logger.info(`   Reply-To: ${replyTo}`);
+    }
     logger.info(`   HTML content length: ${html.length} chars`);
     if (text) {
       logger.info(`   Plain text content length: ${text.length} chars (multipart MIME)`);
+    }
+    if (attachments && attachments.length > 0) {
+      logger.info(`   Attachments: ${attachments.length} file(s)`);
     }
     return;
   }
@@ -168,6 +179,8 @@ export async function sendEmail({ to, subject, html, text = null }) {
       html,
       // Include plain text only if explicitly provided (multipart MIME)
       ...(text && { text }),
+      ...(replyTo && { replyTo }),
+      ...(attachments && attachments.length > 0 && { attachments }),
     };
 
     const info = await transporter.sendMail(mailOptions);

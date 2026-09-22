@@ -89,6 +89,8 @@ import pushSubscriptionRoutes from "./routes/pushSubscriptions.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import galleriesRoutes from "./routes/galleries.js";
 import portalGalleriesRoutes from "./routes/portalGalleries.js";
+import broadcastEmailRoutes, { serveBroadcastImage } from "./routes/broadcastEmail.js";
+import BroadcastEmail from "./models/BroadcastEmail.js";
 
 // Import Socket.io notification setup
 import { initializeNotificationSocket } from "./socket/notificationSocket.js";
@@ -260,7 +262,21 @@ mongoose
     maxPoolSize: 50,  // Support up to 50 concurrent database operations
     minPoolSize: 5    // Keep minimum 5 connections ready
   })
-  .then(() => logger.info("✅ MongoDB connected successfully"))
+  .then(async () => {
+    logger.info("✅ MongoDB connected successfully");
+    // Crash recovery: Mark any broadcast emails stuck in 'sending' as 'interrupted'
+    try {
+      const interrupted = await BroadcastEmail.updateMany(
+        { status: 'sending' },
+        { $set: { status: 'interrupted' } }
+      );
+      if (interrupted.modifiedCount > 0) {
+        logger.warn(`⚠️ Marked ${interrupted.modifiedCount} stuck broadcast email(s) as interrupted on startup.`);
+      }
+    } catch (err) {
+      logger.error('Error checking interrupted broadcast emails on startup:', err.message);
+    }
+  })
   .catch((err) => {
     logger.error(`❌ MongoDB connection error: ${err.message}`);
     process.exit(1); // Exit if database connection fails
@@ -334,6 +350,12 @@ app.get("/api/announcements/images/:filename", serveAnnouncementImage);
 
 // Public image serve for camp/event banners
 app.get("/api/camps/images/:filename", serveCampImage);
+
+// Public image serve for inline broadcast email images (no auth — UUIDs are unguessable)
+app.get("/api/broadcast-email/images/:filename", serveBroadcastImage);
+
+// Broadcast email / Rundmail routes - admin + supermod
+app.use("/api/broadcast-email", requireAuth, updateActivity, requireAdminOrSupermod, broadcastEmailRoutes);
 
 // Announcements routes - admin + supermod
 app.use("/api/announcements", requireAuth, updateActivity, requireAdminOrSupermod, announcementsRoutes);
