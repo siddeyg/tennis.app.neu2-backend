@@ -95,6 +95,7 @@ const isConfigured =
 
 // Initialize Nodemailer transporter
 let transporter = null;
+let isSmtpVerified = false;
 
 if (isConfigured) {
   try {
@@ -122,7 +123,9 @@ if (isConfigured) {
       if (error) {
         logger.error('❌ SMTP connection failed:', error.message);
         logger.warn('   Emails will NOT be sent until SMTP is configured correctly');
+        isSmtpVerified = false;
       } else {
+        isSmtpVerified = true;
         logger.info('✅ SMTP email service initialized successfully (Connection Pool active)');
         logger.info(`   SMTP Host: ${process.env.SMTP_HOST}:${process.env.SMTP_PORT}`);
         logger.info(`   From: ${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`);
@@ -131,6 +134,7 @@ if (isConfigured) {
   } catch (error) {
     logger.error('❌ SMTP initialization failed:', error.message);
     transporter = null;
+    isSmtpVerified = false;
   }
 } else {
   logger.warn('⚠️  SMTP not configured - emails will be logged to console (development mode OK)');
@@ -149,9 +153,11 @@ if (isConfigured) {
  * @param {string} [options.replyTo] - Optional Reply-To address
  */
 export async function sendEmail({ to, subject, html, text = null, attachments = null, replyTo = null }) {
-  // Development mode - log instead of sending
-  if (!isConfigured || !transporter) {
-    logger.info(`📧 [DEV MODE] Would send email to: ${to}`);
+  const isDev = process.env.NODE_ENV === 'development';
+
+  // Development mode - log instead of sending if SMTP is not configured or failed verification in dev
+  if (!isConfigured || !transporter || (isDev && !isSmtpVerified)) {
+    logger.info(`📧 [DEV MODE] Simulated email to: ${to}`);
     logger.info(`   Subject: ${subject}`);
     logger.info(`   From: ${process.env.FROM_NAME || 'Mondo Tennisschule'} <${process.env.FROM_EMAIL || 'noreply@tcgw.de'}>`);
     if (replyTo) {
@@ -164,10 +170,10 @@ export async function sendEmail({ to, subject, html, text = null, attachments = 
     if (attachments && attachments.length > 0) {
       logger.info(`   Attachments: ${attachments.length} file(s)`);
     }
-    return;
+    return { success: true, messageId: `dev-simulated-${Date.now()}` };
   }
 
-  // Production mode - actually send email
+  // Production mode (or verified dev) - actually send email
   try {
     const mailOptions = {
       from: {
@@ -191,6 +197,11 @@ export async function sendEmail({ to, subject, html, text = null, attachments = 
     }
     return info;
   } catch (error) {
+    if (isDev) {
+      logger.warn(`⚠️ [DEV MODE] SMTP delivery failed (${error.message}). Simulating successful send for local dev.`);
+      logger.info(`📧 [DEV MODE] Simulated email to: ${to} (Subject: ${subject})`);
+      return { success: true, messageId: `dev-fallback-${Date.now()}` };
+    }
     logger.error(`❌ Error sending email to ${to}:`, error.message);
     throw new Error(`Failed to send email: ${error.message}`);
   }
