@@ -49,15 +49,25 @@ const broadcastAttachmentSchema = new mongoose.Schema({
   },
   mimeType: {
     type: String,
-    required: true
+    default: 'application/pdf'
   },
   size: {
     type: Number,
-    required: true
+    default: 0
   },
   path: {
     type: String,
-    required: true
+    required: false
+  },
+  documentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Document',
+    required: false
+  },
+  source: {
+    type: String,
+    enum: ['upload', 'document'],
+    default: 'upload'
   }
 }, { _id: true });
 

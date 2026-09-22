@@ -24,12 +24,35 @@ router.use(requireAuth, requireAdminOrSupermod);
 // Ensure upload directories exist
 const imagesUploadDir = path.join(__dirname, '../../uploads/broadcasts/images');
 const attachmentsUploadDir = path.join(__dirname, '../../uploads/broadcasts/attachments');
+const documentsUploadDir = path.join(__dirname, '../../uploads/documents');
 
 if (!fs.existsSync(imagesUploadDir)) {
   fs.mkdirSync(imagesUploadDir, { recursive: true });
 }
 if (!fs.existsSync(attachmentsUploadDir)) {
   fs.mkdirSync(attachmentsUploadDir, { recursive: true });
+}
+if (!fs.existsSync(documentsUploadDir)) {
+  fs.mkdirSync(documentsUploadDir, { recursive: true });
+}
+
+/**
+ * Safely resolves on-disk file path for attachments (either uploaded or from Documents library)
+ */
+function resolveAttachment(att) {
+  let resolvedPath = att.path;
+  if (att.documentId) {
+    resolvedPath = path.join(documentsUploadDir, path.basename(att.filename));
+  } else if (att.filename) {
+    resolvedPath = path.join(attachmentsUploadDir, path.basename(att.filename));
+  }
+  if (!fs.existsSync(resolvedPath) && att.path && fs.existsSync(att.path)) {
+    resolvedPath = att.path;
+  }
+  return {
+    filename: att.originalName || att.filename,
+    path: resolvedPath
+  };
 }
 
 // Multer storage configuration using random UUIDs to avoid path traversal
@@ -204,10 +227,7 @@ router.post('/send-test', async (req, res) => {
       subject: `[TEST-VORSCHAU] ${subject}`
     });
 
-    const nodemailerAttachments = attachments.map(att => ({
-      filename: att.originalName || att.filename,
-      path: att.path
-    }));
+    const nodemailerAttachments = (attachments || []).map(resolveAttachment);
 
     await sendEmail({
       to: adminEmail,
@@ -240,10 +260,7 @@ async function processBroadcastSending(broadcastId, attachments = []) {
 
     logger.info(`Starting background email broadcast ${broadcastId} for ${broadcast.recipients.length} recipient(s)`);
 
-    const nodemailerAttachments = (attachments || []).map(att => ({
-      filename: att.originalName || att.filename,
-      path: att.path
-    }));
+    const nodemailerAttachments = (attachments || []).map(resolveAttachment);
 
     for (let i = 0; i < broadcast.recipients.length; i++) {
       // 1. Check if broadcast was cancelled
