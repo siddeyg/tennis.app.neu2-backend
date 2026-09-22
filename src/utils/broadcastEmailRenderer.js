@@ -209,10 +209,11 @@ export function wrapInMondoEmailTemplate(innerHtml, { subject = 'Mondo Tennissch
       </div>
 
       <div class="footer">
-        <p class="footer-note">Sie erhalten diese E-Mail als registriertes Mitglied / Nutzer der Mondo Tennisschule (TC GW Am Kreuzberg e.V.).</p>
-        <p style="margin: 6px 0;"><strong>Mondo Tennisschule &bull; TC GW Am Kreuzberg e.V.</strong></p>
-        <p style="margin: 4px 0;">Bei Fragen antworten Sie einfach direkt auf diese E-Mail (<a href="mailto:info@mondo-tennisschule.de">info@mondo-tennisschule.de</a>).</p>
-        <p style="margin-top: 10px;"><a href="${portalUrl}" target="_blank">Zum Online-Portal &rarr;</a></p>
+        <p class="footer-note">Sie erhalten diese E-Mail als registriertes Mitglied / Nutzer der Mondo Tennisschule.</p>
+        <p style="margin: 6px 0;"><strong>Mondo Tennisschule</strong></p>
+        <p style="margin: 4px 0;">Bei Fragen antworten Sie einfach auf diese E-Mail (<a href="mailto:info@mondo-tennisschule.de">info@mondo-tennisschule.de</a>).</p>
+        <p style="margin: 4px 0;"><a href="http://mondo-tennisschule.de" target="_blank">http://mondo-tennisschule.de</a></p>
+        <p style="margin-top: 6px;">Online-Portal: <a href="${portalUrl}" target="_blank">${portalUrl}</a></p>
       </div>
     </div>
   </div>
@@ -246,7 +247,8 @@ export function renderBroadcastEmail(rawHtml, user = {}, { subject = '' } = {}) 
 
   // 3. Generate plain text fallback
   const plainText = htmlToPlainText(personalizedInnerHtml);
-  const fullText = `${plainText}\n\n---\nMondo Tennisschule | TC GW Am Kreuzberg e.V.\nBei Fragen antworten Sie einfach auf diese E-Mail (info@mondo-tennisschule.de).\nOnline-Portal: ${process.env.STUDENT_PORTAL_URL || 'https://www.mondo-tennis.de'}`;
+  const portalUrl = process.env.STUDENT_PORTAL_URL || process.env.PORTAL_URL || 'https://www.mondo-tennis.de';
+  const fullText = `${plainText}\n\n---\nMondo Tennisschule\nBei Fragen antworten Sie einfach auf diese E-Mail (info@mondo-tennisschule.de).\nhttp://mondo-tennisschule.de\nOnline-Portal: ${portalUrl}`;
 
   return {
     subject: personalizedSubject,
