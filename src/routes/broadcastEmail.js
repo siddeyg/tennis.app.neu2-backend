@@ -235,7 +235,7 @@ router.post('/send-test', async (req, res) => {
       html: rendered.html,
       text: rendered.text,
       attachments: nodemailerAttachments,
-      replyTo: 'info@mondo-tennisschule.de'
+      replyTo: process.env.REPLY_TO_EMAIL || 'info@mondo-tennisschule.de'
     });
 
     logger.info(`Test broadcast email sent to admin: ${adminEmail}`);
@@ -295,7 +295,7 @@ async function processBroadcastSending(broadcastId, attachments = []) {
             html: rendered.html,
             text: rendered.text,
             attachments: nodemailerAttachments,
-            replyTo: 'info@mondo-tennisschule.de'
+            replyTo: process.env.REPLY_TO_EMAIL || 'info@mondo-tennisschule.de'
           });
           sentSuccess = true;
           break;

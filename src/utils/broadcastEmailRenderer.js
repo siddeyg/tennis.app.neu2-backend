@@ -19,7 +19,7 @@ export function replacePlaceholders(template, user = {}) {
 
   const firstName = user.firstName || '';
   const lastName = user.lastName || '';
-  const portalUrl = process.env.STUDENT_PORTAL_URL || process.env.FRONTEND_URL || 'https://www.mondo-tennis.de';
+  const portalUrl = process.env.PORTAL_URL || process.env.STUDENT_PORTAL_URL || process.env.FRONTEND_URL || 'https://www.mondo-tennis.de';
 
   return template
     .replace(/\{Vorname\}|\{firstName\}/gi, firstName)
