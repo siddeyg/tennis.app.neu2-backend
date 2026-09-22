@@ -229,7 +229,7 @@ router.post('/send-test', async (req, res) => {
 
     const nodemailerAttachments = (attachments || []).map(resolveAttachment);
 
-    await sendEmail({
+    const sendResult = await sendEmail({
       to: adminEmail,
       subject: rendered.subject,
       html: rendered.html,
@@ -238,11 +238,15 @@ router.post('/send-test', async (req, res) => {
       replyTo: process.env.REPLY_TO_EMAIL || 'info@mondo-tennisschule.de'
     });
 
-    logger.info(`Test broadcast email sent to admin: ${adminEmail}`);
+    const isSimulated = sendResult?.simulated;
+    logger.info(`Test broadcast email processed for admin: ${adminEmail} (simulated: ${!!isSimulated})`);
 
     res.json({
       success: true,
-      message: `Test-E-Mail erfolgreich an ${adminEmail} gesendet.`
+      simulated: !!isSimulated,
+      message: isSimulated
+        ? `[Lokaler Dev-Modus]: Test-E-Mail wurde erfolgreich generiert & simuliert (Details im Log). Echter Posteingang-Empfang erfolgt auf dem Live-Server.`
+        : `Test-E-Mail erfolgreich an ${adminEmail} gesendet.`
     });
   } catch (error) {
     logger.error('Error sending test broadcast email:', error);
