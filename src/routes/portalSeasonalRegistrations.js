@@ -107,11 +107,9 @@ router.get('/my-registrations', async (req, res) => {
     }
 
     // Find all registrations for this user and period (parent + children)
-    // Exclude rejected registrations (rejected status is deprecated, but filter anyway)
     const registrations = await SeasonalRegistration.find({
       studentPortalUserId: req.user.id,
-      periodId: period._id,
-      status: { $ne: 'rejected' } // Don't show rejected registrations
+      periodId: period._id
     })
       .populate('periodId', 'name season trainingStartDate trainingEndDate')
       .sort({ createdAt: 1 });
@@ -162,8 +160,7 @@ router.get('/history', async (req, res) => {
   try {
     // Find all registrations for this user (all periods)
     const registrations = await SeasonalRegistration.find({
-      studentPortalUserId: req.user.id,
-      status: { $ne: 'rejected' }
+      studentPortalUserId: req.user.id
     })
       .populate('periodId', 'name season year trainingStartDate trainingEndDate')
       .sort({ createdAt: -1 }); // Newest first

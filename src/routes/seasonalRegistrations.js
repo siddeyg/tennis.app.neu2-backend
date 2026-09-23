@@ -22,7 +22,7 @@ import logger from '../utils/logger.js';
 import { encryptIBAN, decryptIBAN, maskIBAN, validateIBANFormat } from '../utils/encryption.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import Settings from '../models/Settings.js';
-import { sendSeasonalCancellationEmail, sendSeasonalCancellationAdminEmail } from '../utils/emailService.js';
+import { sendSeasonalCancellationEmail, sendSeasonalCancellationAdminEmail, sendSeasonalRejectionEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -548,7 +548,7 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
  * Body:
  * - reason: string (required) - reason for rejection
  */
-router.post('/:id/reject', async (req, res) => {
+router.post('/:id/reject', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration', metadata: { operation: 'REJECT' } }), async (req, res) => {
   try {
     const registration = await SeasonalRegistration.findById(req.params.id);
 
@@ -580,6 +580,16 @@ router.post('/:id/reject', async (req, res) => {
     registration.processedAt = new Date();
     await registration.save();
 
+    // Send rejection email to student
+    try {
+      const period = await RegistrationPeriod.findById(registration.periodId);
+      if (period) {
+        await sendSeasonalRejectionEmail(registration, period, reason.trim());
+      }
+    } catch (emailError) {
+      logger.error('Error sending seasonal rejection email:', { error: emailError.message });
+    }
+
     logger.info('Seasonal registration rejected', {
       registrationId: registration._id,
       userId: req.user.id
@@ -595,6 +605,147 @@ router.post('/:id/reject', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Fehler beim Ablehnen der Anmeldung'
+    });
+  }
+});
+
+/**
+ * POST /api/seasonal-registrations/:id/cancel
+ * Admin cancellation of a seasonal registration
+ *
+ * Allowed for pending or processed registrations.
+ * Sets status to 'cancelled', marks cancelledBy as 'admin',
+ * clears student course assignments if any, and sends cancellation emails.
+ */
+router.post('/:id/cancel', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration', metadata: { operation: 'ADMIN_CANCEL' } }), async (req, res) => {
+  try {
+    const registration = await SeasonalRegistration.findById(req.params.id);
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    if (registration.status === 'cancelled') {
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldung ist bereits storniert'
+      });
+    }
+
+    registration.status = 'cancelled';
+    registration.cancelledAt = new Date();
+    registration.cancelledBy = 'admin';
+    await registration.save();
+
+    // Clear student assignments if student exists
+    if (registration.studentId) {
+      try {
+        const student = await Student.findById(registration.studentId);
+        if (student && student.assignments && student.assignments.length > 0) {
+          student.assignments = [];
+          student.day = undefined;
+          student.hour = undefined;
+          student.coach = undefined;
+          await student.save();
+          logger.info('Cleared student assignments after admin seasonal registration cancellation', {
+            studentId: student._id,
+            registrationId: registration._id
+          });
+        }
+      } catch (studentErr) {
+        logger.error('Error clearing student assignments on registration cancellation:', studentErr);
+      }
+    }
+
+    // Send emails
+    try {
+      const period = await RegistrationPeriod.findById(registration.periodId);
+      if (period) {
+        await sendSeasonalCancellationEmail(registration, period);
+
+        const settings = await Settings.findOne({ singleton: true });
+        if (settings && settings.notificationEmails) {
+          const emails = [
+            settings.notificationEmails.email1,
+            settings.notificationEmails.email2,
+            settings.notificationEmails.email3
+          ].filter(email => email && email.trim());
+          if (emails.length > 0) {
+            await sendSeasonalCancellationAdminEmail(registration, period, emails, 'admin');
+          }
+        }
+      }
+    } catch (emailErr) {
+      logger.error('Error sending cancellation emails:', emailErr);
+    }
+
+    logger.info('Seasonal registration cancelled by admin', {
+      registrationId: registration._id,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      message: 'Anmeldung erfolgreich storniert',
+      registration
+    });
+  } catch (error) {
+    logger.error('Error cancelling seasonal registration:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Stornieren der Anmeldung'
+    });
+  }
+});
+
+/**
+ * POST /api/seasonal-registrations/:id/unprocess
+ * Revert a processed (or rejected) registration back to pending
+ */
+router.post('/:id/unprocess', auditLogMiddleware({ action: 'UPDATE', resource: 'SeasonalRegistration', metadata: { operation: 'UNPROCESS' } }), async (req, res) => {
+  try {
+    const registration = await SeasonalRegistration.findById(req.params.id);
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        error: 'Anmeldung nicht gefunden'
+      });
+    }
+
+    if (registration.status === 'pending') {
+      return res.status(400).json({
+        success: false,
+        error: 'Anmeldung ist bereits im Status ausstehend'
+      });
+    }
+
+    registration.status = 'pending';
+    registration.processedAt = undefined;
+    registration.processedBy = undefined;
+    registration.rejectionReason = undefined;
+    registration.cancelledAt = undefined;
+    registration.cancelledBy = undefined;
+    await registration.save();
+
+    logger.info('Seasonal registration reverted to pending', {
+      registrationId: registration._id,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      message: 'Anmeldung erfolgreich auf "Ausstehend" zurückgesetzt',
+      registration
+    });
+  } catch (error) {
+    logger.error('Error reverting seasonal registration to pending:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Fehler beim Zurücksetzen der Anmeldung'
     });
   }
 });

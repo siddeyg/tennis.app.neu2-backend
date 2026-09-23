@@ -2210,6 +2210,66 @@ export async function sendSeasonalCancellationEmail(registration, period) {
 }
 
 /**
+ * Send seasonal registration rejection email to the student
+ */
+export async function sendSeasonalRejectionEmail(registration, period, reason) {
+  const subject = `Anmeldung nicht möglich: ${period.name || 'Saisontraining'}`;
+
+  const formatDate = (date) => {
+    if (!date) return 'Keine Angabe';
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+  };
+
+  const participantName = registration.childName
+    ? registration.childName
+    : `${registration.firstName} ${registration.lastName}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #c62828 0%, #e53935 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; }
+        .highlight { background-color: #ffebee; padding: 15px; border-left: 4px solid #e53935; margin: 15px 0; border-radius: 4px; }
+        .reason { background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin: 10px 0; font-style: italic; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Anmeldung nicht möglich</h1>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">Mondo Tennisschule</p>
+      </div>
+      <div class="content">
+        <p>Hallo ${escapeHtml(registration.firstName)} ${escapeHtml(registration.lastName)},</p>
+        <div class="highlight">
+          <strong>Die Anmeldung für <em>${escapeHtml(participantName)}</em> zum Saisontraining <em>${escapeHtml(period.name || 'Saisontraining')}</em> konnte leider nicht berücksichtigt werden.</strong><br>
+          Saison: ${escapeHtml(period.name || 'Saisontraining')} (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)})
+        </div>
+        ${reason ? `<p><strong>Begründung:</strong></p><div class="reason">${escapeHtml(reason)}</div>` : ''}
+        <p>Bei Fragen oder für alternative Trainingsmöglichkeiten wenden Sie sich gerne an uns.</p>
+        <p>Viele Grüße,<br>Ihr Team von der Mondo Tennisschule</p>
+      </div>
+      <div class="footer">
+        <p>Mondo Tennisschule</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${registration.firstName} ${registration.lastName},\n\nDie Anmeldung für "${participantName}" zum Saisontraining "${period.name || 'Saisontraining'}" (${formatDate(period.trainingStartDate)} – ${formatDate(period.trainingEndDate)}) konnte leider nicht berücksichtigt werden.${reason ? `\n\nBegründung:\n${reason}` : ''}\n\nBei Fragen wenden Sie sich gerne an uns.\n\nViele Grüße,\nIhr Team von der Mondo Tennisschule`;
+
+  return sendEmail({ to: registration.email, subject, html, text });
+}
+
+/**
  * Send seasonal registration cancellation notification email to admin(s)
  */
 export async function sendSeasonalCancellationAdminEmail(registration, period, notificationEmails, cancelledBy = 'user') {
@@ -2325,6 +2385,7 @@ export default {
   sendSeasonalRegistrationReceivedEmail,
   sendSeasonalCancellationEmail,
   sendSeasonalCancellationAdminEmail,
+  sendSeasonalRejectionEmail,
   sendEmailChangeVerification,
   sendEmailChangeWarning,
   generateVerificationTokenWithExpiry,

@@ -812,4 +812,225 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
       expect(createdStudent.member).toBe(false); // Schnuppermitglied != Vollmitglied
     });
   });
+
+  describe('POST /:id/reject - Reject submission', () => {
+    it('should reject a pending submission with a reason', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'kids',
+        firstName: 'Anna',
+        lastName: 'RejectTest',
+        birthdate: new Date('2012-06-15'),
+        email: 'anna@reject.com',
+        privacyConsent: true,
+        status: 'pending',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/reject`)
+        .send({ reason: 'Leider keine passenden Trainingszeiten verfügbar.' })
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.registration.status).toBe('rejected');
+      expect(response.body.registration.rejectionReason).toBe('Leider keine passenden Trainingszeiten verfügbar.');
+
+      const updated = await SeasonalRegistration.findById(registration._id);
+      expect(updated.status).toBe('rejected');
+      expect(updated.rejectionReason).toBe('Leider keine passenden Trainingszeiten verfügbar.');
+    });
+
+    it('should return 400 when rejection reason is missing or empty', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'kids',
+        firstName: 'Ben',
+        lastName: 'NoReason',
+        birthdate: new Date('2013-01-10'),
+        email: 'ben@noreason.com',
+        privacyConsent: true,
+        status: 'pending',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/reject`)
+        .send({ reason: '   ' })
+        .expect(400);
+
+      expect(response.body.error).toContain('Ablehnungsgrund ist erforderlich');
+    });
+
+    it('should return 400 when attempting to reject an already processed registration', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'kids',
+        firstName: 'Clara',
+        lastName: 'AlreadyProcessed',
+        birthdate: new Date('2011-04-20'),
+        email: 'clara@processed.com',
+        privacyConsent: true,
+        status: 'processed',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/reject`)
+        .send({ reason: 'Zu spät' })
+        .expect(400);
+
+      expect(response.body.error).toContain('bereits verarbeitet');
+    });
+  });
+
+  describe('POST /:id/cancel - Admin cancellation', () => {
+    it('should cancel a pending registration and set cancelledBy admin', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'adults',
+        firstName: 'David',
+        lastName: 'CancelTest',
+        birthdate: new Date('1990-08-12'),
+        email: 'david@cancel.com',
+        privacyConsent: true,
+        status: 'pending',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/cancel`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.registration.status).toBe('cancelled');
+
+      const updated = await SeasonalRegistration.findById(registration._id);
+      expect(updated.status).toBe('cancelled');
+      expect(updated.cancelledBy).toBe('admin');
+      expect(updated.cancelledAt).toBeTruthy();
+    });
+
+    it('should cancel a processed registration and clear student assignments', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const student = await Student.create({
+        firstName: 'Eva',
+        lastName: 'StudentAssignments',
+        email: 'eva@assignments.com',
+        assignments: [
+          { day: 'Dienstag', hour: 17, coach: new mongoose.Types.ObjectId() }
+        ]
+      });
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        studentId: student._id,
+        formType: 'kids',
+        firstName: 'Eva',
+        lastName: 'StudentAssignments',
+        birthdate: new Date('2014-09-05'),
+        email: 'eva@assignments.com',
+        privacyConsent: true,
+        status: 'processed',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/cancel`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+
+      const updatedRegistration = await SeasonalRegistration.findById(registration._id);
+      expect(updatedRegistration.status).toBe('cancelled');
+      expect(updatedRegistration.cancelledBy).toBe('admin');
+
+      const updatedStudent = await Student.findById(student._id);
+      expect(updatedStudent.assignments).toEqual([]);
+    });
+
+    it('should return 400 when attempting to cancel an already cancelled registration', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'adults',
+        firstName: 'Felix',
+        lastName: 'DoubleCancel',
+        birthdate: new Date('1988-11-30'),
+        email: 'felix@cancel.com',
+        privacyConsent: true,
+        status: 'cancelled',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/cancel`)
+        .expect(400);
+
+      expect(response.body.error).toContain('bereits storniert');
+    });
+  });
+
+  describe('POST /:id/unprocess - Revert to pending', () => {
+    it('should revert a processed registration to pending', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'kids',
+        firstName: 'Greta',
+        lastName: 'UnprocessTest',
+        birthdate: new Date('2015-03-22'),
+        email: 'greta@unprocess.com',
+        privacyConsent: true,
+        status: 'processed',
+        processedAt: new Date(),
+        processedBy: mockAdminId,
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/unprocess`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.registration.status).toBe('pending');
+
+      const updated = await SeasonalRegistration.findById(registration._id);
+      expect(updated.status).toBe('pending');
+      expect(updated.processedAt).toBeUndefined();
+    });
+
+    it('should return 400 if already pending', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      const registration = await SeasonalRegistration.create({
+        periodId: testPeriod._id,
+        studentPortalUserId: testPortalUser._id,
+        formType: 'adults',
+        firstName: 'Hans',
+        lastName: 'AlreadyPending',
+        birthdate: new Date('1995-07-07'),
+        email: 'hans@pending.com',
+        privacyConsent: true,
+        status: 'pending',
+      });
+
+      const response = await request(app)
+        .post(`/api/seasonal-registrations/${registration._id}/unprocess`)
+        .expect(400);
+
+      expect(response.body.error).toContain('bereits im Status ausstehend');
+    });
+  });
 });
