@@ -405,6 +405,20 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       });
     }
 
+    // Resolve IBAN & Account Holder (fallback to saved profile IBAN if not newly provided)
+    const hasNewIban = Boolean(iban && typeof iban === 'string' && iban.trim());
+    const hasProfileIban = Boolean(portalUser.iban && portalUser.iban.trim());
+    const effectiveIban = hasNewIban ? iban.trim() : (hasProfileIban ? portalUser.iban : null);
+    const effectiveAccountHolder = (accountHolder && typeof accountHolder === 'string' && accountHolder.trim()) ||
+      `${portalUser.firstName || ''} ${portalUser.lastName || ''}`.trim();
+
+    if (hasNewIban && !validateIBANFormat(iban.trim())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Ungültiges IBAN-Format'
+      });
+    }
+
     // Validate form-specific required fields
     if (formType === 'kids') {
       const kidsEnabled = period.kidsFormConfig?.enabledFields || [];
@@ -424,10 +438,10 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       }
 
       // Validate SEPA requirement for kids (MUST provide IBAN and accountHolder when required or when mandate is provided)
-      if (kidsRequired.includes('sepaMandate') && (!sepaMandate || !iban || !accountHolder)) {
+      if (kidsRequired.includes('sepaMandate') && (!sepaMandate || !effectiveIban || !effectiveAccountHolder)) {
         return res.status(400).json({ success: false, error: 'Für Kinder/Jugendliche ist das SEPA-Mandat zwingend erforderlich (inkl. IBAN und Kontoinhaber).' });
       }
-      if (sepaMandate && (!iban || !accountHolder)) {
+      if (sepaMandate && (!effectiveIban || !effectiveAccountHolder)) {
         return res.status(400).json({ success: false, error: 'IBAN und Kontoinhaber sind für das SEPA-Mandat erforderlich.' });
       }
 
@@ -570,33 +584,36 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       }
     }
 
+    // Pre-encrypt newly provided IBAN once so that registration and profile share the exact same encrypted value
+    const newlyEncryptedIban = (hasNewIban && validateIBANFormat(iban.trim()))
+      ? encryptIBAN(iban.trim())
+      : null;
+
     // Handle SEPA mandate — kids only (adults receive a bill, no direct debit)
-    if (formType === 'kids' && sepaMandate && accountHolder && iban) {
+    if (formType === 'kids' && sepaMandate && effectiveAccountHolder && effectiveIban) {
       registrationData.sepaMandate = true;
-      registrationData.accountHolder = accountHolder;
-      registrationData.iban = encryptIBAN(iban);
+      registrationData.accountHolder = effectiveAccountHolder;
+      registrationData.iban = newlyEncryptedIban || portalUser.iban;
     }
 
     // Handle SEPA mandate — adults (optional, but save if provided)
-    if (formType === 'adults' && sepaMandate && iban && validateIBANFormat(iban)) {
+    if (formType === 'adults' && sepaMandate && effectiveIban) {
       registrationData.sepaMandate = true;
-      if (accountHolder) registrationData.accountHolder = accountHolder;
-      registrationData.iban = encryptIBAN(iban);
+      if (effectiveAccountHolder) registrationData.accountHolder = effectiveAccountHolder;
+      registrationData.iban = newlyEncryptedIban || portalUser.iban;
     }
 
     // Create registration
     const registration = new SeasonalRegistration(registrationData);
     await registration.save();
 
-    // Save IBAN to user profile if provided and valid
-    if (iban && validateIBANFormat(iban)) {
-      const encryptedIBAN = encryptIBAN(iban);
-
-      await StudentPortalUser.findByIdAndUpdate(req.user.id, { iban: encryptedIBAN });
+    // Save IBAN to user profile if newly provided and valid
+    if (newlyEncryptedIban) {
+      await StudentPortalUser.findByIdAndUpdate(req.user.id, { iban: newlyEncryptedIban });
 
       if (req.user.studentId) {
         const Student = (await import('../models/Student.js')).default;
-        await Student.findByIdAndUpdate(req.user.studentId, { iban: encryptedIBAN });
+        await Student.findByIdAndUpdate(req.user.studentId, { iban: newlyEncryptedIban });
       }
     }
 

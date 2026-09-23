@@ -11,6 +11,7 @@ import {
   disconnectTestDB,
   clearTestDB,
 } from '../../testHelpers.js';
+import { encryptIBAN } from '../../utils/encryption.js';
 
 // Create Express app for testing
 const app = express();
@@ -294,6 +295,151 @@ describe('Portal Seasonal Registrations API Integration Tests', () => {
         .expect(400);
 
       expect(response.body.error).toMatch(/iban/i);
+    });
+
+    it('should allow kid registration using saved portalUser.iban when req.body.iban is omitted', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      // Configure period to require sepaMandate
+      testPeriod.kidsFormConfig.requiredFields = ['mitgliedsstatus', 'trainingsart', 'sepaMandate'];
+      await testPeriod.save();
+
+      // Store encrypted IBAN in portal user profile
+      const rawIban = 'DE89370400440532013000';
+      testPortalUser.iban = encryptIBAN(rawIban);
+      await testPortalUser.save();
+
+      const registrationData = {
+        periodId: testPeriod._id.toString(),
+        formType: 'kids',
+        firstName: 'Max',
+        lastName: 'Test',
+        birthdate: '2010-05-15',
+        email: 'parent@test.com',
+        phone: '0151 12345678',
+        address: 'Teststraße 1, 12345 Teststadt',
+        mitgliedsstatus: 'Mitglied',
+        trainingsart: 'Jugend TEAM (Gelb)',
+        trainingshäufigkeit: '1x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Montag', hour: 15, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 16, venue: 'Brüser Berg' },
+          { day: 'Donnerstag', hour: 17, venue: 'Röttgen' },
+          { day: 'Freitag', hour: 15, venue: 'BTHV' },
+        ],
+        privacyConsent: true,
+        sepaMandate: true,
+        accountHolder: 'Parent Test',
+        // req.body.iban is omitted (empty string or not provided)
+        iban: '',
+      };
+
+      const response = await request(app)
+        .post('/api/portal/seasonal-registrations')
+        .send(registrationData)
+        .set('Cookie', `testUserId=${testPortalUser._id}`)
+        .expect(201);
+
+      expect(response.body.registration).toBeDefined();
+      expect(response.body.registration.sepaMandate).toBe(true);
+
+      // Verify the saved registration in DB has the portalUser's encrypted IBAN
+      const savedReg = await SeasonalRegistration.findById(response.body.registration._id);
+      expect(savedReg.iban).toBe(testPortalUser.iban);
+      expect(savedReg.accountHolder).toBe('Parent Test');
+    });
+
+    it('should reject kid registration when sepaMandate is required but neither req.body.iban nor portalUser.iban exists', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      testPeriod.kidsFormConfig.requiredFields = ['mitgliedsstatus', 'trainingsart', 'sepaMandate'];
+      await testPeriod.save();
+
+      // Ensure portal user has no saved IBAN
+      testPortalUser.iban = undefined;
+      await testPortalUser.save();
+
+      const registrationData = {
+        periodId: testPeriod._id.toString(),
+        formType: 'kids',
+        firstName: 'Max',
+        lastName: 'Test',
+        birthdate: '2010-05-15',
+        email: 'parent@test.com',
+        phone: '0151 12345678',
+        address: 'Teststraße 1, 12345 Teststadt',
+        mitgliedsstatus: 'Mitglied',
+        trainingsart: 'Jugend TEAM (Gelb)',
+        trainingshäufigkeit: '1x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Montag', hour: 15, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 16, venue: 'Brüser Berg' },
+          { day: 'Donnerstag', hour: 17, venue: 'Röttgen' },
+          { day: 'Freitag', hour: 15, venue: 'BTHV' },
+        ],
+        privacyConsent: true,
+        sepaMandate: true,
+        accountHolder: 'Parent Test',
+        iban: '',
+      };
+
+      const response = await request(app)
+        .post('/api/portal/seasonal-registrations')
+        .send(registrationData)
+        .set('Cookie', `testUserId=${testPortalUser._id}`)
+        .expect(400);
+
+      expect(response.body.error).toMatch(/SEPA-Mandat zwingend erforderlich/i);
+    });
+
+    it('should allow kid registration with newly entered IBAN and update user profile', async () => {
+      const { testPeriod, testPortalUser } = await createTestData();
+
+      testPeriod.kidsFormConfig.requiredFields = ['mitgliedsstatus', 'trainingsart', 'sepaMandate'];
+      await testPeriod.save();
+
+      const rawIban = 'DE89370400440532013000';
+      const registrationData = {
+        periodId: testPeriod._id.toString(),
+        formType: 'kids',
+        firstName: 'Max',
+        lastName: 'Test',
+        birthdate: '2010-05-15',
+        email: 'parent@test.com',
+        phone: '0151 12345678',
+        address: 'Teststraße 1, 12345 Teststadt',
+        mitgliedsstatus: 'Mitglied',
+        trainingsart: 'Jugend TEAM (Gelb)',
+        trainingshäufigkeit: '1x pro Woche',
+        availableTimesKids: [
+          { day: 'Montag', hour: 14, venue: 'BTHV' },
+          { day: 'Montag', hour: 15, venue: 'BTHV' },
+          { day: 'Mittwoch', hour: 16, venue: 'Brüser Berg' },
+          { day: 'Donnerstag', hour: 17, venue: 'Röttgen' },
+          { day: 'Freitag', hour: 15, venue: 'BTHV' },
+        ],
+        privacyConsent: true,
+        sepaMandate: true,
+        accountHolder: 'Parent Test',
+        iban: rawIban,
+      };
+
+      const response = await request(app)
+        .post('/api/portal/seasonal-registrations')
+        .send(registrationData)
+        .set('Cookie', `testUserId=${testPortalUser._id}`)
+        .expect(201);
+
+      expect(response.body.registration).toBeDefined();
+
+      // Verify portal user profile was updated with encrypted IBAN
+      const updatedUser = await StudentPortalUser.findById(testPortalUser._id);
+      expect(updatedUser.iban).toBeDefined();
+
+      const savedReg = await SeasonalRegistration.findById(response.body.registration._id);
+      expect(savedReg.iban).toBe(updatedUser.iban);
     });
 
     it('should prevent duplicate registration for same period', async () => {
