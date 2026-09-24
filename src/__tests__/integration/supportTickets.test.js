@@ -742,38 +742,16 @@ describe('Support Tickets API Integration Tests', () => {
         expect(response.body.ticket.unreadByStudent).toBe(1);
       });
 
-      test('should auto-change status from waiting-customer to in-progress', async () => {
-        const { portalUser } = await createAdminTestData();
-
-        const waitingTicket = await SupportTicket.create({
-          subject: 'Ticket wartet auf Kundenrückmeldung',
-          category: 'question',
-          priority: 'medium',
-          status: 'waiting-customer',
-          createdBy: {
-            studentPortalUserId: portalUser._id,
-            email: portalUser.email,
-            name: 'Test',
-          },
-          messages: [{
-            senderType: 'student',
-            senderId: portalUser._id,
-            senderName: 'Test',
-            content: 'Erste Nachricht des Tickets.',
-            isRead: false,
-          }],
-          lastMessageAt: new Date(),
-          lastMessageFrom: 'student',
-          unreadByAdmin: 1,
-          statusHistory: [{ status: 'waiting-customer', note: '' }],
-        });
+      test('should auto-change status to waiting-customer on admin reply', async () => {
+        const { ticket } = await createAdminTestData();
+        expect(ticket.status).toBe('open');
 
         const response = await request(adminApp)
-          .post(`/api/support-tickets/${waitingTicket._id}/messages`)
-          .send({ content: 'Admin antwortet auf das wartende Ticket.' });
+          .post(`/api/support-tickets/${ticket._id}/messages`)
+          .send({ content: 'Admin antwortet auf das offene Ticket.' });
 
         expect(response.status).toBe(200);
-        expect(response.body.ticket.status).toBe('in-progress');
+        expect(response.body.ticket.status).toBe('waiting-customer');
       });
 
       test('should reject empty admin message', async () => {
@@ -853,7 +831,7 @@ describe('Support Tickets API Integration Tests', () => {
         expect(response.body.error).toContain('Ungültiger Status');
       });
 
-      test('should reject transitions from closed (state machine)', async () => {
+      test('should allow transition from closed to open (admin reopening) and reject invalid targets', async () => {
         const { portalUser } = await createAdminTestData();
 
         const closedTicket = await SupportTicket.create({
@@ -879,12 +857,21 @@ describe('Support Tickets API Integration Tests', () => {
           statusHistory: [{ status: 'closed', note: 'Geschlossen' }],
         });
 
-        const response = await request(adminApp)
+        // Reject transition to in-progress
+        const invalidResponse = await request(adminApp)
           .put(`/api/support-tickets/${closedTicket._id}/status`)
-          .send({ status: 'open' });
+          .send({ status: 'in-progress' });
 
-        expect(response.status).toBe(400);
-        expect(response.body.error).toContain('Geschlossene');
+        expect(invalidResponse.status).toBe(400);
+        expect(invalidResponse.body.error).toContain('Geschlossene Tickets können nur');
+
+        // Allow reopening to open
+        const reopenResponse = await request(adminApp)
+          .put(`/api/support-tickets/${closedTicket._id}/status`)
+          .send({ status: 'open', note: 'Reaktiviert durch Trainer' });
+
+        expect(reopenResponse.status).toBe(200);
+        expect(reopenResponse.body.ticket.status).toBe('open');
       });
 
       test('should return 404 for non-existent ticket', async () => {
@@ -975,6 +962,106 @@ describe('Support Tickets API Integration Tests', () => {
           .post(`/api/portal/support-tickets/${resolvedTicket._id}/close`);
 
         expect(response.status).toBe(404);
+      });
+    });
+
+    // ── GET /api/support-tickets/tracking/:ticketId/:messageId ──
+    describe('GET /api/support-tickets/tracking/:ticketId/:messageId — public email tracking pixel', () => {
+      test('should mark admin message as read and return 1x1 transparent GIF', async () => {
+        const portalUser = await createPortalUser();
+        const ticket = await SupportTicket.create({
+          subject: 'Ticket mit ungelesener Admin-Nachricht',
+          category: 'question',
+          priority: 'medium',
+          status: 'in-progress',
+          createdBy: {
+            studentPortalUserId: portalUser._id,
+            email: portalUser.email,
+            name: `${portalUser.firstName} ${portalUser.lastName}`,
+          },
+          messages: [
+            {
+              senderType: 'student',
+              senderId: portalUser._id,
+              senderName: `${portalUser.firstName} ${portalUser.lastName}`,
+              content: 'Frage des Schülers.',
+              isRead: true,
+            },
+            {
+              senderType: 'admin',
+              senderId: new mongoose.Types.ObjectId(),
+              senderName: 'Trainer Sascha',
+              content: 'Antwort des Admins.',
+              isRead: false,
+            },
+          ],
+          lastMessageAt: new Date(),
+          lastMessageFrom: 'admin',
+          unreadByAdmin: 0,
+          unreadByStudent: 1,
+        });
+
+        const adminMessage = ticket.messages[1];
+
+        // Call public tracking endpoint (no auth header needed)
+        const response = await request(adminApp)
+          .get(`/api/support-tickets/tracking/${ticket._id}/${adminMessage._id}`);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('image/gif');
+        expect(response.headers['cache-control']).toContain('no-store');
+
+        // Verify database state: message should be isRead=true, unreadByStudent=0
+        const updatedTicket = await SupportTicket.findById(ticket._id);
+        const updatedMsg = updatedTicket.messages.id(adminMessage._id);
+        expect(updatedMsg.isRead).toBe(true);
+        expect(updatedTicket.unreadByStudent).toBe(0);
+      });
+
+      test('should handle already read message idempotently', async () => {
+        const portalUser = await createPortalUser();
+        const ticket = await SupportTicket.create({
+          subject: 'Bereits gelesenes Ticket',
+          category: 'question',
+          priority: 'medium',
+          status: 'in-progress',
+          createdBy: {
+            studentPortalUserId: portalUser._id,
+            email: portalUser.email,
+            name: 'User',
+          },
+          messages: [
+            {
+              senderType: 'admin',
+              senderId: new mongoose.Types.ObjectId(),
+              senderName: 'Admin',
+              content: 'Bereits gelesen.',
+              isRead: true,
+            },
+          ],
+          lastMessageAt: new Date(),
+          lastMessageFrom: 'admin',
+          unreadByAdmin: 0,
+          unreadByStudent: 0,
+        });
+
+        const msg = ticket.messages[0];
+        const response = await request(adminApp)
+          .get(`/api/support-tickets/tracking/${ticket._id}/${msg._id}`);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('image/gif');
+
+        const updatedTicket = await SupportTicket.findById(ticket._id);
+        expect(updatedTicket.unreadByStudent).toBe(0);
+      });
+
+      test('should return 1x1 GIF safely on invalid IDs without crashing', async () => {
+        const response = await request(adminApp)
+          .get('/api/support-tickets/tracking/invalid-id/invalid-msg-id');
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('image/gif');
       });
     });
 

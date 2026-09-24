@@ -12,6 +12,7 @@ const NotificationSchema = new mongoose.Schema({
     enum: [
       'schedule_change',
       'support_ticket_reply',
+      'support_ticket_status',
       'registration_approved',
       'announcement',
       'absence_reported',

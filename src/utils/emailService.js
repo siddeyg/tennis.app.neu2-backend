@@ -629,6 +629,91 @@ export async function sendNewTicketEmail(ticket) {
 }
 
 /**
+ * Send confirmation email to student/user when they create a ticket
+ *
+ * @param {Object} ticket - Support ticket document
+ */
+export async function sendTicketCreatedConfirmationEmail(ticket) {
+  if (!ticket?.createdBy?.email) return;
+
+  const portalUrl = process.env.STUDENT_PORTAL_URL || 'https://mondo-tennis.de';
+  const categoryLabels = {
+    bug: 'Fehler',
+    suggestion: 'Vorschlag',
+    question: 'Frage',
+    technical: 'Technisch',
+    other: 'Sonstiges'
+  };
+
+  const firstMessageContent = ticket.messages?.[0]?.content || '';
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Bestätigung Ihrer Support-Anfrage</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #009688 0%, #00796b 100%); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 600;">🎾 Anfrage eingegangen</h1>
+        </div>
+
+        <div style="padding: 30px;">
+          <p style="color: #333; font-size: 16px; margin: 0 0 15px 0;">Hallo ${escapeHtml(ticket.createdBy.name || '')},</p>
+          <p style="color: #555; font-size: 15px; margin: 0 0 20px 0; line-height: 1.5;">vielen Dank für Ihre Nachricht an die Tennisschule. Wir haben Ihre Anfrage erhalten und werden uns schnellstmöglich darum kümmern.</p>
+
+          <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <h2 style="color: #166534; margin: 0 0 8px 0; font-size: 18px;">Ticket #${ticket.ticketNumber}</h2>
+            <p style="color: #1f2937; font-size: 15px; margin: 0; font-weight: 600;">${escapeHtml(ticket.subject)}</p>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
+            <tbody>
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280; width: 30%;">Kategorie:</td>
+                <td style="padding: 6px 0; color: #111827; font-weight: 500;">${escapeHtml(categoryLabels[ticket.category] || ticket.category)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280;">Status:</td>
+                <td style="padding: 6px 0; color: #d97706; font-weight: 600;">In Bearbeitung / Offen</td>
+              </tr>
+            </tbody>
+          </table>
+
+          ${firstMessageContent ? `
+          <div style="background-color: #fafafa; border-radius: 6px; padding: 15px; margin-bottom: 25px; border: 1px solid #e5e7eb;">
+            <h3 style="color: #4b5563; margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase;">Ihre Nachricht:</h3>
+            <p style="color: #374151; font-size: 14px; margin: 0; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(firstMessageContent)}</p>
+          </div>` : ''}
+
+          <div style="text-align: center; margin: 30px 0 20px 0;">
+            <a href="${portalUrl}/support-tickets/${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 600; font-size: 15px;">Ticket im Portal einsehen</a>
+          </div>
+
+          <p style="color: #6b7280; font-size: 13px; margin: 20px 0 0 0; text-align: center;">Sobald unser Trainer-Team antwortet, erhalten Sie automatisch eine Benachrichtigung.</p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0 30px;">
+
+        <div style="padding: 20px 30px; text-align: center;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">Mondo Tennisschule · TC GW Am Kreuzberg</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  await sendEmail({
+    to: ticket.createdBy.email,
+    subject: `[Ticket #${ticket.ticketNumber}] Ihre Anfrage erhalten: ${ticket.subject}`,
+    html,
+  });
+}
+
+/**
  * Send ticket reply notification
  *
  * @param {Object} ticket - Support ticket document
@@ -640,6 +725,11 @@ export async function sendTicketReplyEmail(ticket, message, recipientEmail) {
   const portalUrl = isAdminRecipient
     ? process.env.ADMIN_PORTAL_URL || 'https://mondo2.suwar.de'
     : process.env.STUDENT_PORTAL_URL || 'https://mondo-tennis.de';
+
+  const apiBaseUrl = process.env.API_URL || (process.env.NODE_ENV === 'production' ? 'https://www.mondo-tennis.de' : 'http://localhost:5000');
+  const trackingPixelUrl = !isAdminRecipient && message._id
+    ? `${apiBaseUrl}/api/support-tickets/tracking/${ticket._id}/${message._id}`
+    : null;
 
   const html = `
     <!DOCTYPE html>
@@ -685,6 +775,7 @@ export async function sendTicketReplyEmail(ticket, message, recipientEmail) {
       <div style="text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px;">
         <p style="margin: 5px 0;">Mondo Tennisschule</p>
       </div>
+      ${trackingPixelUrl ? `<img src="${trackingPixelUrl}" width="1" height="1" alt="" style="display:none;width:1px;height:1px;border:0;" />` : ''}
     </body>
     </html>
   `;

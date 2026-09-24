@@ -1,10 +1,12 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import rateLimit from 'express-rate-limit';
 import SupportTicket from '../models/SupportTicket.js';
 import User from '../models/User.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
+import updateActivity from '../middleware/updateActivity.js';
 import { sendTicketReplyEmail, sendTicketStatusChangeEmail } from '../utils/emailService.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
@@ -59,25 +61,79 @@ const adminCreateLimiter = rateLimit({
   skip: (req) => process.env.NODE_ENV === 'test'
 });
 
-// All routes require admin role (supermods excluded)
-router.use(requireAuth, requireRole(['admin']));
+// 1x1 transparent GIF buffer (43 bytes)
+const TRANSPARENT_1X1_GIF = Buffer.from(
+  'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+  'base64'
+);
+
+// GET /api/support-tickets/tracking/:ticketId/:messageId
+// Public tracking pixel endpoint for email read receipts (unauthenticated)
+router.get('/tracking/:ticketId/:messageId', async (req, res) => {
+  const { ticketId, messageId } = req.params;
+
+  // Set anti-caching headers immediately
+  res.setHeader('Content-Type', 'image/gif');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, private, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
+  // Validate ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(ticketId) || !mongoose.Types.ObjectId.isValid(messageId)) {
+    return res.end(TRANSPARENT_1X1_GIF);
+  }
+
+  try {
+    const ticket = await SupportTicket.findOne({ _id: ticketId, isDeleted: false });
+    if (ticket && ticket.messages) {
+      const msg = ticket.messages.id(messageId);
+      if (msg && !msg.isRead && msg.senderType === 'admin') {
+        msg.isRead = true;
+        if (ticket.unreadByStudent > 0) {
+          ticket.unreadByStudent = Math.max(0, ticket.unreadByStudent - 1);
+        }
+        await ticket.save();
+        logger.info('Marked ticket message as read via email tracking pixel', {
+          ticketId,
+          messageId,
+          ticketNumber: ticket.ticketNumber
+        });
+      }
+    }
+  } catch (error) {
+    logger.error('Error in ticket tracking pixel', {
+      ticketId,
+      messageId,
+      error: error.message
+    });
+  }
+
+  return res.end(TRANSPARENT_1X1_GIF);
+});
+
+// All routes below require admin role (supermods excluded)
+router.use(requireAuth, updateActivity, requireRole(['admin']));
 
 // GET /api/support-tickets/stats
 // Dashboard statistics
 router.get('/stats', async (req, res) => {
   try {
-    const [openCount, inProgressCount, resolvedCount, totalCount, unreadCount] = await Promise.all([
+    const [openCount, waitingCustomerCount, inProgressCount, resolvedCount, closedCount, totalCount, unreadCount] = await Promise.all([
       SupportTicket.countDocuments({ status: 'open', isDeleted: false }),
+      SupportTicket.countDocuments({ status: 'waiting-customer', isDeleted: false }),
       SupportTicket.countDocuments({ status: 'in-progress', isDeleted: false }),
       SupportTicket.countDocuments({ status: 'resolved', isDeleted: false }),
+      SupportTicket.countDocuments({ status: 'closed', isDeleted: false }),
       SupportTicket.countDocuments({ isDeleted: false }),
       SupportTicket.countDocuments({ unreadByAdmin: { $gt: 0 }, isDeleted: false })
     ]);
 
     res.json({
       open: openCount,
+      waitingCustomer: waitingCustomerCount,
       inProgress: inProgressCount,
       resolved: resolvedCount,
+      closed: closedCount,
       total: totalCount,
       unread: unreadCount
     });
@@ -107,7 +163,11 @@ router.get('/', async (req, res) => {
     const filter = { isDeleted: false };
 
     if (status) {
-      filter.status = status;
+      if (status.includes(',')) {
+        filter.status = { $in: status.split(',').map(s => s.trim()) };
+      } else {
+        filter.status = status;
+      }
     }
 
     if (priority) {
@@ -239,13 +299,14 @@ router.post('/:id/messages', adminReplyLimiter, auditLogMiddleware({ action: 'CR
     ticket.lastMessageFrom = 'admin';
     ticket.unreadByStudent += 1;
 
-    // Auto-change status from waiting-customer to in-progress
-    if (ticket.status === 'waiting-customer') {
-      ticket.status = 'in-progress';
+    // Auto-change status to waiting-customer (Beantwortet) on admin reply
+    if (ticket.status === 'open' || ticket.status === 'in-progress') {
+      const oldStatus = ticket.status;
+      ticket.status = 'waiting-customer';
       ticket.statusHistory.push({
-        status: 'in-progress',
+        status: 'waiting-customer',
         changedBy: req.user.id,
-        note: 'Auto-changed on admin reply'
+        note: `Auto-changed from ${oldStatus} to waiting-customer (Beantwortet) on admin reply`
       });
     }
 
@@ -255,7 +316,8 @@ router.post('/:id/messages', adminReplyLimiter, auditLogMiddleware({ action: 'CR
     try {
       const studentEmail = ticket.createdBy.email;
       if (studentEmail) {
-        await sendTicketReplyEmail(ticket, message, studentEmail);
+        const savedMessage = ticket.messages[ticket.messages.length - 1] || message;
+        await sendTicketReplyEmail(ticket, savedMessage, studentEmail);
       }
     } catch (emailError) {
       logger.error('Error sending ticket reply email', { error: emailError.message, stack: emailError.stack });
@@ -394,16 +456,16 @@ router.put('/:id/status', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
       'in-progress': ['waiting-customer', 'resolved', 'closed', 'open'],
       'waiting-customer': ['in-progress', 'resolved', 'closed', 'open'],
       'resolved': ['closed', 'open'],
-      'closed': [] // Cannot transition from closed
+      'closed': ['open'] // Admins can reopen closed tickets to open
     };
 
-    if (oldStatus === 'closed') {
+    if (oldStatus === 'closed' && status !== 'open') {
       return res.status(400).json({
-        error: 'Geschlossene Tickets können nicht wieder geöffnet werden'
+        error: 'Geschlossene Tickets können nur auf "Offen" wiedereröffnet werden'
       });
     }
 
-    if (!ALLOWED_TRANSITIONS[oldStatus].includes(status)) {
+    if (!ALLOWED_TRANSITIONS[oldStatus] || !ALLOWED_TRANSITIONS[oldStatus].includes(status)) {
       return res.status(400).json({
         error: `Ungültiger Statusübergang von "${oldStatus}" zu "${status}"`
       });

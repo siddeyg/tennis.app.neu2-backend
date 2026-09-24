@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
     ]);
 
     // Build ticket summary
-    const ticketMap = { open: 0, 'in-progress': 0, resolved: 0, closed: 0 };
+    const ticketMap = { open: 0, 'waiting-customer': 0, 'in-progress': 0, resolved: 0, closed: 0 };
     let ticketTotal = 0;
     for (const row of ticketStats) {
       ticketMap[row._id] = (ticketMap[row._id] || 0) + row.count;
@@ -106,6 +106,7 @@ router.get('/', async (req, res) => {
       familyMembers: familyMemberCount,
       tickets: {
         open: ticketMap['open'],
+        waitingCustomer: ticketMap['waiting-customer'] || 0,
         inProgress: ticketMap['in-progress'],
         resolved: ticketMap['resolved'],
         closed: ticketMap['closed'],

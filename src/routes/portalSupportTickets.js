@@ -4,7 +4,7 @@ import SupportTicket from '../models/SupportTicket.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
 import { verifyPortalAuth } from '../middleware/verifyPortalAuth.js';
-import { sendNewTicketEmail, sendTicketReplyEmail } from '../utils/emailService.js';
+import { sendNewTicketEmail, sendTicketReplyEmail, sendTicketCreatedConfirmationEmail } from '../utils/emailService.js';
 import { sendPushToAdmins } from '../utils/webPush.js';
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
@@ -82,10 +82,26 @@ router.get('/:id', async (req, res) => {
       _id: req.params.id,
       'createdBy.studentPortalUserId': req.user.id,
       isDeleted: false
-    }).lean();
+    });
 
     if (!ticket) {
       return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    // Auto-mark unread admin messages as read upon viewing
+    let readCount = 0;
+    ticket.messages.forEach(msg => {
+      if (!msg.isRead && msg.senderType === 'admin') {
+        msg.isRead = true;
+        readCount++;
+      }
+    });
+
+    if (readCount > 0) {
+      if (ticket.unreadByStudent > 0) {
+        ticket.unreadByStudent = Math.max(0, ticket.unreadByStudent - readCount);
+      }
+      await ticket.save();
     }
 
     res.json(ticket);
@@ -168,12 +184,17 @@ router.post('/', createTicketLimiter, auditLogMiddleware({ action: 'CREATE', res
 
     await ticket.save();
 
-    // Send email notification to admin
+    // Send email notification to admin and confirmation to user
     try {
       await sendNewTicketEmail(ticket);
     } catch (emailError) {
       logger.error("Error sending new ticket email", { error: emailError.message, stack: emailError.stack });
-      // Don't fail the request if email fails
+    }
+
+    try {
+      await sendTicketCreatedConfirmationEmail(ticket);
+    } catch (confirmError) {
+      logger.error("Error sending ticket confirmation email to student", { error: confirmError.message });
     }
 
     // Send push notification to admins (fire-and-forget — never block the request)

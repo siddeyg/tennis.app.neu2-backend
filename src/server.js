@@ -384,8 +384,8 @@ app.use("/api/dashboard", requireAuth, updateActivity, requireAdminOrSupermod, d
 // Galleries route - authorization handled internally in the routes
 app.use("/api/galleries", galleriesRoutes);
 
-// Support tickets routes - admin only
-app.use("/api/support-tickets", requireAuth, updateActivity, requireRole(["admin"]), supportTicketsRoutes);
+// Support tickets routes - admin only (auth handled in route file; tracking pixel is public)
+app.use("/api/support-tickets", supportTicketsRoutes);
 
 // Portal support tickets routes - student portal (auth handled in route file)
 app.use("/api/portal/support-tickets", portalSupportTicketsRoutes);
