@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import StudentPortalUser from '../../models/StudentPortalUser.js';
 import BroadcastEmail from '../../models/BroadcastEmail.js';
 import User from '../../models/User.js';
+import RegistrationPeriod from '../../models/RegistrationPeriod.js';
+import SeasonalRegistration from '../../models/SeasonalRegistration.js';
+import Announcement from '../../models/Announcement.js';
 import broadcastEmailRoutes from '../../routes/broadcastEmail.js';
 import {
   connectTestDB,
@@ -135,6 +138,104 @@ describe('Broadcast Email API Integration Tests', () => {
       expect(broadcast.subject).toBe('Saisonstart 2026/2027');
       expect(broadcast.recipients.length).toBe(2);
     });
+
+    it('deduplicates parents with multiple children and aggregates names (Tim & Lisa)', async () => {
+      const adminPeriodUser = await User.create({
+        firstName: 'Admin',
+        lastName: 'Season',
+        email: 'admin_season@test.com',
+        password: 'password123',
+        role: 'admin'
+      });
+
+      const period = await RegistrationPeriod.create({
+        name: 'Winter 2026/2027',
+        season: 'winter',
+        trainingStartDate: new Date('2026-10-01'),
+        trainingEndDate: new Date('2027-04-30'),
+        registrationDeadline: new Date('2026-09-30'),
+        createdBy: adminPeriodUser._id,
+        isActive: true
+      });
+
+      const parentUser = await StudentPortalUser.create(createTestPortalUser({
+        email: 'eltern@test.com',
+        firstName: 'Markus',
+        lastName: 'Mueller'
+      }));
+
+      // Child 1 registration
+      await SeasonalRegistration.create({
+        periodId: period._id,
+        studentPortalUserId: parentUser._id,
+        familyMemberId: new mongoose.Types.ObjectId(),
+        formType: 'kids',
+        firstName: 'Tim',
+        lastName: 'Mueller',
+        email: 'eltern@test.com',
+        birthdate: new Date('2018-05-10'),
+        status: 'processed',
+        privacyConsent: true
+      });
+
+      // Child 2 registration with same parent email
+      await SeasonalRegistration.create({
+        periodId: period._id,
+        studentPortalUserId: parentUser._id,
+        familyMemberId: new mongoose.Types.ObjectId(),
+        formType: 'kids',
+        firstName: 'Lisa',
+        lastName: 'Mueller',
+        email: 'eltern@test.com',
+        birthdate: new Date('2016-08-20'),
+        status: 'processed',
+        privacyConsent: true
+      });
+
+      // Cancelled registration (should NOT be included!)
+      await SeasonalRegistration.create({
+        periodId: period._id,
+        studentPortalUserId: parentUser._id,
+        familyMemberId: new mongoose.Types.ObjectId(),
+        formType: 'kids',
+        firstName: 'StorniertesKind',
+        lastName: 'Mueller',
+        email: 'storno@test.com',
+        birthdate: new Date('2017-01-01'),
+        status: 'cancelled',
+        privacyConsent: true
+      });
+
+      const res = await request(app)
+        .post('/api/broadcast-email/send')
+        .send({
+          subject: 'Infos zum Wintertraining',
+          contentHtml: '<p>Liebe Eltern von {Vorname}, hier sind alle Infos.</p>',
+          targetingType: 'seasonal',
+          targetCriteria: {
+            periodId: period._id.toString(),
+            formType: 'kids'
+          },
+          publishToNoticeboard: true
+        })
+        .expect(202);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.recipientCount).toBe(1); // Exactly 1 parent email, not 2
+      expect(res.body.createdAnnouncementId).toBeDefined();
+
+      const broadcast = await BroadcastEmail.findById(res.body.broadcastId);
+      expect(broadcast.recipients.length).toBe(1);
+      expect(broadcast.recipients[0].email).toBe('eltern@test.com');
+      // Names must be aggregated
+      expect(broadcast.recipients[0].name).toContain('Tim & Lisa');
+
+      // Verify noticeboard announcement was created
+      const announcement = await Announcement.findById(res.body.createdAnnouncementId);
+      expect(announcement).toBeDefined();
+      expect(announcement.title).toBe('Infos zum Wintertraining');
+      expect(announcement.targetAudience).toBe('children');
+    });
   });
 
   describe('GET /api/broadcast-email/status/:id & POST /cancel/:id', () => {
@@ -176,8 +277,104 @@ describe('Broadcast Email API Integration Tests', () => {
     });
   });
 
+  describe('GET /api/broadcast-email/target-options & /search-recipients', () => {
+    it('returns target options with seasons, camps, venues, days and talentinos', async () => {
+      const res = await request(app)
+        .get('/api/broadcast-email/target-options')
+        .expect(200);
+
+      expect(res.body.success).toBe(true);
+      expect(Array.isArray(res.body.seasons)).toBe(true);
+      expect(Array.isArray(res.body.camps)).toBe(true);
+      expect(Array.isArray(res.body.venues)).toBe(true);
+      expect(Array.isArray(res.body.days)).toBe(true);
+      expect(Array.isArray(res.body.talentinos)).toBe(true);
+      expect(res.body.days).toContain('Montag');
+    });
+
+    it('searches recipients by query string across portal users and students', async () => {
+      await StudentPortalUser.create(createTestPortalUser({
+        firstName: 'Alexander',
+        lastName: 'Zverev',
+        email: 'sascha@tennis.de'
+      }));
+
+      const res = await request(app)
+        .get('/api/broadcast-email/search-recipients?q=zverev')
+        .expect(200);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.results.length).toBe(1);
+      expect(res.body.results[0].email).toBe('sascha@tennis.de');
+      expect(res.body.results[0].name).toBe('Alexander Zverev');
+    });
+  });
+
+  describe('Drafts & Templates CRUD', () => {
+    it('manages drafts lifecycle (save, list, delete)', async () => {
+      const saveRes = await request(app)
+        .post('/api/broadcast-email/draft')
+        .send({
+          subject: 'Mein Entwurf',
+          contentHtml: '<p>Noch nicht fertig</p>'
+        })
+        .expect(200);
+
+      expect(saveRes.body.success).toBe(true);
+      const draftId = saveRes.body.draftId;
+      expect(draftId).toBeDefined();
+
+      const listRes = await request(app)
+        .get('/api/broadcast-email/drafts')
+        .expect(200);
+
+      expect(listRes.body.success).toBe(true);
+      expect(listRes.body.drafts.length).toBe(1);
+      expect(listRes.body.drafts[0].subject).toBe('Mein Entwurf');
+
+      await request(app)
+        .delete(`/api/broadcast-email/draft/${draftId}`)
+        .expect(200);
+
+      const afterDel = await request(app)
+        .get('/api/broadcast-email/drafts')
+        .expect(200);
+      expect(afterDel.body.drafts.length).toBe(0);
+    });
+
+    it('manages templates and serves system templates', async () => {
+      const listRes = await request(app)
+        .get('/api/broadcast-email/templates')
+        .expect(200);
+
+      expect(listRes.body.success).toBe(true);
+      expect(listRes.body.systemTemplates.length).toBeGreaterThanOrEqual(4);
+
+      const createRes = await request(app)
+        .post('/api/broadcast-email/templates')
+        .send({
+          title: 'Meine Vereins-Vorlage',
+          subject: 'Vorlage: Betreff',
+          contentHtml: '<p>Vorlageninhalt</p>'
+        })
+        .expect(200);
+
+      expect(createRes.body.success).toBe(true);
+      const customId = createRes.body.template._id;
+
+      const afterCreate = await request(app)
+        .get('/api/broadcast-email/templates')
+        .expect(200);
+      expect(afterCreate.body.customTemplates.length).toBe(1);
+
+      await request(app)
+        .delete(`/api/broadcast-email/templates/${customId}`)
+        .expect(200);
+    });
+  });
+
   describe('GET /api/broadcast-email/history', () => {
-    it('returns paginated broadcast list', async () => {
+    it('returns paginated broadcast list and excludes drafts and templates', async () => {
       const admin = await User.create({
         firstName: 'Admin',
         lastName: 'User',
@@ -185,6 +382,7 @@ describe('Broadcast Email API Integration Tests', () => {
         password: 'password123',
         role: 'admin'
       });
+      // Regular sent broadcast
       await BroadcastEmail.create({
         subject: 'Alte Rundmail',
         contentHtml: '<p>Inhalt</p>',
@@ -193,6 +391,24 @@ describe('Broadcast Email API Integration Tests', () => {
         status: 'completed',
         recipientCount: 100,
         sentCount: 100
+      });
+      // Draft (should be excluded)
+      await BroadcastEmail.create({
+        subject: 'Ein Entwurf',
+        contentHtml: '<p>Inhalt</p>',
+        contentText: 'Inhalt',
+        senderAdminId: admin._id,
+        status: 'draft',
+        isTemplate: false
+      });
+      // Template (should be excluded)
+      await BroadcastEmail.create({
+        subject: 'Ein Template',
+        contentHtml: '<p>Inhalt</p>',
+        contentText: 'Inhalt',
+        senderAdminId: admin._id,
+        status: 'completed',
+        isTemplate: true
       });
 
       const res = await request(app)

@@ -71,25 +71,104 @@ const broadcastAttachmentSchema = new mongoose.Schema({
   }
 }, { _id: true });
 
+const targetCriteriaSchema = new mongoose.Schema({
+  // Saisontraining
+  periodId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'RegistrationPeriod',
+    default: null
+  },
+  formType: {
+    type: String,
+    enum: ['kids', 'adults', 'all'],
+    default: 'all'
+  },
+  talentinosGroup: {
+    type: String,
+    enum: ['all', 'kindergarten_rot', 'orange_gruen', 'gelb', 'team_gelb_u15', null],
+    default: null
+  },
+  // Camps & Events
+  campId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Camp',
+    default: null
+  },
+  // Wochentag & Halle (Zuweisungen)
+  day: {
+    type: String,
+    enum: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag', null],
+    default: null
+  },
+  venue: {
+    type: String,
+    trim: true,
+    default: null
+  },
+  // Direktansprache spezifischer Nutzer oder Schüler
+  specificUserIds: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'StudentPortalUser'
+  }],
+  specificStudentIds: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
+}, { _id: false });
+
 const broadcastEmailSchema = new mongoose.Schema({
   subject: {
     type: String,
-    required: true,
+    required: function() { return this.status !== 'draft'; },
     trim: true,
-    maxlength: 300
+    maxlength: 300,
+    default: ''
   },
   contentHtml: {
     type: String,
-    required: true
+    required: function() { return this.status !== 'draft'; },
+    default: ''
   },
   contentText: {
     type: String,
-    required: true
+    required: function() { return this.status !== 'draft'; },
+    default: ''
   },
+  // Legacy / Basic Audience Filter (used when targetingType === 'global')
   targetAudience: {
     type: String,
     enum: ['all', 'adults', 'children'],
     default: 'all'
+  },
+  // 5 Granular Targeting Modes
+  targetingType: {
+    type: String,
+    enum: ['global', 'seasonal', 'camp', 'day_venue', 'custom'],
+    default: 'global'
+  },
+  targetCriteria: {
+    type: targetCriteriaSchema,
+    default: () => ({})
+  },
+  // Cross-Channel: Zeitgleich Pinnwand-Ankündigung im Schüler-Portal erstellen
+  publishToNoticeboard: {
+    type: Boolean,
+    default: false
+  },
+  createdAnnouncementId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Announcement',
+    default: null
+  },
+  // Vorlagen-Unterstützung (Templates)
+  isTemplate: {
+    type: Boolean,
+    default: false
+  },
+  templateTitle: {
+    type: String,
+    trim: true,
+    default: null
   },
   recipients: [recipientSchema],
   attachments: [broadcastAttachmentSchema],
@@ -131,9 +210,11 @@ const broadcastEmailSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for listing history efficiently
+// Index for listing history & filtering efficiently
 broadcastEmailSchema.index({ createdAt: -1 });
 broadcastEmailSchema.index({ status: 1 });
+broadcastEmailSchema.index({ isTemplate: 1 });
+broadcastEmailSchema.index({ targetingType: 1 });
 
 const BroadcastEmail = mongoose.model('BroadcastEmail', broadcastEmailSchema);
 

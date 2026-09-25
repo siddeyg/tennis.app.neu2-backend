@@ -14,17 +14,91 @@
  * - {Nachname} / {lastName}
  * - {PortalLink}
  */
-export function replacePlaceholders(template, user = {}) {
+/**
+ * Replace placeholders in a text/HTML string with recipient-specific values.
+ *
+ * Supported placeholders:
+ * - {Vorname} / {firstName}
+ * - {Nachname} / {lastName}
+ * - {Anrede} / {salutation} (smart fallback: "Liebe Familie Müller", "Hallo Tim & Lisa", "Hallo Max", "Hallo Tennis-Freunde")
+ * - {PortalLink}
+ * - {Datum} / {date}
+ * - {Saison} / {season}
+ */
+export function replacePlaceholders(template, user = {}, options = {}) {
   if (!template) return '';
 
   const firstName = user.firstName || '';
   const lastName = user.lastName || '';
   const portalUrl = process.env.PORTAL_URL || process.env.STUDENT_PORTAL_URL || process.env.FRONTEND_URL || 'https://www.mondo-tennis.de';
 
+  // Smart Salutation Logic
+  let salutation = user.salutation || '';
+  if (!salutation) {
+    if (user.isFamily && lastName) {
+      salutation = firstName ? `Liebe Familie ${lastName} (${firstName})` : `Liebe Familie ${lastName}`;
+    } else if (firstName) {
+      salutation = `Hallo ${firstName}`;
+    } else {
+      salutation = 'Hallo Tennis-Freunde';
+    }
+  }
+
+  // Formatted date (German format: 25.09.2026)
+  const todayFormatted = new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date());
+
+  const seasonName = user.seasonName || options.seasonName || 'Wintertraining 2026/2027';
+
   return template
     .replace(/\{Vorname\}|\{firstName\}/gi, firstName)
     .replace(/\{Nachname\}|\{lastName\}/gi, lastName)
-    .replace(/\{PortalLink\}/gi, portalUrl);
+    .replace(/\{Anrede\}|\{salutation\}/gi, salutation)
+    .replace(/\{PortalLink\}/gi, portalUrl)
+    .replace(/\{Datum\}|\{date\}/gi, todayFormatted)
+    .replace(/\{Saison\}|\{season\}/gi, seasonName);
+}
+
+/**
+ * Transform CTA buttons inside HTML to bulletproof table-based Outlook & Mobile buttons
+ */
+export function transformCtaButtons(html) {
+  if (!html) return '';
+
+  // Match links having class or data-type for buttons
+  return html.replace(/<a\s+([^>]*?(?:class="(?:[^"]*?\b(?:email-button|btn-primary|button)\b[^"]*?)"|data-type="cta-button")[^>]*?)>(.*?)<\/a>/gi, (match, attrs, linkText) => {
+    // Extract href
+    const hrefMatch = attrs.match(/href="([^"]*)"/i);
+    const href = hrefMatch ? hrefMatch[1] : '#';
+    const cleanText = linkText.replace(/<[^>]+>/g, '').trim();
+
+    return `
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin: 22px auto; text-align: center;">
+  <tr>
+    <td align="center" style="background-color: #00838f; border-radius: 6px; padding: 12px 28px;">
+      <a href="${href}" target="_blank" style="color: #ffffff; text-decoration: none; font-size: 15px; font-weight: bold; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: inline-block;">
+        ${cleanText}
+      </a>
+    </td>
+  </tr>
+</table>`;
+  });
+}
+
+/**
+ * Ensure all image tags have alt attributes to prevent spam penalty
+ */
+export function ensureImageAltAttributes(html) {
+  if (!html) return '';
+  return html.replace(/<img\s+([^>]*?)>/gi, (match, attrs) => {
+    if (!/alt=["'][^"']*["']/i.test(attrs)) {
+      return `<img ${attrs} alt="Mondo Tennisschule Info">`;
+    }
+    return match;
+  });
 }
 
 /**
@@ -35,23 +109,31 @@ export function htmlToPlainText(html) {
 
   let text = html;
 
+  // Format CTA buttons and regular links
+  text = text.replace(/<a\s+([^>]*?)>(.*?)<\/a>/gi, (match, attrs, linkText) => {
+    const isCta = /(?:class=["'][^"']*?\b(?:email-button|btn-primary|button)\b|data-type=["']cta-button["'])/i.test(attrs);
+    const hrefMatch = attrs.match(/href=["']([^"']*)["']/i);
+    const href = hrefMatch ? hrefMatch[1] : '';
+    const cleanText = linkText.replace(/<[^>]+>/g, '').trim();
+
+    if (isCta) {
+      return `\n\n👉 [${cleanText}]: ${href}\n\n`;
+    }
+    if (!cleanText || cleanText === href) return href;
+    return `${cleanText} (${href})`;
+  });
+
   // Replace line breaks and paragraph ends
   text = text.replace(/<br\s*[\/]?>/gi, '\n');
   text = text.replace(/<\/p>/gi, '\n\n');
   text = text.replace(/<\/div>/gi, '\n');
   text = text.replace(/<\/h[1-6]>/gi, '\n\n');
+  text = text.replace(/<hr\s*[\/]?>/gi, '\n---\n');
 
   // Format list items
   text = text.replace(/<li[^>]*>/gi, '\n• ');
   text = text.replace(/<\/li>/gi, '');
   text = text.replace(/<\/(ul|ol)>/gi, '\n');
-
-  // Format links: [Text](URL) or Text (URL)
-  text = text.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"[^>]*>(.*?)<\/a>/gi, (match, href, linkText) => {
-    const cleanText = linkText.replace(/<[^>]+>/g, '').trim();
-    if (!cleanText || cleanText === href) return href;
-    return `${cleanText} (${href})`;
-  });
 
   // Strip all other HTML tags
   text = text.replace(/<[^>]+>/g, '');
@@ -234,18 +316,22 @@ function escapeHtml(str) {
 /**
  * Render complete broadcast email (HTML + plain text) for a given recipient.
  */
-export function renderBroadcastEmail(rawHtml, user = {}, { subject = '' } = {}) {
+export function renderBroadcastEmail(rawHtml, user = {}, { subject = '', seasonName = '' } = {}) {
   // 1. Personalize inner HTML
-  const personalizedInnerHtml = replacePlaceholders(rawHtml, user);
-  const personalizedSubject = replacePlaceholders(subject, user);
+  const personalizedInnerHtml = replacePlaceholders(rawHtml, user, { seasonName });
+  const personalizedSubject = replacePlaceholders(subject, user, { seasonName });
 
-  // 2. Wrap into responsive Mondo template
-  const fullHtml = wrapInMondoEmailTemplate(personalizedInnerHtml, {
+  // 2. Transform CTA buttons & ensure image alt attributes
+  const withCtaButtons = transformCtaButtons(personalizedInnerHtml);
+  const compliantHtml = ensureImageAltAttributes(withCtaButtons);
+
+  // 3. Wrap into responsive Mondo template
+  const fullHtml = wrapInMondoEmailTemplate(compliantHtml, {
     subject: personalizedSubject,
     user
   });
 
-  // 3. Generate plain text fallback
+  // 4. Generate plain text fallback
   const plainText = htmlToPlainText(personalizedInnerHtml);
   const portalUrl = process.env.STUDENT_PORTAL_URL || process.env.PORTAL_URL || 'https://www.mondo-tennis.de';
   const fullText = `${plainText}\n\n---\nMondo Tennisschule\nBei Fragen antworten Sie einfach auf diese E-Mail (info@mondo-tennisschule.de).\nhttp://mondo-tennisschule.de\nOnline-Portal: ${portalUrl}`;

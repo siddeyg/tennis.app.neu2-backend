@@ -93,5 +93,34 @@ describe('broadcastEmailRenderer Unit Tests', () => {
       expect(text).toContain('Dein Kurs startet.');
       expect(text).toContain('info@mondo-tennisschule.de');
     });
+
+    it('personalizes {Anrede}, {Datum}, {Saison} and transforms CTA buttons & image alts', () => {
+      const rawHtml = `
+        <p>{Anrede},</p>
+        <p>Der Start für das {Saison} steht fest. Datum: {Datum}.</p>
+        <p><img src="/api/broadcast-email/images/test.jpg" style="width: 600px;"></p>
+        <p><a href="https://www.mondo-tennis.de/portal" class="email-button" data-type="cta-button">Jetzt anmelden</a></p>
+      `;
+      const user = { firstName: 'Max', lastName: 'Mustermann', isFamily: false };
+      const { html, text } = renderBroadcastEmail(rawHtml, user, {
+        seasonName: 'Sommertraining 2027'
+      });
+
+      expect(html).toContain('Hallo Max,');
+      expect(html).toContain('Sommertraining 2027');
+      expect(html).toContain('alt="Mondo Tennisschule Info"');
+      expect(html).toContain('table border="0" cellpadding="0" cellspacing="0" role="presentation"');
+      expect(html).toContain('Jetzt anmelden');
+
+      expect(text).toContain('👉 [Jetzt anmelden]: https://www.mondo-tennis.de/portal');
+    });
+
+    it('aggregates multi-child family salutation correctly', () => {
+      const rawHtml = '<p>{Anrede}, wir freuen uns auf euch!</p>';
+      const user = { firstName: 'Tim & Lisa', lastName: 'Schmidt', isFamily: true };
+      const { html } = renderBroadcastEmail(rawHtml, user);
+
+      expect(html).toContain('Liebe Familie Schmidt (Tim & Lisa), wir freuen uns auf euch!');
+    });
   });
 });
