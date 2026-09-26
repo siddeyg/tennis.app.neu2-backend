@@ -12,6 +12,7 @@ import Camp from '../models/Camp.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import CampRegistration from '../models/CampRegistration.js';
 import Student from '../models/Student.js';
+import Coach from '../models/Coach.js';
 import Announcement from '../models/Announcement.js';
 import logger from '../utils/logger.js';
 import { requireAuth } from '../middleware/requireAuth.js';
@@ -359,13 +360,30 @@ export async function resolveRecipients({
 
     if (userIds.length > 0) {
       const portalUsers = await StudentPortalUser.find({ _id: { $in: userIds }, isActive: true }).lean();
+      const resolvedUserIds = new Set();
       for (const u of portalUsers) {
+        resolvedUserIds.add(String(u._id));
         addRecipient(u.email, {
           userId: u._id,
           firstName: u.firstName,
           lastName: u.lastName,
           name: `${u.firstName || ''} ${u.lastName || ''}`.trim()
         });
+      }
+
+      // Check remaining userIds against Coach and User collections
+      const remainingUserIds = userIds.filter(id => !resolvedUserIds.has(String(id)));
+      if (remainingUserIds.length > 0) {
+        const coaches = await Coach.find({ _id: { $in: remainingUserIds } }).lean();
+        for (const c of coaches) {
+          if (!c.email) continue;
+          resolvedUserIds.add(String(c._id));
+          addRecipient(c.email, {
+            firstName: c.firstName,
+            lastName: c.lastName,
+            name: `${c.firstName || ''} ${c.lastName || ''}`.trim()
+          });
+        }
       }
     }
 
@@ -514,16 +532,43 @@ router.get('/search-recipients', async (req, res) => {
       return res.json({ success: true, results: [] });
     }
 
-    const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const fullRegex = new RegExp(escapeRegex(q), 'i');
 
-    const [users, students] = await Promise.all([
+    let searchFilter;
+    if (tokens.length === 1) {
+      const singleRegex = new RegExp(escapeRegex(tokens[0]), 'i');
+      searchFilter = {
+        $or: [
+          { firstName: singleRegex },
+          { lastName: singleRegex },
+          { email: singleRegex }
+        ]
+      };
+    } else {
+      const tokenConditions = tokens.map((t) => {
+        const tr = new RegExp(escapeRegex(t), 'i');
+        return {
+          $or: [
+            { firstName: tr },
+            { lastName: tr },
+            { email: tr }
+          ]
+        };
+      });
+      searchFilter = {
+        $or: [
+          { $and: tokenConditions },
+          { email: fullRegex }
+        ]
+      };
+    }
+
+    const [users, students, coaches] = await Promise.all([
       StudentPortalUser.find({
         isActive: true,
-        $or: [
-          { firstName: regex },
-          { lastName: regex },
-          { email: regex }
-        ]
+        ...searchFilter
       })
       .select('_id firstName lastName email isAdult familyMembers')
       .limit(15)
@@ -531,20 +576,43 @@ router.get('/search-recipients', async (req, res) => {
 
       Student.find({
         email: { $exists: true, $ne: null },
-        $or: [
-          { firstName: regex },
-          { lastName: regex },
-          { email: regex }
-        ]
+        ...searchFilter
       })
       .select('_id firstName lastName email adult')
       .limit(15)
+      .lean(),
+
+      Coach.find({
+        email: { $exists: true, $ne: null, $ne: '' },
+        ...searchFilter
+      })
+      .select('_id firstName lastName email phone')
+      .limit(10)
       .lean()
     ]);
 
     const results = [];
     const seenEmails = new Set();
 
+    // 1. Coaches first (easy administrative targeting)
+    for (const c of coaches) {
+      const email = c.email ? c.email.toLowerCase() : '';
+      if (email && !seenEmails.has(email)) {
+        seenEmails.add(email);
+        results.push({
+          id: c._id,
+          userId: c._id,
+          type: 'coach',
+          firstName: c.firstName || '',
+          lastName: c.lastName || '',
+          name: `${c.firstName || ''} ${c.lastName || ''}`.trim(),
+          email: c.email,
+          subtitle: '🎾 Trainer (Coach)'
+        });
+      }
+    }
+
+    // 2. Portal Users
     for (const u of users) {
       const email = u.email ? u.email.toLowerCase() : '';
       if (email && !seenEmails.has(email)) {
@@ -563,6 +631,7 @@ router.get('/search-recipients', async (req, res) => {
       }
     }
 
+    // 3. Students
     for (const s of students) {
       const email = s.email ? s.email.toLowerCase() : '';
       if (email && !seenEmails.has(email)) {

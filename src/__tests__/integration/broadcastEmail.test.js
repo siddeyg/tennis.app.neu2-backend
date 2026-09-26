@@ -7,6 +7,7 @@ import User from '../../models/User.js';
 import RegistrationPeriod from '../../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../../models/SeasonalRegistration.js';
 import Announcement from '../../models/Announcement.js';
+import Coach from '../../models/Coach.js';
 import broadcastEmailRoutes from '../../routes/broadcastEmail.js';
 import {
   connectTestDB,
@@ -307,6 +308,54 @@ describe('Broadcast Email API Integration Tests', () => {
       expect(res.body.results.length).toBe(1);
       expect(res.body.results[0].email).toBe('sascha@tennis.de');
       expect(res.body.results[0].name).toBe('Alexander Zverev');
+    });
+
+    it('finds recipients using multi-word search (first name + last name)', async () => {
+      await StudentPortalUser.create(createTestPortalUser({
+        firstName: 'Boris',
+        lastName: 'Becker',
+        email: 'boris.becker@tennis.de'
+      }));
+
+      // Search with both first and last name separated by whitespace
+      const res = await request(app)
+        .get('/api/broadcast-email/search-recipients?q=Boris%20Becker')
+        .expect(200);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.results.length).toBe(1);
+      expect(res.body.results[0].email).toBe('boris.becker@tennis.de');
+      expect(res.body.results[0].name).toBe('Boris Becker');
+    });
+
+    it('includes coaches in recipient search and resolves them in recipient count', async () => {
+      const coach = await Coach.create({
+        firstName: 'Steffi',
+        lastName: 'Graf',
+        email: 'steffi.graf@trainer.local',
+        phone: '0171-1234567'
+      });
+
+      // Search by partial/multi-word name
+      const searchRes = await request(app)
+        .get('/api/broadcast-email/search-recipients?q=Steffi%20Graf')
+        .expect(200);
+
+      expect(searchRes.body.success).toBe(true);
+      expect(searchRes.body.results.length).toBeGreaterThanOrEqual(1);
+      const coachResult = searchRes.body.results.find(r => r.email === 'steffi.graf@trainer.local');
+      expect(coachResult).toBeDefined();
+      expect(coachResult.type).toBe('coach');
+      expect(coachResult.subtitle).toBe('🎾 Trainer (Coach)');
+      expect(coachResult.name).toBe('Steffi Graf');
+
+      // Verify coach resolution in recipient count for specific user IDs
+      const countRes = await request(app)
+        .get(`/api/broadcast-email/recipients-count?targetingType=custom&specificUserIds=${coach._id}`)
+        .expect(200);
+
+      expect(countRes.body.success).toBe(true);
+      expect(countRes.body.recipientCount).toBe(1);
     });
   });
 
