@@ -486,6 +486,98 @@ describe('Support Tickets API Integration Tests', () => {
       });
     });
 
+    describe('POST /api/portal/support-tickets/:id/reopen — reopen closed or resolved ticket', () => {
+      let portalUser;
+
+      beforeEach(async () => {
+        portalUser = await createPortalUser({ email: 'reopen-tester@test.com' });
+      });
+
+      it('should successfully reopen a closed ticket with a valid reason', async () => {
+        const ticket = await createTicket(portalUser, { status: 'closed', unreadByAdmin: 0 });
+
+        const response = await request(portalApp)
+          .post(`/api/portal/support-tickets/${ticket._id}/reopen`)
+          .send({ reason: 'Ich habe noch eine Frage zur Rechnung' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.success).toBe(true);
+        expect(response.body.ticket.status).toBe('open');
+        expect(response.body.ticket.unreadByAdmin).toBe(1);
+
+        const updated = await SupportTicket.findById(ticket._id);
+        expect(updated.status).toBe('open');
+        expect(updated.lastMessageFrom).toBe('student');
+        expect(updated.messages[updated.messages.length - 1].content).toContain('Ich habe noch eine Frage zur Rechnung');
+        const historyEntry = updated.statusHistory[updated.statusHistory.length - 1];
+        expect(historyEntry.status).toBe('open');
+        expect(historyEntry.note).toContain('Vom Schüler wiedereröffnet');
+      });
+
+      it('should successfully reopen a resolved ticket with a valid reason', async () => {
+        const ticket = await createTicket(portalUser, { status: 'resolved' });
+
+        const response = await request(portalApp)
+          .post(`/api/portal/support-tickets/${ticket._id}/reopen`)
+          .send({ reason: 'Das Problem besteht leider weiterhin' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.ticket.status).toBe('open');
+      });
+
+      it('should reject reopening an already open or in-progress ticket with 400', async () => {
+        const ticket = await createTicket(portalUser, { status: 'open' });
+
+        const response = await request(portalApp)
+          .post(`/api/portal/support-tickets/${ticket._id}/reopen`)
+          .send({ reason: 'Bereits offen' });
+
+        expect(response.status).toBe(400);
+        expect(response.body.error).toContain('Nur geschlossene oder gelöste Tickets');
+      });
+
+      it('should reject reopening if reason is missing or too short with 400', async () => {
+        const ticket = await createTicket(portalUser, { status: 'closed' });
+
+        const response = await request(portalApp)
+          .post(`/api/portal/support-tickets/${ticket._id}/reopen`)
+          .send({ reason: 'Hi' });
+
+        expect(response.status).toBe(400);
+        expect(response.body.error).toContain('mindestens 5 Zeichen');
+      });
+
+      it('should reject reopening if reason exceeds 5000 characters with 400', async () => {
+        const ticket = await createTicket(portalUser, { status: 'closed' });
+
+        const response = await request(portalApp)
+          .post(`/api/portal/support-tickets/${ticket._id}/reopen`)
+          .send({ reason: 'a'.repeat(5001) });
+
+        expect(response.status).toBe(400);
+        expect(response.body.error).toContain('maximal 5000 Zeichen');
+      });
+
+      it('should return 404 when attempting to reopen another user\'s ticket', async () => {
+        const otherUser = await StudentPortalUser.create({
+          email: 'other-reopen@test.com',
+          password: 'password123',
+          firstName: 'Other',
+          lastName: 'User',
+          birthdate: new Date('1990-01-01'),
+          emailVerified: true,
+        });
+
+        const otherTicket = await createTicket(otherUser, { status: 'closed' });
+
+        const response = await request(portalApp)
+          .post(`/api/portal/support-tickets/${otherTicket._id}/reopen`)
+          .send({ reason: 'Unberechtigter Versuch' });
+
+        expect(response.status).toBe(404);
+      });
+    });
+
   });
 
   // ══════════════════════════════════════════════════════════

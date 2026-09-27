@@ -860,6 +860,12 @@ export async function sendTicketStatusChangeEmail(ticket, oldStatus, newStatus, 
           </div>
           ` : ''}
 
+          ${(oldStatus === 'closed' || oldStatus === 'resolved') && newStatus === 'open' ? `
+          <div style="background-color: #e0f2fe; border-left: 4px solid #0284c7; padding: 15px; margin-bottom: 20px;">
+            <p style="color: #0369a1; font-size: 14px; margin: 0;">🔄 Ihr Support-Ticket wurde wiedereröffnet. Unser Team bearbeitet Ihr Anliegen erneut oder wartet auf Ihre Rückmeldung im Portal.</p>
+          </div>
+          ` : ''}
+
           <div style="text-align: center; margin-top: 30px;">
             <a href="${portalUrl}/support-tickets/${ticket._id}" style="display: inline-block; background-color: #009688; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-weight: 600; font-size: 16px;">Ticket anzeigen</a>
           </div>

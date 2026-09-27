@@ -31,8 +31,20 @@ const createTicketLimiter = rateLimit({
   message: { error: 'Zu viele Tickets erstellt. Bitte warten Sie 15 Minuten.' },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => process.env.NODE_ENV === 'test',
   // Key by user ID
-  keyGenerator: (req) => req.user.id
+  keyGenerator: (req) => req.user?.id || req.ip
+});
+
+// Rate limiting for ticket reopening: 5 reopens per 15 minutes
+const reopenTicketLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  message: { error: 'Zu viele Anfragen zum Wiedereröffnen. Bitte warten Sie 15 Minuten.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => process.env.NODE_ENV === 'test',
+  keyGenerator: (req) => req.user?.id || req.ip
 });
 
 // GET /api/portal/support-tickets
@@ -403,6 +415,107 @@ router.post('/:id/close', auditLogMiddleware({ action: 'UPDATE', resource: 'Supp
   } catch (error) {
     logger.error("Error closing ticket", { error: error.message, stack: error.stack });
     res.status(500).json({ error: 'Serverfehler beim Schließen des Tickets' });
+  }
+});
+
+// POST /api/portal/support-tickets/:id/reopen
+// Student reopens own ticket (if status is 'closed' or 'resolved')
+router.post('/:id/reopen', reopenTicketLimiter, auditLogMiddleware({ action: 'UPDATE', resource: 'SupportTicket', metadata: { operation: 'REOPEN' } }), async (req, res) => {
+  try {
+    const { reason, message: msgContent } = req.body;
+    const reopenReason = (reason || msgContent || '').trim();
+
+    // Verify ownership
+    const ticket = await SupportTicket.findOne({
+      _id: req.params.id,
+      'createdBy.studentPortalUserId': req.user.id,
+      isDeleted: false
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket nicht gefunden' });
+    }
+
+    if (ticket.status !== 'closed' && ticket.status !== 'resolved') {
+      return res.status(400).json({ error: 'Nur geschlossene oder gelöste Tickets können wiedereröffnet werden' });
+    }
+
+    if (!reopenReason || reopenReason.length < 5) {
+      return res.status(400).json({ error: 'Bitte geben Sie einen Grund für die Wiedereröffnung an (mindestens 5 Zeichen)' });
+    }
+
+    if (reopenReason.length > 5000) {
+      return res.status(400).json({ error: 'Die Begründung darf maximal 5000 Zeichen lang sein' });
+    }
+
+    // Get student portal user info
+    const portalUser = await StudentPortalUser.findById(req.user.id);
+    if (!portalUser) {
+      return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+    }
+
+    const sanitizedReason = sanitizeText(reopenReason);
+    const oldStatus = ticket.status;
+    const senderDisplayName = portalUser.firstName
+      ? `${portalUser.firstName} ${portalUser.lastName}`.trim()
+      : (portalUser.name || portalUser.email);
+
+    // Create message in thread
+    const newMsg = {
+      senderType: 'student',
+      senderId: portalUser._id,
+      senderName: senderDisplayName,
+      content: `[Ticket wiedereröffnet]: ${sanitizedReason}`,
+      isRead: false
+    };
+
+    ticket.status = 'open';
+    ticket.messages.push(newMsg);
+    ticket.lastMessageAt = new Date();
+    ticket.lastMessageFrom = 'student';
+    ticket.unreadByAdmin += 1;
+
+    // Record in history without setting changedBy to a portal user ID (schema expects User ref)
+    ticket.statusHistory.push({
+      status: 'open',
+      note: `Vom Schüler wiedereröffnet (vorher: ${oldStatus}): ${sanitizedReason}`
+    });
+
+    await ticket.save();
+
+    // Notify admin via email
+    try {
+      const adminEmail = process.env.ADMIN_EMAIL || 'tennisapp-admin@diemachtderworte.de';
+      await sendTicketReplyEmail(ticket, newMsg, adminEmail);
+    } catch (emailErr) {
+      logger.error('Error sending ticket reopen notification email', { error: emailErr.message });
+    }
+
+    // Send push notification to admins
+    try {
+      sendPushToAdmins(
+        `🔄 Ticket #${ticket.ticketNumber} wiedereröffnet`,
+        `${senderDisplayName}: ${sanitizedReason.slice(0, 100)}`,
+        {
+          url: `/support-tickets/${ticket._id}`,
+          ticketId: ticket._id.toString(),
+          ticketNumber: ticket.ticketNumber
+        }
+      ).catch((pushErr) => {
+        logger.warn('Failed to send push notification on ticket reopen', { error: pushErr.message });
+      });
+    } catch (pushErr) {
+      logger.warn('Push notification dispatcher error', { error: pushErr.message });
+    }
+
+    res.json({
+      success: true,
+      message: 'Ticket erfolgreich wiedereröffnet',
+      ticket: await SupportTicket.findById(ticket._id).lean()
+    });
+  } catch (error) {
+    logger.error('Error reopening ticket', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Serverfehler beim Wiedereröffnen des Tickets' });
   }
 });
 
