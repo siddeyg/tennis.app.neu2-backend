@@ -549,6 +549,7 @@ describe('Seasonal Registrations Admin API Integration Tests', () => {
         birthDate: new Date('2010-05-15'),
         adult: false,
         trainigGroup: 'Orange',
+        periodId: testPeriod._id,
       });
 
       const registration = await SeasonalRegistration.create({

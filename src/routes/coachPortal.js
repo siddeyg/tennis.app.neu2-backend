@@ -60,11 +60,22 @@ router.get('/schedule/today', async (req, res) => {
 
 
     // Determine active period to prevent summer/winter course collision
-    const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean() ||
-                         await RegistrationPeriod.findOne({
-                           trainingStartDate: { $lte: today },
-                           trainingEndDate: { $gte: today }
-                         }).sort({ trainingStartDate: -1 }).lean();
+    let activePeriod = null;
+    if (req.query.periodId) {
+      activePeriod = await RegistrationPeriod.findById(req.query.periodId).lean();
+    }
+    if (!activePeriod) {
+      activePeriod = await RegistrationPeriod.findOne({
+        trainingStartDate: { $lte: today },
+        trainingEndDate: { $gte: today }
+      }).sort({ trainingStartDate: -1 }).lean();
+    }
+    if (!activePeriod) {
+      activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean();
+    }
+    if (!activePeriod) {
+      activePeriod = await RegistrationPeriod.findOne({}).sort({ trainingEndDate: -1 }).lean();
+    }
 
     const studentFilter = {
       'assignments.coach': coachId,
@@ -210,11 +221,22 @@ router.get('/students', async (req, res) => {
 
     // Determine active period to prevent summer/winter student collision
     const today = new Date();
-    const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean() ||
-                         await RegistrationPeriod.findOne({
-                           trainingStartDate: { $lte: today },
-                           trainingEndDate: { $gte: today }
-                         }).sort({ trainingStartDate: -1 }).lean();
+    let activePeriod = null;
+    if (req.query.periodId) {
+      activePeriod = await RegistrationPeriod.findById(req.query.periodId).lean();
+    }
+    if (!activePeriod) {
+      activePeriod = await RegistrationPeriod.findOne({
+        trainingStartDate: { $lte: today },
+        trainingEndDate: { $gte: today }
+      }).sort({ trainingStartDate: -1 }).lean();
+    }
+    if (!activePeriod) {
+      activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean();
+    }
+    if (!activePeriod) {
+      activePeriod = await RegistrationPeriod.findOne({}).sort({ trainingEndDate: -1 }).lean();
+    }
 
     const studentFilter = {
       'assignments.coach': coachId

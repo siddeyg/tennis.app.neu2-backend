@@ -113,6 +113,7 @@ router.get('/status', async (req, res) => {
 router.post('/notify-all', async (req, res) => {
   try {
     const force = req.body?.force === true;
+    const periodId = req.body?.periodId;
 
     const settings = await getSettings();
     const alreadySentToday = isSameDayBerlin(settings.lastBulkScheduleNotification?.sentAt);
@@ -127,20 +128,28 @@ router.post('/notify-all', async (req, res) => {
       });
     }
 
-    // Find all students with at least one assignment
-    const students = await Student.find({
+    // Find all students with at least one assignment (scoped by periodId if provided)
+    const studentFilter = {
       'assignments.0': { $exists: true }
-    });
+    };
+    if (periodId) {
+      studentFilter.periodId = periodId;
+    }
+    const students = await Student.find(studentFilter);
 
-    // Build a map of studentId → portalUser for all linked portal accounts
-    // Check both direct links (StudentPortalUser.studentId) and family member links
+    // Build a map of studentId / portalUserId → portalUser for all linked portal accounts
+    // Check direct Inversion of Control links, direct studentId links, and family member links
     const studentIds = students.map(s => s._id);
+    const portalUserIds = students.map(s => s.studentPortalUserId).filter(Boolean);
+
     const portalUsers = await StudentPortalUser.find({
       $or: [
+        ...(portalUserIds.length > 0 ? [{ _id: { $in: portalUserIds } }] : []),
         { studentId: { $in: studentIds } },
         { 'familyMembers.studentId': { $in: studentIds } }
       ]
     });
+    const portalUserByUserId = new Map(portalUsers.map(pu => [String(pu._id), pu]));
     const portalUserByStudentId = new Map();
     for (const pu of portalUsers) {
       if (pu.studentId) portalUserByStudentId.set(String(pu.studentId), pu);
@@ -153,7 +162,8 @@ router.post('/notify-all', async (req, res) => {
     const notifiedStudentIds = [];
 
     for (const student of students) {
-      const portalUser = portalUserByStudentId.get(String(student._id));
+      const portalUser = (student.studentPortalUserId ? portalUserByUserId.get(String(student.studentPortalUserId)) : null) ||
+        portalUserByStudentId.get(String(student._id));
       if (!portalUser || !student.assignments?.length) continue;
 
       const assignmentList = buildAssignmentList(student.assignments);

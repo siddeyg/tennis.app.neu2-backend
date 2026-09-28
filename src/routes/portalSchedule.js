@@ -68,6 +68,7 @@ async function buildScheduleForStudent(student) {
       day: assignment.day,
       hour: assignment.hour,
       duration: assignment.duration || 60,
+      venue: assignment.venue || '',
       coach: assignment.coach
         ? (coachMap.get(assignment.coach.toString()) || assignment.coach)
         : 'Unbekannt'
@@ -86,6 +87,7 @@ async function buildScheduleForStudent(student) {
       day: student.day,
       hour: student.hour,
       duration: 60,
+      venue: student.venue || '',
       coach: coachName
     }];
   }
@@ -119,15 +121,18 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     if (req.query.periodId) {
       period = await RegistrationPeriod.findById(req.query.periodId).lean();
     }
-    if (!period) {
-      period = await RegistrationPeriod.findOne({ isActive: true }).lean();
-    }
+    // 1. Current running training period by date (priority over isActive)
     if (!period) {
       period = await RegistrationPeriod.findOne({
         trainingStartDate: { $lte: today },
         trainingEndDate:   { $gte: today }
       }).sort({ trainingStartDate: -1 }).lean();
     }
+    // 2. Active registration period (fallback if no training currently in progress)
+    if (!period) {
+      period = await RegistrationPeriod.findOne({ isActive: true }).lean();
+    }
+    // 3. Fallback: most recent period by trainingEndDate
     if (!period) {
       period = await RegistrationPeriod.findOne({})
         .sort({ trainingEndDate: -1 })
@@ -136,19 +141,20 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
 
     const studentId = portalUser.studentId || req.user.studentId;
 
-    // Resolve parent's student record for this period (Inversion of Control + fallback)
+    // Resolve parent's student record for this period (Inversion of Control + period scoping)
     let student = null;
     if (period) {
       student = await Student.findOne({
         periodId: period._id,
         $or: [
           { studentPortalUserId: portalUser._id, familyMemberId: null },
-          ...(studentId ? [{ _id: studentId }] : []),
-          ...(portalUser.email ? [{ email: portalUser.email.toLowerCase() }] : [])
+          ...(portalUser.email ? [{ email: portalUser.email.toLowerCase() }] : []),
+          ...(studentId ? [{ _id: studentId }] : [])
         ]
       });
     }
-    if (!student && studentId) {
+    // Legacy fallback ONLY if no period exists at all in the system
+    if (!student && !period && studentId) {
       student = await Student.findById(studentId);
     }
 
@@ -247,15 +253,16 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
           periodId: period._id,
           $or: [
             { studentPortalUserId: portalUser._id, familyMemberId: fm._id },
-            ...(fm.studentId ? [{ _id: fm.studentId }] : []),
             ...(fm.firstName && fm.lastName ? [{
               firstName: { $regex: new RegExp(`^${fm.firstName.trim()}$`, 'i') },
               lastName: { $regex: new RegExp(`^${fm.lastName.trim()}$`, 'i') }
-            }] : [])
+            }] : []),
+            ...(fm.studentId ? [{ _id: fm.studentId }] : [])
           ]
         });
       }
-      if (!childStudent && fm.studentId) {
+      // Legacy fallback ONLY if no period exists at all in the system
+      if (!childStudent && !period && fm.studentId) {
         childStudent = await Student.findById(fm.studentId);
       }
       if (!childStudent) continue;

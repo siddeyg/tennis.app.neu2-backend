@@ -321,6 +321,9 @@ export async function resolveRecipients({
     const query = {
       assignments: { $elemMatch: elemMatch }
     };
+    if (targetCriteria.periodId) {
+      query.periodId = targetCriteria.periodId;
+    }
 
     const students = await Student.find(query).select('_id firstName lastName email adult assignments').lean();
 

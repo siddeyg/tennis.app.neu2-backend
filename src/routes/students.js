@@ -564,6 +564,11 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
       return res.status(400).json({ error: "Keine Datei hochgeladen" });
     }
 
+    const targetPeriodId = req.body.periodId || req.query.periodId;
+    if (!targetPeriodId) {
+      return res.status(400).json({ error: "periodId ist zwingend erforderlich für den CSV-Import (Multi-Season Period Isolation)" });
+    }
+
     // Validate file size (additional check beyond multer limits)
     if (req.file.size > 5 * 1024 * 1024) {
       return res.status(400).json({ error: "Datei zu groß (max 5MB)" });
@@ -594,7 +599,9 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
     const validationIssues = [];
 
     records.forEach((row, index) => {
-      const studentData = {};
+      const studentData = {
+        periodId: targetPeriodId
+      };
 
       // Map CSV columns to student model fields
       studentData.firstName = (row['Vorname'] || '').trim();
@@ -666,8 +673,8 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
     }
 
     try {
-      // Delete all existing students (within transaction if supported)
-      await Student.deleteMany({}, useTransactions ? { session } : {});
+      // Delete existing students of THIS period only (within transaction if supported)
+      await Student.deleteMany({ periodId: targetPeriodId }, useTransactions ? { session } : {});
 
       // Insert new students (within transaction if supported)
       const insertedStudents = await Student.insertMany(

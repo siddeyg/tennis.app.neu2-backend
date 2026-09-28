@@ -22,6 +22,9 @@ import logger from '../utils/logger.js';
 import { encryptIBAN, decryptIBAN, maskIBAN, validateIBANFormat } from '../utils/encryption.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import Settings from '../models/Settings.js';
+import SavedSchedule from '../models/SavedSchedule.js';
+import StudentPortalUser from '../models/StudentPortalUser.js';
+import { createNotification } from '../utils/notificationHelpers.js';
 import { sendSeasonalCancellationEmail, sendSeasonalCancellationAdminEmail, sendSeasonalRejectionEmail } from '../utils/emailService.js';
 
 const router = express.Router();
@@ -399,45 +402,97 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       });
     }
 
-    // Check if Student record already exists
-    let student;
+    // Fetch period
+    const period = registration.periodId
+      ? await RegistrationPeriod.findById(registration.periodId)
+      : null;
 
-    if (registration.studentId) {
-      student = await Student.findById(registration.studentId);
-    } else {
-      student = await Student.findOne({ email: registration.email });
+    // Check if Student record already exists within THIS period (period isolation)
+    let student = null;
+
+    if (registration.studentId && period) {
+      student = await Student.findOne({ _id: registration.studentId, periodId: period._id });
+    }
+    if (!student && period && registration.studentPortalUserId && registration.familyMemberId) {
+      student = await Student.findOne({
+        studentPortalUserId: registration.studentPortalUserId,
+        familyMemberId: registration.familyMemberId,
+        periodId: period._id
+      });
+    }
+    if (!student && period && registration.studentPortalUserId && !registration.familyMemberId) {
+      student = await Student.findOne({
+        studentPortalUserId: registration.studentPortalUserId,
+        familyMemberId: null,
+        periodId: period._id
+      });
     }
 
     // If this is a family member registration, fetch child's data
     let firstName = registration.firstName;
     let lastName = registration.lastName;
     let birthDate = registration.birthdate;
+    let userSex = null;
 
-    if (registration.familyMemberId) {
-      const StudentPortalUser = mongoose.model('StudentPortalUser');
-      const parentUser = await StudentPortalUser.findById(registration.studentPortalUserId);
+    const portalUser = registration.studentPortalUserId
+      ? await StudentPortalUser.findById(registration.studentPortalUserId)
+      : null;
 
-      if (parentUser && parentUser.familyMembers) {
-        const familyMember = parentUser.familyMembers.find(
+    if (registration.familyMemberId && portalUser && portalUser.familyMembers) {
+      const familyMember = portalUser.familyMembers.id(registration.familyMemberId) ||
+        portalUser.familyMembers.find(
           fm => fm._id.toString() === registration.familyMemberId.toString()
         );
 
-        if (familyMember) {
-          firstName = familyMember.firstName;
-          lastName = familyMember.lastName;
-          birthDate = familyMember.birthdate;
-        }
+      if (familyMember) {
+        firstName = familyMember.firstName || firstName;
+        lastName = familyMember.lastName || lastName;
+        birthDate = familyMember.birthdate || birthDate;
+        userSex = familyMember.sex || null;
+      }
+    } else if (portalUser) {
+      userSex = portalUser.sex || null;
+    }
+
+    if (!student && period && firstName && lastName) {
+      student = await Student.findOne({
+        firstName: { $regex: new RegExp(`^${firstName.trim()}$`, 'i') },
+        lastName: { $regex: new RegExp(`^${lastName.trim()}$`, 'i') },
+        periodId: period._id
+      });
+    }
+    if (!student && period && firstName && registration.email) {
+      student = await Student.findOne({
+        firstName: { $regex: new RegExp(`^${firstName.trim()}$`, 'i') },
+        email: registration.email.toLowerCase(),
+        periodId: period._id
+      });
+    }
+
+    // Legacy fallback ONLY if no period exists
+    if (!student && !period) {
+      if (registration.studentId) {
+        student = await Student.findById(registration.studentId);
+      } else {
+        student = await Student.findOne({ email: registration.email });
       }
     }
 
     const studentData = {
+      periodId: period ? period._id : undefined,
+      studentPortalUserId: registration.studentPortalUserId || null,
+      familyMemberId: registration.familyMemberId || null,
       firstName,
       lastName,
       birthDate,
       email: registration.email,
       phone: registration.phone,
-      address: registration.address,
-      adult: registration.formType === 'adults'
+      adress: portalUser?.address || registration.address || '',
+      adult: registration.formType === 'adults',
+      sex: userSex,
+      comment: registration.remarks || '',
+      frequence: registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
+      sessionDuration: registration.sessionDuration || null
     };
 
     // Helper: check if two slots are the same
@@ -479,9 +534,10 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       studentData.availableTimes = kidsSlots;
     } else {
       // Adults
-      studentData.skillLevel = registration.spielstärke;
-      studentData.member = true; // Assume adults are members
-      studentData.sex = null; // Will be filled by admin or gender detection
+      studentData.skillLevel = registration.spielstärke || '';
+      studentData.member = registration.mitgliedsstatus === 'Mitglied';
+      studentData.comment2 = registration.trainingGoals ? registration.trainingGoals.join(', ') : '';
+      studentData.groupSize = registration.groupSize ? registration.groupSize.join(', ') : '';
       studentData.frequence = registration.trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
       studentData.sessionDuration = registration.sessionDuration || null;
       let adultSlots = (registration.availableTimesAdults || []).map(t => ({
@@ -503,6 +559,7 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
       };
     }
 
+    const isNewStudent = !student;
     if (student) {
       // Update existing student
       Object.assign(student, studentData);
@@ -519,6 +576,62 @@ router.post('/:id/process', auditLogMiddleware({ action: 'UPDATE', resource: 'Se
     registration.processedAt = new Date();
     registration.processedBy = req.user.id;
     await registration.save();
+
+    // Auto-add processed student to current plan if defined for period
+    if (period && period.currentPlanId) {
+      try {
+        const currentPlan = await SavedSchedule.findById(period.currentPlanId);
+        if (currentPlan) {
+          const alreadyInPlan = (currentPlan.students || []).some(
+            s => s._id.toString() === student._id.toString()
+          );
+          if (!alreadyInPlan) {
+            currentPlan.students.push(student.toObject());
+            if (currentPlan.metadata) {
+              currentPlan.metadata.studentCount = currentPlan.students.length;
+              const unassignedCount = currentPlan.students.filter(
+                s => !s.assignments || s.assignments.length === 0
+              ).length;
+              currentPlan.metadata.unassignedCount = unassignedCount;
+            }
+            await currentPlan.save();
+            logger.info('Student auto-added to current plan for period', {
+              studentId: student._id,
+              planId: currentPlan._id,
+              periodId: period._id
+            });
+          }
+        }
+      } catch (planError) {
+        logger.error('Error auto-adding student to current plan:', planError);
+      }
+    }
+
+    // Send notification to student about registration approval
+    try {
+      if (registration.studentPortalUserId) {
+        await createNotification(
+          registration.studentPortalUserId,
+          'registration_approved',
+          `Anmeldung für ${period?.name || 'Saisontraining'} bestätigt`,
+          isNewStudent
+            ? 'Ihre Anmeldung wurde erfolgreich verarbeitet. Sie wurden als neuer Schüler hinzugefügt.'
+            : 'Ihre Anmeldung wurde erfolgreich verarbeitet und Ihr Profil aktualisiert.',
+          {
+            priority: 'high',
+            actionUrl: '/dashboard',
+            metadata: {
+              registrationId: registration._id,
+              periodId: period?._id,
+              studentId: student._id,
+              isNewStudent
+            }
+          }
+        );
+      }
+    } catch (notifErr) {
+      logger.error('Error sending notification for single registration approval:', notifErr);
+    }
 
     logger.info('Seasonal registration processed', {
       registrationId: registration._id,

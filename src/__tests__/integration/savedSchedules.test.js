@@ -63,8 +63,8 @@ const createPeriod = (overrides = {}) =>
  * meaningful snapshot. Without them the snapshot is just empty arrays, which
  * is still valid for our tests.
  */
-const seedStudentsAndCoaches = async () => {
-  const student = await Student.create(createTestStudent());
+const seedStudentsAndCoaches = async (periodId) => {
+  const student = await Student.create(createTestStudent(periodId ? { periodId } : {}));
   const coach   = await Coach.create(createTestCoach());
   return { student, coach };
 };
@@ -117,7 +117,7 @@ describe('SavedSchedules API Integration Tests', () => {
   describe('POST /api/saved-schedules — save a schedule', () => {
     it('saves a schedule snapshot and returns 201 with the saved schedule', async () => {
       const period = await createPeriod();
-      await seedStudentsAndCoaches();
+      await seedStudentsAndCoaches(period._id);
 
       const res = await request(app)
         .post('/api/saved-schedules')

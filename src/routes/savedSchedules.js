@@ -162,14 +162,14 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'SavedSchedule
     const existingPlansCount = await SavedSchedule.countDocuments({ periodId });
     const version = existingPlansCount + 1;
 
-    // Fetch current state from database
-    const students = await Student.find();
+    // Fetch current state from database (strictly scoped to periodId)
+    const students = await Student.find({ periodId });
     const coaches = await Coach.find();
-    const schedule = await Schedule.find();
+    const schedule = await Schedule.find({ periodId });
 
-    // Calculate unassigned students
+    // Calculate unassigned students (assignments is source of truth)
     const studentsNotSet = students.filter(
-      (s) => !s.day || s.hour === null || s.hour === undefined
+      (s) => !s.assignments || s.assignments.length === 0
     );
 
     // Calculate actual course count (only count time slots with at least 1 student)

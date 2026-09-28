@@ -232,8 +232,11 @@ describe('Auto-Create Student on Seasonal Registration', () => {
         .send(registrationData2)
         .expect(201);
 
+      // Period Isolation: 1 student per period, strictly isolated
       const studentsAfterSecond = await Student.find({});
-      expect(studentsAfterSecond).toHaveLength(1);
+      expect(studentsAfterSecond).toHaveLength(2);
+      expect(await Student.find({ periodId: registrationPeriod._id })).toHaveLength(1);
+      expect(await Student.find({ periodId: winterPeriod._id })).toHaveLength(1);
     });
 
     test('Should correctly map kids-specific fields', async () => {

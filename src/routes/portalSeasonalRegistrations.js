@@ -18,6 +18,7 @@ import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import SeasonalRegistration from '../models/SeasonalRegistration.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Student from '../models/Student.js';
+import SavedSchedule from '../models/SavedSchedule.js';
 import Settings from '../models/Settings.js';
 import verifyPortalAuth from '../middleware/verifyPortalAuth.js';
 import logger from '../utils/logger.js';
@@ -614,17 +615,31 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       }
     }
 
-    // Auto-create Student record
-    // For child registrations: check if child already has studentId
-    // For parent registrations: check if portalUser already has studentId
-    let studentId = null;
-
-    if (familyMemberId && childData) {
-      // Check if child already has a Student record
-      studentId = childData.studentId;
+    // Look up or auto-create Student record for THIS period (strict Period Isolation)
+    let student = null;
+    if (familyMemberId) {
+      student = await Student.findOne({
+        periodId: period._id,
+        studentPortalUserId: portalUser._id,
+        familyMemberId: familyMemberId
+      });
     } else {
-      // Parent's own registration
-      studentId = portalUser.studentId;
+      student = await Student.findOne({
+        periodId: period._id,
+        studentPortalUserId: portalUser._id,
+        familyMemberId: null
+      });
+    }
+
+    const targetFirstName = (familyMemberId && childData) ? childData.firstName : firstName;
+    const targetLastName = (familyMemberId && childData) ? childData.lastName : lastName;
+
+    if (!student && targetFirstName && targetLastName) {
+      student = await Student.findOne({
+        periodId: period._id,
+        firstName: { $regex: new RegExp(`^${targetFirstName.trim()}$`, 'i') },
+        lastName: { $regex: new RegExp(`^${targetLastName.trim()}$`, 'i') }
+      });
     }
 
     // Get sex and member from portal user or family member
@@ -637,162 +652,142 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
       userMember = portalUser.member;
     }
 
-    if (!studentId) {
-      // Create new Student record from registration data
+    // Map trainingsart (form label) → trainigGroup (Student model enum)
+    const trainigGroupMap = {
+      'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
+      'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
+      'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
+      'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
+      'Jugend HOBBY (Gelb)': 'Gelb Hobby',
+      'Jugend TEAM (Gelb)': 'Gelb Team',
+      'Kindergarten (Jg. 2019–2022 / 4–7 Jahre)': 'Kinderland',
+      'ROT (ca. 6–8 Jahre)': 'Rot',
+      'ORANGE (ca. 8–10 Jahre)': 'Orange',
+      'GRÜN (ca. 10–12 Jahre)': 'Grün',
+      'GELB (11–17 Jahre)': 'Gelb Hobby',
+      'TEAM-GELB (11–17 Jahre / U15)': 'Gelb Team',
+    };
 
-      const studentData = {
-        firstName: (familyMemberId && childData) ? childData.firstName : firstName,
-        lastName: (familyMemberId && childData) ? childData.lastName : lastName,
-        birthDate: new Date(birthdate).toISOString().split('T')[0], // Format: YYYY-MM-DD
-        email: email,
-        phone: phone || '',
-        adress: portalUser.address || address || '',
-        comment: remarks || '',
-        sex: userSex || null,
-        // Derive member status from mitgliedsstatus for both kids and adults
-        member: mitgliedsstatus === 'Mitglied',
-        adult: formType === 'adults',
-        frequence: trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
-        sessionDuration: sessionDuration ? Number(sessionDuration) : null,
-        assignments: [] // Will be assigned during schedule planning
-      };
+    // Helper: check if two slots are the same
+    const isSameSlot = (a, b) =>
+      a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
 
-      // Map trainingsart (form label) → trainigGroup (Student model enum)
-      const trainigGroupMap = {
-        'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
-        'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
-        'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
-        'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
-        'Jugend HOBBY (Gelb)': 'Gelb Hobby',
-        'Jugend TEAM (Gelb)': 'Gelb Team',
-        'Kindergarten (Jg. 2019–2022 / 4–7 Jahre)': 'Kinderland',
-        'ROT (ca. 6–8 Jahre)': 'Rot',
-        'ORANGE (ca. 8–10 Jahre)': 'Orange',
-        'GRÜN (ca. 10–12 Jahre)': 'Grün',
-        'GELB (11–17 Jahre)': 'Gelb Hobby',
-        'TEAM-GELB (11–17 Jahre / U15)': 'Gelb Team',
-      };
+    const studentData = {
+      periodId: period._id,
+      studentPortalUserId: portalUser._id,
+      familyMemberId: familyMemberId || null,
+      firstName: targetFirstName,
+      lastName: targetLastName,
+      birthDate: new Date(birthdate).toISOString().split('T')[0], // Format: YYYY-MM-DD
+      email: email,
+      phone: phone || '',
+      adress: portalUser.address || address || '',
+      comment: remarks || '',
+      sex: userSex || null,
+      // Derive member status from mitgliedsstatus for both kids and adults
+      member: mitgliedsstatus === 'Mitglied',
+      adult: formType === 'adults',
+      frequence: trainingshäufigkeit === '2x pro Woche' ? '2' : '1',
+      sessionDuration: sessionDuration ? Number(sessionDuration) : null
+    };
 
-      // Helper: check if two slots are the same
-      const isSameSlot = (a, b) =>
-        a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
-
-      // Add form-specific fields
-      if (formType === 'kids') {
-        studentData.team = !!(teamParticipation && teamParticipation !== '-' && teamParticipation !== false) ||
-          trainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
-          trainingsart === 'Jugend TEAM (Gelb)';
-        studentData.trainigGroup = trainigGroupMap[trainingsart] || null;
-        let kidsSlots = (availableTimesKids || []).map(t => ({
-          day: t.day,
-          hour: t.hour,
-          venue: t.venue || ''
-        }));
-        // Option B: reorder so priority slot is first (helps Phase 0 students)
-        if (priorityTime && priorityTime.day) {
-          const prio = kidsSlots.find(t => isSameSlot(t, priorityTime));
-          if (prio) kidsSlots = [prio, ...kidsSlots.filter(t => !isSameSlot(t, priorityTime))];
-        }
-        studentData.availableTimes = kidsSlots;
-      } else {
-        // Adults
-        studentData.skillLevel = spielstärke || '';
-        studentData.comment2 = trainingGoals ? trainingGoals.join(', ') : ''; // Trainingsziele
-        studentData.groupSize = groupSize ? groupSize.join(', ') : ''; // Gruppengröße preferences
-        let adultSlots = (availableTimesAdults || []).map(t => ({
-          day: t.day,
-          hour: t.hour,
-          venue: t.venue || ''
-        }));
-        // Option B: reorder so priority slot is first
-        if (priorityTime && priorityTime.day) {
-          const prio = adultSlots.find(t => isSameSlot(t, priorityTime));
-          if (prio) adultSlots = [prio, ...adultSlots.filter(t => !isSameSlot(t, priorityTime))];
-        }
-        studentData.availableTimes = adultSlots;
+    // Add form-specific fields
+    if (formType === 'kids') {
+      studentData.team = !!(teamParticipation && teamParticipation !== '-' && teamParticipation !== false) ||
+        trainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
+        trainingsart === 'Jugend TEAM (Gelb)';
+      studentData.trainigGroup = trainigGroupMap[trainingsart] || null;
+      let kidsSlots = (availableTimesKids || []).map(t => ({
+        day: t.day,
+        hour: t.hour,
+        venue: t.venue || ''
+      }));
+      // Reorder so priority slot is first
+      if (priorityTime && priorityTime.day) {
+        const prio = kidsSlots.find(t => isSameSlot(t, priorityTime));
+        if (prio) kidsSlots = [prio, ...kidsSlots.filter(t => !isSameSlot(t, priorityTime))];
       }
-
-      // Option C: store priorityTime on Student for algorithm Phase P pre-pass
-      if (priorityTime && priorityTime.day && priorityTime.hour !== undefined) {
-        studentData.priorityTime = {
-          day: priorityTime.day,
-          hour: priorityTime.hour,
-          venue: priorityTime.venue || ''
-        };
+      studentData.availableTimes = kidsSlots;
+    } else {
+      // Adults
+      studentData.skillLevel = spielstärke || '';
+      studentData.comment2 = trainingGoals ? trainingGoals.join(', ') : ''; // Trainingsziele
+      studentData.groupSize = groupSize ? groupSize.join(', ') : ''; // Gruppengröße preferences
+      let adultSlots = (availableTimesAdults || []).map(t => ({
+        day: t.day,
+        hour: t.hour,
+        venue: t.venue || ''
+      }));
+      // Reorder so priority slot is first
+      if (priorityTime && priorityTime.day) {
+        const prio = adultSlots.find(t => isSameSlot(t, priorityTime));
+        if (prio) adultSlots = [prio, ...adultSlots.filter(t => !isSameSlot(t, priorityTime))];
       }
+      studentData.availableTimes = adultSlots;
+    }
 
-      const student = new Student(studentData);
+    // Store priorityTime on Student for algorithm Phase P pre-pass
+    if (priorityTime && priorityTime.day && priorityTime.hour !== undefined) {
+      studentData.priorityTime = {
+        day: priorityTime.day,
+        hour: priorityTime.hour,
+        venue: priorityTime.venue || ''
+      };
+    }
+
+    if (student) {
+      // Update existing student in this period
+      Object.assign(student, studentData);
       await student.save();
+    } else {
+      // Create new student in this period
+      studentData.assignments = [];
+      student = new Student(studentData);
+      await student.save();
+    }
 
-      studentId = student._id;
+    const studentId = student._id;
 
-      // Link Student to StudentPortalUser or familyMember
-      if (familyMemberId && childData) {
-        // Link to child's familyMember entry
+    // Link Student to StudentPortalUser or familyMember if not already linked
+    if (familyMemberId && childData) {
+      if (!childData.studentId) {
         childData.studentId = studentId;
         await portalUser.save();
-
-        logger.info('Auto-created Student record from child registration', {
-          studentId: studentId,
-          portalUserId: req.user.id,
-          familyMemberId: familyMemberId,
-          childName: `${childData.firstName} ${childData.lastName}`,
-          formType
-        });
-      } else {
-        // Link to parent's studentId
-        portalUser.studentId = studentId;
-        await portalUser.save();
-
-        logger.info('Auto-created Student record from seasonal registration', {
-          studentId: studentId,
-          portalUserId: req.user.id,
-          formType
-        });
       }
     } else {
-      // Existing student linked — ONLY update if belonging to the SAME period (never overwrite cross-season data)
-      const existingStudent = await Student.findById(studentId);
-      const isSamePeriod = existingStudent && (!existingStudent.periodId || String(existingStudent.periodId) === String(period._id));
-      if (existingStudent && isSamePeriod) {
-        existingStudent.sex = userSex || existingStudent.sex;
-        existingStudent.frequence = trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
-        existingStudent.sessionDuration = sessionDuration ? Number(sessionDuration) : existingStudent.sessionDuration;
-        existingStudent.adress = portalUser.address || address || existingStudent.adress || '';
-        if (formType === 'kids') {
-          const trainigGroupMap = {
-            'Kindergarten (ca. 4-6 Jahre)': 'Kinderland',
-            'KIDS-ROT (ca. 6-8 Jahre)': 'Rot',
-            'KIDS-ORANGE (ca. 8-10 Jahre)': 'Orange',
-            'KIDS-GRÜN (ca. 10-12 Jahre)': 'Grün',
-            'Jugend HOBBY (Gelb)': 'Gelb Hobby',
-            'Jugend TEAM (Gelb)': 'Gelb Team',
-            'Kindergarten (Jg. 2019–2022 / 4–7 Jahre)': 'Kinderland',
-            'ROT (ca. 6–8 Jahre)': 'Rot',
-            'ORANGE (ca. 8–10 Jahre)': 'Orange',
-            'GRÜN (ca. 10–12 Jahre)': 'Grün',
-            'GELB (11–17 Jahre)': 'Gelb Hobby',
-            'TEAM-GELB (11–17 Jahre / U15)': 'Gelb Team',
-          };
-          if (trainigGroupMap[trainingsart]) existingStudent.trainigGroup = trainigGroupMap[trainingsart];
-          existingStudent.team = !!(teamParticipation && teamParticipation !== '-' && teamParticipation !== false) ||
-            trainingsart === 'TEAM-GELB (11–17 Jahre / U15)' ||
-            trainingsart === 'Jugend TEAM (Gelb)';
-        } else {
-          existingStudent.skillLevel = spielstärke || existingStudent.skillLevel;
-          existingStudent.comment2 = trainingGoals ? trainingGoals.join(', ') : existingStudent.comment2;
-          existingStudent.groupSize = groupSize ? groupSize.join(', ') : existingStudent.groupSize;
+      if (!portalUser.studentId) {
+        portalUser.studentId = studentId;
+        await portalUser.save();
+      }
+    }
+
+    // Auto-add student to current plan if defined for period
+    if (period.currentPlanId) {
+      try {
+        const currentPlan = await SavedSchedule.findById(period.currentPlanId);
+        if (currentPlan) {
+          const alreadyInPlan = (currentPlan.students || []).some(
+            s => s._id.toString() === student._id.toString()
+          );
+          if (!alreadyInPlan) {
+            currentPlan.students.push(student.toObject());
+            if (currentPlan.metadata) {
+              currentPlan.metadata.studentCount = currentPlan.students.length;
+              const unassignedCount = currentPlan.students.filter(
+                s => !s.assignments || s.assignments.length === 0
+              ).length;
+              currentPlan.metadata.unassignedCount = unassignedCount;
+            }
+            await currentPlan.save();
+            logger.info('Student auto-added to current plan for period from portal registration', {
+              studentId: student._id,
+              planId: currentPlan._id,
+              periodId: period._id
+            });
+          }
         }
-        // Update available times
-        const isSameSlot = (a, b) => a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
-        let newSlots = (formType === 'kids' ? availableTimesKids : availableTimesAdults || []).map(t => ({ day: t.day, hour: t.hour, venue: t.venue || '' }));
-        if (priorityTime && priorityTime.day) {
-          const prio = newSlots.find(t => isSameSlot(t, priorityTime));
-          if (prio) newSlots = [prio, ...newSlots.filter(t => !isSameSlot(t, priorityTime))];
-          existingStudent.priorityTime = { day: priorityTime.day, hour: priorityTime.hour, venue: priorityTime.venue || '' };
-        }
-        if (newSlots.length > 0) existingStudent.availableTimes = newSlots;
-        await existingStudent.save();
+      } catch (planError) {
+        logger.error('Error auto-adding student to current plan from portal:', planError);
       }
     }
 
