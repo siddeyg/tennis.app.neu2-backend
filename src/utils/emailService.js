@@ -86,8 +86,9 @@ const textFormatters = {
   field: (label, value, labelWidth = 20) => `${label.padEnd(labelWidth)}: ${value}`
 };
 
-// Check if SMTP is configured (never send real emails in test environment)
+// Check if SMTP is configured (never send real emails in test environment or when DISABLE_EMAIL is set)
 const isConfigured =
+  process.env.DISABLE_EMAIL !== 'true' &&
   process.env.NODE_ENV !== 'test' &&
   process.env.SMTP_HOST &&
   process.env.SMTP_USER &&
@@ -155,9 +156,9 @@ if (isConfigured) {
 export async function sendEmail({ to, subject, html, text = null, attachments = null, replyTo = null }) {
   const isDev = process.env.NODE_ENV === 'development';
 
-  // Development mode - log instead of sending if SMTP is not configured or failed verification in dev
-  if (!isConfigured || !transporter || (isDev && !isSmtpVerified)) {
-    logger.info(`📧 [DEV MODE] Simulated email to: ${to}`);
+  // Development mode or disabled email - log instead of sending if SMTP is not configured, failed verification, or DISABLE_EMAIL is active
+  if (process.env.DISABLE_EMAIL === 'true' || !isConfigured || !transporter || (isDev && !isSmtpVerified)) {
+    logger.info(`📧 [EMAIL DISABLED/DEV] Simulated email to: ${to}`);
     logger.info(`   Subject: ${subject}`);
     logger.info(`   From: ${process.env.FROM_NAME || 'Mondo Tennisschule'} <${process.env.FROM_EMAIL || 'noreply@tcgw.de'}>`);
     if (replyTo) {
