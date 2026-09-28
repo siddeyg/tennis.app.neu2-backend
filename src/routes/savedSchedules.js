@@ -398,34 +398,46 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
     });
     await backup.save();
 
-    // Step 2: Clear current database
-    await Student.deleteMany({});
-    await Coach.deleteMany({});
-    await Schedule.deleteMany({});
+    // Step 2: Clear database ONLY for this specific period (safe multi-season isolation)
+    const targetPeriodId = savedSchedule.periodId?._id || savedSchedule.periodId;
+    if (targetPeriodId) {
+      await Student.deleteMany({ periodId: targetPeriodId });
+      await Schedule.deleteMany({ periodId: targetPeriodId });
+    } else {
+      await Student.deleteMany({});
+      await Schedule.deleteMany({});
+    }
 
-    // Step 3: Restore from saved schedule
-    // Insert coaches first (students reference them)
-    const coachIdMap = new Map(); // old ID -> new ID mapping
+    // Step 3: Restore coaches (preserve existing coaches, do NOT wipe)
+    const coachIdMap = new Map(); // old ID -> active ID mapping
 
     for (const coach of savedSchedule.coaches) {
       const oldId = coach._id;
-      delete coach._id; // Remove old ID to generate new one
-
-      // Fix legacy string availableTimes (e.g. "Samstag 13")
-      if (Array.isArray(coach.availableTimes)) {
-        coach.availableTimes = coach.availableTimes.map(t => {
-          if (typeof t === 'string') {
-            const parts = t.split(' ');
-            return { day: parts[0] || '', hour: parseInt(parts[1], 10) || null };
-          }
-          return t;
-        });
+      let existingCoach = null;
+      if (oldId) {
+        existingCoach = await Coach.findById(oldId);
+      }
+      if (!existingCoach && coach.email) {
+        existingCoach = await Coach.findOne({ email: coach.email.toLowerCase() });
       }
 
-      const newCoach = new Coach(coach);
-      await newCoach.save();
-
-      coachIdMap.set(String(oldId), String(newCoach._id));
+      if (existingCoach) {
+        coachIdMap.set(String(oldId), String(existingCoach._id));
+      } else {
+        delete coach._id;
+        if (Array.isArray(coach.availableTimes)) {
+          coach.availableTimes = coach.availableTimes.map(t => {
+            if (typeof t === 'string') {
+              const parts = t.split(' ');
+              return { day: parts[0] || '', hour: parseInt(parts[1], 10) || null };
+            }
+            return t;
+          });
+        }
+        const newCoach = new Coach(coach);
+        await newCoach.save();
+        coachIdMap.set(String(oldId), String(newCoach._id));
+      }
     }
 
     // Insert students with updated coach references
@@ -433,7 +445,6 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
 
     for (const student of savedSchedule.students) {
       const oldId = student._id;
-      delete student._id;
 
       // Fix legacy string availableTimes
       if (Array.isArray(student.availableTimes)) {
@@ -470,25 +481,35 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
         });
       }
 
-      const newStudent = new Student(student);
+      // Preserve existing ObjectId if present to avoid breaking portalUser.studentId, familyMember.studentId, seasonalRegistration.studentId
+      const studentDoc = {
+        ...student,
+        _id: oldId,
+        periodId: targetPeriodId || student.periodId
+      };
+      const newStudent = new Student(studentDoc);
       await newStudent.save();
 
-      studentIdMap.set(String(oldId), String(newStudent._id));
+      studentIdMap.set(String(oldId), String(oldId));
     }
 
-    // Insert schedule with updated student references
+    // Insert schedule with targetPeriodId and updated student references
     for (const scheduleItem of savedSchedule.schedule) {
-      delete scheduleItem._id;
+      const scheduleItemData = {
+        ...scheduleItem,
+        periodId: targetPeriodId || scheduleItem.periodId
+      };
+      delete scheduleItemData._id;
 
       // Update student references in course
-      if (Array.isArray(scheduleItem.students)) {
-        scheduleItem.students = scheduleItem.students.map((s) => {
+      if (Array.isArray(scheduleItemData.students)) {
+        scheduleItemData.students = scheduleItemData.students.map((s) => {
           const oldStudentId = s._id || s;
           return studentIdMap.get(String(oldStudentId)) || s;
         });
       }
 
-      const newScheduleItem = new Schedule(scheduleItem);
+      const newScheduleItem = new Schedule(scheduleItemData);
       await newScheduleItem.save();
     }
 

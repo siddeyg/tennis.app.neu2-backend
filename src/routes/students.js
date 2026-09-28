@@ -114,10 +114,17 @@ const upload = multer({
   }
 });
 
-// Alle Schüler abrufen
+// Alle Schüler abrufen (optional nach Periode gefiltert)
 router.get("/", async (req, res) => {
-  const students = await Student.find();
-  res.json(students);
+  try {
+    const { periodId } = req.query;
+    const filter = periodId ? { periodId } : {};
+    const students = await Student.find(filter);
+    res.json(students);
+  } catch (error) {
+    logger.error("Fehler beim Abrufen der Schüler", { error: error.message });
+    res.status(500).json({ error: "Fehler beim Abrufen der Schüler" });
+  }
 });
 
 // Schüler hinzufügen
@@ -143,12 +150,16 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), 
       firstName, lastName, birthDate, adress, email, phone,
       member, adult, sex, team, trainigGroup, groupSize,
       skillLevel, availableTimes, comment, comment2, frequence,
+      periodId, studentPortalUserId, familyMemberId,
     } = req.body;
 
     const student = new Student({
       firstName, lastName, birthDate, adress, email, phone,
       member, adult, sex, team, trainigGroup, groupSize,
       skillLevel, availableTimes, comment, comment2, frequence,
+      periodId: periodId || null,
+      studentPortalUserId: studentPortalUserId || null,
+      familyMemberId: familyMemberId || null,
     });
     await student.save();
     res.status(201).json(student);
@@ -164,14 +175,16 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), 
 // Alle Schüler löschen (muss vor /:id Route sein!)
 router.delete("/all", auditLogMiddleware({ action: 'DELETE', resource: 'Student', metadata: { critical: true, operation: 'DELETE_ALL' } }), async (req, res) => {
   try {
-    const result = await Student.deleteMany({});
+    const { periodId } = req.query;
+    const filter = periodId ? { periodId } : {};
+    const result = await Student.deleteMany(filter);
     res.json({
-      message: "Alle Schüler gelöscht",
+      message: periodId ? "Schüler der Periode gelöscht" : "Alle Schüler gelöscht",
       deletedCount: result.deletedCount
     });
   } catch (error) {
-    logger.error("Fehler beim Löschen aller Schüler", { error: error.message, stack: error.stack });
-    res.status(500).json({ error: "Fehler beim Löschen aller Schüler" });
+    logger.error("Fehler beim Löschen der Schüler", { error: error.message, stack: error.stack });
+    res.status(500).json({ error: "Fehler beim Löschen der Schüler" });
   }
 });
 

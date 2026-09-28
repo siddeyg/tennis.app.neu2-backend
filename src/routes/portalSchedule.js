@@ -113,29 +113,50 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       return res.status(404).json({ error: 'Portal-Benutzer nicht gefunden' });
     }
 
-    const studentId = portalUser.studentId || req.user.studentId;
-
-    // Find parent's student record (may be null if only children are registered)
-    const student = studentId ? await Student.findById(studentId) : null;
-    const hasChildren = (portalUser.familyMembers || []).some(fm => fm.studentId);
-
-    // No student record yet — return empty schedule (not 404)
-    if (!student && !hasChildren) {
-      return res.json({ student: null, schedule: [], period: null, trainingCount: null, holidays: [], familySchedules: [] });
-    }
-
-    // Find the RegistrationPeriod that covers today (training dates bracket today)
+    // Find the active or relevant RegistrationPeriod
     const today = new Date();
-    let period = await RegistrationPeriod.findOne({
-      trainingStartDate: { $lte: today },
-      trainingEndDate:   { $gte: today }
-    }).sort({ trainingStartDate: -1 }).lean();
-
-    // Fallback: most recent period by end date (even if season already ended)
+    let period = null;
+    if (req.query.periodId) {
+      period = await RegistrationPeriod.findById(req.query.periodId).lean();
+    }
+    if (!period) {
+      period = await RegistrationPeriod.findOne({ isActive: true }).lean();
+    }
+    if (!period) {
+      period = await RegistrationPeriod.findOne({
+        trainingStartDate: { $lte: today },
+        trainingEndDate:   { $gte: today }
+      }).sort({ trainingStartDate: -1 }).lean();
+    }
     if (!period) {
       period = await RegistrationPeriod.findOne({})
         .sort({ trainingEndDate: -1 })
         .lean();
+    }
+
+    const studentId = portalUser.studentId || req.user.studentId;
+
+    // Resolve parent's student record for this period (Inversion of Control + fallback)
+    let student = null;
+    if (period) {
+      student = await Student.findOne({
+        periodId: period._id,
+        $or: [
+          { studentPortalUserId: portalUser._id, familyMemberId: null },
+          ...(studentId ? [{ _id: studentId }] : []),
+          ...(portalUser.email ? [{ email: portalUser.email.toLowerCase() }] : [])
+        ]
+      });
+    }
+    if (!student && studentId) {
+      student = await Student.findById(studentId);
+    }
+
+    const hasChildren = (portalUser.familyMembers || []).length > 0;
+
+    // No student record yet — return empty schedule (not 404)
+    if (!student && !hasChildren) {
+      return res.json({ student: null, schedule: [], period: null, trainingCount: null, holidays: [], familySchedules: [] });
     }
 
     // If the schedule hasn't been published yet, return empty schedule with a flag.
@@ -149,13 +170,16 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     // Check if any linked student has scheduleVisible: true
     let hasVisibleSchedule = student?.scheduleVisible === true;
     if (!hasVisibleSchedule && hasChildren) {
-      const childStudentIds = (portalUser.familyMembers || [])
-        .filter(fm => fm.studentId)
-        .map(fm => fm.studentId);
-      if (childStudentIds.length > 0) {
-        const visibleChild = await Student.findOne({ _id: { $in: childStudentIds }, scheduleVisible: true });
-        hasVisibleSchedule = !!visibleChild;
-      }
+      const childMemberIds = (portalUser.familyMembers || []).map(fm => fm._id);
+      const childLegacyIds = (portalUser.familyMembers || []).filter(fm => fm.studentId).map(fm => fm.studentId);
+      const visibleChild = await Student.findOne({
+        $or: [
+          ...(period ? [{ periodId: period._id, studentPortalUserId: portalUser._id, familyMemberId: { $in: childMemberIds } }] : []),
+          { _id: { $in: childLegacyIds } }
+        ],
+        scheduleVisible: true
+      });
+      hasVisibleSchedule = !!visibleChild;
     }
 
     if (isUnpublished && !hasVisibleSchedule) {
@@ -213,19 +237,31 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     // If computedHolidays is empty: trainingCount stays null → stats card hidden on frontend
 
     // Return student info + schedule + season stats
-    // Build family member schedules (children with linked studentId)
+    // Build family member schedules (children with linked studentId or period-scoped student)
     const familySchedules = [];
-    const childMembers = (portalUser.familyMembers || []).filter(fm => fm.studentId);
-    if (childMembers.length > 0) {
-      const childStudentIds = childMembers.map(fm => fm.studentId);
-      const childStudents = await Student.find({ _id: { $in: childStudentIds } });
-      const childStudentMap = new Map(childStudents.map(s => [s._id.toString(), s]));
+    const familyMembersList = portalUser.familyMembers || [];
+    for (const fm of familyMembersList) {
+      let childStudent = null;
+      if (period) {
+        childStudent = await Student.findOne({
+          periodId: period._id,
+          $or: [
+            { studentPortalUserId: portalUser._id, familyMemberId: fm._id },
+            ...(fm.studentId ? [{ _id: fm.studentId }] : []),
+            ...(fm.firstName && fm.lastName ? [{
+              firstName: { $regex: new RegExp(`^${fm.firstName.trim()}$`, 'i') },
+              lastName: { $regex: new RegExp(`^${fm.lastName.trim()}$`, 'i') }
+            }] : [])
+          ]
+        });
+      }
+      if (!childStudent && fm.studentId) {
+        childStudent = await Student.findById(fm.studentId);
+      }
+      if (!childStudent) continue;
 
-      for (const fm of childMembers) {
-        const childStudent = childStudentMap.get(fm.studentId.toString());
-        if (!childStudent) continue;
-        // In per-student mode, skip children whose schedule hasn't been individually published
-        if (perStudentMode && !childStudent.scheduleVisible) continue;
+      // In per-student mode, skip children whose schedule hasn't been individually published
+      if (perStudentMode && !childStudent.scheduleVisible) continue;
 
         const childSchedule = await buildScheduleForStudent(childStudent);
 
@@ -268,7 +304,6 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
           holidays: childHolidayHits,
         });
       }
-    }
 
     res.json({
       student: student ? {

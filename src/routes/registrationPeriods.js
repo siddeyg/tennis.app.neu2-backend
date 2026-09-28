@@ -902,13 +902,39 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
 
     for (const submission of submissions) {
       try {
-        // Check if Student record already exists (by email or studentId)
+        // Check if Student record already exists within THIS period (period isolation)
         let student;
 
         if (submission.studentId) {
-          student = await Student.findById(submission.studentId);
-        } else {
-          student = await Student.findOne({ email: submission.email });
+          student = await Student.findOne({ _id: submission.studentId, periodId: period._id });
+        }
+        if (!student && submission.studentPortalUserId && submission.familyMemberId) {
+          student = await Student.findOne({
+            studentPortalUserId: submission.studentPortalUserId,
+            familyMemberId: submission.familyMemberId,
+            periodId: period._id
+          });
+        }
+        if (!student && submission.studentPortalUserId && !submission.familyMemberId) {
+          student = await Student.findOne({
+            studentPortalUserId: submission.studentPortalUserId,
+            familyMemberId: null,
+            periodId: period._id
+          });
+        }
+        if (!student && submission.firstName && submission.lastName) {
+          student = await Student.findOne({
+            firstName: { $regex: new RegExp(`^${submission.firstName.trim()}$`, 'i') },
+            lastName: { $regex: new RegExp(`^${submission.lastName.trim()}$`, 'i') },
+            periodId: period._id
+          });
+        }
+        if (!student && submission.firstName && submission.email) {
+          student = await Student.findOne({
+            firstName: { $regex: new RegExp(`^${submission.firstName.trim()}$`, 'i') },
+            email: submission.email.toLowerCase(),
+            periodId: period._id
+          });
         }
 
         // Look up portal user for both kids and adults (sex, address)
@@ -924,6 +950,9 @@ router.post('/:id/process-all', auditLogMiddleware({ action: 'BULK_OPERATION', r
         const isSameSlot = (a, b) => a.day === b.day && String(a.hour) === String(b.hour) && (a.venue || '') === (b.venue || '');
 
         const studentData = {
+          periodId: period._id,
+          studentPortalUserId: submission.studentPortalUserId || null,
+          familyMemberId: submission.familyMemberId || null,
           firstName: submission.firstName,
           lastName: submission.lastName,
           birthDate: submission.birthdate,

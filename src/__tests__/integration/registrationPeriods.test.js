@@ -750,8 +750,9 @@ describe('Registration Periods API Integration Tests', () => {
         createdBy: mockAdminId,
       });
 
-      // Create existing student
+      // Create existing student within the same period
       const existingStudent = await Student.create({
+        periodId: period._id,
         firstName: 'Max',
         lastName: 'Old',
         email: 'max@test.com',

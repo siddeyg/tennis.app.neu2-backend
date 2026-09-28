@@ -13,6 +13,7 @@ import express from 'express';
 import Student from '../models/Student.js';
 import Attendance from '../models/Attendance.js';
 import Absence from '../models/Absence.js';
+import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireCoach } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
@@ -58,11 +59,23 @@ router.get('/schedule/today', async (req, res) => {
     const dayName = dayNames[today.getDay()];
 
 
-    // Find all students assigned to this coach for today
-    const students = await Student.find({
+    // Determine active period to prevent summer/winter course collision
+    const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean() ||
+                         await RegistrationPeriod.findOne({
+                           trainingStartDate: { $lte: today },
+                           trainingEndDate: { $gte: today }
+                         }).sort({ trainingStartDate: -1 }).lean();
+
+    const studentFilter = {
       'assignments.coach': coachId,
       'assignments.day': dayName
-    }).lean();
+    };
+    if (activePeriod) {
+      studentFilter.periodId = activePeriod._id;
+    }
+
+    // Find all students assigned to this coach for today in this period
+    const students = await Student.find(studentFilter).lean();
 
 
     // Group students by hour
@@ -195,10 +208,23 @@ router.get('/students', async (req, res) => {
   try {
     const coachId = req.user._id;
 
-    // Find all students assigned to this coach
-    const students = await Student.find({
+    // Determine active period to prevent summer/winter student collision
+    const today = new Date();
+    const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean() ||
+                         await RegistrationPeriod.findOne({
+                           trainingStartDate: { $lte: today },
+                           trainingEndDate: { $gte: today }
+                         }).sort({ trainingStartDate: -1 }).lean();
+
+    const studentFilter = {
       'assignments.coach': coachId
-    })
+    };
+    if (activePeriod) {
+      studentFilter.periodId = activePeriod._id;
+    }
+
+    // Find all students assigned to this coach
+    const students = await Student.find(studentFilter)
       .populate('assignments.coach', 'firstName lastName')
       .lean();
 

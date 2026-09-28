@@ -25,7 +25,16 @@ const ScheduleSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Coach"
   },
+  periodId: {                           // Zwingende Saison-Bindung
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "RegistrationPeriod",
+    default: null,
+    index: true
+  }
 });
+
+// Performance & Scoping Indexes
+ScheduleSchema.index({ periodId: 1, day: 1, hour: 1 });
 
 const Schedule = mongoose.model("Schedule", ScheduleSchema);
 

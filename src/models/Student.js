@@ -55,6 +55,25 @@ const studentSchema = new mongoose.Schema({
     // Trainingsziel für Erwachsene (z.B. "Freizeit, Fitness, Turniere")
   },
 
+  // ===== Saison-Isolation & Inversion of Control (Multi-Period Scoping) =====
+  periodId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'RegistrationPeriod',
+    default: null,
+    index: true
+  },
+  studentPortalUserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'StudentPortalUser',
+    default: null,
+    index: true
+  },
+  familyMemberId: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    index: true
+  },
+
   // ===== Mitgliedschaft & Training =====
   member: {
     type: Boolean,
@@ -216,5 +235,7 @@ const studentSchema = new mongoose.Schema({
 studentSchema.index({ email: 1 });  // Critical for login and user lookups
 studentSchema.index({ 'assignments.day': 1, 'assignments.hour': 1 });  // Schedule queries
 studentSchema.index({ 'assignments.coach': 1 });  // Coach-specific schedule lookups
+studentSchema.index({ periodId: 1, email: 1 });  // Period-scoped student lookup
+studentSchema.index({ periodId: 1, studentPortalUserId: 1, familyMemberId: 1 });  // Dynamic portal student resolution
 
 export default mongoose.model("Student", studentSchema);

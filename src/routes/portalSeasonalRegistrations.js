@@ -751,9 +751,10 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
         });
       }
     } else {
-      // Existing student linked — update their training preferences from new registration
+      // Existing student linked — ONLY update if belonging to the SAME period (never overwrite cross-season data)
       const existingStudent = await Student.findById(studentId);
-      if (existingStudent) {
+      const isSamePeriod = existingStudent && (!existingStudent.periodId || String(existingStudent.periodId) === String(period._id));
+      if (existingStudent && isSamePeriod) {
         existingStudent.sex = userSex || existingStudent.sex;
         existingStudent.frequence = trainingshäufigkeit === '2x pro Woche' ? '2' : '1';
         existingStudent.sessionDuration = sessionDuration ? Number(sessionDuration) : existingStudent.sessionDuration;
