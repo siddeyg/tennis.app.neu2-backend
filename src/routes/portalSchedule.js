@@ -927,6 +927,50 @@ router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
   }
 });
 
+// Helper: get all valid studentIds belonging to this portal user (across seasons and family members)
+async function getAllowedStudentIdsForPortalUser(portalUserId, fallbackStudentId = null) {
+  const portalUser = await StudentPortalUser.findById(portalUserId).lean();
+  const linkedStudents = await Student.find({
+    $or: [
+      { studentPortalUserId: portalUserId },
+      ...(fallbackStudentId ? [{ _id: fallbackStudentId }] : []),
+      ...(portalUser?.studentId ? [{ _id: portalUser.studentId }] : []),
+      ...(portalUser?.familyMembers ? portalUser.familyMembers.filter(fm => fm.studentId).map(fm => ({ _id: fm.studentId })) : [])
+    ]
+  }).select('_id').lean();
+
+  const idSet = new Set(linkedStudents.map(s => String(s._id)));
+  if (fallbackStudentId) idSet.add(String(fallbackStudentId));
+  if (portalUser?.studentId) idSet.add(String(portalUser.studentId));
+  return Array.from(idSet);
+}
+
+// Helper: resolve effective studentId for a request (prioritizing body/query, then active period by date, then fallback)
+async function resolveEffectiveStudentId(portalUserId, requestedStudentId = null, fallbackStudentId = null, targetDate = new Date()) {
+  const allowedIds = await getAllowedStudentIdsForPortalUser(portalUserId, fallbackStudentId);
+
+  if (requestedStudentId && allowedIds.includes(String(requestedStudentId))) {
+    return String(requestedStudentId);
+  }
+
+  // Resolve student for target period by date
+  const period = await RegistrationPeriod.findOne({
+    trainingStartDate: { $lte: targetDate },
+    trainingEndDate: { $gte: targetDate }
+  }).lean() || await RegistrationPeriod.findOne({ isActive: true }).lean();
+
+  if (period) {
+    const student = await Student.findOne({
+      periodId: period._id,
+      studentPortalUserId: portalUserId,
+      familyMemberId: null
+    }).select('_id').lean();
+    if (student) return String(student._id);
+  }
+
+  return fallbackStudentId ? String(fallbackStudentId) : (allowedIds[0] || null);
+}
+
 /**
  * @route   POST /api/portal/schedule-change-requests
  * @desc    Create a new schedule change request
@@ -935,8 +979,12 @@ router.post('/profile/complete', verifyPortalAuth, async (req, res) => {
 router.post('/schedule-change-requests', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resource: 'ScheduleChangeRequest' }), async (req, res) => {
   try {
     const { requestType, currentSlot, requestedSlot, reason } = req.body;
-    const studentId = req.user.studentId;
-    const portalUserId = req.user.id; // Changed from userId to id for test compatibility
+    const portalUserId = req.user.id;
+    const studentId = await resolveEffectiveStudentId(portalUserId, req.body.studentId, req.user.studentId);
+
+    if (!studentId) {
+      return res.status(404).json({ error: 'Kein Schülerprofil für diesen Benutzer gefunden' });
+    }
 
     // Validate request type
     if (!['add', 'remove', 'change'].includes(requestType)) {
@@ -1013,10 +1061,26 @@ router.post('/schedule-change-requests', verifyPortalAuth, auditLogMiddleware({ 
  */
 router.get('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
   try {
-    const studentId = req.user.studentId;
+    const portalUserId = req.user.id;
+    const allowedStudentIds = await getAllowedStudentIdsForPortalUser(portalUserId, req.user.studentId);
+    const filterStudentId = req.query.studentId;
+
+    let query = {};
+    if (filterStudentId && allowedStudentIds.includes(String(filterStudentId))) {
+      query.studentId = filterStudentId;
+    } else if (allowedStudentIds.length > 0) {
+      query.$or = [
+        { studentId: { $in: allowedStudentIds } },
+        { portalUserId }
+      ];
+    } else if (req.user.studentId) {
+      query.studentId = req.user.studentId;
+    } else {
+      query.portalUserId = portalUserId;
+    }
 
     // Find all requests for this student, sorted by most recent first
-    const requests = await ScheduleChangeRequest.find({ studentId })
+    const requests = await ScheduleChangeRequest.find(query)
       .populate('reviewedBy', 'firstName lastName')
       .sort({ createdAt: -1 })
       .lean();
@@ -1053,7 +1117,8 @@ router.get('/schedule-change-requests', verifyPortalAuth, async (req, res) => {
 router.delete('/schedule-change-requests/:id', verifyPortalAuth, auditLogMiddleware({ action: 'DELETE', resource: 'ScheduleChangeRequest' }), async (req, res) => {
   try {
     const requestId = req.params.id;
-    const studentId = req.user.studentId;
+    const portalUserId = req.user.id;
+    const allowedStudentIds = await getAllowedStudentIdsForPortalUser(portalUserId, req.user.studentId);
 
     // Find the request
     const changeRequest = await ScheduleChangeRequest.findById(requestId);
@@ -1062,8 +1127,11 @@ router.delete('/schedule-change-requests/:id', verifyPortalAuth, auditLogMiddlew
       return res.status(404).json({ error: 'Anfrage nicht gefunden' });
     }
 
-    // Verify this request belongs to the student (return 404 for security)
-    if (changeRequest.studentId.toString() !== studentId.toString()) {
+    // Verify this request belongs to the user / allowed students (return 404 for security)
+    const isAuthorized = (changeRequest.portalUserId && String(changeRequest.portalUserId) === String(portalUserId)) ||
+      allowedStudentIds.includes(String(changeRequest.studentId));
+
+    if (!isAuthorized) {
       return res.status(404).json({ error: 'Anfrage nicht gefunden' });
     }
 
@@ -1094,8 +1162,13 @@ router.delete('/schedule-change-requests/:id', verifyPortalAuth, auditLogMiddlew
 router.post('/absences', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE', resource: 'Absence' }), async (req, res) => {
   try {
     const { absenceDate, day, hour, coach, absenceType, reason } = req.body;
-    const studentId = req.user.studentId;
-    const portalUserId = req.user.id; // Changed from userId to id for test compatibility
+    const portalUserId = req.user.id;
+    const targetDate = absenceDate ? new Date(absenceDate) : new Date();
+    const studentId = await resolveEffectiveStudentId(portalUserId, req.body.studentId, req.user.studentId, targetDate);
+
+    if (!studentId) {
+      return res.status(404).json({ error: 'Kein Schülerprofil für diesen Benutzer gefunden' });
+    }
 
     // Validate required fields
     if (!absenceDate || !day || !hour || !absenceType) {
@@ -1176,9 +1249,28 @@ router.post('/absences', verifyPortalAuth, auditLogMiddleware({ action: 'CREATE'
  */
 router.get('/absences/upcoming', verifyPortalAuth, async (req, res) => {
   try {
-    const studentId = req.user.studentId;
+    const portalUserId = req.user.id;
+    const allowedStudentIds = await getAllowedStudentIdsForPortalUser(portalUserId, req.user.studentId);
+    const filterStudentId = req.query.studentId;
 
-    const upcomingAbsences = await Absence.getUpcomingForStudent(studentId);
+    let targetIds = [];
+    if (filterStudentId && allowedStudentIds.includes(String(filterStudentId))) {
+      targetIds = [filterStudentId];
+    } else {
+      targetIds = allowedStudentIds.length > 0 ? allowedStudentIds : (req.user.studentId ? [req.user.studentId] : []);
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const upcomingAbsences = await Absence.find({
+      studentId: { $in: targetIds },
+      absenceDate: { $gte: today },
+      status: { $in: ['pending', 'acknowledged'] }
+    })
+      .sort({ absenceDate: 1, hour: 1 })
+      .limit(10)
+      .lean();
 
     res.json(upcomingAbsences);
 
@@ -1195,11 +1287,25 @@ router.get('/absences/upcoming', verifyPortalAuth, async (req, res) => {
  */
 router.get('/absences', verifyPortalAuth, async (req, res) => {
   try {
-    const studentId = req.user.studentId;
+    const portalUserId = req.user.id;
+    const allowedStudentIds = await getAllowedStudentIdsForPortalUser(portalUserId, req.user.studentId);
+    const filterStudentId = req.query.studentId;
     const { status, upcoming } = req.query;
 
+    let targetIds = [];
+    if (filterStudentId && allowedStudentIds.includes(String(filterStudentId))) {
+      targetIds = [filterStudentId];
+    } else {
+      targetIds = allowedStudentIds.length > 0 ? allowedStudentIds : (req.user.studentId ? [req.user.studentId] : []);
+    }
+
     // Build query
-    const query = { studentId };
+    const query = {
+      $or: [
+        { studentId: { $in: targetIds } },
+        { portalUserId }
+      ]
+    };
 
     if (status && ['pending', 'acknowledged', 'cancelled'].includes(status)) {
       query.status = status;
@@ -1254,7 +1360,8 @@ router.get('/absences', verifyPortalAuth, async (req, res) => {
 router.delete('/absences/:id', verifyPortalAuth, auditLogMiddleware({ action: 'DELETE', resource: 'Absence' }), async (req, res) => {
   try {
     const absenceId = req.params.id;
-    const studentId = req.user.studentId;
+    const portalUserId = req.user.id;
+    const allowedStudentIds = await getAllowedStudentIdsForPortalUser(portalUserId, req.user.studentId);
 
     // Find the absence
     const absence = await Absence.findById(absenceId);
@@ -1263,8 +1370,11 @@ router.delete('/absences/:id', verifyPortalAuth, auditLogMiddleware({ action: 'D
       return res.status(404).json({ error: 'Abwesenheit nicht gefunden' });
     }
 
-    // Verify this absence belongs to the student (return 404 for security)
-    if (absence.studentId.toString() !== studentId.toString()) {
+    // Verify this absence belongs to the user / student (return 404 for security)
+    const isAuthorized = (absence.portalUserId && String(absence.portalUserId) === String(portalUserId)) ||
+      allowedStudentIds.includes(String(absence.studentId));
+
+    if (!isAuthorized) {
       return res.status(404).json({ error: 'Abwesenheit nicht gefunden' });
     }
 
@@ -1290,13 +1400,13 @@ router.delete('/absences/:id', verifyPortalAuth, auditLogMiddleware({ action: 'D
     // Delete the absence
     await Absence.findByIdAndDelete(absenceId);
 
-    logger.info('Absence deleted', { absenceId });
+    logger.info('Absence cancelled', { absenceId });
 
-    res.json({ message: 'Abwesenheit erfolgreich gelöscht' });
+    res.json({ message: 'Abwesenheit erfolgreich storniert' });
 
   } catch (error) {
     logger.error("Error deleting absence", { error: error.message, stack: error.stack });
-    res.status(500).json({ error: 'Serverfehler beim Löschen der Abwesenheit' });
+    res.status(500).json({ error: 'Serverfehler beim Stornieren der Abwesenheit' });
   }
 });
 
@@ -1307,7 +1417,13 @@ router.delete('/absences/:id', verifyPortalAuth, auditLogMiddleware({ action: 'D
  */
 router.get('/attendance/history', verifyPortalAuth, async (req, res) => {
   try {
-    const studentId = req.user.studentId;
+    const portalUserId = req.user.id;
+    const allowedStudentIds = await getAllowedStudentIdsForPortalUser(portalUserId, req.user.studentId);
+    const filterStudentId = req.query.studentId;
+    const studentId = (filterStudentId && allowedStudentIds.includes(String(filterStudentId)))
+      ? filterStudentId
+      : (req.user.studentId || allowedStudentIds[0]);
+
     const { limit } = req.query;
 
     const history = await Attendance.getStudentHistory(
