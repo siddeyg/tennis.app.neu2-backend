@@ -635,11 +635,17 @@ router.post('/', auditLogMiddleware({ action: 'CREATE', resource: 'SeasonalRegis
     const targetLastName = (familyMemberId && childData) ? childData.lastName : lastName;
 
     if (!student && targetFirstName && targetLastName) {
-      student = await Student.findOne({
+      const existingByName = await Student.findOne({
         periodId: period._id,
         firstName: { $regex: new RegExp(`^${targetFirstName.trim()}$`, 'i') },
         lastName: { $regex: new RegExp(`^${targetLastName.trim()}$`, 'i') }
       });
+      // Security (SEC-01): Only reuse if unlinked OR already linked to this portal user!
+      if (existingByName) {
+        if (!existingByName.studentPortalUserId || existingByName.studentPortalUserId.equals(portalUser._id)) {
+          student = existingByName;
+        }
+      }
     }
 
     // Get sex and member from portal user or family member

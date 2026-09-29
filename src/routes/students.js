@@ -118,6 +118,9 @@ const upload = multer({
 router.get("/", async (req, res) => {
   try {
     const { periodId } = req.query;
+    if (periodId && !mongoose.Types.ObjectId.isValid(periodId)) {
+      return res.status(400).json({ error: "Ungültiges periodId-Format" });
+    }
     const filter = periodId ? { periodId } : {};
     const students = await Student.find(filter);
     res.json(students);
@@ -172,14 +175,16 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), 
   }
 });
 
-// Alle Schüler löschen (muss vor /:id Route sein!)
+// Alle Schüler einer Periode löschen (muss vor /:id Route sein!)
 router.delete("/all", auditLogMiddleware({ action: 'DELETE', resource: 'Student', metadata: { critical: true, operation: 'DELETE_ALL' } }), async (req, res) => {
   try {
     const { periodId } = req.query;
-    const filter = periodId ? { periodId } : {};
-    const result = await Student.deleteMany(filter);
+    if (!periodId || !mongoose.Types.ObjectId.isValid(periodId)) {
+      return res.status(400).json({ error: "periodId ist zwingend erforderlich und muss eine gültige ID sein" });
+    }
+    const result = await Student.deleteMany({ periodId });
     res.json({
-      message: periodId ? "Schüler der Periode gelöscht" : "Alle Schüler gelöscht",
+      message: "Schüler der Periode gelöscht",
       deletedCount: result.deletedCount
     });
   } catch (error) {

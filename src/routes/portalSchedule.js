@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import crypto from 'crypto';
 import path from 'path';
 import fs from 'fs';
@@ -119,6 +120,9 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     const today = new Date();
     let period = null;
     if (req.query.periodId) {
+      if (!mongoose.Types.ObjectId.isValid(req.query.periodId)) {
+        return res.status(400).json({ error: 'Ungültiges periodId-Format' });
+      }
       period = await RegistrationPeriod.findById(req.query.periodId).lean();
     }
     // 1. Current running training period by date (priority over isActive)

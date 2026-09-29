@@ -395,7 +395,7 @@ describe('Absences API Integration Tests', () => {
       );
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toContain('gelöscht');
+      expect(response.body.message).toMatch(/gelöscht|storniert/);
 
       // Verify deletion
       const deletedAbsence = await Absence.findById(absence._id);

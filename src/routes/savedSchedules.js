@@ -400,13 +400,11 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
 
     // Step 2: Clear database ONLY for this specific period (safe multi-season isolation)
     const targetPeriodId = savedSchedule.periodId?._id || savedSchedule.periodId;
-    if (targetPeriodId) {
-      await Student.deleteMany({ periodId: targetPeriodId });
-      await Schedule.deleteMany({ periodId: targetPeriodId });
-    } else {
-      await Student.deleteMany({});
-      await Schedule.deleteMany({});
+    if (!targetPeriodId) {
+      return res.status(400).json({ error: "Dieser Plan kann nicht geladen werden, da er keiner Trainingsperiode zugewiesen ist (periodId fehlt)." });
     }
+    await Student.deleteMany({ periodId: targetPeriodId });
+    await Schedule.deleteMany({ periodId: targetPeriodId });
 
     // Step 3: Restore coaches (preserve existing coaches, do NOT wipe)
     const coachIdMap = new Map(); // old ID -> active ID mapping
