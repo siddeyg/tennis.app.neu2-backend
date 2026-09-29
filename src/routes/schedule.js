@@ -1,5 +1,10 @@
 import express from "express";
-import { getSchedule, updateSchedule } from "../controllers/scheduleController.js";
+import { 
+  getSchedule, 
+  updateSchedule,
+  lockAllSchedule,
+  unlockAllSchedule
+} from "../controllers/scheduleController.js";
 import auditLogMiddleware from "../middleware/auditLog.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { requireAdminOrSupermod } from "../middleware/requireRole.js";
@@ -12,4 +17,25 @@ router.use(requireAuth, requireAdminOrSupermod);
 router.get("/", getSchedule);
 router.put("/", auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'Schedule', metadata: { critical: true, operation: 'BULK_ALGORITHM' } }), updateSchedule);
 
+router.post(
+  "/lock-all", 
+  auditLogMiddleware({ 
+    action: 'BULK_OPERATION', 
+    resource: 'Schedule', 
+    metadata: { operation: 'LOCK_ALL' } 
+  }), 
+  lockAllSchedule
+);
+
+router.post(
+  "/unlock-all", 
+  auditLogMiddleware({ 
+    action: 'BULK_OPERATION', 
+    resource: 'Schedule', 
+    metadata: { operation: 'UNLOCK_ALL' } 
+  }), 
+  unlockAllSchedule
+);
+
 export default router;
+

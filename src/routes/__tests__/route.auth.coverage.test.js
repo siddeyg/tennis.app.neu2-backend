@@ -159,6 +159,8 @@ const PROTECTED_ENDPOINTS_SAMPLE = [
   { method: 'GET',    path: '/api/metrics' },
   { method: 'GET',    path: '/api/schedule-notifications/status' },
   { method: 'GET',    path: '/api/schedule-change-requests' },
+  { method: 'POST',   path: '/api/schedule/lock-all', body: { periodId: '66f4a8b1c9e8d7f6a5b4c3d2' } },
+  { method: 'POST',   path: '/api/schedule/unlock-all', body: { periodId: '66f4a8b1c9e8d7f6a5b4c3d2' } },
   // THE ROUTE THAT HAD C1 — must stay here permanently as a regression test
   { method: 'POST',   path: '/api/auth/register',
     body: { email: 'x@x.com', password: 'Abc123!x', firstName: 'X', lastName: 'X', role: 'admin' }
