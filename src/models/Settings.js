@@ -58,7 +58,7 @@ const settingsSchema = new mongoose.Schema({
       },
       endHour: {
         type: Number,
-        default: 21,
+        default: 22,
         min: 6,
         max: 23
       }
