@@ -17,6 +17,7 @@ import Announcement from '../models/Announcement.js';
 import logger from '../utils/logger.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireAdminOrSupermod } from '../middleware/requireRole.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 import { sendEmail } from '../utils/emailService.js';
 import { renderBroadcastEmail, htmlToPlainText } from '../utils/broadcastEmailRenderer.js';
 
@@ -885,7 +886,7 @@ async function processBroadcastSending(broadcastId, attachments = []) {
  * POST /api/broadcast-email/send
  * Starts live bulk email sending with granular targeting and optional noticeboard cross-posting
  */
-router.post('/send', async (req, res) => {
+router.post('/send', auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'BroadcastEmail', metadata: { operation: 'SEND_BROADCAST' } }), async (req, res) => {
   try {
     const {
       subject,
@@ -1000,7 +1001,7 @@ router.post('/send', async (req, res) => {
  * POST /api/broadcast-email/cancel/:id
  * Cancels an ongoing broadcast dispatch
  */
-router.post('/cancel/:id', async (req, res) => {
+router.post('/cancel/:id', auditLogMiddleware({ action: 'UPDATE', resource: 'BroadcastEmail', metadata: { operation: 'CANCEL_BROADCAST' } }), async (req, res) => {
   try {
     const { id } = req.params;
     const broadcast = await BroadcastEmail.findById(id);
@@ -1075,7 +1076,7 @@ router.get('/drafts', async (req, res) => {
   }
 });
 
-router.post('/draft', async (req, res) => {
+router.post('/draft', auditLogMiddleware({ action: 'UPDATE', resource: 'BroadcastDraft' }), async (req, res) => {
   try {
     const {
       draftId,
@@ -1131,7 +1132,7 @@ router.post('/draft', async (req, res) => {
   }
 });
 
-router.delete('/draft/:id', async (req, res) => {
+router.delete('/draft/:id', auditLogMiddleware({ action: 'DELETE', resource: 'BroadcastDraft' }), async (req, res) => {
   try {
     const { id } = req.params;
     await BroadcastEmail.findOneAndDelete({ _id: id, status: 'draft' });
@@ -1165,7 +1166,7 @@ router.get('/templates', async (req, res) => {
   }
 });
 
-router.post('/templates', async (req, res) => {
+router.post('/templates', auditLogMiddleware({ action: 'CREATE', resource: 'BroadcastTemplate' }), async (req, res) => {
   try {
     const { title, subject, contentHtml, attachments = [] } = req.body;
     if (!title || !subject || !contentHtml) {
@@ -1196,7 +1197,7 @@ router.post('/templates', async (req, res) => {
   }
 });
 
-router.delete('/templates/:id', async (req, res) => {
+router.delete('/templates/:id', auditLogMiddleware({ action: 'DELETE', resource: 'BroadcastTemplate' }), async (req, res) => {
   try {
     const { id } = req.params;
     await BroadcastEmail.findOneAndDelete({ _id: id, isTemplate: true });

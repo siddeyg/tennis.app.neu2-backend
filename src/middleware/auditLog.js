@@ -8,7 +8,7 @@ function sanitizeBody(body) {
   if (!body) return null;
 
   const sensitiveFields = ['password', 'confirmPassword', 'token', 'refreshToken', 'resetToken', 'verificationToken', 'secret', 'apiKey'];
-  const ibanPattern = /\biban\b/i;
+  const ibanPattern = /iban|accountholder|kontoinhaber/i;
 
   // Recursive sanitization
   const sanitize = (obj) => {
@@ -79,12 +79,12 @@ export async function createAuditLog({
       method,
       endpoint,
       requestBody: sanitizeBody(requestBody),
-      changes,
+      changes: sanitizeBody(changes),
       ipAddress,
       userAgent,
       status,
       errorMessage,
-      metadata
+      metadata: sanitizeBody(metadata)
     });
 
     await auditLog.save();

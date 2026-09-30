@@ -24,7 +24,7 @@ const auditLogSchema = new mongoose.Schema({
   // Action details
   action: {
     type: String,
-    enum: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'ACCESS', 'BULK_OPERATION', 'IMPORT'],
+    enum: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'ACCESS', 'BULK_OPERATION', 'IMPORT', 'EXPORT'],
     required: true,
     index: true
   },
@@ -40,10 +40,7 @@ const auditLogSchema = new mongoose.Schema({
   requestBody: mongoose.Schema.Types.Mixed,  // Sanitized
 
   // Change tracking
-  changes: {
-    before: mongoose.Schema.Types.Mixed,
-    after: mongoose.Schema.Types.Mixed
-  },
+  changes: mongoose.Schema.Types.Mixed,
 
   // Client info
   ipAddress: String,
@@ -66,6 +63,8 @@ const auditLogSchema = new mongoose.Schema({
 
 // Index for common queries
 auditLogSchema.index({ timestamp: -1, userId: 1 });
+auditLogSchema.index({ timestamp: -1, userEmail: 1 });
+auditLogSchema.index({ userEmail: 1 });
 auditLogSchema.index({ timestamp: -1, resource: 1 });
 auditLogSchema.index({ timestamp: -1, action: 1 });
 

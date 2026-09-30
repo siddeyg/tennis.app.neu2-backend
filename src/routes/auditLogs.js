@@ -2,6 +2,7 @@ import express from 'express';
 import Joi from 'joi';
 import rateLimit from 'express-rate-limit';
 import AuditLog from '../models/AuditLog.js';
+import User from '../models/User.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
@@ -62,6 +63,108 @@ router.use(requireAuth);
 router.use(requireRole(['admin']));
 
 /**
+ * Shared query builder for audit logs (resolves search by name, email, endpoint, etc.)
+ */
+async function buildAuditLogQuery({
+  startDate,
+  endDate,
+  userId,
+  action,
+  excludeAction,
+  resource,
+  status,
+  search
+}) {
+  const query = {};
+
+  // Date range filter
+  if (startDate || endDate) {
+    query.timestamp = {};
+    if (startDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0); // Start of day
+      query.timestamp.$gte = start;
+    }
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999); // End of day
+      query.timestamp.$lte = end;
+    }
+  }
+
+  // Filter by user ID
+  if (userId) {
+    query.userId = userId;
+  }
+
+  // Filter by action (include or exclude)
+  if (action) {
+    query.action = action;
+  } else if (excludeAction) {
+    query.action = { $ne: excludeAction };
+  }
+
+  // Filter by resource
+  if (resource) {
+    query.resource = resource;
+  }
+
+  // Filter by status
+  if (status) {
+    query.status = status; // Direct string match: 'SUCCESS', 'ERROR', 'DENIED'
+  }
+
+  // General search: matches endpoint, email, IP, resourceId AND resolves user names
+  if (search && search.trim()) {
+    const trimmed = search.trim();
+    const searchRegex = escapeRegex(trimmed);
+
+    // Look up matching users by firstName, lastName or email so "nicole" or "Kreienborg" matches their actions
+    const nameParts = trimmed.split(/\s+/).filter(Boolean);
+    let userQuery = [];
+    if (nameParts.length > 1) {
+      userQuery = [
+        {
+          $and: [
+            { firstName: { $regex: escapeRegex(nameParts[0]), $options: 'i' } },
+            { lastName: { $regex: escapeRegex(nameParts.slice(1).join(' ')), $options: 'i' } }
+          ]
+        }
+      ];
+    } else {
+      userQuery = [
+        { firstName: { $regex: searchRegex, $options: 'i' } },
+        { lastName: { $regex: searchRegex, $options: 'i' } },
+        { email: { $regex: searchRegex, $options: 'i' } }
+      ];
+    }
+
+    let matchedUserIds = [];
+    try {
+      const matchingUsers = await User.find({ $or: userQuery }).select('_id').lean();
+      matchedUserIds = matchingUsers.map(u => u._id);
+    } catch (err) {
+      logger.warn('Failed to resolve users for audit log search:', err);
+    }
+
+    const orConditions = [
+      { endpoint: { $regex: searchRegex, $options: 'i' } },
+      { userEmail: { $regex: searchRegex, $options: 'i' } },
+      { ipAddress: { $regex: searchRegex, $options: 'i' } },
+      { resourceId: { $regex: searchRegex, $options: 'i' } }
+    ];
+
+    if (matchedUserIds.length > 0) {
+      orConditions.push({ userId: { $in: matchedUserIds } });
+    }
+
+    query.$or = orConditions;
+  }
+
+  return query;
+}
+
+/**
  * GET /api/audit-logs - List audit logs with filters and pagination
  * Query params: startDate, endDate, userId, action, resource, status, search, page, limit
  */
@@ -76,68 +179,10 @@ router.get('/', listLimiter, async (req, res) => {
       });
     }
 
-    const {
-      startDate,
-      endDate,
-      userId,
-      action,
-      excludeAction,
-      resource,
-      status,
-      search,
-      page = 1,
-      limit = 50
-    } = value;
+    const { page = 1, limit = 50, ...filterParams } = value;
 
-    // Build query
-    const query = {};
-
-    // Date range filter
-    if (startDate || endDate) {
-      query.timestamp = {};
-      if (startDate) {
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0); // Start of day
-        query.timestamp.$gte = start;
-      }
-      if (endDate) {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999); // End of day
-        query.timestamp.$lte = end;
-      }
-    }
-
-    // Filter by user
-    if (userId) {
-      query.userId = userId;
-    }
-
-    // Filter by action (include or exclude)
-    if (action) {
-      query.action = action;
-    } else if (excludeAction) {
-      query.action = { $ne: excludeAction };
-    }
-
-    // Filter by resource
-    if (resource) {
-      query.resource = resource;
-    }
-
-    // Filter by status
-    if (status) {
-      query.status = status; // Direct string match: 'SUCCESS', 'ERROR', 'DENIED'
-    }
-
-    // General search (endpoint, email, resource ID, IP)
-    if (search) {
-      query.$or = [
-        { endpoint: { $regex: escapeRegex(search), $options: 'i' } },
-        { userEmail: { $regex: escapeRegex(search), $options: 'i' } },
-        { ipAddress: { $regex: escapeRegex(search), $options: 'i' } },
-        { resourceId: { $regex: escapeRegex(search), $options: 'i' } }
-      ];
-    }
+    // Build query using shared builder
+    const query = await buildAuditLogQuery(filterParams);
 
     // Pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -223,39 +268,16 @@ router.post('/export', exportLimiter, async (req, res) => {
       search
     } = req.body;
 
-    // Build same query as GET endpoint
-    const query = {};
-
-    if (startDate || endDate) {
-      query.timestamp = {};
-      if (startDate) {
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0);
-        query.timestamp.$gte = start;
-      }
-      if (endDate) {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        query.timestamp.$lte = end;
-      }
-    }
-
-    if (userId) query.userId = userId;
-    if (action) query.action = action;
-    if (resource) query.resource = resource;
-
-    if (status) {
-      query.status = status; // Direct string match: 'SUCCESS', 'ERROR', 'DENIED'
-    }
-
-    if (search) {
-      query.$or = [
-        { endpoint: { $regex: escapeRegex(search), $options: 'i' } },
-        { userEmail: { $regex: escapeRegex(search), $options: 'i' } },
-        { ipAddress: { $regex: escapeRegex(search), $options: 'i' } },
-        { resourceId: { $regex: escapeRegex(search), $options: 'i' } }
-      ];
-    }
+    // Build query using shared builder
+    const query = await buildAuditLogQuery({
+      startDate,
+      endDate,
+      userId,
+      action,
+      resource,
+      status,
+      search
+    });
 
     // Set response headers for streaming
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');

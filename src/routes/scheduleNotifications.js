@@ -1,6 +1,7 @@
 import express from 'express';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireAdminOrSupermod } from '../middleware/requireRole.js';
+import auditLogMiddleware from '../middleware/auditLog.js';
 import Student from '../models/Student.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Settings from '../models/Settings.js';
@@ -110,7 +111,7 @@ router.get('/status', async (req, res) => {
 // Send schedule notifications to all students with assignments + portal accounts
 // Body: { force: boolean }
 // =============================================
-router.post('/notify-all', async (req, res) => {
+router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'ScheduleNotification', metadata: { operation: 'NOTIFY_ALL' } }), async (req, res) => {
   try {
     const force = req.body?.force === true;
     const periodId = req.body?.periodId;
@@ -222,7 +223,7 @@ router.post('/notify-all', async (req, res) => {
 // POST /api/schedule-notifications/notify-student/:studentId
 // Send schedule notification to a single student
 // =============================================
-router.post('/notify-student/:studentId', async (req, res) => {
+router.post('/notify-student/:studentId', auditLogMiddleware({ action: 'CREATE', resource: 'ScheduleNotification', metadata: { operation: 'NOTIFY_STUDENT' } }), async (req, res) => {
   try {
     const { studentId } = req.params;
 
