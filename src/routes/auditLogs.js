@@ -3,6 +3,10 @@ import Joi from 'joi';
 import rateLimit from 'express-rate-limit';
 import AuditLog from '../models/AuditLog.js';
 import User from '../models/User.js';
+import Coach from '../models/Coach.js';
+import Student from '../models/Student.js';
+import Camp from '../models/Camp.js';
+import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import logger from '../utils/logger.js';
@@ -165,6 +169,186 @@ async function buildAuditLogQuery({
 }
 
 /**
+ * Helper to generate a human-readable activity summary in plain German
+ */
+function generateHumanSummary(log, resourceName) {
+  const { action, resource, endpoint, status, metadata } = log;
+  const target = resourceName ? `"${resourceName}"` : (resource ? `${resource}` : 'Datensatz');
+
+  if (status === 'DENIED') {
+    return `Zugriff auf ${target} verweigert`;
+  }
+  if (status === 'ERROR') {
+    return `Fehler bei Aktion an ${target}`;
+  }
+
+  // Authentication
+  if (action === 'LOGIN') return 'Erfolgreich im Admin-Portal angemeldet';
+  if (action === 'LOGOUT') return 'Aus dem Admin-Portal abgemeldet';
+  if (action === 'LOGIN_FAILED') return 'Fehlgeschlagener Anmeldeversuch';
+  if (action === 'PASSWORD_RESET') return `Passwort zurückgesetzt (${target})`;
+  if (action === 'EMAIL_VERIFY') return `E-Mail-Verifizierung durchgeführt (${target})`;
+
+  // BroadcastEmail / Rundmail
+  if (resource === 'BroadcastEmail') {
+    if (endpoint?.includes('cancel')) return 'Rundmail-Versand abgebrochen';
+    if (endpoint?.includes('draft')) return 'Rundmail-Entwurf gespeichert';
+    if (endpoint?.includes('template')) return `Rundmail-Vorlage bearbeitet: ${target}`;
+    const subject = metadata?.subject || resourceName || 'Rundmail';
+    return `Rundmail versendet: "${subject}"`;
+  }
+
+  // ScheduleNotification
+  if (resource === 'ScheduleNotification') {
+    if (metadata?.scope === 'all') return 'Trainingsplan-Benachrichtigungen an alle Schüler versendet';
+    return `Trainingsplan-Benachrichtigung an Schüler versendet (${target})`;
+  }
+
+  // Coach
+  if (resource === 'Coach') {
+    if (action === 'CREATE') return `Neuen Trainer angelegt: ${target}`;
+    if (action === 'DELETE') return `Trainer gelöscht: ${target}`;
+    if (endpoint?.includes('availableTimes') || log.changes?.availableTimes || log.requestBody?.availableTimes) {
+      return `Verfügbarkeitszeiten von Trainerin/Trainer ${target} aktualisiert`;
+    }
+    return `Trainerprofil von ${target} bearbeitet`;
+  }
+
+  // Student
+  if (resource === 'Student') {
+    if (action === 'CREATE') return `Neuen Schüler angelegt: ${target}`;
+    if (action === 'DELETE') return `Schüler gelöscht: ${target}`;
+    if (endpoint?.includes('assignments') || log.changes?.assignments || log.requestBody?.assignments) {
+      return `Gruppeneinteilung von Schüler ${target} geändert`;
+    }
+    return `Schülerdaten von ${target} bearbeitet`;
+  }
+
+  // Schedule
+  if (resource === 'Schedule') {
+    if (action === 'ALGORITHM_RUN' || endpoint?.includes('reset') || endpoint?.includes('generate')) {
+      return `Trainingsplan automatisch generiert (${target})`;
+    }
+    return `Trainingsplan gespeichert (${target})`;
+  }
+
+  // RegistrationPeriod
+  if (resource === 'RegistrationPeriod') {
+    if (action === 'CREATE') return `Neue Trainingssaison angelegt: ${target}`;
+    if (action === 'DELETE') return `Saison gelöscht: ${target}`;
+    return `Saison/Anmeldezeitraum gespeichert: ${target}`;
+  }
+
+  // Camp
+  if (resource === 'Camp') {
+    if (action === 'CREATE') return `Neues Camp/Event angelegt: ${target}`;
+    if (action === 'DELETE') return `Camp/Event gelöscht: ${target}`;
+    return `Camp/Event gespeichert: ${target}`;
+  }
+
+  // User
+  if (resource === 'User') {
+    if (action === 'CREATE') return `Neuen Benutzer angelegt: ${target}`;
+    if (action === 'DELETE') return `Benutzer gelöscht: ${target}`;
+    return `Benutzerkonto bearbeitet: ${target}`;
+  }
+
+  // Export / Import
+  if (action === 'EXPORT') return `Datenexport (${target}) heruntergeladen`;
+  if (action === 'IMPORT') return `Datenimport (${target}) durchgeführt`;
+
+  // General action fallbacks
+  if (action === 'CREATE') return `Neuen Datensatz (${target}) erstellt`;
+  if (action === 'UPDATE') return `${target} bearbeitet/gespeichert`;
+  if (action === 'DELETE') return `${target} gelöscht`;
+
+  return `${action} auf ${target}`;
+}
+
+/**
+ * Dynamically enriches audit logs with human-readable entity names and activity summaries
+ */
+async function enrichAuditLogs(logs) {
+  if (!Array.isArray(logs) || logs.length === 0) return [];
+
+  // Group resource IDs by type for fast batch lookups
+  const coachIds = new Set();
+  const studentIds = new Set();
+  const campIds = new Set();
+  const periodIds = new Set();
+  const userIds = new Set();
+
+  for (const log of logs) {
+    if (!log.resourceId || log.resourceName) continue;
+    const id = String(log.resourceId);
+    if (!/^[a-f\d]{24}$/i.test(id)) continue;
+
+    if (log.resource === 'Coach') coachIds.add(id);
+    else if (log.resource === 'Student') studentIds.add(id);
+    else if (log.resource === 'Camp') campIds.add(id);
+    else if (log.resource === 'RegistrationPeriod' || log.resource === 'Schedule') periodIds.add(id);
+    else if (log.resource === 'User') userIds.add(id);
+  }
+
+  let coaches = [];
+  let students = [];
+  let camps = [];
+  let periods = [];
+  let users = [];
+
+  try {
+    [coaches, students, camps, periods, users] = await Promise.all([
+      coachIds.size > 0 ? Coach.find({ _id: { $in: Array.from(coachIds) } }).select('firstName lastName').lean() : [],
+      studentIds.size > 0 ? Student.find({ _id: { $in: Array.from(studentIds) } }).select('firstName lastName').lean() : [],
+      campIds.size > 0 ? Camp.find({ _id: { $in: Array.from(campIds) } }).select('name').lean() : [],
+      periodIds.size > 0 ? RegistrationPeriod.find({ _id: { $in: Array.from(periodIds) } }).select('name').lean() : [],
+      userIds.size > 0 ? User.find({ _id: { $in: Array.from(userIds) } }).select('firstName lastName email').lean() : []
+    ]);
+  } catch (err) {
+    logger.warn('Failed to batch-resolve audit log entities:', err);
+  }
+
+  const coachMap = new Map(coaches.map(c => [String(c._id), `${c.firstName || ''} ${c.lastName || ''}`.trim()]));
+  const studentMap = new Map(students.map(s => [String(s._id), `${s.firstName || ''} ${s.lastName || ''}`.trim()]));
+  const campMap = new Map(camps.map(c => [String(c._id), c.name]));
+  const periodMap = new Map(periods.map(p => [String(p._id), p.name]));
+  const userMap = new Map(users.map(u => [String(u._id), `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.email]));
+
+  return logs.map(log => {
+    let resolvedName = log.resourceName || null;
+    const id = String(log.resourceId || '');
+
+    if (!resolvedName && id) {
+      if (log.resource === 'Coach') resolvedName = coachMap.get(id);
+      else if (log.resource === 'Student') resolvedName = studentMap.get(id);
+      else if (log.resource === 'Camp') resolvedName = campMap.get(id);
+      else if (log.resource === 'RegistrationPeriod') resolvedName = periodMap.get(id);
+      else if (log.resource === 'Schedule') resolvedName = periodMap.get(id) ? `Saison ${periodMap.get(id)}` : 'Trainingsplan';
+      else if (log.resource === 'User') resolvedName = userMap.get(id);
+    }
+
+    // Metadata fallbacks
+    if (!resolvedName) {
+      if (log.metadata?.subject) resolvedName = log.metadata.subject;
+      else if (log.metadata?.name) resolvedName = log.metadata.name;
+    }
+
+    const summary = log.description || generateHumanSummary(log, resolvedName);
+
+    return {
+      ...log,
+      userEmail: log.userEmail || log.userId?.email || 'System',
+      userName: log.userId ? `${log.userId.firstName || ''} ${log.userId.lastName || ''}`.trim() : (log.userName || 'System'),
+      resourceName: resolvedName,
+      description: summary,
+      humanSummary: summary,
+      endpoint: log.endpoint || 'N/A',
+      resourceId: log.resourceId || 'N/A'
+    };
+  });
+}
+
+/**
  * GET /api/audit-logs - List audit logs with filters and pagination
  * Query params: startDate, endDate, userId, action, resource, status, search, page, limit
  */
@@ -198,18 +382,11 @@ router.get('/', listLimiter, async (req, res) => {
       AuditLog.countDocuments(query)
     ]);
 
-    // Format logs for frontend
-    const formattedLogs = logs.map(log => ({
-      ...log,
-      userEmail: log.userEmail || log.userId?.email || 'System',
-      userName: log.userId ? `${log.userId.firstName} ${log.userId.lastName}` : 'System',
-      // status already exists in log, no need to transform
-      endpoint: log.endpoint || 'N/A',
-      resourceId: log.resourceId || 'N/A'
-    }));
+    // Enrich logs with resolved human names and activity summaries
+    const enrichedLogs = await enrichAuditLogs(logs);
 
     res.json({
-      logs: formattedLogs,
+      logs: enrichedLogs,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -236,17 +413,8 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Audit log not found' });
     }
 
-    // Format for frontend
-    const formattedLog = {
-      ...log,
-      userEmail: log.userId?.email || 'System',
-      userName: log.userId ? `${log.userId.firstName} ${log.userId.lastName}` : 'System',
-      // status already exists in log, no need to transform
-      endpoint: log.endpoint || 'N/A',
-      resourceId: log.resourceId || 'N/A'
-    };
-
-    res.json(formattedLog);
+    const [enrichedLog] = await enrichAuditLogs([log]);
+    res.json(enrichedLog);
   } catch (error) {
     logger.error('Failed to fetch audit log:', error);
     res.status(500).json({ error: error.message });
@@ -292,7 +460,9 @@ router.post('/export', exportLimiter, async (req, res) => {
       'Benutzer',
       'Rolle',
       'Aktion',
+      'Beschreibung',
       'Ressource',
+      'Ressourcen-Name',
       'Ressourcen-ID',
       'Status',
       'IP-Adresse',
@@ -319,8 +489,10 @@ router.post('/export', exportLimiter, async (req, res) => {
         break;
       }
 
+      const enrichedBatch = await enrichAuditLogs(batch);
+
       // Write batch to response
-      for (const log of batch) {
+      for (const log of enrichedBatch) {
         const userEmail = log.userId?.email || 'System';
         const userRole = log.userRole || (log.userId?.role || 'system');
         const status = log.status || 'UNKNOWN';
@@ -332,7 +504,9 @@ router.post('/export', exportLimiter, async (req, res) => {
           userEmail,
           userRole,
           log.action,
+          log.description || log.humanSummary || '',
           log.resource || '',
+          log.resourceName || '',
           log.resourceId || '',
           status,
           log.ipAddress,

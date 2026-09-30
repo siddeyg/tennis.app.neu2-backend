@@ -58,6 +58,8 @@ export async function createAuditLog({
   action,
   resource,
   resourceId,
+  resourceName,
+  description,
   method,
   endpoint,
   requestBody,
@@ -76,6 +78,8 @@ export async function createAuditLog({
       action,
       resource,
       resourceId,
+      resourceName,
+      description,
       method,
       endpoint,
       requestBody: sanitizeBody(requestBody),
@@ -132,6 +136,25 @@ export function auditLogMiddleware(options = {}) {
       // Determine resource ID from URL params
       const resourceId = req.params.id || req.params.studentId || req.params.coachId;
 
+      // Extract or infer human-readable resourceName
+      let resourceName = options.resourceName || req.auditResourceName || null;
+      if (!resourceName) {
+        const source = (responseData && typeof responseData === 'object' && !Array.isArray(responseData))
+          ? responseData
+          : (req.body && typeof req.body === 'object' && !Array.isArray(req.body) ? req.body : null);
+        if (source) {
+          if (source.firstName && source.lastName) {
+            resourceName = `${source.firstName} ${source.lastName}`.trim();
+          } else if (source.name) {
+            resourceName = source.name;
+          } else if (source.subject) {
+            resourceName = source.subject;
+          } else if (source.title) {
+            resourceName = source.title;
+          }
+        }
+      }
+
       // Merge options.metadata with req.auditMetadata if present
       const combinedMetadata = req.auditMetadata
         ? { ...options.metadata, ...req.auditMetadata }
@@ -145,6 +168,8 @@ export function auditLogMiddleware(options = {}) {
         action: action || req.method,
         resource: resource || extractResourceFromPath(req.path),
         resourceId,
+        resourceName,
+        description: options.description || req.auditDescription || null,
         method: req.method,
         endpoint: req.originalUrl,
         requestBody: req.body,

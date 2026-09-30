@@ -33,6 +33,8 @@ const auditLogSchema = new mongoose.Schema({
     index: true
   },
   resourceId: String,  // ID of affected record
+  resourceName: String,  // Human-readable name (e.g. 'Nicole Kreienborg', 'Sommercamp 1')
+  description: String,  // Human-readable activity summary in plain German
 
   // Request details
   method: String,  // 'POST', 'PUT', 'DELETE'

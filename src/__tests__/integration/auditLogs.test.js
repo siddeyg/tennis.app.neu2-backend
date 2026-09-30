@@ -3,6 +3,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import AuditLog from '../../models/AuditLog.js';
 import User from '../../models/User.js';
+import Coach from '../../models/Coach.js';
+import Student from '../../models/Student.js';
 import auditLogsRouter from '../../routes/auditLogs.js';
 import { createAuditLog } from '../../middleware/auditLog.js';
 import { connectTestDB, disconnectTestDB, clearTestDB, mockAuth } from '../../testHelpers.js';
@@ -212,6 +214,70 @@ describe('Audit Log Enhancements Integration Tests', () => {
       expect(res.headers['content-type']).toContain('text/csv');
       expect(res.text).toContain('EXPORT');
       expect(res.text).toContain('AuditLog');
+    });
+  });
+
+  describe('Human-Readable Activity Summaries & Entity Name Resolution', () => {
+    test('should resolve Coach name and generate human-readable summary for availableTimes update', async () => {
+      const coach = await Coach.create({
+        firstName: 'Nicole',
+        lastName: 'Kreienborg',
+        color: '#ff0000',
+        availableTimes: []
+      });
+
+      await AuditLog.create({
+        action: 'UPDATE',
+        resource: 'Coach',
+        resourceId: String(coach._id),
+        method: 'PUT',
+        endpoint: `/api/coaches/${coach._id}`,
+        requestBody: { availableTimes: [{ day: 'Montag', hour: 14 }] },
+        userId: nicoleUser._id,
+        userEmail: nicoleUser.email,
+        userRole: 'admin',
+        status: 'SUCCESS',
+        timestamp: new Date()
+      });
+
+      const res = await request(app).get('/api/audit-logs');
+
+      expect(res.status).toBe(200);
+      const coachLog = res.body.logs.find(l => String(l.resourceId) === String(coach._id));
+      expect(coachLog).toBeDefined();
+      expect(coachLog.resourceName).toBe('Nicole Kreienborg');
+      expect(coachLog.description).toContain('Verfügbarkeitszeiten von Trainerin/Trainer "Nicole Kreienborg" aktualisiert');
+    });
+
+    test('should resolve Student name and generate human-readable summary for student update', async () => {
+      const student = await Student.create({
+        firstName: 'Felix',
+        lastName: 'Müller',
+        email: 'felix@test.com',
+        periodId: new mongoose.Types.ObjectId()
+      });
+
+      await AuditLog.create({
+        action: 'UPDATE',
+        resource: 'Student',
+        resourceId: String(student._id),
+        method: 'PUT',
+        endpoint: `/api/students/${student._id}`,
+        requestBody: { phone: '0123456789' },
+        userId: nicoleUser._id,
+        userEmail: nicoleUser.email,
+        userRole: 'admin',
+        status: 'SUCCESS',
+        timestamp: new Date()
+      });
+
+      const res = await request(app).get('/api/audit-logs');
+
+      expect(res.status).toBe(200);
+      const studentLog = res.body.logs.find(l => String(l.resourceId) === String(student._id));
+      expect(studentLog).toBeDefined();
+      expect(studentLog.resourceName).toBe('Felix Müller');
+      expect(studentLog.description).toContain('Schülerdaten von "Felix Müller" bearbeitet');
     });
   });
 });
