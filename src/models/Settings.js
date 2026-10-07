@@ -52,7 +52,7 @@ const settingsSchema = new mongoose.Schema({
     coaches: {
       startHour: {
         type: Number,
-        default: 10,
+        default: 9,
         min: 6,
         max: 23
       },
