@@ -300,7 +300,7 @@ async function enrichAuditLogs(logs) {
     [coaches, students, camps, periods, users] = await Promise.all([
       coachIds.size > 0 ? Coach.find({ _id: { $in: Array.from(coachIds) } }).select('firstName lastName').lean() : [],
       studentIds.size > 0 ? Student.find({ _id: { $in: Array.from(studentIds) } }).select('firstName lastName').lean() : [],
-      campIds.size > 0 ? Camp.find({ _id: { $in: Array.from(campIds) } }).select('name').lean() : [],
+      campIds.size > 0 ? Camp.find({ _id: { $in: Array.from(campIds) } }).select('title name').lean() : [],
       periodIds.size > 0 ? RegistrationPeriod.find({ _id: { $in: Array.from(periodIds) } }).select('name').lean() : [],
       userIds.size > 0 ? User.find({ _id: { $in: Array.from(userIds) } }).select('firstName lastName email').lean() : []
     ]);
@@ -310,7 +310,7 @@ async function enrichAuditLogs(logs) {
 
   const coachMap = new Map(coaches.map(c => [String(c._id), `${c.firstName || ''} ${c.lastName || ''}`.trim()]));
   const studentMap = new Map(students.map(s => [String(s._id), `${s.firstName || ''} ${s.lastName || ''}`.trim()]));
-  const campMap = new Map(camps.map(c => [String(c._id), c.name]));
+  const campMap = new Map(camps.map(c => [String(c._id), c.title || c.name]));
   const periodMap = new Map(periods.map(p => [String(p._id), p.name]));
   const userMap = new Map(users.map(u => [String(u._id), `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.email]));
 

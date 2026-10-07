@@ -164,7 +164,30 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'SavedSchedule
 
     // Fetch current state from database (strictly scoped to periodId)
     const students = await Student.find({ periodId });
-    const coaches = await Coach.find();
+    const periodDoc = await RegistrationPeriod.findById(periodId).lean();
+    let coaches;
+    if (periodDoc?.hasConfiguredCoaches && Array.isArray(periodDoc?.activeCoaches)) {
+      const activeMap = new Map();
+      periodDoc.activeCoaches.forEach(ac => {
+        if (ac.coachId) activeMap.set(String(ac.coachId), ac);
+      });
+      const coachIds = Array.from(activeMap.keys());
+      const baseCoaches = await Coach.find({ _id: { $in: coachIds } }).lean();
+      coaches = baseCoaches.map(c => {
+        const override = activeMap.get(String(c._id));
+        return {
+          ...c,
+          availableTimes: Array.isArray(override?.availableTimes)
+            ? override.availableTimes
+            : [],
+          isCoachingAdult: override?.isCoachingAdult !== undefined ? override.isCoachingAdult : c.isCoachingAdult,
+          isCoachingChildren: override?.isCoachingChildren !== undefined ? override.isCoachingChildren : c.isCoachingChildren,
+          isActiveInPeriod: true,
+        };
+      });
+    } else {
+      coaches = await Coach.find().lean();
+    }
     const schedule = await Schedule.find({ periodId });
 
     // Calculate unassigned students (assignments is source of truth)
@@ -436,6 +459,20 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
         await newCoach.save();
         coachIdMap.set(String(oldId), String(newCoach._id));
       }
+    }
+
+    // Sync restored coaches into target period's activeCoaches
+    if (targetPeriodId && savedSchedule.coaches && savedSchedule.coaches.length > 0) {
+      const activeCoachesList = savedSchedule.coaches.map(c => ({
+        coachId: coachIdMap.get(String(c._id)) || c._id,
+        availableTimes: c.availableTimes || [],
+        isCoachingAdult: c.isCoachingAdult,
+        isCoachingChildren: c.isCoachingChildren
+      }));
+      await RegistrationPeriod.findByIdAndUpdate(targetPeriodId, {
+        activeCoaches: activeCoachesList,
+        hasConfiguredCoaches: true
+      });
     }
 
     // Insert students with updated coach references

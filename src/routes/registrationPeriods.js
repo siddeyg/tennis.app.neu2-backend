@@ -1531,5 +1531,170 @@ router.post('/:id/test-registration', requireAuth, requireAdminOrSupermod, async
     });
   }
 });
+/**
+ * GET /api/registration-periods/:id/coaches
+ * Returns all club coaches annotated with their active status and period-specific availability for this period.
+ */
+router.get('/:id/coaches', async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id).lean();
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    const allCoaches = await Coach.find().lean();
+    const activeMap = new Map();
+    if (period.hasConfiguredCoaches && Array.isArray(period.activeCoaches)) {
+      period.activeCoaches.forEach(ac => {
+        if (ac.coachId) activeMap.set(String(ac.coachId), ac);
+      });
+    }
+
+    const result = allCoaches.map(coach => {
+      const activeEntry = activeMap.get(String(coach._id));
+      const isConfigured = period.hasConfiguredCoaches;
+      const isActive = isConfigured ? !!activeEntry : true; // Fallback: all active if period not configured yet
+
+      return {
+        _id: coach._id,
+        firstName: coach.firstName,
+        lastName: coach.lastName,
+        email: coach.email,
+        phone: coach.phone,
+        isActiveInPeriod: isActive,
+        availableTimes: isConfigured
+          ? (Array.isArray(activeEntry?.availableTimes) ? activeEntry.availableTimes : [])
+          : (coach.availableTimes || []),
+        isCoachingAdult: activeEntry?.isCoachingAdult !== undefined ? activeEntry.isCoachingAdult : coach.isCoachingAdult,
+        isCoachingChildren: activeEntry?.isCoachingChildren !== undefined ? activeEntry.isCoachingChildren : coach.isCoachingChildren,
+      };
+    });
+
+    res.json({
+      success: true,
+      hasConfiguredCoaches: !!period.hasConfiguredCoaches,
+      coaches: result
+    });
+  } catch (error) {
+    logger.error('Error fetching period coaches:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * PUT /api/registration-periods/:id/coaches
+ * Updates active coaches for this period.
+ * Body: { activeCoaches: [{ coachId, availableTimes, isCoachingAdult, isCoachingChildren }] }
+ */
+router.put('/:id/coaches', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod' }), async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    const { activeCoaches } = req.body;
+    if (!Array.isArray(activeCoaches)) {
+      return res.status(400).json({ success: false, error: 'activeCoaches muss ein Array sein' });
+    }
+
+    // Clean & normalize activeCoaches
+    period.activeCoaches = activeCoaches.map(ac => ({
+      coachId: ac.coachId || ac._id,
+      availableTimes: Array.isArray(ac.availableTimes) ? ac.availableTimes : [],
+      isCoachingAdult: ac.isCoachingAdult,
+      isCoachingChildren: ac.isCoachingChildren,
+    }));
+    period.hasConfiguredCoaches = true;
+
+    await period.save();
+
+    logger.info('Updated active coaches for period', {
+      periodId: period._id,
+      coachCount: period.activeCoaches.length,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      hasConfiguredCoaches: true,
+      activeCoaches: period.activeCoaches
+    });
+  } catch (error) {
+    logger.error('Error saving period coaches:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/registration-periods/:id/coaches/:coachId
+ * Removes a coach from this specific period (without touching the coach document or foreign periods).
+ * Query parameter: ?unassignStudents=true (optional, unassigns students in THIS period only)
+ */
+router.delete('/:id/coaches/:coachId', auditLogMiddleware({ action: 'UPDATE', resource: 'RegistrationPeriod' }), async (req, res) => {
+  try {
+    const period = await RegistrationPeriod.findById(req.params.id);
+    if (!period) {
+      return res.status(404).json({ success: false, error: 'Anmeldezeitraum nicht gefunden' });
+    }
+
+    const { coachId } = req.params;
+    const unassign = req.query.unassignStudents === 'true';
+
+    // If period wasn't configured yet, initialize with all coaches except the one being removed
+    if (!period.hasConfiguredCoaches) {
+      const allCoaches = await Coach.find().lean();
+      period.activeCoaches = allCoaches
+        .filter(c => String(c._id) !== String(coachId))
+        .map(c => ({
+          coachId: c._id,
+          availableTimes: c.availableTimes || [],
+          isCoachingAdult: c.isCoachingAdult,
+          isCoachingChildren: c.isCoachingChildren
+        }));
+      period.hasConfiguredCoaches = true;
+    } else {
+      period.activeCoaches = period.activeCoaches.filter(ac => String(ac.coachId) !== String(coachId));
+    }
+
+    await period.save();
+
+    let unassignedCount = 0;
+    if (unassign) {
+      // Find students in THIS period with this coach and clear coach reference
+      const studentsToUpdate = await Student.find({
+        periodId: period._id,
+        'assignments.coach': coachId
+      });
+
+      for (const student of studentsToUpdate) {
+        student.assignments = student.assignments.map(a => {
+          if (String(a.coach) === String(coachId)) {
+            return { ...a.toObject(), coach: null };
+          }
+          return a;
+        });
+        await student.save();
+        unassignedCount++;
+      }
+    }
+
+    logger.info('Removed coach from period', {
+      periodId: period._id,
+      coachId,
+      unassignedStudentsCount: unassignedCount,
+      userId: req.user.id
+    });
+
+    res.json({
+      success: true,
+      message: 'Trainer erfolgreich aus dieser Saison entfernt',
+      unassignedCount
+    });
+  } catch (error) {
+    logger.error('Error removing coach from period:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 export default router;

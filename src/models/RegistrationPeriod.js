@@ -192,6 +192,35 @@ const registrationPeriodSchema = new mongoose.Schema(
       },
     },
 
+    // Active coaches participating in this registration period / season
+    activeCoaches: [
+      {
+        coachId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Coach',
+          required: true,
+        },
+        // Optional period-specific available times (if empty, falls back to coach.availableTimes)
+        availableTimes: [
+          {
+            _id: false,
+            day: String,
+            hour: Number,
+          },
+        ],
+        isCoachingAdult: {
+          type: Boolean,
+        },
+        isCoachingChildren: {
+          type: Boolean,
+        },
+      },
+    ],
+    hasConfiguredCoaches: {
+      type: Boolean,
+      default: false,
+    },
+
     // Metadata
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
