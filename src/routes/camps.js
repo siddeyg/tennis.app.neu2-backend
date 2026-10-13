@@ -84,7 +84,7 @@ const VALID_CAMP_TYPES = ['beginner-course', 'intensive-workshop', 'technique-ca
 const VALID_TARGET_AUDIENCES = ['all', 'adults', 'adults_60plus', 'youth', 'children', 'children_youth', 'children_4_12'];
 const VALID_SKILL_LEVELS = ['beginner', 'intermediate'];
 const VALID_TEAM_ACCESS = ['all', 'team-only', 'hobby-only'];
-const VALID_EVENT_TYPES = ['standard', 'sommerfest', 'meet-and-match', 'fritz-cup', 'tennolino', 'other'];
+const VALID_EVENT_TYPES = ['standard', 'sommerfest', 'meet-and-match', 'fritz-cup', 'tennolino', 'saisonabschluss', 'other'];
 
 // Helper function to identify changed fields
 function getChangedFields(before, after) {
