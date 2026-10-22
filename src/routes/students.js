@@ -195,6 +195,64 @@ router.delete("/all", auditLogMiddleware({ action: 'DELETE', resource: 'Student'
 
 // ===== ASSIGNMENT ROUTES - MUST COME BEFORE GENERIC /:id ROUTES =====
 
+// Batch update assignments for students in a period (Scheduler algorithm atomic save)
+router.post("/assignments/batch", auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'StudentAssignment', metadata: { operation: 'BATCH_ASSIGNMENTS' } }), async (req, res) => {
+  try {
+    const { periodId, updates } = req.body;
+
+    if (!periodId || !mongoose.Types.ObjectId.isValid(periodId)) {
+      return res.status(400).json({ error: "periodId ist zwingend erforderlich und muss eine gültige ObjectId sein" });
+    }
+
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).json({ error: "updates muss ein nicht-leeres Array sein" });
+    }
+
+    const bulkOps = [];
+    for (const item of updates) {
+      if (!item.studentId || !mongoose.Types.ObjectId.isValid(item.studentId)) {
+        continue;
+      }
+      const rawAssignments = Array.isArray(item.assignments) ? item.assignments : [];
+      const sanitizedAssignments = rawAssignments.map(a => ({
+        day: a.day,
+        hour: Number(a.hour),
+        coach: a.coach || null,
+        duration: [60, 90].includes(Number(a.duration)) ? Number(a.duration) : 60,
+        venue: a.venue || '',
+        isPinned: !!a.isPinned
+      }));
+
+      bulkOps.push({
+        updateOne: {
+          filter: { _id: item.studentId, periodId },
+          update: {
+            $set: {
+              assignments: sanitizedAssignments,
+              scheduleVisible: false
+            }
+          }
+        }
+      });
+    }
+
+    if (bulkOps.length === 0) {
+      return res.status(400).json({ error: "Keine gültigen Updates übergeben" });
+    }
+
+    const result = await Student.bulkWrite(bulkOps, { ordered: false });
+
+    res.json({
+      success: true,
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount
+    });
+  } catch (error) {
+    logger.error("Fehler beim Batch-Speichern der Zuweisungen", { error: error.message, stack: error.stack });
+    res.status(500).json({ error: "Fehler beim Batch-Speichern der Zuweisungen" });
+  }
+});
+
 // Add assignment to student (for multiple course assignments)
 router.post("/:id/assignments", auditLogMiddleware({ action: 'CREATE', resource: 'StudentAssignment' }), async (req, res) => {
   try {
