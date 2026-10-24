@@ -3,6 +3,7 @@ import multer from "multer";
 import { parse } from "csv-parse/sync";
 import mongoose from "mongoose";
 import Student from "../models/Student.js";
+import RegistrationPeriod from "../models/RegistrationPeriod.js";
 import logger from "../utils/logger.js";
 import auditLogMiddleware from "../middleware/auditLog.js";
 import { requireAuth } from "../middleware/requireAuth.js";
@@ -147,20 +148,39 @@ router.post("/", auditLogMiddleware({ action: 'CREATE', resource: 'Student' }), 
     // Note: Duplicate email check removed - families can share emails (parent email for multiple children)
     // Duplicate detection is handled on frontend with firstName + lastName + birthDate matching
 
+    // Validate or resolve target periodId
+    let finalPeriodId = req.body.periodId;
+    if (finalPeriodId) {
+      if (!mongoose.Types.ObjectId.isValid(finalPeriodId)) {
+        return res.status(400).json({ error: "Ungültige periodId" });
+      }
+      const periodExists = await RegistrationPeriod.exists({ _id: finalPeriodId });
+      if (!periodExists) {
+        return res.status(400).json({ error: "Angegebene Trainingsperiode existiert nicht" });
+      }
+    } else {
+      const activePeriod = await RegistrationPeriod.findOne({ isActive: true });
+      if (activePeriod) {
+        finalPeriodId = activePeriod._id;
+      } else {
+        return res.status(400).json({ error: "periodId ist erforderlich und es ist keine aktive Saison vorhanden" });
+      }
+    }
+
     // Whitelist allowed fields — never pass req.body directly to the constructor
     // (mass assignment: attacker could set internal fields like assignments, priorityTime, iban)
     const {
       firstName, lastName, birthDate, adress, email, phone,
       member, adult, sex, team, trainigGroup, groupSize,
       skillLevel, availableTimes, comment, comment2, frequence,
-      periodId, studentPortalUserId, familyMemberId,
+      studentPortalUserId, familyMemberId,
     } = req.body;
 
     const student = new Student({
       firstName, lastName, birthDate, adress, email, phone,
       member, adult, sex, team, trainigGroup, groupSize,
       skillLevel, availableTimes, comment, comment2, frequence,
-      periodId: periodId || null,
+      periodId: finalPeriodId,
       studentPortalUserId: studentPortalUserId || null,
       familyMemberId: familyMemberId || null,
     });
@@ -628,8 +648,8 @@ router.post("/import", upload.single('file'), auditLogMiddleware({ action: 'CREA
     }
 
     const targetPeriodId = req.body.periodId || req.query.periodId;
-    if (!targetPeriodId) {
-      return res.status(400).json({ error: "periodId ist zwingend erforderlich für den CSV-Import (Multi-Season Period Isolation)" });
+    if (!targetPeriodId || !mongoose.Types.ObjectId.isValid(targetPeriodId)) {
+      return res.status(400).json({ error: "periodId ist zwingend erforderlich und muss eine gültige ID sein (Multi-Season Period Isolation)" });
     }
 
     // Validate file size (additional check beyond multer limits)

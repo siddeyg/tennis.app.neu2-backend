@@ -67,6 +67,13 @@ const registrationPeriodSchema = new mongoose.Schema(
       default: false,
     },
 
+    // Bulk Schedule Notification Tracking
+    lastBulkScheduleNotification: {
+      sentAt: { type: Date, default: null },
+      sentCount: { type: Number, default: 0 },
+      sentBy: { type: String, default: null },
+    },
+
     // Link to current training plan
     currentPlanId: {
       type: mongoose.Schema.Types.ObjectId,

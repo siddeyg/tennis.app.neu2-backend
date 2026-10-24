@@ -2,6 +2,7 @@ import request from 'supertest';
 import express from 'express';
 import mongoose from 'mongoose';
 import Student from '../../models/Student.js';
+import RegistrationPeriod from '../../models/RegistrationPeriod.js';
 // Import models that students.js route uses via mongoose.model() to ensure they are registered
 import '../../models/SeasonalRegistration.js';
 import '../../models/StudentPortalUser.js';
@@ -15,9 +16,26 @@ app.use(mockAuth()); // Mock authentication
 app.use('/api/students', studentRoutes);
 
 describe('Student API Integration Tests', () => {
+  let defaultPeriod;
+  const mockAdminId = new mongoose.Types.ObjectId();
+
   // Setup: Connect to in-memory DB before all tests
   beforeAll(async () => {
     await connectTestDB();
+  });
+
+  beforeEach(async () => {
+    defaultPeriod = await RegistrationPeriod.create({
+      name: 'Aktive Test-Saison',
+      season: 'winter',
+      trainingStartDate: new Date('2026-10-01'),
+      trainingEndDate: new Date('2027-04-30'),
+      registrationDeadline: new Date('2026-09-15'),
+      isActive: true,
+      status: 'open',
+      currentPlanId: new mongoose.Types.ObjectId(),
+      createdBy: mockAdminId
+    });
   });
 
   // Cleanup: Clear DB between each test
@@ -109,6 +127,56 @@ describe('Student API Integration Tests', () => {
       expect(response.status).toBe(201);
       expect(response.body.availableTimes).toHaveLength(2);
       expect(response.body.availableTimes[0].day).toBe('Montag');
+    });
+
+    test('should automatically assign active periodId when periodId is omitted', async () => {
+      const newStudent = createTestStudent({ firstName: 'AutoPeriod' });
+
+      const response = await request(app)
+        .post('/api/students')
+        .send(newStudent)
+        .expect(201);
+
+      expect(response.body.periodId).toBe(defaultPeriod._id.toString());
+    });
+
+    test('should assign explicit periodId when valid periodId is supplied', async () => {
+      const explicitPeriod = await RegistrationPeriod.create({
+        name: 'Explizite Saison 2027',
+        season: 'summer',
+        trainingStartDate: new Date('2027-05-01'),
+        trainingEndDate: new Date('2027-09-30'),
+        registrationDeadline: new Date('2027-04-15'),
+        isActive: false,
+        status: 'open',
+        currentPlanId: new mongoose.Types.ObjectId(),
+        createdBy: mockAdminId
+      });
+
+      const newStudent = createTestStudent({
+        firstName: 'ExplicitPeriod',
+        periodId: explicitPeriod._id.toString()
+      });
+
+      const response = await request(app)
+        .post('/api/students')
+        .send(newStudent)
+        .expect(201);
+
+      expect(response.body.periodId).toBe(explicitPeriod._id.toString());
+    });
+
+    test('should reject with 400 when invalid or non-existent periodId is passed', async () => {
+      const nonExistentId = new mongoose.Types.ObjectId().toString();
+      await request(app)
+        .post('/api/students')
+        .send(createTestStudent({ firstName: 'InvalidPeriod', periodId: 'not-an-id' }))
+        .expect(400);
+
+      await request(app)
+        .post('/api/students')
+        .send(createTestStudent({ firstName: 'NonExistentPeriod', periodId: nonExistentId }))
+        .expect(400);
     });
   });
 

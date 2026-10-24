@@ -1,10 +1,12 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireAdminOrSupermod } from '../middleware/requireRole.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import Student from '../models/Student.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Settings from '../models/Settings.js';
+import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 
 const router = express.Router();
@@ -88,12 +90,23 @@ async function getSettings() {
 
 // =============================================
 // GET /api/schedule-notifications/status
-// Returns last bulk notification info
+// Returns last bulk notification info (scoped by periodId if provided)
 // =============================================
 router.get('/status', async (req, res) => {
   try {
-    const settings = await getSettings();
-    const lastBulkNotificationSent = settings.lastBulkScheduleNotification || null;
+    const { periodId } = req.query;
+    let lastBulkNotificationSent = null;
+
+    if (periodId && mongoose.Types.ObjectId.isValid(periodId)) {
+      const period = await RegistrationPeriod.findById(periodId).select('lastBulkScheduleNotification');
+      if (period?.lastBulkScheduleNotification?.sentAt) {
+        lastBulkNotificationSent = period.lastBulkScheduleNotification;
+      }
+    } else {
+      const settings = await getSettings();
+      lastBulkNotificationSent = settings.lastBulkScheduleNotification || null;
+    }
+
     const alreadySentToday = isSameDayBerlin(lastBulkNotificationSent?.sentAt);
 
     res.json({
@@ -109,33 +122,42 @@ router.get('/status', async (req, res) => {
 // =============================================
 // POST /api/schedule-notifications/notify-all
 // Send schedule notifications to all students with assignments + portal accounts
-// Body: { force: boolean }
+// Body: { periodId: string, force: boolean }
 // =============================================
 router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'ScheduleNotification', metadata: { operation: 'NOTIFY_ALL' } }), async (req, res) => {
   try {
     const force = req.body?.force === true;
     const periodId = req.body?.periodId;
 
-    const settings = await getSettings();
-    const alreadySentToday = isSameDayBerlin(settings.lastBulkScheduleNotification?.sentAt);
+    if (!periodId || !mongoose.Types.ObjectId.isValid(periodId)) {
+      return res.status(400).json({ error: 'periodId ist zwingend erforderlich' });
+    }
+
+    const period = await RegistrationPeriod.findById(periodId);
+    if (!period) {
+      return res.status(404).json({ error: 'Trainingsperiode nicht gefunden' });
+    }
+
+    const lastBulkNotificationSent = period.lastBulkScheduleNotification?.sentAt
+      ? period.lastBulkScheduleNotification
+      : null;
+    const alreadySentToday = isSameDayBerlin(lastBulkNotificationSent?.sentAt);
 
     // Warn if already sent today and force flag not set
     if (alreadySentToday && !force) {
       return res.json({
         warned: true,
         alreadySentToday: true,
-        lastSentAt: settings.lastBulkScheduleNotification.sentAt,
+        lastSentAt: lastBulkNotificationSent.sentAt,
         sentCount: 0
       });
     }
 
-    // Find all students with at least one assignment (scoped by periodId if provided)
+    // Find all students with at least one assignment (strictly scoped by periodId)
     const studentFilter = {
+      periodId,
       'assignments.0': { $exists: true }
     };
-    if (periodId) {
-      studentFilter.periodId = periodId;
-    }
     const students = await Student.find(studentFilter);
 
     // Build a map of studentId / portalUserId → portalUser for all linked portal accounts
@@ -195,14 +217,28 @@ router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resour
       );
     }
 
-    // Update Settings with bulk notification metadata
+    // Update RegistrationPeriod with bulk notification metadata
+    const notificationMeta = {
+      sentAt: new Date(),
+      sentCount,
+      sentBy: req.user?.username || 'admin'
+    };
+    await RegistrationPeriod.findByIdAndUpdate(periodId, {
+      $set: {
+        'lastBulkScheduleNotification.sentAt': notificationMeta.sentAt,
+        'lastBulkScheduleNotification.sentCount': notificationMeta.sentCount,
+        'lastBulkScheduleNotification.sentBy': notificationMeta.sentBy
+      }
+    });
+
+    // Also update Settings for global audit/backwards compatibility
     await Settings.findOneAndUpdate(
       { singleton: true },
       {
         $set: {
-          'lastBulkScheduleNotification.sentAt': new Date(),
-          'lastBulkScheduleNotification.sentCount': sentCount,
-          'lastBulkScheduleNotification.sentBy': req.user?.username || 'admin'
+          'lastBulkScheduleNotification.sentAt': notificationMeta.sentAt,
+          'lastBulkScheduleNotification.sentCount': notificationMeta.sentCount,
+          'lastBulkScheduleNotification.sentBy': notificationMeta.sentBy
         }
       },
       { upsert: true }
