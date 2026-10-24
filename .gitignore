@@ -54,3 +54,5 @@ check-media.cjs
 list-camps.mjs
 reset-camp*.mjs
 
+__pycache__/
+*.pyc
