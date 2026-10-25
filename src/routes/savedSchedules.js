@@ -380,12 +380,18 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
       }
     }
 
-    // Step 1: Create automatic backup of current state
-    const currentStudents = await Student.find();
+    // Validate targetPeriodId first (safe multi-season isolation)
+    const targetPeriodId = savedSchedule.periodId?._id || savedSchedule.periodId;
+    if (!targetPeriodId) {
+      return res.status(400).json({ error: "Dieser Plan kann nicht geladen werden, da er keiner Trainingsperiode zugewiesen ist (periodId fehlt)." });
+    }
+
+    // Step 1: Create automatic backup of current state (strictly scoped to targetPeriodId)
+    const currentStudents = await Student.find({ periodId: targetPeriodId });
     const currentCoaches = await Coach.find();
-    const currentSchedule = await Schedule.find();
+    const currentSchedule = await Schedule.find({ periodId: targetPeriodId });
     const currentUnassigned = currentStudents.filter(
-      (s) => !s.day || s.hour === null || s.hour === undefined
+      (s) => !s.assignments || s.assignments.length === 0
     );
 
     // Calculate actual course count for backup
@@ -405,6 +411,7 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
     const backup = new SavedSchedule({
       name: backupName,
       description: `Automatisches Backup vor Laden von "${savedSchedule.name}"`,
+      periodId: targetPeriodId,
       createdBy: userId,
       createdByEmail: userEmail,
       students: currentStudents,
@@ -422,10 +429,6 @@ router.post("/:id/load", largeBody, auditLogMiddleware({ action: 'UPDATE', resou
     await backup.save();
 
     // Step 2: Clear database ONLY for this specific period (safe multi-season isolation)
-    const targetPeriodId = savedSchedule.periodId?._id || savedSchedule.periodId;
-    if (!targetPeriodId) {
-      return res.status(400).json({ error: "Dieser Plan kann nicht geladen werden, da er keiner Trainingsperiode zugewiesen ist (periodId fehlt)." });
-    }
     await Student.deleteMany({ periodId: targetPeriodId });
     await Schedule.deleteMany({ periodId: targetPeriodId });
 

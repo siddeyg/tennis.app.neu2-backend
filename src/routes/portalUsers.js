@@ -118,33 +118,32 @@ router.delete('/:id',
       { $set: { isDeleted: true, deletedAt: now, status: 'closed' } }
     );
 
-    // 4. Delete Student records for all family members (children linked via familyMembers[].studentId)
-    let deletedFamilyStudents = 0;
-    if (familyStudentIds.length > 0) {
+    // 4. Delete Student records (handles both Inversion of Control and legacy direct references)
+    let deletedStudentsCount = 0;
+    if (deleteStudent === 'true') {
+      const allDirectStudentIds = [linkedStudentId, ...familyStudentIds].filter(Boolean);
+      const studentDeleteQuery = {
+        $or: [
+          { studentPortalUserId: portalUserId },
+          ...(allDirectStudentIds.length > 0 ? [{ _id: { $in: allDirectStudentIds } }] : [])
+        ]
+      };
+      const result = await Student.deleteMany(studentDeleteQuery);
+      deletedStudentsCount = result.deletedCount;
+    } else if (familyStudentIds.length > 0) {
       const result = await Student.deleteMany({ _id: { $in: familyStudentIds } });
-      deletedFamilyStudents = result.deletedCount;
+      deletedStudentsCount = result.deletedCount;
     }
 
     // 5. Delete portal user
     await StudentPortalUser.findByIdAndDelete(id);
 
-    // 6. Optionally delete the main user's linked Student record
-    if (deleteStudent === 'true' && linkedStudentId) {
-      await Student.findByIdAndDelete(linkedStudentId);
-      return res.json({
-        message: 'Portal-Benutzer und zugehöriger Schüler gelöscht',
-        deletedStudent: true,
-        deletedFamilyStudents,
-        deletedCampRegistrations: deletedCampRegs.deletedCount,
-        deletedSeasonalRegistrations: deletedSeasonalRegs.deletedCount,
-        archivedTickets: archivedTickets.modifiedCount
-      });
-    }
-
     res.json({
-      message: 'Portal-Benutzer gelöscht',
-      deletedStudent: false,
-      deletedFamilyStudents,
+      message: deleteStudent === 'true'
+        ? 'Portal-Benutzer und zugehörige Schüler gelöscht'
+        : 'Portal-Benutzer gelöscht',
+      deletedStudent: deleteStudent === 'true',
+      deletedFamilyStudents: deletedStudentsCount,
       deletedCampRegistrations: deletedCampRegs.deletedCount,
       deletedSeasonalRegistrations: deletedSeasonalRegs.deletedCount,
       archivedTickets: archivedTickets.modifiedCount

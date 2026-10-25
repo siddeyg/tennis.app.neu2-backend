@@ -247,8 +247,15 @@ export async function resolveRecipients({
     const query = {
       status: { $in: ['pending', 'processed'] }
     };
-    if (targetCriteria.periodId) {
-      query.periodId = targetCriteria.periodId;
+    let seasonalPeriodId = targetCriteria.periodId;
+    if (!seasonalPeriodId) {
+      const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean();
+      if (activePeriod) {
+        seasonalPeriodId = activePeriod._id;
+      }
+    }
+    if (seasonalPeriodId) {
+      query.periodId = seasonalPeriodId;
     }
     if (targetCriteria.formType && targetCriteria.formType !== 'all') {
       query.formType = targetCriteria.formType;
@@ -322,8 +329,22 @@ export async function resolveRecipients({
     const query = {
       assignments: { $elemMatch: elemMatch }
     };
-    if (targetCriteria.periodId) {
-      query.periodId = targetCriteria.periodId;
+
+    // Strict period scoping: resolve periodId from criteria or active period
+    let periodId = targetCriteria.periodId;
+    if (!periodId) {
+      const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean();
+      if (activePeriod) {
+        periodId = activePeriod._id;
+      }
+    }
+
+    if (periodId) {
+      query.periodId = periodId;
+    } else {
+      // Prevent cross-season leakage if no period can be resolved
+      logger.warn('[broadcastEmail] day_venue targeting called without periodId and no active period found');
+      return recipients;
     }
 
     const students = await Student.find(query).select('_id firstName lastName email adult assignments').lean();
@@ -496,8 +517,17 @@ router.get('/target-options', async (req, res) => {
       };
     }));
 
-    // 3. Days & Venues from Student assignments
-    const venues = await Student.distinct('assignments.venue');
+    // 3. Days & Venues from Student assignments (scoped to periodId or active period)
+    const venueFilter = {};
+    if (req.query.periodId) {
+      venueFilter.periodId = req.query.periodId;
+    } else {
+      const activePeriod = await RegistrationPeriod.findOne({ isActive: true }).lean();
+      if (activePeriod) {
+        venueFilter.periodId = activePeriod._id;
+      }
+    }
+    const venues = await Student.distinct('assignments.venue', venueFilter);
     const cleanVenues = venues.filter(v => v && typeof v === 'string' && v.trim().length > 0).sort();
 
     const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
@@ -569,6 +599,14 @@ router.get('/search-recipients', async (req, res) => {
       };
     }
 
+    const studentSearchFilter = {
+      email: { $exists: true, $ne: null },
+      ...searchFilter
+    };
+    if (req.query.periodId) {
+      studentSearchFilter.periodId = req.query.periodId;
+    }
+
     const [users, students, coaches] = await Promise.all([
       StudentPortalUser.find({
         isActive: true,
@@ -578,11 +616,8 @@ router.get('/search-recipients', async (req, res) => {
       .limit(15)
       .lean(),
 
-      Student.find({
-        email: { $exists: true, $ne: null },
-        ...searchFilter
-      })
-      .select('_id firstName lastName email adult')
+      Student.find(studentSearchFilter)
+      .select('_id firstName lastName email adult periodId')
       .limit(15)
       .lean(),
 

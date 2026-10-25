@@ -845,14 +845,20 @@ router.get('/verify-email-change', tokenConsumptionLimiter, async (req, res) => 
       }
     );
 
-    // Also update linked Student record if exists
-    if (portalUser.studentId) {
-      try {
-        await Student.updateOne({ _id: portalUser.studentId }, { $set: { email: newEmail } });
-      } catch (studentErr) {
-        logger.error('Failed to update Student email after email change confirmation', { error: studentErr.message });
-        // Non-fatal — portal user email is the source of truth for login
-      }
+    // Also update linked Student records (both Inversion of Control and legacy direct references)
+    try {
+      await Student.updateMany(
+        {
+          $or: [
+            { studentPortalUserId: portalUser._id },
+            ...(portalUser.studentId ? [{ _id: portalUser.studentId }] : [])
+          ]
+        },
+        { $set: { email: newEmail } }
+      );
+    } catch (studentErr) {
+      logger.error('Failed to update Student email after email change confirmation', { error: studentErr.message });
+      // Non-fatal — portal user email is the source of truth for login
     }
 
     logger.info('Email change confirmed', { userId: portalUser._id, oldEmail, newEmail });
