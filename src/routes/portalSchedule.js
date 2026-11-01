@@ -17,6 +17,7 @@ import { getIBANLast3, encryptIBAN, validateIBANFormat } from '../utils/encrypti
 import logger from '../utils/logger.js';
 import auditLogMiddleware from '../middleware/auditLog.js';
 import { getDatesInRangeForDay } from '../utils/nrwHolidays.js';
+import { resolveVenueForAssignment } from '../utils/venueResolver.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,8 +53,12 @@ function buildExclusionMap(computedHolidays = [], trainingExclusions = []) {
 }
 
 // Helper: build schedule array from a Student document (reused for parent + children)
-async function buildScheduleForStudent(student) {
+async function buildScheduleForStudent(student, period = null) {
   let schedule = [];
+  let resolvedPeriod = period;
+  if (!resolvedPeriod && student.periodId) {
+    resolvedPeriod = await RegistrationPeriod.findById(student.periodId).lean();
+  }
 
   if (student.assignments && student.assignments.length > 0) {
     const coachIds = student.assignments
@@ -69,7 +74,7 @@ async function buildScheduleForStudent(student) {
       day: assignment.day,
       hour: assignment.hour,
       duration: assignment.duration || 60,
-      venue: assignment.venue || '',
+      venue: assignment.venue || resolveVenueForAssignment(student, assignment, resolvedPeriod),
       coach: assignment.coach
         ? (coachMap.get(assignment.coach.toString()) || assignment.coach)
         : 'Unbekannt'
@@ -88,7 +93,7 @@ async function buildScheduleForStudent(student) {
       day: student.day,
       hour: student.hour,
       duration: 60,
-      venue: student.venue || '',
+      venue: student.venue || resolveVenueForAssignment(student, { day: student.day, hour: student.hour }, resolvedPeriod),
       coach: coachName
     }];
   }
@@ -214,7 +219,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
     // If globally unpublished, only show schedule for students with scheduleVisible: true
     const perStudentMode = isUnpublished && hasVisibleSchedule;
 
-    const schedule = (student && (!perStudentMode || student.scheduleVisible)) ? await buildScheduleForStudent(student) : [];
+    const schedule = (student && (!perStudentMode || student.scheduleVisible)) ? await buildScheduleForStudent(student, period) : [];
 
     // Compute training session count using pre-computed holidays + custom exclusions from DB
     let trainingCount = null;
@@ -274,7 +279,7 @@ router.get('/schedule', verifyPortalAuth, async (req, res) => {
       // In per-student mode, skip children whose schedule hasn't been individually published
       if (perStudentMode && !childStudent.scheduleVisible) continue;
 
-        const childSchedule = await buildScheduleForStudent(childStudent);
+        const childSchedule = await buildScheduleForStudent(childStudent, period);
 
         // Compute training count for child (same logic as parent)
         let childTrainingCount = null;

@@ -11,6 +11,7 @@ import EmailLog from '../models/EmailLog.js';
 import Coach from '../models/Coach.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 import { sendScheduleNotificationEmail } from '../utils/emailService.js';
+import { resolveVenueForAssignment } from '../utils/venueResolver.js';
 
 const router = express.Router();
 
@@ -50,7 +51,7 @@ function isSameDayBerlin(date) {
 
 /**
  * Build a sorted assignment list string for a student.
- * e.g. "Montag 14:00, Mittwoch 16:00"
+ * e.g. "Montag 14:00 Uhr (BTHV), Mittwoch 16:00 Uhr (Brüser Berg)"
  */
 function buildAssignmentList(assignments) {
   const sorted = [...assignments].sort((a, b) => {
@@ -58,7 +59,13 @@ function buildAssignmentList(assignments) {
     if (dayDiff !== 0) return dayDiff;
     return (Number(a.hour) || 0) - (Number(b.hour) || 0);
   });
-  return sorted.map(a => `${a.day} ${String(a.hour).padStart(2, '0')}:00`).join(', ');
+  return sorted.map(a => {
+    const h = Math.floor(Number(a.hour) || 0);
+    const m = (Number(a.hour) || 0) % 1 !== 0 ? '30' : '00';
+    const timeStr = `${String(h).padStart(2, '0')}:${m}`;
+    const venueStr = a.venue ? ` (${a.venue})` : '';
+    return `${a.day} ${timeStr} Uhr${venueStr}`;
+  }).join(', ');
 }
 
 /**
@@ -168,10 +175,13 @@ async function sendNotificationPipelineForStudent({
 }) {
   const portalUser = await findPortalUserForStudent(student._id, student);
   const recipientEmail = portalUser?.email || student.email;
-  const assignmentList = buildAssignmentList(student.assignments || []);
-  const periodName = period?.name || 'Saisontraining';
+  let activePeriod = period;
+  if (!activePeriod && student.periodId) {
+    activePeriod = await RegistrationPeriod.findById(student.periodId).lean();
+  }
+  const periodName = activePeriod?.name || 'Saisontraining';
 
-  // Enrich assignments with Coach details (firstName, lastName, coachName)
+  // Enrich assignments with Coach and Venue details
   let enrichedAssignments = student.assignments || [];
   try {
     let resolvedMap = coachMap;
@@ -185,25 +195,27 @@ async function sendNotificationPipelineForStudent({
       }
     }
 
-    if (resolvedMap) {
-      enrichedAssignments = enrichedAssignments.map(a => {
-        const coachIdStr = String(a.coach?._id || a.coach || '');
-        const coachObj = (a.coach && typeof a.coach === 'object' && a.coach.firstName)
-          ? a.coach
-          : resolvedMap.get(coachIdStr);
-        const coachName = coachObj
-          ? `${coachObj.firstName} ${coachObj.lastName}`.trim()
-          : (a.coachName || 'Trainerteam');
-        return {
-          ...(typeof a.toObject === 'function' ? a.toObject() : a),
-          coach: coachObj || a.coach,
-          coachName
-        };
-      });
-    }
+    enrichedAssignments = enrichedAssignments.map(a => {
+      const coachIdStr = String(a.coach?._id || a.coach || '');
+      const coachObj = (a.coach && typeof a.coach === 'object' && a.coach.firstName)
+        ? a.coach
+        : (resolvedMap ? resolvedMap.get(coachIdStr) : null);
+      const coachName = coachObj
+        ? `${coachObj.firstName} ${coachObj.lastName}`.trim()
+        : (a.coachName || 'Trainerteam');
+      const venue = resolveVenueForAssignment(student, a, activePeriod);
+      return {
+        ...(typeof a.toObject === 'function' ? a.toObject() : a),
+        coach: coachObj || a.coach,
+        coachName,
+        venue
+      };
+    });
   } catch (coachErr) {
-    console.error(`[schedule-notifications] Failed to enrich coach details for student ${student._id}:`, coachErr.message);
+    console.error(`[schedule-notifications] Failed to enrich coach/venue details for student ${student._id}:`, coachErr.message);
   }
+
+  const assignmentList = buildAssignmentList(enrichedAssignments);
 
   // 1. In-App Notification (Portal Bell)
   if (portalUser) {
@@ -223,8 +235,19 @@ async function sendNotificationPipelineForStudent({
     }
   }
 
-  // 2. Set scheduleVisible = true so student/parent can view plan in portal
-  await Student.findByIdAndUpdate(student._id, { scheduleVisible: true });
+  // 2. Set scheduleVisible = true and persist resolved venue to student record if missing
+  const needsVenueUpdate = (student.assignments || []).some((a, idx) => !a.venue && enrichedAssignments[idx]?.venue);
+  const updateFields = { scheduleVisible: true };
+  if (needsVenueUpdate) {
+    updateFields.assignments = (student.assignments || []).map((a, idx) => {
+      const plain = typeof a.toObject === 'function' ? a.toObject() : { ...a };
+      if (!plain.venue && enrichedAssignments[idx]?.venue) {
+        plain.venue = enrichedAssignments[idx].venue;
+      }
+      return plain;
+    });
+  }
+  await Student.findByIdAndUpdate(student._id, updateFields);
 
   // 3. Email Delivery & Audit Logging
   let emailResult = null;

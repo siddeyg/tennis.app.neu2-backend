@@ -26,6 +26,7 @@
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import logger from './logger.js';
+import { resolveVenueForAssignment } from './venueResolver.js';
 
 /**
  * Escape HTML special characters to prevent injection in email templates
@@ -2597,7 +2598,8 @@ export function renderScheduleNotificationEmail({
     const coachName = typeof a.coach === 'object' && a.coach !== null
       ? `${a.coach.firstName || ''} ${a.coach.lastName || ''}`.trim() || 'Trainerteam'
       : (a.coachName || 'Trainerteam');
-    const venueName = a.venue || '-';
+    const resolvedVenue = a.venue || resolveVenueForAssignment(student, a);
+    const venueName = resolvedVenue || '-';
 
     return `
       <tr>
@@ -2617,7 +2619,8 @@ export function renderScheduleNotificationEmail({
     const coachName = typeof a.coach === 'object' && a.coach !== null
       ? `${a.coach.firstName || ''} ${a.coach.lastName || ''}`.trim() || 'Trainerteam'
       : (a.coachName || 'Trainerteam');
-    return `• ${a.day}, ${startStr} – ${endStr} Uhr${a.venue ? ' | ' + a.venue : ''} | Trainer: ${coachName}`;
+    const resolvedVenue = a.venue || resolveVenueForAssignment(student, a);
+    return `• ${a.day}, ${startStr} – ${endStr} Uhr${resolvedVenue ? ' | ' + resolvedVenue : ''} | Trainer: ${coachName}`;
   }).join('\n');
 
   const html = `
