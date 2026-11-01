@@ -8,6 +8,7 @@ import StudentPortalUser from '../models/StudentPortalUser.js';
 import Settings from '../models/Settings.js';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
 import EmailLog from '../models/EmailLog.js';
+import Coach from '../models/Coach.js';
 import { createNotification } from '../utils/notificationHelpers.js';
 import { sendScheduleNotificationEmail } from '../utils/emailService.js';
 
@@ -162,12 +163,47 @@ async function sendNotificationPipelineForStudent({
   period = null,
   triggerType = 'single',
   sentBy = 'admin',
-  slotMeta = null
+  slotMeta = null,
+  coachMap = null
 }) {
   const portalUser = await findPortalUserForStudent(student._id, student);
   const recipientEmail = portalUser?.email || student.email;
   const assignmentList = buildAssignmentList(student.assignments || []);
   const periodName = period?.name || 'Saisontraining';
+
+  // Enrich assignments with Coach details (firstName, lastName, coachName)
+  let enrichedAssignments = student.assignments || [];
+  try {
+    let resolvedMap = coachMap;
+    if (!resolvedMap) {
+      const coachIds = enrichedAssignments
+        .map(a => a.coach?._id || a.coach)
+        .filter(Boolean);
+      if (coachIds.length > 0) {
+        const coaches = await Coach.find({ _id: { $in: coachIds } }).lean();
+        resolvedMap = new Map(coaches.map(c => [String(c._id), c]));
+      }
+    }
+
+    if (resolvedMap) {
+      enrichedAssignments = enrichedAssignments.map(a => {
+        const coachIdStr = String(a.coach?._id || a.coach || '');
+        const coachObj = (a.coach && typeof a.coach === 'object' && a.coach.firstName)
+          ? a.coach
+          : resolvedMap.get(coachIdStr);
+        const coachName = coachObj
+          ? `${coachObj.firstName} ${coachObj.lastName}`.trim()
+          : (a.coachName || 'Trainerteam');
+        return {
+          ...(typeof a.toObject === 'function' ? a.toObject() : a),
+          coach: coachObj || a.coach,
+          coachName
+        };
+      });
+    }
+  } catch (coachErr) {
+    console.error(`[schedule-notifications] Failed to enrich coach details for student ${student._id}:`, coachErr.message);
+  }
 
   // 1. In-App Notification (Portal Bell)
   if (portalUser) {
@@ -199,7 +235,7 @@ async function sendNotificationPipelineForStudent({
       emailResult = await sendScheduleNotificationEmail({
         student,
         portalUser,
-        assignments: student.assignments || [],
+        assignments: enrichedAssignments,
         periodName
       });
     } catch (err) {
@@ -308,6 +344,10 @@ router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resour
     const students = await Student.find(studentFilter);
     const sentBy = req.user?.username || 'admin';
 
+    // Pre-load all coaches once to avoid querying Coach in a loop
+    const allCoaches = await Coach.find({}).lean();
+    const globalCoachMap = new Map(allCoaches.map(c => [String(c._id), c]));
+
     let sentCount = 0;
     for (const student of students) {
       if (!student.assignments || student.assignments.length === 0) continue;
@@ -315,7 +355,8 @@ router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resour
         student,
         period,
         triggerType: 'bulk',
-        sentBy
+        sentBy,
+        coachMap: globalCoachMap
       });
       sentCount++;
       // Gentle pacing to avoid SMTP socket exhaustion
@@ -402,6 +443,9 @@ router.post('/notify-slot', auditLogMiddleware({ action: 'CREATE', resource: 'Sc
       : (targetStudents[0].periodId ? await RegistrationPeriod.findById(targetStudents[0].periodId) : null);
 
     const sentBy = req.user?.username || 'admin';
+    const allCoaches = await Coach.find({}).lean();
+    const globalCoachMap = new Map(allCoaches.map(c => [String(c._id), c]));
+
     const slotMeta = {
       day: day || targetStudents[0]?.assignments?.[0]?.day,
       hour: hour !== undefined ? hour : targetStudents[0]?.assignments?.[0]?.hour,
@@ -418,7 +462,8 @@ router.post('/notify-slot', auditLogMiddleware({ action: 'CREATE', resource: 'Sc
         period,
         triggerType: 'slot',
         sentBy,
-        slotMeta
+        slotMeta,
+        coachMap: globalCoachMap
       });
       sentCount++;
       notifiedStudents.push({
