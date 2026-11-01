@@ -171,7 +171,7 @@ export async function sendEmail({ to, subject, html, text = null, attachments = 
     if (attachments && attachments.length > 0) {
       logger.info(`   Attachments: ${attachments.length} file(s)`);
     }
-    return { success: true, messageId: `dev-simulated-${Date.now()}` };
+    return { success: true, simulated: true, messageId: `dev-simulated-${Date.now()}` };
   }
 
   // Production mode (or verified dev) - actually send email
@@ -196,12 +196,12 @@ export async function sendEmail({ to, subject, html, text = null, attachments = 
     if (text) {
       logger.info(`   Format: Multipart MIME (HTML + plain text)`);
     }
-    return info;
+    return { ...info, success: true, simulated: false };
   } catch (error) {
     if (isDev) {
       logger.warn(`⚠️ [DEV MODE] SMTP delivery failed (${error.message}). Simulating successful send for local dev.`);
       logger.info(`📧 [DEV MODE] Simulated email to: ${to} (Subject: ${subject})`);
-      return { success: true, messageId: `dev-fallback-${Date.now()}` };
+      return { success: true, simulated: true, messageId: `dev-fallback-${Date.now()}` };
     }
     logger.error(`❌ Error sending email to ${to}:`, error.message);
     throw new Error(`Failed to send email: ${error.message}`);
@@ -2545,5 +2545,161 @@ export async function sendEventCancellationEmail({ email, studentName, eventName
     to: email,
     subject: `Wichtige Information: Absage - ${eventName}`,
     html,
+  });
+}
+
+/**
+ * Send schedule notification email to a student or parent
+ *
+ * @param {Object} params
+ * @param {Object} params.student - Student document
+ * @param {Object} [params.portalUser] - StudentPortalUser document
+ * @param {Array} [params.assignments] - Student assignments
+ * @param {string} [params.periodName] - Registration period name
+ * @param {string} [params.portalUrl] - Student portal base URL
+ */
+export async function sendScheduleNotificationEmail({
+  student,
+  portalUser = null,
+  assignments = [],
+  periodName = 'die kommende Saison',
+  portalUrl = null
+}) {
+  const recipientEmail = portalUser?.email || student.email;
+  if (!recipientEmail) {
+    throw new Error('Keine E-Mail-Adresse für den Empfänger vorhanden');
+  }
+
+  const baseUrl = portalUrl || process.env.STUDENT_PORTAL_URL || 'https://www.mondo-tennis.de';
+  const scheduleUrl = `${baseUrl}/dashboard/schedule`;
+
+  const studentName = `${student.firstName} ${student.lastName}`;
+  const isAdult = student.adult === true;
+  const greeting = isAdult
+    ? `Hallo ${escapeHtml(student.firstName)},`
+    : `Liebe Eltern von ${escapeHtml(student.firstName)}, hallo ${escapeHtml(student.firstName)},`;
+
+  const subject = `Trainingsplan ${periodName}: Trainingszeiten für ${studentName} 🎾`;
+
+  const formatHourString = (hour) => {
+    const h = Math.floor(hour);
+    const m = hour % 1 !== 0 ? '30' : '00';
+    return `${h}:${m}`;
+  };
+
+  const rowsHtml = (assignments || []).map(a => {
+    const startStr = formatHourString(a.hour);
+    const dur = a.duration || 60;
+    const endHour = a.hour + (dur / 60);
+    const endStr = formatHourString(endHour);
+    const timeDisplay = `${startStr} – ${endStr} Uhr (${dur} Min.)`;
+    const coachName = typeof a.coach === 'object' && a.coach !== null
+      ? `${a.coach.firstName || ''} ${a.coach.lastName || ''}`.trim() || 'Trainerteam'
+      : (a.coachName || 'Trainerteam');
+    const venueName = a.venue || 'TC GW Am Kreuzberg';
+
+    return `
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #2d3748;">${escapeHtml(a.day)}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568;">${escapeHtml(timeDisplay)}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568;">${escapeHtml(venueName)}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568;">${escapeHtml(coachName)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const rowsText = (assignments || []).map(a => {
+    const startStr = formatHourString(a.hour);
+    const dur = a.duration || 60;
+    const endHour = a.hour + (dur / 60);
+    const endStr = formatHourString(endHour);
+    const coachName = typeof a.coach === 'object' && a.coach !== null
+      ? `${a.coach.firstName || ''} ${a.coach.lastName || ''}`.trim() || 'Trainerteam'
+      : (a.coachName || 'Trainerteam');
+    return `• ${a.day}, ${startStr} – ${endStr} Uhr | ${a.venue || 'TC GW Am Kreuzberg'} | Trainer: ${coachName}`;
+  }).join('\n');
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${escapeHtml(subject)}</title>
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #2d3748; max-width: 650px; margin: 0 auto; padding: 20px; background-color: #f7fafc;">
+      <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
+        <p style="color: #bfdbfe; margin: 5px 0 0 0; font-size: 14px;">TC GW Am Kreuzberg</p>
+      </div>
+
+      <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px;">
+        <h2 style="color: #1a202c; margin-top: 0;">${greeting}</h2>
+
+        <p>Der Trainingsplan für <strong>${escapeHtml(periodName)}</strong> steht fest!</p>
+        <p>Wir freuen uns, Dir die Einteilung für <strong>${escapeHtml(studentName)}</strong> mitzuteilen:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 25px 0; background: #f8fafc; border-radius: 6px; overflow: hidden; border: 1px solid #e2e8f0;">
+          <thead>
+            <tr style="background: #edf2f7; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #4a5568;">
+              <th style="padding: 12px; border-bottom: 2px solid #cbd5e0;">Tag</th>
+              <th style="padding: 12px; border-bottom: 2px solid #cbd5e0;">Uhrzeit</th>
+              <th style="padding: 12px; border-bottom: 2px solid #cbd5e0;">Halle / Standort</th>
+              <th style="padding: 12px; border-bottom: 2px solid #cbd5e0;">Trainer</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+
+        <div style="text-align: center; margin: 35px 0;">
+          <a href="${scheduleUrl}" style="background: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);">
+            📅 Zum persönlichen Trainingsplan
+          </a>
+        </div>
+
+        <div style="background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; margin: 25px 0; border-radius: 0 6px 6px 0; font-size: 14px; color: #2b6cb0;">
+          <strong>ℹ️ Wichtige Hinweise:</strong>
+          <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+            <li>Im Schüler-Portal kannst Du Deinen Stundenplan jederzeit einsehen und direkt als Kalenderdatei (<code>.ics</code>) für Dein Smartphone herunterladen.</li>
+            <li><strong>Hallenschuhe:</strong> Bitte beachte, dass in Hallen mit Teppichboden saubere Hallenschuhe mit völlig glatter Profilsohle vorgeschrieben sind.</li>
+          </ul>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+        <p style="color: #718096; font-size: 13px; margin-bottom: 0;">
+          Sportliche Grüße,<br>
+          <strong>Dein Team der Mondo Tennisschule</strong><br>
+          TC GW Am Kreuzberg
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `Hallo ${student.firstName},
+
+Der Trainingsplan für ${periodName} steht fest!
+Hier sind die Trainingszeiten für ${studentName}:
+
+${rowsText}
+
+Deinen vollständigen Stundenplan sowie den Kalender-Export (.ics) findest Du im Schüler-Portal unter:
+${scheduleUrl}
+
+Wichtige Hinweise:
+• Bitte beachte die Hallenschuhregeln (in Teppichhallen nur saubere Schuhe mit glatter Profilsohle).
+
+Sportliche Grüße,
+Dein Team der Mondo Tennisschule
+TC GW Am Kreuzberg`;
+
+  return await sendEmail({
+    to: recipientEmail,
+    subject,
+    html,
+    text
   });
 }

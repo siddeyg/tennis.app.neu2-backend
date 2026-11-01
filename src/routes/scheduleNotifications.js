@@ -7,7 +7,9 @@ import Student from '../models/Student.js';
 import StudentPortalUser from '../models/StudentPortalUser.js';
 import Settings from '../models/Settings.js';
 import RegistrationPeriod from '../models/RegistrationPeriod.js';
+import EmailLog from '../models/EmailLog.js';
 import { createNotification } from '../utils/notificationHelpers.js';
+import { sendScheduleNotificationEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -64,13 +66,41 @@ function buildAssignmentList(assignments) {
  * family member link (StudentPortalUser.familyMembers[].studentId).
  * Returns the parent portal user in both cases (notifications go to the parent).
  */
-async function findPortalUserForStudent(studentId) {
-  // Direct link (adult student with own portal account)
+/**
+ * Find the StudentPortalUser associated with a Student record.
+ * Supports:
+ * 1. Modern Multi-Season Inversion of Control standard (student.studentPortalUserId)
+ * 2. Legacy direct link (StudentPortalUser.studentId)
+ * 3. Family member link (StudentPortalUser.familyMembers.studentId)
+ * 4. Fallback match by email
+ */
+async function findPortalUserForStudent(studentId, student = null) {
+  let s = student;
+  if (!s) {
+    s = await Student.findById(studentId);
+  }
+
+  // 1. Modern Multi-Season Inversion of Control standard (student.studentPortalUserId)
+  if (s?.studentPortalUserId) {
+    const user = await StudentPortalUser.findById(s.studentPortalUserId);
+    if (user) return user;
+  }
+
+  // 2. Legacy direct link (adult student with own portal account)
   const direct = await StudentPortalUser.findOne({ studentId });
   if (direct) return direct;
 
-  // Family member link (child → parent's portal account)
-  return StudentPortalUser.findOne({ 'familyMembers.studentId': studentId });
+  // 3. Family member link (child → parent's portal account)
+  const byFamily = await StudentPortalUser.findOne({ 'familyMembers.studentId': studentId });
+  if (byFamily) return byFamily;
+
+  // 4. Fallback: match by email if student has email
+  if (s?.email) {
+    const byEmail = await StudentPortalUser.findOne({ email: s.email.toLowerCase().trim() });
+    if (byEmail) return byEmail;
+  }
+
+  return null;
 }
 
 /**
@@ -119,9 +149,126 @@ router.get('/status', async (req, res) => {
   }
 });
 
+/**
+ * Execute unified notification pipeline for a single student:
+ * 1. Resolves portalUser via findPortalUserForStudent
+ * 2. Creates In-App notification (portal bell) if portal account exists
+ * 3. Sets Student.scheduleVisible = true
+ * 4. Dispatches personalized email (with student's name in subject and body)
+ * 5. Writes immutable audit entry to EmailLog
+ */
+async function sendNotificationPipelineForStudent({
+  student,
+  period = null,
+  triggerType = 'single',
+  sentBy = 'admin',
+  slotMeta = null
+}) {
+  const portalUser = await findPortalUserForStudent(student._id, student);
+  const recipientEmail = portalUser?.email || student.email;
+  const assignmentList = buildAssignmentList(student.assignments || []);
+  const periodName = period?.name || 'Saisontraining';
+
+  // 1. In-App Notification (Portal Bell)
+  if (portalUser) {
+    try {
+      await createNotification(
+        portalUser._id,
+        'schedule_change',
+        `Trainingsplan: ${student.firstName} ${student.lastName}`,
+        `Trainingszeiten für ${student.firstName}: ${assignmentList}`,
+        {
+          priority: 'high',
+          actionUrl: '/dashboard/schedule'
+        }
+      );
+    } catch (notifErr) {
+      console.error(`[schedule-notifications] Failed to create In-App notification for student ${student._id}:`, notifErr.message);
+    }
+  }
+
+  // 2. Set scheduleVisible = true so student/parent can view plan in portal
+  await Student.findByIdAndUpdate(student._id, { scheduleVisible: true });
+
+  // 3. Email Delivery & Audit Logging
+  let emailResult = null;
+  let emailError = null;
+
+  if (recipientEmail) {
+    try {
+      emailResult = await sendScheduleNotificationEmail({
+        student,
+        portalUser,
+        assignments: student.assignments || [],
+        periodName
+      });
+    } catch (err) {
+      emailError = err.message;
+      console.error(`[schedule-notifications] Failed to send email to ${recipientEmail} for student ${student._id}:`, err.message);
+    }
+
+    try {
+      await EmailLog.create({
+        recipientEmail: recipientEmail.toLowerCase().trim(),
+        studentId: student._id,
+        studentName: `${student.firstName} ${student.lastName}`,
+        portalUserId: portalUser?._id || null,
+        periodId: period?._id || student.periodId || null,
+        periodName,
+        subject: `Trainingsplan ${periodName}: Trainingszeiten für ${student.firstName} ${student.lastName} 🎾`,
+        templateType: 'schedule_notification',
+        category: 'notification',
+        status: emailError ? 'failed' : (emailResult?.simulated ? 'simulated' : 'sent'),
+        messageId: emailResult?.messageId || null,
+        errorMessage: emailError,
+        sentAt: new Date(),
+        sentBy,
+        triggerType,
+        assignmentsSummary: assignmentList,
+        metadata: slotMeta || {}
+      });
+    } catch (logErr) {
+      console.error(`[schedule-notifications] Failed to write EmailLog:`, logErr.message);
+    }
+  } else {
+    // Log failure due to missing email address
+    try {
+      await EmailLog.create({
+        recipientEmail: 'keine-email@system.local',
+        studentId: student._id,
+        studentName: `${student.firstName} ${student.lastName}`,
+        portalUserId: portalUser?._id || null,
+        periodId: period?._id || student.periodId || null,
+        periodName,
+        subject: `Trainingsplan ${periodName}: Trainingszeiten für ${student.firstName} ${student.lastName} 🎾`,
+        templateType: 'schedule_notification',
+        category: 'notification',
+        status: 'failed',
+        errorMessage: 'Keine E-Mail-Adresse für Schüler oder Elternkonto vorhanden',
+        sentAt: new Date(),
+        sentBy,
+        triggerType,
+        assignmentsSummary: assignmentList,
+        metadata: slotMeta || {}
+      });
+    } catch (logErr) {
+      console.error(`[schedule-notifications] Failed to write missing-email EmailLog:`, logErr.message);
+    }
+  }
+
+  return {
+    studentId: student._id,
+    studentName: `${student.firstName} ${student.lastName}`,
+    recipientEmail: recipientEmail || null,
+    hasPortalUser: !!portalUser,
+    emailSent: !emailError && !!recipientEmail,
+    emailSimulated: !!emailResult?.simulated
+  };
+}
+
 // =============================================
 // POST /api/schedule-notifications/notify-all
-// Send schedule notifications to all students with assignments + portal accounts
+// Send schedule notifications & emails to all students with assignments
 // Body: { periodId: string, force: boolean }
 // =============================================
 router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resource: 'ScheduleNotification', metadata: { operation: 'NOTIFY_ALL' } }), async (req, res) => {
@@ -159,69 +306,27 @@ router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resour
       'assignments.0': { $exists: true }
     };
     const students = await Student.find(studentFilter);
-
-    // Build a map of studentId / portalUserId → portalUser for all linked portal accounts
-    // Check direct Inversion of Control links, direct studentId links, and family member links
-    const studentIds = students.map(s => s._id);
-    const portalUserIds = students.map(s => s.studentPortalUserId).filter(Boolean);
-
-    const portalUsers = await StudentPortalUser.find({
-      $or: [
-        ...(portalUserIds.length > 0 ? [{ _id: { $in: portalUserIds } }] : []),
-        { studentId: { $in: studentIds } },
-        { 'familyMembers.studentId': { $in: studentIds } }
-      ]
-    });
-    const portalUserByUserId = new Map(portalUsers.map(pu => [String(pu._id), pu]));
-    const portalUserByStudentId = new Map();
-    for (const pu of portalUsers) {
-      if (pu.studentId) portalUserByStudentId.set(String(pu.studentId), pu);
-      for (const fm of (pu.familyMembers || [])) {
-        if (fm.studentId) portalUserByStudentId.set(String(fm.studentId), pu);
-      }
-    }
+    const sentBy = req.user?.username || 'admin';
 
     let sentCount = 0;
-    const notifiedStudentIds = [];
-
     for (const student of students) {
-      const portalUser = (student.studentPortalUserId ? portalUserByUserId.get(String(student.studentPortalUserId)) : null) ||
-        portalUserByStudentId.get(String(student._id));
-      if (!portalUser || !student.assignments?.length) continue;
-
-      const assignmentList = buildAssignmentList(student.assignments);
-
-      try {
-        await createNotification(
-          portalUser._id,
-          'schedule_change',
-          'Dein Trainingsplan',
-          `Deine Trainingszeiten: ${assignmentList}`,
-          {
-            priority: 'high',
-            actionUrl: '/dashboard/schedule'
-          }
-        );
-        sentCount++;
-        notifiedStudentIds.push(student._id);
-      } catch (notifError) {
-        console.error(`[schedule-notifications] Failed to notify student ${student._id}:`, notifError.message);
-      }
-    }
-
-    // Make schedule visible for all notified students
-    if (notifiedStudentIds.length > 0) {
-      await Student.updateMany(
-        { _id: { $in: notifiedStudentIds } },
-        { $set: { scheduleVisible: true } }
-      );
+      if (!student.assignments || student.assignments.length === 0) continue;
+      await sendNotificationPipelineForStudent({
+        student,
+        period,
+        triggerType: 'bulk',
+        sentBy
+      });
+      sentCount++;
+      // Gentle pacing to avoid SMTP socket exhaustion
+      await new Promise(r => setTimeout(r, 60));
     }
 
     // Update RegistrationPeriod with bulk notification metadata
     const notificationMeta = {
       sentAt: new Date(),
       sentCount,
-      sentBy: req.user?.username || 'admin'
+      sentBy
     };
     await RegistrationPeriod.findByIdAndUpdate(periodId, {
       $set: {
@@ -256,49 +361,123 @@ router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resour
 });
 
 // =============================================
+// POST /api/schedule-notifications/notify-slot
+// Send schedule notification & email to all students in a specific slot / group
+// Body: { periodId: string, day: string, hour: number, coachId?: string, studentIds?: string[] }
+// =============================================
+router.post('/notify-slot', auditLogMiddleware({ action: 'CREATE', resource: 'ScheduleNotification', metadata: { operation: 'NOTIFY_SLOT' } }), async (req, res) => {
+  try {
+    const { periodId, day, hour, coachId, studentIds } = req.body;
+
+    if (!periodId && (!Array.isArray(studentIds) || studentIds.length === 0)) {
+      return res.status(400).json({ error: 'periodId oder studentIds ist erforderlich' });
+    }
+
+    let targetStudents = [];
+    if (Array.isArray(studentIds) && studentIds.length > 0) {
+      targetStudents = await Student.find({
+        _id: { $in: studentIds },
+        ...(periodId ? { periodId } : {})
+      });
+    } else if (periodId && day && hour !== undefined) {
+      const matchCriteria = {
+        day: String(day).trim(),
+        hour: Number(hour)
+      };
+      if (coachId) {
+        matchCriteria.coach = coachId;
+      }
+      targetStudents = await Student.find({
+        periodId,
+        assignments: { $elemMatch: matchCriteria }
+      });
+    }
+
+    if (targetStudents.length === 0) {
+      return res.status(400).json({ error: 'Keine Schüler für diesen Slot gefunden' });
+    }
+
+    const period = periodId
+      ? await RegistrationPeriod.findById(periodId)
+      : (targetStudents[0].periodId ? await RegistrationPeriod.findById(targetStudents[0].periodId) : null);
+
+    const sentBy = req.user?.username || 'admin';
+    const slotMeta = {
+      day: day || targetStudents[0]?.assignments?.[0]?.day,
+      hour: hour !== undefined ? hour : targetStudents[0]?.assignments?.[0]?.hour,
+      coachId: coachId || targetStudents[0]?.assignments?.[0]?.coach
+    };
+
+    let sentCount = 0;
+    const notifiedStudents = [];
+
+    for (const student of targetStudents) {
+      if (!student.assignments || student.assignments.length === 0) continue;
+      const resStudent = await sendNotificationPipelineForStudent({
+        student,
+        period,
+        triggerType: 'slot',
+        sentBy,
+        slotMeta
+      });
+      sentCount++;
+      notifiedStudents.push({
+        id: resStudent.studentId,
+        name: resStudent.studentName,
+        email: resStudent.recipientEmail
+      });
+    }
+
+    res.json({
+      success: true,
+      sentCount,
+      totalCount: targetStudents.length,
+      notifiedStudents
+    });
+  } catch (error) {
+    console.error('[schedule-notifications] Error in POST /notify-slot:', error);
+    res.status(500).json({ error: 'Fehler beim Senden der Gruppen-Benachrichtigung' });
+  }
+});
+
+// =============================================
 // POST /api/schedule-notifications/notify-student/:studentId
-// Send schedule notification to a single student
+// Send schedule notification & email to a single student
 // =============================================
 router.post('/notify-student/:studentId', auditLogMiddleware({ action: 'CREATE', resource: 'ScheduleNotification', metadata: { operation: 'NOTIFY_STUDENT' } }), async (req, res) => {
   try {
     const { studentId } = req.params;
 
     const student = await Student.findById(studentId);
-
     if (!student) {
       return res.status(404).json({ error: 'Schüler nicht gefunden' });
     }
 
-    const portalUser = await findPortalUserForStudent(student._id);
-
+    const portalUser = await findPortalUserForStudent(student._id, student);
     if (!portalUser) {
       return res.status(400).json({ error: 'Schüler hat kein Portal-Konto' });
     }
 
     if (!student.assignments || student.assignments.length === 0) {
-      return res.status(400).json({ error: 'Student hat keine Trainingszeiten' });
+      return res.status(400).json({ error: 'Schüler hat keine Trainingszeiten' });
     }
 
-    const assignmentList = buildAssignmentList(student.assignments);
+    const period = student.periodId ? await RegistrationPeriod.findById(student.periodId) : null;
+    const sentBy = req.user?.username || 'admin';
 
-    await createNotification(
-      portalUser._id,
-      'schedule_change',
-      'Dein Trainingsplan',
-      `Deine Trainingszeiten: ${assignmentList}`,
-      {
-        priority: 'high',
-        actionUrl: '/dashboard/schedule'
-      }
-    );
-
-    // Make schedule visible for this student (bypasses global schedulePublished gate)
-    await Student.findByIdAndUpdate(studentId, { scheduleVisible: true });
+    const result = await sendNotificationPipelineForStudent({
+      student,
+      period,
+      triggerType: 'single',
+      sentBy
+    });
 
     res.json({
       success: true,
       sent: true,
-      studentName: `${student.firstName} ${student.lastName}`
+      studentName: result.studentName,
+      recipientEmail: result.recipientEmail,
+      emailSent: result.emailSent
     });
   } catch (error) {
     console.error('[schedule-notifications] Error in POST /notify-student:', error);
@@ -306,6 +485,46 @@ router.post('/notify-student/:studentId', auditLogMiddleware({ action: 'CREATE',
       return res.status(400).json({ error: 'Ungültige Schüler-ID' });
     }
     res.status(500).json({ error: 'Fehler beim Senden der Benachrichtigung' });
+  }
+});
+
+// =============================================
+// GET /api/schedule-notifications/email-logs
+// Audit trail of sent schedule notification emails
+// Query: { periodId?, triggerType?, status?, page?, limit? }
+// =============================================
+router.get('/email-logs', async (req, res) => {
+  try {
+    const { periodId, triggerType, status, page = 1, limit = 50 } = req.query;
+    const filter = {};
+    if (periodId) filter.periodId = periodId;
+    if (triggerType) filter.triggerType = triggerType;
+    if (status) filter.status = status;
+
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 50));
+    const skip = (pageNum - 1) * limitNum;
+
+    const [logs, total] = await Promise.all([
+      EmailLog.find(filter)
+        .sort({ sentAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .select('-metadata.rawHtml')
+        .lean(),
+      EmailLog.countDocuments(filter)
+    ]);
+
+    res.json({
+      success: true,
+      logs,
+      total,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum)
+    });
+  } catch (error) {
+    console.error('[schedule-notifications] Error in GET /email-logs:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der E-Mail-Logs' });
   }
 });
 
