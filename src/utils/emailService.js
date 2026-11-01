@@ -2662,7 +2662,7 @@ export async function sendScheduleNotificationEmail({
         <div style="background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; margin: 25px 0; border-radius: 0 6px 6px 0; font-size: 14px; color: #2b6cb0;">
           <strong>ℹ️ Wichtige Hinweise:</strong>
           <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-            <li>Im Schüler-Portal kannst Du Deinen Stundenplan jederzeit einsehen und direkt als Kalenderdatei (<code>.ics</code>) für Dein Smartphone herunterladen.</li>
+            <li><strong>Verbindlicher Trainingsplan:</strong> Im Schüler-Portal kannst Du Deinen aktuellen Stundenplan jederzeit tagesaktuell online einsehen.</li>
             <li><strong>Hallenschuhe:</strong> Bitte beachte, dass in Hallen mit Teppichboden saubere Hallenschuhe mit völlig glatter Profilsohle vorgeschrieben sind.</li>
           </ul>
         </div>
@@ -2686,7 +2686,7 @@ Hier sind die Trainingszeiten für ${studentName}:
 
 ${rowsText}
 
-Deinen vollständigen Stundenplan sowie den Kalender-Export (.ics) findest Du im Schüler-Portal unter:
+Deinen vollständigen und verbindlichen Stundenplan findest Du im Schüler-Portal unter:
 ${scheduleUrl}
 
 Wichtige Hinweise:
