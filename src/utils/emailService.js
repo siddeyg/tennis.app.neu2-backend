@@ -2549,7 +2549,7 @@ export async function sendEventCancellationEmail({ email, studentName, eventName
 }
 
 /**
- * Send schedule notification email to a student or parent
+ * Render schedule notification email template (pure function for preview & test)
  *
  * @param {Object} params
  * @param {Object} params.student - Student document
@@ -2557,8 +2557,9 @@ export async function sendEventCancellationEmail({ email, studentName, eventName
  * @param {Array} [params.assignments] - Student assignments
  * @param {string} [params.periodName] - Registration period name
  * @param {string} [params.portalUrl] - Student portal base URL
+ * @returns {Object} { to, recipientEmail, subject, html, text }
  */
-export async function sendScheduleNotificationEmail({
+export function renderScheduleNotificationEmail({
   student,
   portalUser = null,
   assignments = [],
@@ -2596,7 +2597,7 @@ export async function sendScheduleNotificationEmail({
     const coachName = typeof a.coach === 'object' && a.coach !== null
       ? `${a.coach.firstName || ''} ${a.coach.lastName || ''}`.trim() || 'Trainerteam'
       : (a.coachName || 'Trainerteam');
-    const venueName = a.venue || 'TC GW Am Kreuzberg';
+    const venueName = a.venue || '-';
 
     return `
       <tr>
@@ -2616,7 +2617,7 @@ export async function sendScheduleNotificationEmail({
     const coachName = typeof a.coach === 'object' && a.coach !== null
       ? `${a.coach.firstName || ''} ${a.coach.lastName || ''}`.trim() || 'Trainerteam'
       : (a.coachName || 'Trainerteam');
-    return `• ${a.day}, ${startStr} – ${endStr} Uhr | ${a.venue || 'TC GW Am Kreuzberg'} | Trainer: ${coachName}`;
+    return `• ${a.day}, ${startStr} – ${endStr} Uhr${a.venue ? ' | ' + a.venue : ''} | Trainer: ${coachName}`;
   }).join('\n');
 
   const html = `
@@ -2630,7 +2631,6 @@ export async function sendScheduleNotificationEmail({
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #2d3748; max-width: 650px; margin: 0 auto; padding: 20px; background-color: #f7fafc;">
       <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
         <h1 style="color: white; margin: 0; font-size: 24px;">🎾 Mondo Tennisschule</h1>
-        <p style="color: #bfdbfe; margin: 5px 0 0 0; font-size: 14px;">TC GW Am Kreuzberg</p>
       </div>
 
       <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px;">
@@ -2659,20 +2659,11 @@ export async function sendScheduleNotificationEmail({
           </a>
         </div>
 
-        <div style="background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; margin: 25px 0; border-radius: 0 6px 6px 0; font-size: 14px; color: #2b6cb0;">
-          <strong>ℹ️ Wichtige Hinweise:</strong>
-          <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-            <li><strong>Verbindlicher Trainingsplan:</strong> Im Schüler-Portal kannst Du Deinen aktuellen Stundenplan jederzeit tagesaktuell online einsehen.</li>
-            <li><strong>Hallenschuhe:</strong> Bitte beachte, dass in Hallen mit Teppichboden saubere Hallenschuhe mit völlig glatter Profilsohle vorgeschrieben sind.</li>
-          </ul>
-        </div>
-
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
 
         <p style="color: #718096; font-size: 13px; margin-bottom: 0;">
           Sportliche Grüße,<br>
-          <strong>Dein Team der Mondo Tennisschule</strong><br>
-          TC GW Am Kreuzberg
+          <strong>Dein Team der Mondo Tennisschule</strong>
         </p>
       </div>
     </body>
@@ -2689,17 +2680,34 @@ ${rowsText}
 Deinen vollständigen und verbindlichen Stundenplan findest Du im Schüler-Portal unter:
 ${scheduleUrl}
 
-Wichtige Hinweise:
-• Bitte beachte die Hallenschuhregeln (in Teppichhallen nur saubere Schuhe mit glatter Profilsohle).
-
 Sportliche Grüße,
-Dein Team der Mondo Tennisschule
-TC GW Am Kreuzberg`;
+Dein Team der Mondo Tennisschule`;
 
-  return await sendEmail({
+  return {
     to: recipientEmail,
+    recipientEmail,
     subject,
     html,
     text
+  };
+}
+
+/**
+ * Send schedule notification email to a student or parent
+ *
+ * @param {Object} params
+ * @param {Object} params.student - Student document
+ * @param {Object} [params.portalUser] - StudentPortalUser document
+ * @param {Array} [params.assignments] - Student assignments
+ * @param {string} [params.periodName] - Registration period name
+ * @param {string} [params.portalUrl] - Student portal base URL
+ */
+export async function sendScheduleNotificationEmail(params) {
+  const rendered = renderScheduleNotificationEmail(params);
+  return await sendEmail({
+    to: rendered.recipientEmail,
+    subject: rendered.subject,
+    html: rendered.html,
+    text: rendered.text
   });
 }
