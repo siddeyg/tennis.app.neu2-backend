@@ -2677,7 +2677,7 @@ Hier sind die Trainingszeiten für ${studentName}:
 
 ${rowsText}
 
-Deinen vollständigen und verbindlichen Stundenplan findest Du im Schüler-Portal unter:
+Deinen Stundenplan findest Du auch im Portal unter:
 ${scheduleUrl}
 
 Sportliche Grüße,
