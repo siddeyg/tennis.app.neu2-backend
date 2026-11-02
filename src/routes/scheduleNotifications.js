@@ -382,8 +382,8 @@ router.post('/notify-all', auditLogMiddleware({ action: 'BULK_OPERATION', resour
         coachMap: globalCoachMap
       });
       sentCount++;
-      // Gentle pacing to avoid SMTP socket exhaustion
-      await new Promise(r => setTimeout(r, 60));
+      // Gentle pacing to avoid SMTP socket exhaustion & Netcup rate limiting (400ms delay)
+      await new Promise(r => setTimeout(r, 400));
     }
 
     // Update RegistrationPeriod with bulk notification metadata

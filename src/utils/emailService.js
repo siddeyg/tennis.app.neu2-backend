@@ -113,8 +113,8 @@ if (isConfigured) {
         pass: process.env.SMTP_PASS,
       },
       // Connection timeout and socket timeout
-      connectionTimeout: 10000, // 10 seconds
-      socketTimeout: 10000,
+      connectionTimeout: 30000, // 30 seconds
+      socketTimeout: 30000,
       // Enable logging in development
       logger: process.env.NODE_ENV === 'development',
       debug: process.env.NODE_ENV === 'development',
